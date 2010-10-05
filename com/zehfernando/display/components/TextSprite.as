@@ -5,7 +5,6 @@ package com.zehfernando.display.components {
 	import flash.text.engine.ElementFormat;
 	import flash.text.engine.FontDescription;
 	import flash.text.engine.FontLookup;
-	import flash.text.engine.GroupElement;
 	import flash.text.engine.RenderingMode;
 	import flash.text.engine.TextBaseline;
 	import flash.text.engine.TextBlock;
@@ -58,7 +57,7 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function TextSprite(__font:String = "_sans", __size:Number = 12, __color:Number = 0x000000) {
+		public function TextSprite(__font:String = "_sans", __size:Number = 12, __color:Number = 0x000000, __alpha:Number = 1) {
 			// TODO: add bold, italic (fontPosture)
 
 			// Set default values
@@ -99,6 +98,7 @@ package com.zehfernando.display.components {
             //elementFormat.fontDescription = fontDescription;
             elementFormat.fontSize = __size;
             elementFormat.color = __color;
+            elementFormat.alpha = __alpha;
             
             applyElementFormatTracking();
             
@@ -174,7 +174,7 @@ package com.zehfernando.display.components {
 				if (Boolean(textLine) && (posY <= _maxHeight || isNaN(_maxHeight))) {
 					//textLine.x = 0; // Overridden later
 					textLine.y = posY;
-
+					
 					posY += textLine.height;
 
 					posY += _leading;
@@ -625,6 +625,16 @@ package com.zehfernando.display.components {
 		public function set renderingMode(__value:String): void {
 			if (renderingMode != __value) {
 				fontDescription.renderingMode = __value;
+				redraw();
+			}
+		}
+
+		public function get fontName(): String {
+			return fontDescription.fontName;
+		}
+		public function set fontName(__value:String): void {
+			if (fontName != __value) {
+				fontDescription.fontName = __value;
 				redraw();
 			}
 		}

@@ -17,6 +17,18 @@ package com.zehfernando.utils {
 			return dateResult;
 		}
 		
+		public static function simpleDateToDate(__date:String): Date {
+			// Converts 2010-01-01 to a date
+			var tt:Date = new Date();
+			tt.fullYearUTC = parseInt(__date.substr(0, 4), 10);
+			tt.monthUTC = parseInt(__date.substr(5, 2), 10) - 1;
+			tt.dateUTC = parseInt(__date.substr(8, 2), 10);
+			tt.hoursUTC = 0;
+			tt.secondsUTC = 0;
+			tt.millisecondsUTC = 0;
+			return tt;
+		}
+
 		public static function xsdDateTimeToDate(__date:String): Date {
 			// Converts a data from DateTime XML format to a normal Date
 			// This is the same format that comes from .NET database dumps as XML

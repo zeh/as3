@@ -34,6 +34,8 @@ package com.zehfernando.display.containers {
 		protected var _minimumScale:Number;					// Minimum scale for scaleMode (1 = 1:1, 100%)
 		protected var _maximumScale:Number;					// Maximum scale for scaleMode (1 = 1:1, 100%)
 		
+		protected var _roundPositions:Boolean;				// 
+		
 		// Instances
 		protected var boundingBox:Sprite;
 		protected var contentHolder:Sprite;
@@ -47,6 +49,7 @@ package com.zehfernando.display.containers {
 			_color = __color;
 			_width = __width;
 			_height = __height;
+			_roundPositions = false;
 
 			setDefaultData();
 			
@@ -108,9 +111,12 @@ package com.zehfernando.display.containers {
 			var minY:Number = _margin;
 			var maxY:Number = _height - _margin - _contentHeight * newScaleY;
 			// TODO - in some cases (SHOW_ALL) moving is not desirable?
-
-			contentHolder.x = minX + (maxX-minX) * ((_scrollX+1)/2);
-			contentHolder.y = minY + (maxY-minY) * ((_scrollY+1)/2);
+			
+			var px:Number = minX + (maxX-minX) * ((_scrollX+1)/2);
+			var py:Number = minY + (maxY-minY) * ((_scrollY+1)/2);
+			
+			contentHolder.x = _roundPositions ? Math.round(px) : px;
+			contentHolder.y = _roundPositions ? Math.round(py) : py;
 			//contentHolder.width = _contentWidth * newScaleX;
 			//contentHolder.height = _contentHeight * newScaleY;
 			contentHolder.scaleX = newScaleX;
@@ -345,6 +351,18 @@ package com.zehfernando.display.containers {
 		}
 		public function get contentHeight(): Number {
 			return _contentHeight;
+		}
+		
+		// Round position
+		
+		public function get roundPositions(): Boolean {
+			return _roundPositions;
+		}
+		public function set roundPositions(__value:Boolean): void {
+			if (_roundPositions != __value) {
+				_roundPositions = __value;
+				redraw();
+			}
 		}
 
 	}

@@ -99,6 +99,11 @@ package com.zehfernando.display.containers {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		override public function load(__url:String): void {
+			if (!Boolean(__url)) {
+				trace ("ImageContainer :: ERROR: tried loading image from null url ["+__url+"]");
+				return;
+			}
+
 			super.load(__url);
 
 			_isLoading = true;
@@ -115,7 +120,7 @@ package com.zehfernando.display.containers {
 
 			var context:LoaderContext = new LoaderContext();
 			context.checkPolicyFile = true;
-
+			
 			loader.load(new URLRequest(_contentURL), context);
 		}
 	}

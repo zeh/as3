@@ -30,6 +30,7 @@ package com.zehfernando.display.containers {
 		public static const EVENT_BUFFER_EMPTY:String = "onBufferEmpty";						// Ok apparently
 		public static const EVENT_BUFFER_FULL:String = "onBufferFull";							// Ok apparently
 		public static const EVENT_RECEIVED_METADATA:String = "onReceivedMetaData";				// Ok
+		public static const EVENT_CUE_POINT:String = "onReceivedCuePoint";
 
 		// Properties
 		protected var _isPlaying:Boolean;
@@ -41,13 +42,15 @@ package com.zehfernando.display.containers {
 		protected var _duration:Number;						// Video duration, in miliseconds
 		protected var _framerate:Number;					// Video framerate
 		protected var _hasMetaData:Boolean;					// Whether metadata was already received or not
+		protected var _maximumTime:Number;
 		
 		protected var netConnection:NetConnection;
 		protected var netStream:NetStream;
 		protected var video:Video;
 		protected var isMonitoringLoading:Boolean;
 
-		
+		protected var lastCuePoint:Object;
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -60,7 +63,7 @@ package com.zehfernando.display.containers {
 
 		override protected function setDefaultData(): void {
 			super.setDefaultData();
-
+			_maximumTime = 0;
 			_autoPlay = true;
 			_bufferTime = 3;
 			_loop = false;
@@ -143,6 +146,8 @@ package com.zehfernando.display.containers {
 	
 	    public function onCuePoint(info:Object):void {
 			trace("VideoContainer :: onCuePoint: time=" + info["time"] + " name=" + info["name"] + " type=" + info["type"]);
+	    	lastCuePoint = info;
+	    	dispatchEvent(new Event(EVENT_CUE_POINT));
 		}
 
 		// Other events
@@ -163,6 +168,7 @@ package com.zehfernando.display.containers {
 			if (_hasVideo && (isNaN(obl) || obl == 0) && _bytesLoaded > 0) onLoadStart();
 			
 			if (_hasVideo && _bytesLoaded > 0) {
+				updateMaximumTime();
 
 				dispatchEvent(new Event(EVENT_LOADING_PROGRESS));
 			
@@ -206,8 +212,10 @@ package com.zehfernando.display.containers {
 				case "NetStream.Play.StreamNotFound":
                 	// TODO: add error event here
                     trace("VideoContainer :: Stream [" + _contentURL + "] not found!");
-					dispatchEvent(new Event(EVENT_LOADING_ERROR));
-					break;
+                    break;
+//                case "NetStream.Seek.Notify":
+//                	trace ("netstream.seek.notify");
+//                	break;
                 case "NetStream.Play.Start":
 //                	//trace ("Play.start @ t = " + time);
 //                	if (time == 0) onVideoStart();
@@ -225,6 +233,8 @@ package com.zehfernando.display.containers {
             		if (time >= duration - 0.1) onVideoFinish(); // ugh
             		break;
             }
+
+			updateMaximumTime();
         }
 
 //        protected function onVideoPlay():void {
@@ -279,8 +289,12 @@ package com.zehfernando.display.containers {
 				video.height = _contentHeight;
 			}
 		}
+		
+		protected function updateMaximumTime(): void {
+			_maximumTime = Math.max(time, _maximumTime);
+		}
 
-
+		
 		// ================================================================================================================
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
 
@@ -290,8 +304,6 @@ package com.zehfernando.display.containers {
 			super.load(__url);
 			
 			_isLoaded = false;
-			_isLoading = true;
-			_hasVideo = true;
 
 			netConnection = new NetConnection();
 			netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
@@ -314,6 +326,9 @@ package com.zehfernando.display.containers {
 
 			_contentWidth = video.width;
 			_contentHeight = video.height;
+
+			_isLoading = true;
+			_hasVideo = true;
 			
 			redraw();
 			
@@ -362,11 +377,13 @@ package com.zehfernando.display.containers {
 
 		public function playVideo():void {
 			_isPlaying = true;
+			updateMaximumTime();
 			if (_hasVideo) netStream.resume();
 		}
 
 		public function pauseVideo():void {
 			_isPlaying = false;
+			updateMaximumTime();
 			if (_hasVideo) netStream.pause();
 		}
 
@@ -402,6 +419,12 @@ package com.zehfernando.display.containers {
 			//return remainingLoadingTime <= remainingPlaybackTime;
 			return MathUtils.clamp(remainingPlaybackTime / remainingLoadingTime);
 		}
+		
+		public function getMaximumPositionPlayed(): Number {
+			updateMaximumTime();
+			return _maximumTime / duration;
+		}
+		
 
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
@@ -432,6 +455,7 @@ package com.zehfernando.display.containers {
 		public function set time(__value:Number): void {
 			if (!_hasVideo) return;
 			netStream.seek(__value);
+			updateMaximumTime();
 		}
 
 		public function get position(): Number {
@@ -493,6 +517,9 @@ package com.zehfernando.display.containers {
 			return _hasMetaData;
 		}
 
+		public function getLastCuePoint(): Object {
+			return lastCuePoint;
+		}
 		public function get droppedFrames(): int {
 			return _hasVideo ? netStream.info.droppedFrames : 0;
 		}
@@ -503,7 +530,7 @@ package com.zehfernando.display.containers {
 		public function get fps(): int {
 			return _hasVideo ? netStream.currentFPS : 0;
 		}
-
+		
 	}
 }
 

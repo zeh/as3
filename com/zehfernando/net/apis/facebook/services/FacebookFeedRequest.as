@@ -9,6 +9,7 @@ package com.zehfernando.net.apis.facebook.services {
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 
 	/**
 	 * @author zeh
@@ -18,7 +19,10 @@ package com.zehfernando.net.apis.facebook.services {
 		// By default, this gets the last 25 posts
 
 		// Properties
-		protected var _id:String;
+		protected var _authorId:String;
+
+		// Parameters
+		protected var _limit:int;
 		
 		// Results
 		protected var _posts:Vector.<FacebookFeedPost>;
@@ -36,38 +40,35 @@ package com.zehfernando.net.apis.facebook.services {
 			// Parameters
 			// http://developers.facebook.com/docs/reference/api/page
 
-			_id = "";
-			
+			_authorId = "";
 			
 		}
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-//		override protected function getURLVariables():URLVariables {
-//			var vars:URLVariables = super.getURLVariables();
-//
-//			return vars;
-//		}
+		override protected function getURLVariables():URLVariables {
+			var vars:URLVariables = super.getURLVariables();
+
+			if (_limit > 0)					vars["limit"] = _limit;
+
+			return vars;
+		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onSecurityError(e:SecurityErrorEvent): void {
-			//trace ("twitter --> onSecurityError");
 			super.onSecurityError(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
 		}
 		
 		override protected function onIOError(e:IOErrorEvent): void {
-			//trace ("twitter --> onIOError");
 			super.onIOError(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
 		}
 
 		override protected function onComplete(e:Event): void {
-			//trace ("twitter --> onComplete");
-
 			var response:Object = JSON.decode(loader.data);
 			
 			_posts = FacebookFeedPost.fromJSONObjectArray(response["data"]);
@@ -75,10 +76,9 @@ package com.zehfernando.net.apis.facebook.services {
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
-
 		
 		override public function execute():void {
-			requestURL = requestURL.replace(FacebookConstants.PARAMETER_AUTHOR_ID, _id);
+			requestURL = requestURL.replace(FacebookConstants.PARAMETER_AUTHOR_ID, _authorId);
 			super.execute();
 		}
 
@@ -87,13 +87,24 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Parameters
 
-		public function get id():String {
-			return _id;
+		public function get authorId():String {
+			return _authorId;
 		}
-		public function set id(__value:String):void {
-			_id = __value;
+		public function set authorId(__value:String):void {
+			_authorId = __value;
 		}
+
+		// Hard parameters
 		
+		public function get limit(): int {
+			return _limit;
+		}
+		public function set limit(__value:int): void {
+			if (_limit != __value) {
+				_limit = __value;
+			}
+		}
+
 		// Results
 		
 		public function get posts(): Vector.<FacebookFeedPost> {

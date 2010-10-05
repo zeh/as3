@@ -19,8 +19,8 @@ package com.zehfernando.net.apis.facebook.data {
 		public var likes:int;
 		public var numComments:int;
 		public var comments:Vector.<FacebookComment>;
-		public var picture:String;
-		public var link:String;				// For videos, external link; for photos, internal(?) link
+		public var picture:String;			// Attachment image (for links, pictures; for videos, it's also the thumb)
+		public var link:String;				// For videos, external page link; for photos, internal(?) link
 		public var name:String;				// Title for attachment
 		public var description:String;		// Description for attachment
 		public var icon:String;				// Icon for the application that did the post
@@ -117,6 +117,7 @@ package com.zehfernando.net.apis.facebook.data {
          }
       },
       {
+      // 142415832458170
          "id": "136208713078882_142415842458169",
          "from": {
             "name": "RMS Titanic, Inc.",
@@ -167,7 +168,7 @@ package com.zehfernando.net.apis.facebook.data {
 
 			var post:FacebookFeedPost = new FacebookFeedPost();
 			
-			post.id	=								o["id"];
+			post.id =								o["id"];
 			post.from =								FacebookAuthor.fromJSONObject(o["from"]); /// *************
 			post.message =							o["message"];
 			post.type =								o["type"];
@@ -179,7 +180,7 @@ package com.zehfernando.net.apis.facebook.data {
 			post.picture =							o["picture"];
 			post.link =								o["link"];
 			post.name =								o["name"];
-			post.description =						o["icon"];
+			post.description =						o["description"];
 			post.icon =								o["icon"];
 			post.source =							o["source"];
 			post.caption =							o["caption"];

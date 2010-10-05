@@ -13,7 +13,6 @@ package com.zehfernando.net.apis.facebook.data {
 		// Properties
 		public var category:String;
 		
-		public var picture:String;
 		public var link:String;
 		public var username:String;
 		public var companyOverview:String;
@@ -42,7 +41,7 @@ package com.zehfernando.net.apis.facebook.data {
 
 			page.category =									o["category"];
 			
-			page.picture =									o["picture"];
+			page.picture =									o["picture"]; // Manual setup if supplied
 			page.link =										o["link"];
 			page.username =									o["username"];
 			page.companyOverview =							o["companyOverview"];

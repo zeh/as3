@@ -29,14 +29,14 @@ package com.zehfernando.display.shapes {
 			_radius = _topLeftRadius = _topRightRadius = _bottomLeftRadius = _bottomRightRadius = __radius;
 			_borderSize = __outlineWidth;
 			
-			redraw();
+			paint();
 		}
 
 
 		// ================================================================================================================
-		// INSTANCE functions ---------------------------------------------------------------------------------------------
+		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function redraw(): void {
+		protected function paint(): void {
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginFill(_color, 1);
@@ -58,7 +58,7 @@ package com.zehfernando.display.shapes {
 		override public function set width(__value:Number): void {
 			if (_width != __value) {
 				_width = __value;
-				redraw();
+				paint();
 			}
 		}
 
@@ -66,7 +66,7 @@ package com.zehfernando.display.shapes {
 		override public function set height(__value:Number): void {
 			if (_height != __value) {
 				_height = __value;
-				redraw();
+				paint();
 			}
 		}
 
@@ -74,7 +74,7 @@ package com.zehfernando.display.shapes {
 		public function set color(__value:Number): void {
 			if (_color != __value) {
 				_color = __value;
-				redraw();
+				paint();
 			}
 		}
 
@@ -83,14 +83,14 @@ package com.zehfernando.display.shapes {
 		}
 		public function set radius(__value:Number): void {
 			_radius = _topLeftRadius = _topRightRadius = _bottomLeftRadius = _bottomRightRadius = __value;
-			redraw();
+			paint();
 		}
 
 		public function get topLeftRadius(): Number { return _topLeftRadius; }
 		public function set topLeftRadius(__value:Number): void {
 			if (_topLeftRadius != __value) {
 				_topLeftRadius = __value;
-				redraw();
+				paint();
 			}
 		}
 
@@ -98,7 +98,7 @@ package com.zehfernando.display.shapes {
 		public function set topRightRadius(__value:Number): void {
 			if (_topRightRadius != __value) {
 				_topRightRadius = __value;
-				redraw();
+				paint();
 			}
 		}
 
@@ -106,7 +106,7 @@ package com.zehfernando.display.shapes {
 		public function set bottomLeftRadius(__value:Number): void {
 			if (_bottomLeftRadius != __value) {
 				_bottomLeftRadius = __value;
-				redraw();
+				paint();
 			}
 		}
 
@@ -114,7 +114,7 @@ package com.zehfernando.display.shapes {
 		public function set bottomRightRadius(__value:Number): void {
 			if (_bottomRightRadius != __value) {
 				_bottomRightRadius = __value;
-				redraw();
+				paint();
 			}
 		}
 
@@ -123,7 +123,7 @@ package com.zehfernando.display.shapes {
 		public function set borderSize(__value:Number): void {
 			if (_borderSize != __value) {
 				_borderSize = __value;
-				redraw();
+				paint();
 			}
 		}
 

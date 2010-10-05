@@ -35,7 +35,7 @@ package com.zehfernando.display.abstracts {
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
 		protected function redrawState(): void {
-			throw new Error("Error: the method redrawState() of ResizableSprite has to be overridden.");
+			throw new Error("Error: the method redrawState() of ButtonSprite has to be overridden.");
 		}
 		
 		protected function redrawVisibility(): void {

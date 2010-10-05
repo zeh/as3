@@ -31,11 +31,8 @@ package com.zehfernando.net.apis.youtube.services {
 			requestMethod = URLRequestMethod.GET;
 
 			// Parameters
-			// http://developers.facebook.com/docs/reference/api/page
 
 			_videoId = "";
-			
-			
 		}
 
 		// ================================================================================================================

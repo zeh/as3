@@ -28,6 +28,8 @@ package com.zehfernando.net.apis.facebook.data {
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public static function fromJSONObject(o:Object): FacebookLocation {
+			if (!Boolean(o)) return null;
+
 			var location:FacebookLocation = new FacebookLocation();
 			
 			location.id =								o["id"];

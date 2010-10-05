@@ -18,8 +18,8 @@ package com.zehfernando.navigation {
 		protected var _createChildrenDynamically:Boolean;
 
 		protected var createdChildren:Vector.<NavigableSprite>;
-		
 
+		
 		//protected var _canSwitchChildren:Boolean;								// Whether this can do a hot child switch (one child stub to the other) or not (must close old child, and then show new child)
 
 		// ================================================================================================================
@@ -46,7 +46,7 @@ package com.zehfernando.navigation {
 			// TODO: this is a bit of a crappy method to open sub-sections... rethink this approach
 			//_myLocation = SpriteNavigator.getLocation();
 			//_myLocation = (Boolean(navigableParent) ? navigableParent.location :  "") + "/" + _stub;//SpriteNavigator.getLocation(true);
-			trace ("==== "+this+" my location = " + _myLocation);
+			//trace ("==== "+this+" my location = " + _myLocation);
 			//_myLocation = SpriteNavigator.getLocation(true);
 			//_myLocation += (_myLocation.length > 1 ? "/" : "") + _stub;
 			if (_myLocation == "/" || _stub == "default-area") _myLocation = "";

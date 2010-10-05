@@ -59,7 +59,6 @@ package com.zehfernando.net.apis.youtube.services {
 			default xml namespace = ns;
 			
 			_videos = YouTubeVideo.fromXMLList(vidData.child("entry"));
-			//trace ("============== ", vidData.child("entry"));
 
 			default xml namespace = new Namespace(""); // WTF! one needs this otherwise the function below fails!
 

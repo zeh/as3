@@ -1,9 +1,12 @@
 package com.zehfernando.display.components {
+	import flash.events.MouseEvent;
+	import flash.geom.Point;
 	import flash.text.engine.ContentElement;
 	import flash.text.engine.ElementFormat;
 	import flash.text.engine.FontDescription;
 	import flash.text.engine.GroupElement;
 	import flash.text.engine.TextElement;
+	import flash.text.engine.TextLine;
 
 	/**
 	 * @author zeh
@@ -12,15 +15,20 @@ package com.zehfernando.display.components {
 		
 		// Styles
 		protected var styles:Vector.<TextStyle>;
+		protected var _currentLinkHref:String;
+		protected var _currentLinkTarget:String;
 
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function RichTextSprite(__font:String = "_sans", __size:Number = 12, __color:Number = 0x000000) {
+		public function RichTextSprite(__font:String = "_sans", __size:Number = 12, __color:Number = 0x000000, __alpha:Number = 1) {
 			styles = new Vector.<TextStyle>();
 
-			super(__font, __size, __color);
+			super(__font, __size, __color, __alpha);
+			
+			addEventListener(MouseEvent.ROLL_OVER, onMouseOver, false, 0, true);
+			addEventListener(MouseEvent.ROLL_OUT, onMouseOut, false, 0, true);
 		}
 
 		// ================================================================================================================
@@ -33,8 +41,8 @@ package com.zehfernando.display.components {
 			}
 			return null;
 		}
-		
-		override protected function getTextElement(__text:String): ContentElement {
+
+		protected function getTextElementOld(__text:String): ContentElement {
 			var texts:Vector.<String> = new Vector.<String>();
 			var tStyles:Vector.<String> = new Vector.<String>();
 			
@@ -44,12 +52,13 @@ package com.zehfernando.display.components {
 			// Looks for all style tags inside __text
 			// TODO: Very manual for proper nesting = use regexp instead?
 			// NESTING DOESN'T WORK!
-			var i:int, j:int;
+			var i:int;
+			var j:int;
 			var tagOpen:String, tagClose:String;
 			var tagOpenPos:Number, tagClosePos:Number;
 			var tempText:String;
 			var tempStyle:String;
-
+						
 			for (i = 0; i < styles.length; i++) {
 				tagOpen = "<"+styles[i].name+">";
 				tagClose = "</"+styles[i].name+">";
@@ -74,7 +83,6 @@ package com.zehfernando.display.components {
 //				trace(tStyles[i], texts[i]);
 //			}
 
-			// Finally, create elements
 			var fd:FontDescription = fontDescription.clone();
 			var ef:ElementFormat = elementFormat.clone();
 			ef.fontDescription = fd;
@@ -94,16 +102,211 @@ package com.zehfernando.display.components {
 			return new GroupElement(elements);
 		}
 
+		override protected function getTextElement(__text:String): ContentElement {
+
+			var fd:FontDescription = fontDescription.clone();
+			var ef:ElementFormat = elementFormat.clone();
+			ef.fontDescription = fd;
+			
+			return getSubTextElement(__text, fd, ef);
+		}
+		
+		protected function getSubTextElement(__text:String, __fd:FontDescription, __ef:ElementFormat): ContentElement {
+			//var texts:Vector.<String> = new Vector.<String>();
+			//var tStyles:Vector.<String> = new Vector.<String>();
+			
+			//texts.push(__text);
+			//tStyles.push("");
+			
+			// Looks for all style tags inside __text
+			// TODO: Very manual for proper nesting = use regexp instead?
+			// NESTING DOESN'T WORK!
+			var i:int;
+//			var j:int;
+//			var tagOpen:String, tagClose:String;
+//			var tagOpenPos:Number, tagClosePos:Number;
+//			var tempText:String;
+//			var tempStyle:String;
+			
+			//StringUtils.getQuerystringParameterValue(__url, __parameterName)
+			//var qsRegex:RegExp = new RegExp("[?&]" + __parameterName + "(?:=([^&]*))?","i");
+			//var match:Object = qsRegex.exec(__url);
+
+			var elements:Vector.<ContentElement> = new Vector.<ContentElement>();
+
+			XML.ignoreWhitespace = false;
+
+			var contentAsXML:XML = new XML("<root>" + __text + "</root>");
+			var contentChildren:XMLList = contentAsXML.children();
+			var te:TextElement;
+			for (i = 0; i < contentChildren.length(); i++) {
+				//trace (i, (contentChildren[i] as XML));
+				if (Boolean((contentChildren[i] as XML).name())) {
+					// A sub-node
+					//trace ("---> style " + String((contentChildren[i] as XML).name()));
+					te = new TextElement(contentChildren[i], getStyle(String((contentChildren[i] as XML).name())).getAsElementFormat(__ef, __fd));
+					te.userData = contentChildren[i];
+				} else {
+					// No node, just add the text
+					te = new TextElement(contentChildren[i], __ef);
+				}
+				elements.push(te);
+//				if (Boolean(tStyles[i])) {
+//					// Special text style
+//					elements.push(new TextElement(texts[i], getStyle(tStyles[i]).getAsElementFormat(__ef, __fd)));
+//				} else {
+//					// Default text style
+//					elements.push(new TextElement(texts[i], __ef));
+//				}
+			}
+			
+			XML.ignoreWhitespace = true;
+			
+			/*
+			var __text:String = "this is a <i link='x'>test</i>...";
+			var contentAsXML:XML = new XML("<root link='y'>" + __text + "</root>");
+			trace (contentAsXML.attribute("link"));
+			trace (contentAsXML.children());
+			for (var i:int = 0; i < contentAsXML.children().length(); i++) {
+				trace (i, contentAsXML.children()[i].toString(), ".......", contentAsXML.children()[i].name());
+			}
+			*/
+			
+						
+//			for (i = 0; i < styles.length; i++) {
+//				tagOpen = "<"+styles[i].name+">";
+//				tagClose = "</"+styles[i].name+">";
+//				for (j = 0; j < texts.length; j++) {
+//					tagOpenPos = texts[j].indexOf(tagOpen);
+//					tagClosePos = texts[j].indexOf(tagClose, tagOpenPos);
+//					if (tagOpenPos > -1 && tagClosePos > -1) {
+//						// Found; breaks down
+//						tempText = texts[j];
+//						tempStyle = tStyles[j];
+//						
+//						texts.splice(j, 1);
+//						tStyles.splice(j, 1);
+//						
+//						texts.splice(j, 0, tempText.substr(0, tagOpenPos), tempText.substr(tagOpenPos + tagOpen.length, tagClosePos - tagOpenPos - tagOpen.length), tempText.substr(tagClosePos + tagClose.length));
+//						tStyles.splice(j, 0, tempStyle, styles[i].name, tempStyle); 
+//					}
+//				}
+//			}
+
+//			for (i = 0; i < texts.length; i++) {
+//				trace(tStyles[i], texts[i]);
+//			}
+
+//			var elements:Vector.<ContentElement> = new Vector.<ContentElement>();
+//			for (i = 0; i < texts.length; i++) {
+//				// TODO: using too many elements? try to re-use elements...
+//				if (Boolean(tStyles[i])) {
+//					// Special text style
+//					elements.push(new TextElement(texts[i], getStyle(tStyles[i]).getAsElementFormat(__ef, __fd)));
+//				} else {
+//					// Default text style
+//					elements.push(new TextElement(texts[i], __ef));
+//				}
+//			}
+			//elements.push(new TextElement(_text, ef));
+			return new GroupElement(elements);
+		}
+
+		protected function getElementAtPos(__element:ContentElement, __pos:int): ContentElement {
+			if (__element is GroupElement) {
+				return getElementAtPos((__element as GroupElement).getElementAtCharIndex(__pos), __pos);
+//				var ge:GroupElement = (__element as GroupElement);
+//				for (var i:int = 0; i < ge.elementCount; i++) {
+//					trace (i, ge.);
+//					//if (ge.getElementAt(i).getElementAtCharIndex(pos)
+//				}
+			} else {
+				return __element;
+			}
+			
+			return null;
+		}
+
+		// ================================================================================================================
+		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
+
+		protected function onMouseOver(e:MouseEvent): void {
+			if (Boolean(textBlock)) {
+				addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove, false, 0, true);
+				addEventListener(MouseEvent.CLICK, onMouseClick, false, 0, true);
+				onMouseMove(null);
+			}
+		}
+		
+		protected function onMouseClick(e:MouseEvent): void {
+			if (Boolean(_currentLinkHref)) {
+				dispatchEvent(new RichTextSpriteEvent(RichTextSpriteEvent.LINK, _currentLinkHref, _currentLinkTarget));
+			}
+		}
+
+		protected function onMouseMove(e:MouseEvent): void {
+			// Check to see if it's over a link
+			var p:Point = new Point(stage.mouseX, stage.mouseY);
+			var lastLine:TextLine = textBlock.firstLine;
+			var pos:int = -1;
+			while (Boolean(lastLine)) {
+				pos = lastLine.getAtomIndexAtPoint(p.x, p.y);
+				if (pos > -1) {
+					pos += lastLine.getAtomTextBlockBeginIndex(0);
+					break;
+				}
+				lastLine = lastLine.nextLine;
+			}
+			
+			if (pos > -1) {
+				var elementUnderMouse:ContentElement = getElementAtPos(textBlock.content, pos);
+				//trace ("el under mouse ["+pos+"] = " + elementUnderMouse, " / " + elementUnderMouse.rawText + " / ");
+				if (Boolean(elementUnderMouse) && Boolean(elementUnderMouse.userData)) {
+					// Has some kind of XML data
+					var elx:XML = elementUnderMouse.userData as XML;
+					if (Boolean(elx) && elx.attribute("href").toString().length > 0) {
+						// Has link!
+						buttonMode = true;
+						_currentLinkHref = elx.attribute("href");
+						_currentLinkTarget = elx.attribute("target");
+					} else {
+						// Doesn't have a link
+						buttonMode = false;
+						_currentLinkHref = null;
+						_currentLinkTarget = null;
+					}
+				} else {
+					// No XML data
+					buttonMode = false;
+					_currentLinkHref = null;
+					_currentLinkTarget = null;
+				}
+//				var groupElement:GroupElement = textBlock.content as GroupElement;
+//				if (Boolean(groupElement)) {
+//					
+//					groupElement.elementCount
+//					trace (pos + ", el = " + groupElement.getElementAtCharIndex(pos) + " -- " + groupElement.rawText);
+//				}
+			}
+
+		}
+		
+		protected function onMouseOut(e:MouseEvent): void {
+			removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
+			removeEventListener(MouseEvent.CLICK, onMouseClick);
+		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function setStyle(__name:String, __fontName:String = "", __fontSize:Number = NaN, __color:Number = NaN):void {
+		public function setStyle(__name:String, __fontName:String = "", __fontSize:Number = NaN, __color:Number = NaN, __alpha:Number = NaN):void {
 			var style:TextStyle = new TextStyle();
 			style.name = __name;
+			
 			style.fontName = __fontName;
 			style.fontSize = __fontSize;
 			style.color = __color;
+			style.alpha = __alpha;
 			
 			styles.push(style);
 		}
@@ -126,9 +329,11 @@ class TextStyle {
 	
 	// Properties
 	public var name:String;
+
 	public var fontName:String;
-	public var color:uint;
+	public var color:Number;
 	public var fontSize:Number;
+	public var alpha:Number;
 	
 	// Element format
 	//public var tracking:Number;
@@ -140,12 +345,13 @@ class TextStyle {
 	
 	public function getAsElementFormat(__baseElementFormat:ElementFormat, __baseFontDescription:FontDescription): ElementFormat {
 		var fd:FontDescription = __baseFontDescription.clone();
-		fd.fontName = fontName;
+		if (Boolean(fontName)) fd.fontName = fontName;
 
 		var ef:ElementFormat = __baseElementFormat.clone();
 		ef.fontDescription = fd;
-		ef.color = color;
-		ef.fontSize = fontSize;
+		if (!isNaN(color)) ef.color = color;
+		if (!isNaN(fontSize)) ef.fontSize = fontSize;
+		if (!isNaN(alpha)) ef.alpha = alpha;
 
 		return ef;
 	}

@@ -18,6 +18,8 @@ package com.zehfernando.net.apis.twitter.services {
 	 */
 	public class TwitterSearchRequest extends BasicServiceRequest {
 		
+		// http://apiwiki.twitter.com/Twitter-Search-API-Method%3A+search
+
 		// Properties
 		protected var _q:String;
 		protected var _from:String;
@@ -28,7 +30,7 @@ package com.zehfernando.net.apis.twitter.services {
 		protected var _page:int;
 		protected var _since:Date;
 		protected var _until:Date;
-		protected var _untilId:String;
+		protected var _sinceId:String;
 
 		// Results
 		protected var _tweets:Vector.<Tweet>;
@@ -40,21 +42,10 @@ package com.zehfernando.net.apis.twitter.services {
 			super();
 
 			// Basic service configuration
-			requestURL = TwitterConstants.DOMAIN + TwitterConstants.SERVICE_SEARCH;
+			requestURL = TwitterConstants.DOMAIN_SEARCH + TwitterConstants.SERVICE_SEARCH;
 			requestMethod = URLRequestMethod.GET;
 
-			// Parameters
-			// http://apiwiki.twitter.com/Twitter-Search-API-Method%3A+search
-			_q = "";
-			_from = "";
 			_resultType = TwitterSearchResultType.RECENT;
-			_lang = "";
-			_maxId = "";
-			_resultsPerPage = -1;
-			_page = 1;
-			_since = null;
-			_until = null;
-			_untilId = "";
 			
 			// TODO: add missing parameters: locale, geococde
 			// TODO: add simulated API points?
@@ -129,13 +120,13 @@ package com.zehfernando.net.apis.twitter.services {
 			if (Boolean(_q))				vars["q"] = _q;
 			if (Boolean(_from))				vars["from"] = _from;
 			if (Boolean(_resultType))		vars["result_type"] = _resultType;
-			if (Boolean(_lang))				vars["result_type"] = _lang;
+			if (Boolean(_lang))				vars["_lang"] = _lang;
 			if (Boolean(_maxId))			vars["max_id"] = _maxId;
 			if (_resultsPerPage > 0)		vars["rpp"] = _resultsPerPage;
 			if (_page > 0)					vars["page"] = _page;
 			if (Boolean(_since))			vars["since"] = TwitterDataUtils.getDateAsParamString(_since);
 			if (Boolean(_until))			vars["until"] = TwitterDataUtils.getDateAsParamString(_until);
-			if (Boolean(_untilId))			vars["until_id"] = _untilId;
+			if (Boolean(_sinceId))			vars["until_id"] = _sinceId;
 
 			return vars;
 		}
@@ -160,7 +151,7 @@ package com.zehfernando.net.apis.twitter.services {
 
 			var response:Object = JSON.decode(loader.data);
 			
-			_tweets = Tweet.fromJSONObjectArray(response["results"]);
+			_tweets = Tweet.fromSearchJSONObjectArray(response["results"]);
 			
 			// Example:
 			/*
@@ -266,12 +257,12 @@ package com.zehfernando.net.apis.twitter.services {
 			_until = __value;
 		}
 		
-		public function get untilId():String {
-			return _untilId;
+		public function get sinceId():String {
+			return _sinceId;
 		}
 		
-		public function set untilId(__value:String):void {
-			_untilId = __value;
+		public function set sinceId(__value:String):void {
+			_sinceId = __value;
 		}
 
 		// Results

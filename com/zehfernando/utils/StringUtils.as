@@ -65,6 +65,8 @@ package com.zehfernando.utils {
 		
 		public static function cropText(__text:String, __maximumLength:Number, __breakAnywhere:Boolean = false, __postText:String = ""):String {
 			
+			if (__text.length <= __maximumLength) return __text;
+			
 			// Crops a long text, to get excerpts
 			if (__breakAnywhere) {
 				// Break anywhere
@@ -72,13 +74,113 @@ package com.zehfernando.utils {
 			}
 			
 			// Break on words only
-			var lastIndex:Number = -1;
+			var lastIndex:Number = 0;
 			var prevIndex:Number = -1;
-			while (lastIndex < __maximumLength) {
+			while (lastIndex < __maximumLength && lastIndex > -1) {
 				prevIndex = lastIndex;
 				lastIndex = __text.indexOf(" ", lastIndex+1);
 			}
+
+			if (prevIndex == -1) {
+				trace ("##### COULD NOT CROP ==> ", prevIndex, lastIndex, __text);
+				prevIndex = __maximumLength;
+			}
+
 			return __text.substr(0, Math.max(0, prevIndex)) + __postText;
+		}
+
+		public static function getQuerystringParameterValue(__url:String, __parameterName:String): String {
+			// Finds the value of a parameter given a querystring/url and the parameter name
+			var qsRegex:RegExp = new RegExp("[?&]" + __parameterName + "(?:=([^&]*))?","i");
+			var match:Object = qsRegex.exec(__url);
+			
+			if (Boolean(match)) return match[1];
+			return null;
+		}
+		
+		public static function replaceHTMLLinks(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"): String {
+			
+			// Create links for urls, hashtags and whatnot on the text
+			var regexSearch:RegExp;
+			var regexResult:Object;
+			var str:String;
+			
+			var linkStart:Vector.<int> = new Vector.<int>();
+			var linkLength:Vector.<int> = new Vector.<int>();
+			var linkURL:Vector.<String> = new Vector.<String>();
+			
+			var i:int;
+			
+			// Links for hashtags
+			//regexSearch = /\s#+\w*(\s|,|!|\.|\n)*?/gi;
+			regexSearch = /\B#+\w*(\s|,|!|\.|\n)*?/gi;
+			regexResult = regexSearch.exec(__text);
+			while (regexResult != null) {
+				str = regexResult[0];
+				linkURL.push(__twitterSearchTemplate.split("[[string]]").join(escape(str)));
+				linkStart.push(regexResult["index"]);
+				linkLength.push(str.length);
+				regexResult = regexSearch.exec(__text);
+			}
+
+			// Links for user names
+			regexSearch = /@+\w*(\s|,|!|\.|\n)*?/gi;
+			regexResult = regexSearch.exec(__text);
+			while (regexResult != null) {
+				str = regexResult[0];
+				// Inserts in a sorted manner otherwise it won't work when looping
+				for (i = 0; i <= linkStart.length; i++) {
+					if (i == linkStart.length || regexResult["index"] < linkStart[i]) {
+						linkURL.splice(i, 0, __twitterUserTemplate.split("[[user]]").join(str.substr(1)));
+						linkStart.splice(i, 0, regexResult["index"]);
+						linkLength.splice(i, 0, str.length);
+						break;
+					}
+				}
+				regexResult = regexSearch.exec(__text);
+			}
+
+			// Links for URLs
+			regexSearch = /(http:\/\/+[\S]*)/gi;
+			regexResult = regexSearch.exec(__text);
+			while (regexResult != null) {
+				str = regexResult[0];
+				// Inserts in a sorted manner otherwise it won't work when looping
+				for (i = 0; i <= linkStart.length; i++) {
+					if (i == linkStart.length || regexResult["index"] < linkStart[i]) {
+						linkURL.splice(i, 0, str);
+						linkStart.splice(i, 0, regexResult["index"]);
+						linkLength.splice(i, 0, str.length);
+						break;
+					}
+				}
+//				linkURL.push(str);
+//				linkStart.push(regexResult["index"]);
+//				linkLength.push(str.length);
+				regexResult = regexSearch.exec(__text);
+				//trace ("URL --> [" + str + "]");
+			}
+			
+			// Finally, add the links as HTML links
+			var newText:String = "";
+			var lastPos:int = 0;
+			i = 0;
+			while (i < linkStart.length) {
+				newText += __text.substr(lastPos, linkStart[i] - lastPos);
+				newText += "<a href=\"" + linkURL[i] + "\" target=\""+__target+"\">";
+				newText += __text.substr(linkStart[i], linkLength[i]);
+				newText += "</a>";
+				
+				lastPos = linkStart[i] + linkLength[i];
+				
+				i++;
+			}
+			
+			
+			newText += __text.substr(lastPos);
+			//trace ("--> " + newDescription);
+			
+			return newText;
 		}
 	}
 }

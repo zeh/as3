@@ -169,9 +169,11 @@ package com.zehfernando.net.apis.youtube.data {
 
 			// YT namespace data -------------------
 			var ytns:Namespace = __xml.namespace(YouTubeConstants.NAMESPACE_YT);
-
-			video.favoriteCount = parseInt(__xml.ytns::statistics[0].@favoriteCount, 10);
-			video.viewCount = parseInt(__xml.ytns::statistics[0].@viewCount, 10);
+			
+			if (Boolean(__xml.ytns::statistics) && __xml.ytns::statistics.length() > 0) {
+				video.favoriteCount = parseInt(__xml.ytns::statistics[0].@favoriteCount, 10);
+				video.viewCount = parseInt(__xml.ytns::statistics[0].@viewCount, 10);
+			}
 
 			// Media namespace data -------------------
 			var medians:Namespace = __xml.namespace(YouTubeConstants.NAMESPACE_MEDIA);

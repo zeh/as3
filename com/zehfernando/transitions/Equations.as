@@ -179,8 +179,10 @@ package com.zehfernando.transitions {
 		 * @return				The new value/phase (0-1).
 		 */
 		public static function expoIn(t:Number): Number {
-			// return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b;
-			return (t==0) ? 0 : Math.pow(2, 10 * (t - 1));
+			// return (t==0) ? b : c * Math.pow(2, 10 * (t/d - 1)) + b; // original
+			// return (t==0) ? 0 : Math.pow(2, 10 * (t - 1)); // ztween
+			// return (t == 0) ? b : c * Math.pow(2, 10 * (t / d - 1)) + b - c * 0.001; // tweener fixed
+			return (t==0) ? 0 : Math.pow(2, 10 * (t - 1)) - 0.001; // ztween fixed
 		}
 	
 		/**
@@ -190,8 +192,10 @@ package com.zehfernando.transitions {
 		 * @return				The new value/phase (0-1).
 		 */
 		public static function expoOut(t:Number): Number {
-			// return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
-			return (t==1) ? 1 : (-Math.pow(2, -10 * t) + 1);
+			// return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b; // original
+			// return (t==1) ? 1 : (-Math.pow(2, -10 * t) + 1); // ztween
+			// return (t == d) ? b + c : c * 1.001 * (-Math.pow(2, -10 * t / d) + 1) + b; // tweener fixed
+			return (t==1) ? 1 : 1.001 * (-Math.pow(2, -10 * t) + 1); // ztween fixed
 		}
 
 		public static function expoInOut(t:Number): Number {

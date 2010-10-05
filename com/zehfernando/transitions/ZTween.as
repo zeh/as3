@@ -10,10 +10,11 @@ package com.zehfernando.transitions {
 
 		/*
 		Versions
-		1.3.1 added onStartParams, onUpdateParams, onCompleteParams
-		1.2.1 signals now have getters
-		1.2.0 using signals for onStart/onUpdate/onComplete
-		1.1.0 made the secondary parameters (time, transition, delay) into an object
+		1.3.2	2010-09-07	fixed: stupid bug on onStart/onComplete/onUpdate getter/setters
+		1.3.1				added onStartParams, onUpdateParams, onCompleteParams
+		1.2.1				signals now have getters
+		1.2.0				using signals for onStart/onUpdate/onComplete
+		1.1.0				made the secondary parameters (time, transition, delay) into an object
 		1.0.0
 		*/
 		
@@ -538,13 +539,13 @@ package com.zehfernando.transitions {
 		}
 		
 		public function get onStart(): ZTweenSignal {
-			return _onUpdate;
+			return _onStart;
 		}
 		public function get onUpdate(): ZTweenSignal {
 			return _onUpdate;
 		}
 		public function get onComplete(): ZTweenSignal {
-			return _onUpdate;
+			return _onComplete;
 		}
 	}
 }

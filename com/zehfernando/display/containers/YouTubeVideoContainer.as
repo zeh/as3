@@ -63,6 +63,7 @@ package com.zehfernando.display.containers {
 		
 		protected var _videoQuality:String;
 		protected var _isPlaying:Boolean;
+		protected var _maximumTime:Number;
 		
 		// Instances
 		protected var youtubePlayer:Loader;
@@ -85,6 +86,7 @@ package com.zehfernando.display.containers {
 			_videoQuality = QUALITY_DEFAULT;
 			_hasVideo = false;
 			_volume = 1;
+			_maximumTime = 0;
 			checkingSize = false;
 			youtubePlayerLoadingTries = 0;
 		}
@@ -103,34 +105,6 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		// ================================================================================================================
-		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-
-		override public function dispose(): void {
-			
-			if (youtubePlayerInitialized) {
-				youtubePlayer.contentLoaderInfo.removeEventListener(Event.INIT, onPlayerInit);
-				youtubePlayer.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onPlayerIOError);
-				youtubePlayerInitialized = false;
-				if (youtubePlayerReady) {
-					youtubePlayerReady = false;
-					youtubePlayer.content["stopVideo"]();
-					youtubePlayer.content["destroy"]();
-				}
-				youtubePlayer.unload();
-				youtubePlayer = null;
-			}
-			
-			stopCheckingSize();
-			
-			firedVideoLoadEvent = false;
-			
-			_isCued = false;
-			youtubePlayerLoadingTries = 0;
-			
-			super.dispose();
-		}
-		
 		protected function loadContent(): void {
 			waitingToLoad = false;
 			_isLoading = false;
@@ -196,7 +170,7 @@ package com.zehfernando.display.containers {
 				dispatchEvent(new Event(EVENT_LOADING_START));
 			}
 		}
-		
+
 		protected function setSizeBasedOnQuality(): void {
 //			youtubePlayer.content["setSize"](320, 240);
 //			_contentWidth = 320;
@@ -227,13 +201,6 @@ package com.zehfernando.display.containers {
 			
 			youtubePlayer.content["setSize"](_contentWidth, _contentHeight);
 		}
-
-		/*
-		public function loadThumb(__id:String): void {
-			mustPlayVideoWhenLoading = false;
-			super.load(__id);
-		}
-		*/
 
 
 		// ================================================================================================================
@@ -274,6 +241,7 @@ package com.zehfernando.display.containers {
 		
 		protected function onPlayerStateChange(e:Event): void {
 			//trace ("YoutubeVideoContainer :: onPlayerStateChange :: " + e["data"]);
+			updateMaximumTime();
 			var stateType:int = parseInt(e["data"]);
 			switch (stateType) {
 				case -1:
@@ -320,6 +288,8 @@ package com.zehfernando.display.containers {
 			_bytesTotal = youtubePlayerReady ? youtubePlayer.content["getVideoBytesTotal"]() : 0;
 			_bytesLoaded = youtubePlayerReady ? youtubePlayer.content["getVideoBytesLoaded"]() : 0;
 			
+			updateMaximumTime();
+			
 			dispatchEvent(new Event(EVENT_LOADING_PROGRESS));
 			
 			if (_bytesTotal > 0 && _bytesTotal == _bytesLoaded && !firedVideoLoadEvent) {
@@ -332,12 +302,55 @@ package com.zehfernando.display.containers {
 			}
 		}
 
+		protected function updateMaximumTime(): void {
+			_maximumTime = Math.max(time, _maximumTime);
+		}
+
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+
+		/*
+		public function loadThumb(__id:String): void {
+			mustPlayVideoWhenLoading = false;
+			super.load(__id);
+		}
+		*/
+
+		override public function dispose(): void {
+			
+			if (youtubePlayerInitialized) {
+				youtubePlayer.contentLoaderInfo.removeEventListener(Event.INIT, onPlayerInit);
+				youtubePlayer.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onPlayerIOError);
+				youtubePlayerInitialized = false;
+				if (youtubePlayerReady) {
+					youtubePlayerReady = false;
+					youtubePlayer.content["stopVideo"]();
+					youtubePlayer.content["destroy"]();
+				}
+				youtubePlayer.unload();
+				youtubePlayer = null;
+			}
+			
+			stopCheckingSize();
+			
+			firedVideoLoadEvent = false;
+			
+			_isCued = false;
+			youtubePlayerLoadingTries = 0;
+			
+			super.dispose();
+		}
+
+		public function getMaximumPositionPlayed(): Number {
+			updateMaximumTime();
+			return _maximumTime / duration;
+		}
 
 		public function playVideo(): void {
 			//if (youtubePlayerInitialized) youtubePlayer.content["playVideo"]();
 			_isPlaying = true;
+			updateMaximumTime();
 			if (youtubePlayerReady && _hasVideo) youtubePlayer.content["playVideo"]();
 		}
 
@@ -355,6 +368,7 @@ package com.zehfernando.display.containers {
 			//		Exception fault: TypeError: Error #1009: Cannot access a property or method of a null object reference.
 			// So here goes an ugly try..catch.
 			_isPlaying = false;
+			updateMaximumTime();
 			try {
 				//if (youtubePlayerInitialized) youtubePlayer.content["pauseVideo"]();
 				if (youtubePlayerReady) youtubePlayer.content["pauseVideo"]();
@@ -419,6 +433,7 @@ package com.zehfernando.display.containers {
 
 		public function set time(__value:Number):void {
 			if (youtubePlayerReady && _hasVideo) youtubePlayer.content["seekTo"](__value);
+			updateMaximumTime();
 		}
 
 		public function get duration(): Number {

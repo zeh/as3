@@ -29,7 +29,7 @@ package com.zehfernando.net.apis.facebook.data {
 			var comment:FacebookComment = new FacebookComment();
 
 			comment.id =									o["id"];
-			comment.from =									FacebookAuthor.fromJSONObject(o["name"]);
+			comment.from =									FacebookAuthor.fromJSONObject(o["from"]);
 			comment.message =								o["message"];
 			comment.created =								FacebookDataUtils.getResultStringAsDate(o["created_time"]);
 

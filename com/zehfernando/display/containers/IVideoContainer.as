@@ -19,6 +19,7 @@ package com.zehfernando.display.containers {
 		
 		function dispose(): void;
 
+		function getMaximumPositionPlayed():Number;
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
