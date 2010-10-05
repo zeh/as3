@@ -17,4 +17,4 @@ Of notable importance:
 * com.zehfernando.transition.ZTween - ZTween, a simple+fast+small tween engine rebuilt from scratch. No 'special' properties or features whatsoever. Work in progress in a way.
 * com.zehfernando.utils.* - Bunch of utils that don't really fit anywhere else now.
 
-Package names, class locations, and overall structure can and will change at will. I'm refactoring-happy.
+Package names, class locations, and overall structure can and will change at will (I'm refactoring-happy).
