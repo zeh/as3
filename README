@@ -2,7 +2,7 @@ My own AS3 frameworks. Used regularly on my own work created for Firstborn or pe
 
 This has everything put together and a little bit of a cross-dependency between packages (although I try to make packages as self-sufficient as possible).
 
-Of notable importance:
+Contents of notable importance:
 
 * com.zehfernando.data.AssetLibrary - Dynamic Asset library manager.
 * com.zehfernando.data.Color - Helpful color class.
