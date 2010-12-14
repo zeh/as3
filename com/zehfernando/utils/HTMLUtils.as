@@ -52,6 +52,43 @@ package com.zehfernando.utils {
     		return ExternalInterface.call(js, __name);
 		}
 
+		public static function openPopup(__url:String, __width:int = 600, __height:int = 400, __name:String = "_blank"): void {
+
+			var js:XML;
+			/*FDT_IGNORE*/
+			js = <script><![CDATA[
+				function(__url, __width, __height, __name) {
+					
+					//http://www.yourhtmlsource.com/javascript/popupwindows.html
+
+					var wx = (screen.width - __width)/2;
+					var wy = (screen.height - __height)/2;
+
+					var newWindow = window.open(__url, __name, "top="+wx+",left="+wy+",width="+__width+",height="+__height);
+					if (newWindow.focus) newWindow.focus();
+
+				}
+			]]></script>;
+			/*FDT_IGNORE*/
+
+    		ExternalInterface.call(js, __url, __width, __height, __name);
+		}
+
+		public static function closeWindow() : void {
+			var js:XML;
+			/*FDT_IGNORE*/
+			js = <script><![CDATA[
+				function() {
+					
+					window.close();
+					
+				}
+			]]></script>;
+			/*FDT_IGNORE*/
+
+    		ExternalInterface.call(js);
+		}
+
 //		public static function setSessionCookie(__name:String, __value:String = ""): void {
 //
 //			var js:XML;
