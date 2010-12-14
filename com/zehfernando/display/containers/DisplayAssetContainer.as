@@ -1,4 +1,5 @@
 package com.zehfernando.display.containers {
+
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.display.StageScaleMode;
@@ -24,7 +25,7 @@ package com.zehfernando.display.containers {
 		protected var _margin:Number;
 		protected var _contentWidth:Number;
 		protected var _contentHeight:Number;
-		protected var _color:Number;
+		protected var _backgroundColor:Number;
 
 		protected var _scaleMode:String;
 		protected var _contentScale:Number;					// Default = 1
@@ -44,9 +45,9 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function DisplayAssetContainer(__width:Number = 100, __height:Number = 100, __color:Number = 0x000000) {
+		public function DisplayAssetContainer(__width:Number = 100, __height:Number = 100, __backgroundColor:Number = 0x000000) {
 
-			_color = __color;
+			_backgroundColor = __backgroundColor;
 			_width = __width;
 			_height = __height;
 			_roundPositions = false;
@@ -90,7 +91,7 @@ package com.zehfernando.display.containers {
 		protected function redrawBackground(): void {
 			boundingBox.graphics.clear();
 			boundingBox.graphics.lineStyle();
-			boundingBox.graphics.beginFill(_color, 1);
+			boundingBox.graphics.beginFill(_backgroundColor, 1);
 			boundingBox.graphics.drawRect(0, 0, _width, _height);
 			boundingBox.graphics.endFill();
 		}
@@ -340,8 +341,20 @@ package com.zehfernando.display.containers {
 			return boundingBox.alpha;
 		}
 		public function set backgroundAlpha(__value:Number): void {
-			boundingBox.alpha = __value;
-			boundingBox.visible = __value > 0;
+			if (__value != boundingBox.alpha) {
+				boundingBox.alpha = __value;
+				boundingBox.visible = __value > 0;
+			}
+		}
+
+		public function get backgroundColor(): int {
+			return _backgroundColor;
+		}
+		public function set backgroundColor(__value:int): void {
+			if (_backgroundColor != __value) {
+				_backgroundColor = __value;
+				redrawBackground();
+			}
 		}
 
 		// Content information ----------------------------------
