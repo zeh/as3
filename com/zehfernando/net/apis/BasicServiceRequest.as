@@ -36,31 +36,6 @@ package com.zehfernando.net.apis {
 		}
 
 		// ================================================================================================================
-		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-
-		public function execute(): void {
-			
-			if (_isLoading) stopLoading();
-			if (_isLoaded) clearData();
-			
-			var vars:URLVariables = getURLVariables();
-			
-			var req:URLRequest = new URLRequest();
-			
-			req.url = requestURL;
-			req.method = requestMethod;
-			req.data = vars;
-			
-			loader = new URLLoader();
-			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
-			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
-			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			loader.addEventListener(Event.COMPLETE, onComplete);
-			// Event.OPEN, ProgressEvent.PROGRESS
-			loader.load(req);
-		}
-
-		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 		
 		protected function getURLVariables(): URLVariables {
@@ -117,6 +92,28 @@ package com.zehfernando.net.apis {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+
+		public function execute(): void {
+			
+			if (_isLoading) stopLoading();
+			if (_isLoaded) clearData();
+			
+			var vars:URLVariables = getURLVariables();
+			
+			var req:URLRequest = new URLRequest();
+			
+			req.url = requestURL;
+			req.method = requestMethod;
+			req.data = vars;
+			
+			loader = new URLLoader();
+			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+			loader.addEventListener(Event.COMPLETE, onComplete);
+			// Event.OPEN, ProgressEvent.PROGRESS
+			loader.load(req);
+		}
 
 		public function dispose():void {
 			if (_isLoading) stopLoading();
