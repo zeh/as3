@@ -1,4 +1,5 @@
 package com.zehfernando.navigation {
+
 	import com.asual.swfaddress.SWFAddress;
 	import com.asual.swfaddress.SWFAddressEvent;
 
@@ -85,7 +86,7 @@ package com.zehfernando.navigation {
 				// Finished executing all commands
 
 				executingNavigationCommand = false;
-				trace ("SpriteNavigator :: executeNextNavigationCommand :: finished execution");
+//				trace ("SpriteNavigator :: executeNextNavigationCommand :: finished execution");
 				
 				var ns:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal);
 				ns.finishedExecutionAsCurrentArea(false);
@@ -96,9 +97,8 @@ package com.zehfernando.navigation {
 
 		protected static function updateTitle(): void {
 			//var newTitle:String = siteTitle + titleSeparator + getLocationTitles().join(titleSeparator);
-			var newTitle:String = getLocationTitles().join(titleSeparator);
-			SWFAddress.setTitle(newTitle);
-			trace ("SpriteNavigator :: updateTitle :: new title is [" + newTitle + "]");
+			SWFAddress.setTitle(getTitle());
+//			trace ("SpriteNavigator :: updateTitle :: new title is [" + newTitle + "]");
 		}
 
 		protected static function openSprite(__stub:String): void {
@@ -130,34 +130,37 @@ package com.zehfernando.navigation {
 			
 		}
 
-		protected static function openSpriteByLocation(__location:Vector.<String>, __allowed:Boolean = false): void {
+		protected static function openSpriteByLocation(__location:Vector.<String>, __allowedByParent:Boolean = false, __allowedBySelf:Boolean = false): void {
 			//trace ("SpriteNavigator :: openSpriteByLocation() :: /"+__location.join("/"));
 
 			// Opens the sprite
 			var ns:NavigableSprite = rootSprite.getChildByStubs(__location);
 			//trace ("SpriteNavigator :: openSprite() :: new area is " + ns);
 			
-			if (Boolean(ns) && __location.length > 0 && !__allowed) {
-				// Request permission to really open first
-				locationWaitingToOpen = __location;
-				var parentSprite:NavigableSprite = rootSprite.getChildByStubs(__location.slice(0, __location.length - 1));
-				parentSprite.addEventListener(NavigableSpriteEvent.ALLOWED_TO_OPEN_CHILD, onSpriteAllowedToOpenChild);
-				parentSprite.requestPermissionToOpenChild(ns, navigationCommands.length);
-			} else {
-				// Finally, really opens it
-				if (Boolean(ns)) {
-					// Children exists, go on
+			if (Boolean(ns)) {
+				if (__location.length > 0 && !__allowedByParent) {
+					// Request permission to really open first
+					locationWaitingToOpen = __location;
+					var parentSprite:NavigableSprite = rootSprite.getChildByStubs(__location.slice(0, __location.length - 1));
+					parentSprite.addEventListener(NavigableSpriteEvent.ALLOWED_TO_OPEN_CHILD, onSpriteAllowedToOpenChild);
+					parentSprite.requestPermissionToOpenChild(ns, navigationCommands.length);
+				} else if (!__allowedBySelf) {
+					locationWaitingToOpen = __location;
+					ns.addEventListener(NavigableSpriteEvent.ALLOWED_TO_OPEN, onSpriteAllowedToOpen);
+					ns.requestPermissionToOpen(navigationCommands.length-1);
+				} else {
+					// Finally, really opens it
 					ns.addEventListener(NavigableSpriteEvent.OPENED, onOpenedNavigableSprite);
-
+	
 					var __isImmediate:Boolean = false; // TODO: when to use this?
 					var __isLast:Boolean = navigationCommands.length == 0;
 					ns.open(__isImmediate, __isLast);
-				} else {
-					// Children doesn't exist, halt!
-					trace ("SpriteNavigator :: ERROR! Impossible to create new children; halting execution");
-					navigationCommands.length = 0;
-					executeNextNavigationCommand();
 				}
+			} else {
+				// Children doesn't exist, halt!
+				trace ("SpriteNavigator :: ERROR! Impossible to create new children; halting execution");
+				navigationCommands.length = 0;
+				executeNextNavigationCommand();
 			}
 			//trace ("SpriteNavigator :: openSprite() :: done");
 		} 
@@ -176,20 +179,35 @@ package com.zehfernando.navigation {
 			openSpriteByLocation(locationWaitingToOpenSafe, true);
 		}
 
-		protected static function closeSprite(): void {
+		protected static function onSpriteAllowedToOpen(e:Event): void {
+			var locationWaitingToOpenSafe:Vector.<String> = locationWaitingToOpen;
+			locationWaitingToOpen = null;
+			openSpriteByLocation(locationWaitingToOpenSafe, true, true);
+		}
+
+		protected static function closeSprite(__allowedByParent:Boolean = false): void {
 			// Close the current sprite, going up on the hierarchy
 			
 			//trace ("SpriteNavigator :: closeSprite()");
-	
-			// Sets the new location
-			//var __location:Vector.<String> = getLocationAsVector(getLocation());
-			//__location.pop();
-			//_currentLocation = "/" + __location.join("/");
-			
-			// Finally, closes the sprite
+
 			var ns:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal);
-			ns.addEventListener(NavigableSpriteEvent.CLOSED, onClosedNavigableSprite);
-			ns.close();
+	
+			if (!__allowedByParent) {
+				// Request permission to really close first
+				var parentSprite:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal.slice(0, currentLocationInternal.length - 1));
+				parentSprite.addEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD, onSpriteAllowedToCloseChild);
+				parentSprite.requestPermissionToCloseChild(ns);
+			} else {
+				// Finally, really closes it
+				ns.addEventListener(NavigableSpriteEvent.CLOSED, onClosedNavigableSprite);
+				var __isImmediate:Boolean = false; // TODO: when to use this?
+				ns.close(__isImmediate);
+			}
+		}
+
+		protected static function onSpriteAllowedToCloseChild(e:Event): void {
+			rootSprite.getChildByStubs(currentLocationInternal.slice(0, currentLocationInternal.length - 1)).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD, onSpriteAllowedToCloseChild);
+			closeSprite(true);
 		}
 
 		protected static function getLocationTitles(): Vector.<String> {
@@ -268,7 +286,7 @@ package com.zehfernando.navigation {
 //				trace ("SpriteNavigator ::        oldLocation: [" + __oldLocation + "] (" + __oldLocation.length + ")");
 //				trace ("SpriteNavigator ::        newLocation: [" + __newLocation + "] (" + __newLocation.length + ")");
 //				trace ("SpriteNavigator ::    similarLocation: [" + __similarLocation + "] (" + __similarLocation.length + ")");
-				trace ("SpriteNavigator :: navigationCommands: [" + navigationCommands.join(" -> ") + "]");
+//				trace ("SpriteNavigator :: navigationCommands: [" + navigationCommands.join(" -> ") + "]");
 		
 				// And starts by executing the next command
 				if (!executingNavigationCommand) executeNextNavigationCommand();
@@ -306,7 +324,6 @@ package com.zehfernando.navigation {
 			executeNextNavigationCommand();
 		}
 
-
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -321,7 +338,7 @@ package com.zehfernando.navigation {
 			//_currentLocation = "/";
 			//_executingCommand = false;
 		}
-		
+
 		public static function setLocation(__path:String): void {
 			// Open a new location, like "/file/2000"
 			lastCommandExecutedType = COMMAND_TYPE_DIRECT;
@@ -340,7 +357,14 @@ package com.zehfernando.navigation {
 				// Get the current navigation phase instead
 				return Boolean(currentLocationInternal) ? "/" + currentLocationInternal.join("/") : "/";
 			}
-			return SWFAddress.getValue();
+			var loc:String = SWFAddress.getValue();
+			// Quick and dirty method to remove trailing slash
+			if (loc.substr(-1,1) == "/") loc = loc.substr(0, loc.length-1);
+			return loc;
+		}
+		
+		public static function getTitle(): String {
+			return getLocationTitles().join(titleSeparator);
 		}
 		
 		/*

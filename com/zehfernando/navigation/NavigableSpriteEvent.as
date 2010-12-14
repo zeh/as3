@@ -12,6 +12,9 @@ package com.zehfernando.navigation {
 		public static const CLOSED:String = "onClosed";
 		public static const ALLOWED_TO_PRE_OPEN_CHILD:String = "allowedToPreOpenChild";
 		public static const ALLOWED_TO_OPEN_CHILD:String = "allowedToOpenChild";
+		public static const ALLOWED_TO_CLOSE_CHILD:String = "allowedToCloseChild";
+
+		public static const ALLOWED_TO_OPEN:String = "allowedToOpen";
 
 		
 		// ================================================================================================================

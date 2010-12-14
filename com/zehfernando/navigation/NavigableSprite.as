@@ -1,4 +1,5 @@
 package com.zehfernando.navigation {
+
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -16,6 +17,7 @@ package com.zehfernando.navigation {
 		protected var _childrenContainer:DisplayObjectContainer;
 		protected var _myLocation:String;
 		protected var _createChildrenDynamically:Boolean;
+		protected var _destroyChildrenAfterClosing:Boolean;
 
 		protected var createdChildren:Vector.<NavigableSprite>;
 
@@ -32,6 +34,7 @@ package com.zehfernando.navigation {
 			_myLocation = "/";
 			_childrenContainer = this;
 			_createChildrenDynamically = true;
+			_destroyChildrenAfterClosing = true;
 			createdChildren = new Vector.<NavigableSprite>();
 			
 			//_canSwitchChildren = false;
@@ -58,12 +61,12 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function createChildInternal(__stub:String): NavigableSprite {
+		protected function createChild(__stub:String): NavigableSprite {
 			// Creates new sub-work area, and returns it
-			//trace ("NavigableSprite :: createChildInternal :: ["+__stub+"]");
-			var ns:NavigableSprite = createChild(__stub);
+			//trace ("NavigableSprite :: createChild :: ["+__stub+"]");
+			var ns:NavigableSprite = createChildInstance(__stub);
 			if (Boolean(ns)) {
-				ns.addEventListener(NavigableSpriteEvent.CLOSED, onClosedChildDestroy, false, 0, true);
+				if (_destroyChildrenAfterClosing) ns.addEventListener(NavigableSpriteEvent.CLOSED, onClosedChildDestroy, false, 0, true);
 				ns.location = _myLocation + "/" + __stub;
 				createdChildren.push(ns);
 				_childrenContainer.addChildAt(ns, 0);
@@ -90,10 +93,10 @@ package com.zehfernando.navigation {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.CLOSED));
 		}
 
-		protected function createChild(__stub:String): NavigableSprite {
+		protected function createChildInstance(__stub:String): NavigableSprite {
 			// Should be extended!
 //			var ns:NavigableSprite = new WorkView(__stub);
-			//trace ("NavigableSprite :: createChild :: Attempted to create child "+__stub);
+			//trace ("NavigableSprite :: createChildInstance :: Attempted to create child "+__stub);
 			return null;
 		}
 
@@ -117,7 +120,7 @@ package com.zehfernando.navigation {
 			return allChildren;
 
 		}
-
+		
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
@@ -167,6 +170,20 @@ package com.zehfernando.navigation {
 			// child, it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_OPEN_CHILD));
 		}
+		
+		public function requestPermissionToCloseChild(__child:NavigableSprite, __immediate:Boolean = false): void {
+			// Requests permission to CLOSE a child sprite (meaning call close() on it)
+			// This usually should be immediate, but if a parent needs to close or hide something prior to closing a
+			// child, it must do so and only then dispatch the permission
+			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD));
+		}
+		
+		public function requestPermissionToOpen(__furtherChildren:int, __immediate:Boolean = false): void {
+			// Requests permission to open THIS sprite (meaning call open() on it)
+			// This usually should be immediate, but if a sprite needs to close or hide something prior to showing itself,
+			// it must do so and only then dispatch the permission
+			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_OPEN));
+		}
 				
 		public function getChildByStubs(__stubList:Vector.<String>): NavigableSprite {
 			// Based on an array of locations (example: ["file", "2000"], returns the specific NavigableContainer ("2000" in this case)
@@ -210,7 +227,7 @@ package com.zehfernando.navigation {
 			}
 			
 			//trace ("NavigableSprite :: getChildByStub :: Stub [" + __stub + "] not found at ["+_stub+"], creating it"); 
-			if (_createChildrenDynamically && __allowDynamicCreation) return createChildInternal(__stub);
+			if (_createChildrenDynamically && __allowDynamicCreation) return createChild(__stub);
 			
 			return null;
 		}
