@@ -4,7 +4,7 @@ package com.zehfernando.display.shapes {
 	/**
 	 * @author Zeh
 	 */
-	public class RegistrationMark extends Sprite {
+	public class PointMarker extends Sprite {
 
 		// Properties
 		protected var _color:Number;
@@ -14,7 +14,7 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function RegistrationMark(__color:Number = 0xff00ff) {
+		public function PointMarker(__color:Number = 0xff00ff) {
 			_color = __color & 0xffffff;
 			_circleRadius = 20;
 			_lineRadius = 30;
