@@ -207,7 +207,6 @@ package com.zehfernando.transitions {
 		*/
 
 		public static function remove(__target:Object, ...__props): Boolean {
-			// TODO: allow ...___args
 			// TODO: mark for removal, but don't remove immediately
 			//var tl:Vector.<ZTween> = getTweens(__target, __props);
 
