@@ -29,8 +29,11 @@ package com.zehfernando.utils {
 		protected static function executeQueue(): void {
 			unQueue();
 
-			for (var i:int = 0; i < functionsToCall.length; i++) {
-				functionsToCall[i]();
+//			for (var i:int = 0; i < functionsToCall.length; i++) {
+//				functionsToCall.unshift[i]();
+//			}
+			while (functionsToCall.length > 0) {
+				functionsToCall.shift()();
 			}
 			
 			functionsToCall = new Vector.<Function>();
@@ -58,6 +61,10 @@ package com.zehfernando.utils {
 		public static function addFunction(__function:Function): void {
 			if (functionsToCall.indexOf(__function) == -1) {
 				// Doesn't exist, so adds to the stack
+				functionsToCall.push(__function);
+			} else {
+				// Exists, so moves to the end of the list
+				functionsToCall.splice(functionsToCall.indexOf(__function), 1);
 				functionsToCall.push(__function);
 			}
 
