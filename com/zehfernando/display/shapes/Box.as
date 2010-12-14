@@ -7,7 +7,7 @@ package com.zehfernando.display.shapes {
 	public class Box extends Sprite {
 		
 		// Properties
-		protected var _color:Number;
+		protected var _color:int;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
