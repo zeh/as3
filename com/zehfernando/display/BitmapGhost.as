@@ -1,9 +1,11 @@
 package com.zehfernando.display {
+
 	import com.zehfernando.display.abstracts.ResizableSprite;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.IBitmapDrawable;
+	import flash.display.PixelSnapping;
 	import flash.events.Event;
 	import flash.filters.BitmapFilter;
 	import flash.geom.ColorTransform;
@@ -24,6 +26,7 @@ package com.zehfernando.display {
 		protected var _redrawColorTransform:ColorTransform;
 		protected var _isRunning:Boolean;
 		protected var _margins:Number;
+		protected var _smoothing:Boolean;
 		
 		// Instances
 		protected var bitmapData:BitmapData;
@@ -46,6 +49,7 @@ package com.zehfernando.display {
 			_height = __height;
 			_transparent = __transparent;
 			_margins = __margins;
+			_smoothing = false;
 			
 			createBitmap();
 		}
@@ -81,7 +85,7 @@ package com.zehfernando.display {
 			destroyBitmap();
 
 			bitmapData = new BitmapData(_width + _margins * 2, _height + _margins * 2, _transparent, 0x00000000);
-			bitmap = new Bitmap(bitmapData);
+			bitmap = new Bitmap(bitmapData, PixelSnapping.AUTO, _smoothing);
 			bitmap.x = bitmap.y = -_margins;
 			addChild(bitmap);
 			
@@ -99,6 +103,12 @@ package com.zehfernando.display {
 				bitmap.bitmapData = null;
 				removeChild(bitmap);
 				bitmap = null;
+			}
+		}
+		
+		protected function applySmoothing(): void {
+			if (Boolean(bitmap)) {
+				bitmap.smoothing = _smoothing;
 			}
 		}
 
@@ -169,6 +179,16 @@ package com.zehfernando.display {
 		
 		public function set redrawFilter(__value:BitmapFilter):void {
 			_redrawFilter = __value;
+		}
+		
+		public function get smoothing(): Boolean {
+			return _smoothing;
+		}
+		public function set smoothing(__value:Boolean): void {
+			if (_smoothing != __value) {
+				_smoothing = __value;
+				applySmoothing();
+			}
 		}
 
 	}
