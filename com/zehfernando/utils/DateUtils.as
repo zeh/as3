@@ -16,7 +16,23 @@ package com.zehfernando.utils {
 			dateResult.time = __date1.time + __date2.time;
 			return dateResult;
 		}
-		
+
+		public static function stringSecondsToSeconds(__time:String): Number {
+			// Returns number of seconds based on a string
+			// Examples:
+			// 01:30 -> returns 90
+			// 30 -> returns 30
+			// 90 -> returns 90
+			
+			var num:Number = 0;
+			var cs:Array = __time.split(":");
+			for (var i:int = 0; i < cs.length; i++) {
+				num += parseFloat(cs[i]) * Math.pow(60, cs.length - i - 1);
+			}
+			
+			return num;
+		}
+
 		public static function simpleDateToDate(__date:String): Date {
 			// Converts 2010-01-01 to a date
 			var tt:Date = new Date();
