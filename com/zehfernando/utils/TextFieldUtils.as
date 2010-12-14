@@ -43,7 +43,7 @@ package com.zehfernando.utils {
 		
 		public static function fixEmbed(__tf:TextField, __captureQuality:Number = 8, __finalQuality:Number = 2): void {
 
-			if (StringList.getString("use_embed") == "true") {
+			if (StringList.getValue("use_embed") == "true") {
 
 				// Creates a copy of a textfield as a bitmap that holds a copy of the non-embed textfield and is then rotated to match, since embeded textfields can't be rotated and scaled
 
