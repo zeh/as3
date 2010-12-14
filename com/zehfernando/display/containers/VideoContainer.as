@@ -1,9 +1,12 @@
 package com.zehfernando.display.containers {
+
 	import com.zehfernando.utils.MathUtils;
 
+	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.geom.Matrix;
 	import flash.media.SoundTransform;
 	import flash.media.Video;
 	import flash.net.NetConnection;
@@ -16,7 +19,8 @@ package com.zehfernando.display.containers {
 
 		// Events
 		// Common
-		public static const EVENT_PLAY:String = "onVideoPlay";									// Ok apparently
+		public static const EVENT_PLAY_START:String = "onVideoPlay";									// Only at the first play!
+		public static const EVENT_SEEK_NOTIFY:String = "onSeekNotify";							// Ok?
 		public static const EVENT_PAUSE:String = "onVideoPause";								// Ok apparently
 		public static const EVENT_FINISH:String = "onVideoFinish";								// Test?
 		public static const EVENT_LOADING_START:String = "onStartedLoading";					// Ok
@@ -188,7 +192,7 @@ package com.zehfernando.display.containers {
 		}
 
 		protected function onNetStatus(event:NetStatusEvent):void {
-//			trace ("VideoContainer :: onNetStatus :: "+event.info.code);
+			//trace ("VideoContainer :: onNetStatus :: "+event.info.code);
 			
 			/* 
 			event.info.code could be:
@@ -213,20 +217,23 @@ package com.zehfernando.display.containers {
                 	// TODO: add error event here
                     trace("VideoContainer :: Stream [" + _contentURL + "] not found!");
                     break;
-//                case "NetStream.Seek.Notify":
-//                	trace ("netstream.seek.notify");
-//                	break;
+                case "NetStream.Seek.Notify":
+                	//trace ("netstream.seek.notify " + _contentURL+ " @ " + netStream.time);
+                	dispatchEvent(new Event(EVENT_SEEK_NOTIFY));
+                	break;
                 case "NetStream.Play.Start":
+                	//trace ("netstream.play.start " + _contentURL);
 //                	//trace ("Play.start @ t = " + time);
 //                	if (time == 0) onVideoStart();
 ////                	onVideoPlay();
-					dispatchEvent(new Event(EVENT_PLAY));
+					dispatchEvent(new Event(EVENT_PLAY_START));
                 	break;
             	case "NetStream.Buffer.Empty":
             		dispatchEvent(new Event(EVENT_BUFFER_EMPTY));
             		break;
             	case "NetStream.Buffer.Full":
             		dispatchEvent(new Event(EVENT_BUFFER_FULL));
+            		//trace ("BUFFER FULL FOR " + _contentURL);
 					break;
             	case "NetStream.Play.Stop":
             		dispatchEvent(new Event(EVENT_PAUSE));
@@ -299,6 +306,17 @@ package com.zehfernando.display.containers {
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
 
 		// Instance
+		
+		public function getFrame(): BitmapData {
+			// Captures the current frame as a BitmapData
+			var bmp:BitmapData = new BitmapData(_contentWidth, _contentHeight, false, 0x000000);
+			
+			var mtx:Matrix = new Matrix();
+			mtx.scale(_contentWidth/100, _contentHeight/100);
+			//mtx.scale(video.width/_contentWidth, video.height/_contentHeight);
+			bmp.draw(video, mtx);
+			return bmp;
+		}
 
 		override public function load(__url:String): void {
 			super.load(__url);
@@ -309,9 +327,12 @@ package com.zehfernando.display.containers {
 			netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
     		netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onNetError);
 			netConnection.connect(null);
+
+			_hasVideo = true;
 	
 			netStream = new NetStream(netConnection);
 			applyBufferTime();
+			netStream.checkPolicyFile = true;
 			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			netStream.client = this;
 
@@ -322,14 +343,13 @@ package com.zehfernando.display.containers {
 			setAsset(video);
 			
 			netStream.play(_contentURL);
-			netStream.seek(0);
+			//netStream.seek(0);
 
 			_contentWidth = video.width;
 			_contentHeight = video.height;
 
 			_isLoading = true;
-			_hasVideo = true;
-			
+
 			redraw();
 			
 			applyVolume();
@@ -389,7 +409,7 @@ package com.zehfernando.display.containers {
 
 		public function stopVideo():void {
 			pauseVideo();
-			position = 0;
+			time = 0;
 		}
 		
 		public function playPauseVideo():void {
