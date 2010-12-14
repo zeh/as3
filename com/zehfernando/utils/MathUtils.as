@@ -29,6 +29,7 @@ package com.zehfernando.utils {
 		 * @return			The new value, mapped to the new range.
 		 */
 		public static function map(__value:Number, __oldMin:Number, __oldMax:Number, __newMin:Number = 0, __newMax:Number = 1, __clamp:Boolean = false): Number {
+			if (__oldMin == __oldMax) return __newMin;
 			var p:Number = ((__value-__oldMin) / (__oldMax-__oldMin) * (__newMax-__newMin)) + __newMin;
 			if (__clamp) p = __newMin < __newMax ? clamp(p, __newMin, __newMax) : clamp(p, __newMax, __newMin);
 			return p;
