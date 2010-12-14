@@ -15,6 +15,7 @@ package com.zehfernando.net.apis.facebook.data {
 		public var lastName:String;
 		public var link:String;
 		public var about:String;
+		public var bio:String;
 		public var birthday:String;					// TODO: change to date?
 		public var hometown:FacebookLocation;
 		public var location:FacebookLocation;
@@ -51,6 +52,7 @@ package com.zehfernando.net.apis.facebook.data {
 			user.id =										o["id"];
 			user.name =										o["name"];
 			
+			user.bio =										o["bio"];
 			user.link =										o["link"];
 			user.about =									o["about"];
 			user.birthday =									o["birthday"];
@@ -58,7 +60,7 @@ package com.zehfernando.net.apis.facebook.data {
 			user.location =									FacebookLocation.fromJSONObject(o["location"]);
 			user.gender =									o["gender"];
 			user.relationshipStatus =						o["relationship_status"];
-			user.significantOther =							FacebookAuthor.fromJSONObject(o["link"]);
+			user.significantOther =							FacebookAuthor.fromJSONObject(o["significant_other"]);
 			user.religion =									o["religion"];
 			user.political =								o["political"];
 			user.website =									o["website"];

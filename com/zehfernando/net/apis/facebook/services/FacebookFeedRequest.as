@@ -1,20 +1,18 @@
 package com.zehfernando.net.apis.facebook.services {
-	import com.adobe.serialization.json.JSON;
-	import com.zehfernando.net.apis.BasicServiceRequest;
+
+	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.net.apis.facebook.data.FacebookFeedPost;
 	import com.zehfernando.net.apis.facebook.events.FacebookServiceEvent;
 
 	import flash.events.Event;
-	import flash.events.IOErrorEvent;
-	import flash.events.SecurityErrorEvent;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 
 	/**
 	 * @author zeh
 	 */
-	public class FacebookFeedRequest extends BasicServiceRequest {
+	public class FacebookFeedRequest extends BasicFacebookRequest {
 		
 		// By default, this gets the last 25 posts
 
@@ -23,7 +21,7 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Parameters
 		protected var _limit:int;
-		
+
 		// Results
 		protected var _posts:Vector.<FacebookFeedPost>;
 		
@@ -34,7 +32,7 @@ package com.zehfernando.net.apis.facebook.services {
 			super();
 
 			// Basic service configuration
-			requestURL = FacebookConstants.DOMAIN + FacebookConstants.SERVICE_FEED;
+			requestURL = FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_FEED;
 			requestMethod = URLRequestMethod.GET;
 
 			// Parameters
@@ -50,23 +48,13 @@ package com.zehfernando.net.apis.facebook.services {
 		override protected function getURLVariables():URLVariables {
 			var vars:URLVariables = super.getURLVariables();
 
-			if (_limit > 0)					vars["limit"] = _limit;
+			if (_limit > 0) vars["limit"] = _limit;
 
 			return vars;
 		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-
-		override protected function onSecurityError(e:SecurityErrorEvent): void {
-			super.onSecurityError(e);
-			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
-		}
-		
-		override protected function onIOError(e:IOErrorEvent): void {
-			super.onIOError(e);
-			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
-		}
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);

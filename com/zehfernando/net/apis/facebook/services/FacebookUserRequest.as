@@ -2,58 +2,58 @@ package com.zehfernando.net.apis.facebook.services {
 
 	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
-	import com.zehfernando.net.apis.facebook.data.FacebookAlbum;
+	import com.zehfernando.net.apis.facebook.data.FacebookUser;
 	import com.zehfernando.net.apis.facebook.events.FacebookServiceEvent;
 
 	import flash.events.Event;
 	import flash.net.URLRequestMethod;
-	import flash.net.URLVariables;
-
 	/**
 	 * @author zeh
 	 */
-	public class FacebookAlbumsRequest extends BasicFacebookRequest {
+	public class FacebookUserRequest extends BasicFacebookRequest {
 		
-		// http://developers.facebook.com/docs/reference/api/photo
-		// http://developers.facebook.com/docs/reference/api/album
-		// https://graph.facebook.com/rmstitanicinc/albums
+		// http://developers.facebook.com/docs/reference/api/user
+		// https://graph.facebook.com/711322444
+		
+		// Constants
+		public static const USER_ID_OWN:String = "me";
 
 		// Properties
-		protected var _authorId:String;
+		protected var _userId:String;
 		
 		// Parameters
 		protected var _limit:int;
 		
 		// Results
-		protected var _albums:Vector.<FacebookAlbum>;
+		protected var _user:FacebookUser;
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function FacebookAlbumsRequest() {
+		public function FacebookUserRequest() {
 			super();
 
 			// Basic service configuration
-			requestURL = FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_ALBUMS;
+			requestURL = FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_USER;
 			requestMethod = URLRequestMethod.GET;
 
 			// Parameters
 			// http://developers.facebook.com/docs/reference/api/page
 
-			_authorId = "";
+			_userId = "";
 			
 		}
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function getURLVariables():URLVariables {
-			var vars:URLVariables = super.getURLVariables();
-
-			if (_limit > 0) vars["limit"] = _limit;
-
-			return vars;
-		}
+//		override protected function getURLVariables():URLVariables {
+//			var vars:URLVariables = super.getURLVariables();
+//
+//			if (_limit > 0) vars["limit"] = _limit;
+//
+//			return vars;
+//		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ package com.zehfernando.net.apis.facebook.services {
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
 			
-			_albums = FacebookAlbum.fromJSONObjectArray(response["data"]);
+			_user = FacebookUser.fromJSONObject(response);
 			
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
@@ -69,7 +69,12 @@ package com.zehfernando.net.apis.facebook.services {
 
 		
 		override public function execute():void {
-			requestURL = requestURL.replace(FacebookConstants.PARAMETER_AUTHOR_ID, _authorId);
+
+			// TODO: using the query parameter "ids" here instead of the normal url userId, one can get data for several users at the same time - redo this?
+			// 'ids' also accept links!
+
+			requestURL = requestURL.replace(FacebookConstants.PARAMETER_USER_ID, _userId);
+			
 			super.execute();
 		}
 
@@ -78,28 +83,17 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Parameters
 
-		public function get authorId():String {
-			return _authorId;
+		public function get userId():String {
+			return _userId;
 		}
-		public function set authorId(__value:String):void {
-			_authorId = __value;
+		public function set userId(__value:String):void {
+			_userId = __value;
 		}
-		
-		// Hard parameters
-		
-		public function get limit(): int {
-			return _limit;
-		}
-		public function set limit(__value:int): void {
-			if (_limit != __value) {
-				_limit = __value;
-			}
-		}
-		
+
 		// Results
 		
-		public function get albums(): Vector.<FacebookAlbum> {
-			return _albums.concat();
+		public function get user(): FacebookUser {
+			return _user;
 		}
 	}
 }

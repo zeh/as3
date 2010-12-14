@@ -1,20 +1,19 @@
-package com.zehfernando.net.apis.twitter.events {
+package com.zehfernando.net.apis.facebook.events {
 	import flash.events.Event;
-
 	/**
 	 * @author zeh
 	 */
-	public class TwitterSearchEvent extends Event {
+	public class FacebookAuthEvent extends Event {
 		
 		// Constants
-		public static const COMPLETE:String = "onSearchComplete";
-		public static const ERROR:String = "onSearchError";
+		public static const LOG_IN_SUCCESS:String = "onLogInSuccess";
+		public static const LOG_IN_ERROR:String = "onLogInError";
 
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function TwitterSearchEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false) {
+		public function FacebookAuthEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false) {
 			super(__type, __bubbles, __cancelable);
 		}
 
@@ -22,8 +21,7 @@ package com.zehfernando.net.apis.twitter.events {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 		
 		override public function clone(): Event {
-			return new TwitterSearchEvent(type, bubbles, cancelable);
+			return new FacebookAuthEvent(type, bubbles, cancelable);
 		}
-
 	}
 }

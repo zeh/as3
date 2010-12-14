@@ -1,9 +1,9 @@
 package com.zehfernando.net.apis.twitter.services {
-	import com.adobe.serialization.json.JSON;
+	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.BasicServiceRequest;
 	import com.zehfernando.net.apis.twitter.TwitterConstants;
 	import com.zehfernando.net.apis.twitter.data.Tweet;
-	import com.zehfernando.net.apis.twitter.events.TwitterSearchEvent;
+	import com.zehfernando.net.apis.twitter.events.TwitterServiceEvent;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -25,8 +25,8 @@ package com.zehfernando.net.apis.twitter.services {
 
 		// Properties
 		protected var _count:int;			// Max 200; default 20
-		protected var _userId:String;
-		protected var _screenName:String;
+		protected var _userId:String;		// REQUIRES APP
+		protected var _screenName:String;	// No need for app key
 
 		protected var _page:int;
 		protected var _maxId:String;
@@ -45,7 +45,7 @@ package com.zehfernando.net.apis.twitter.services {
 			super();
 
 			// Basic service configuration
-			requestURL = TwitterConstants.DOMAIN_API + TwitterConstants.SERVICE_USER_TIMELINE;
+			requestURL = TwitterConstants.API_REST_DOMAIN + TwitterConstants.AI_REST_SERVICE_USER_TIMELINE;
 			requestMethod = URLRequestMethod.GET;
 		}
 
@@ -75,13 +75,13 @@ package com.zehfernando.net.apis.twitter.services {
 		override protected function onSecurityError(e:SecurityErrorEvent): void {
 			//trace ("twitter --> onSecurityError");
 			super.onSecurityError(e);
-			dispatchEvent(new TwitterSearchEvent(TwitterSearchEvent.ERROR));
+			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
 		
 		override protected function onIOError(e:IOErrorEvent): void {
 			//trace ("twitter --> onIOError");
 			super.onIOError(e);
-			dispatchEvent(new TwitterSearchEvent(TwitterSearchEvent.ERROR));
+			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
 
 		override protected function onComplete(e:Event): void {
@@ -92,7 +92,7 @@ package com.zehfernando.net.apis.twitter.services {
 			_tweets = Tweet.fromSearchJSONObjectArray(response["results"]);
 			
 			super.onComplete(e);
-			dispatchEvent(new TwitterSearchEvent(TwitterSearchEvent.COMPLETE));
+			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.COMPLETE));
 		}
 
 		// ================================================================================================================

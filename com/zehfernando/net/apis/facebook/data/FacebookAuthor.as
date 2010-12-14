@@ -41,7 +41,7 @@ package com.zehfernando.net.apis.facebook.data {
 
 		public function get picture():String {
 			// If the direct link to the profile picture has been supplied, use it. If not, use the service that redirects to the picture
-			return Boolean (_picture) ? _picture : (FacebookConstants.DOMAIN + FacebookConstants.SERVICE_FILE_PICTURE).replace(FacebookConstants.PARAMETER_AUTHOR_ID, id);
+			return Boolean (_picture) ? _picture : (FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_FILE_PICTURE).replace(FacebookConstants.PARAMETER_AUTHOR_ID, id);
 		}
 		
 		public function set picture(picture:String):void {

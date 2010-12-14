@@ -1,11 +1,11 @@
 package com.zehfernando.net.apis.twitter.services {
-	import com.adobe.serialization.json.JSON;
+	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.BasicServiceRequest;
 	import com.zehfernando.net.apis.twitter.TwitterConstants;
 	import com.zehfernando.net.apis.twitter.TwitterDataUtils;
 	import com.zehfernando.net.apis.twitter.data.Tweet;
 	import com.zehfernando.net.apis.twitter.enums.TwitterSearchResultType;
-	import com.zehfernando.net.apis.twitter.events.TwitterSearchEvent;
+	import com.zehfernando.net.apis.twitter.events.TwitterServiceEvent;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -42,7 +42,7 @@ package com.zehfernando.net.apis.twitter.services {
 			super();
 
 			// Basic service configuration
-			requestURL = TwitterConstants.DOMAIN_SEARCH + TwitterConstants.SERVICE_SEARCH;
+			requestURL = TwitterConstants.API_SEARCH_DOMAIN + TwitterConstants.API_SEARCH_SERVICE;
 			requestMethod = URLRequestMethod.GET;
 
 			_resultType = TwitterSearchResultType.RECENT;
@@ -137,13 +137,13 @@ package com.zehfernando.net.apis.twitter.services {
 		override protected function onSecurityError(e:SecurityErrorEvent): void {
 			//trace ("twitter --> onSecurityError");
 			super.onSecurityError(e);
-			dispatchEvent(new TwitterSearchEvent(TwitterSearchEvent.ERROR));
+			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
 		
 		override protected function onIOError(e:IOErrorEvent): void {
 			//trace ("twitter --> onIOError");
 			super.onIOError(e);
-			dispatchEvent(new TwitterSearchEvent(TwitterSearchEvent.ERROR));
+			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
 
 		override protected function onComplete(e:Event): void {
@@ -186,7 +186,7 @@ package com.zehfernando.net.apis.twitter.services {
 			*/
 
 			super.onComplete(e);
-			dispatchEvent(new TwitterSearchEvent(TwitterSearchEvent.COMPLETE));
+			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.COMPLETE));
 		}
 
 		// ================================================================================================================
