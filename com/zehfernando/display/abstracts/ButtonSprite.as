@@ -91,6 +91,5 @@ package com.zehfernando.display.abstracts {
 				redrawVisibility();
 			}
 		}
-
 	}
 }
