@@ -33,7 +33,8 @@ package com.zehfernando.display.progressbars {
 
 		override protected function redrawAmount(): void {
 			// Redraws graphics to represent the correct amount
-			foreground.width = 100 * _displayAmount;
+			//trace ("====> " + _value.current, _value.target);
+			foreground.width = 100 * _value.current;
 			
 			background.x = foreground.width;
 			background.width = 100 - foreground.width;

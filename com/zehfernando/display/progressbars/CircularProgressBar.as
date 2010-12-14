@@ -38,7 +38,7 @@ package com.zehfernando.display.progressbars {
 
 		override protected function redrawAmount(): void {
 			// Redraws graphics to represent the correct amount
-			loadingCircle.endAngle = angleOffset + _displayAmount * 360;
+			loadingCircle.endAngle = angleOffset + _value.current * 360;
 		}
 
 	}

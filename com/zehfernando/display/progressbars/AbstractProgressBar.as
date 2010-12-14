@@ -1,4 +1,5 @@
 package com.zehfernando.display.progressbars {
+	import com.zehfernando.data.types.AttenuatedNumber;
 	import flash.display.Sprite;
 	import flash.events.Event;
 
@@ -12,15 +13,14 @@ package com.zehfernando.display.progressbars {
 		*/
 
 		// Properties
-		protected var _amount:Number;								// Virtual amount
-		protected var _displayAmount:Number;						// Amount actually displayed (with easing)
+		protected var _value:AttenuatedNumber;								// Virtual amount
 		
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function AbstractProgressBar() {
-			_amount = _displayAmount = 0;
+			_value = new AttenuatedNumber(2, 0, 0);
 			
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
@@ -34,10 +34,10 @@ package com.zehfernando.display.progressbars {
 			if (isNaN(__value)) __value = 0;
 			
 			if (__immediate) {
-				_displayAmount = _amount = __value;
+				_value.target = _value.current = __value;
 				if (Boolean(stage)) redrawAmount();
 			} else {
-				_amount = __value;
+				_value.target = __value;
 			}
 		}
 
@@ -60,7 +60,6 @@ package com.zehfernando.display.progressbars {
 		}
 
 		protected function onEnterFrameDraw(e:Event): void {
-			_displayAmount += (_amount - _displayAmount) / 2;
 			redrawAmount();
 		}
 
@@ -77,11 +76,11 @@ package com.zehfernando.display.progressbars {
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 		
 		public function get amount(): Number {
-			return _amount;
+			return _value.target;
 		}
 		
 		public function set amount(__value:Number): void {
-			if (_amount != __value) {
+			if (_value.target != __value) {
 				setAmount(__value);
 			}
 		}
