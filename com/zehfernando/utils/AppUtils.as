@@ -1,9 +1,9 @@
 package com.zehfernando.utils {
+
 	import flash.display.DisplayObjectContainer;
 	import flash.display.LoaderInfo;
 	import flash.display.Stage;
 	import flash.display.StageDisplayState;
-	import flash.events.ContextMenuEvent;
 	import flash.system.Capabilities;
 	import flash.ui.ContextMenu;
 
@@ -98,14 +98,9 @@ package com.zehfernando.utils {
 			// http://michaelvandaniker.com/blog/2008/11/25/how-to-check-debug-swf/
 			
 		    if (!hasDeterminedDebugStatus) {
-                try {
-                    throw new Error();
-                } catch(e:Error) {
-                    var stackTrace:String = e.getStackTrace();
-                    _isDebuggingSWF = stackTrace != null && stackTrace.indexOf("[") != -1;
-                    hasDeterminedDebugStatus = true;
-                    //return _isDebuggingSWF;
-                }
+                var stackTrace:String = new Error().getStackTrace();
+                _isDebuggingSWF = stackTrace != null && stackTrace.indexOf("[") != -1;
+                hasDeterminedDebugStatus = true;
             }
             return _isDebuggingSWF;
         }
@@ -121,12 +116,16 @@ package com.zehfernando.utils {
 			//root.contextMenu.customItems.push(mi);
 		}
 		
-		protected static function toggleFullScreen(e:ContextMenuEvent = null): void {
-			if (stage.displayState == StageDisplayState.NORMAL) {
-				stage.displayState = StageDisplayState.FULL_SCREEN;
-			} else {
-				stage.displayState = StageDisplayState.NORMAL;
-			}
+		public static function toggleFullScreen(): void {
+			setFullScreen(stage.displayState == StageDisplayState.NORMAL);
+		}
+		
+		public static function setFullScreen(__fullScreen:Boolean): void {
+			stage.displayState = __fullScreen ? StageDisplayState.FULL_SCREEN : StageDisplayState.NORMAL;
+		}
+
+		public static function isFullScreen(): Boolean {
+			return stage.displayState == StageDisplayState.FULL_SCREEN;
 		}
 
 		/*
