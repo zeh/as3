@@ -1,12 +1,11 @@
-package com.zehfernando.display.components {
+package com.zehfernando.display.components.text {
+
 	import flash.events.MouseEvent;
-	import flash.geom.Point;
 	import flash.text.engine.ContentElement;
 	import flash.text.engine.ElementFormat;
 	import flash.text.engine.FontDescription;
 	import flash.text.engine.GroupElement;
 	import flash.text.engine.TextElement;
-	import flash.text.engine.TextLine;
 
 	/**
 	 * @author zeh
@@ -139,13 +138,22 @@ package com.zehfernando.display.components {
 			var contentAsXML:XML = new XML("<root>" + __text + "</root>");
 			var contentChildren:XMLList = contentAsXML.children();
 			var te:TextElement;
+			var ts:TextStyle;
 			for (i = 0; i < contentChildren.length(); i++) {
 				//trace (i, (contentChildren[i] as XML));
 				if (Boolean((contentChildren[i] as XML).name())) {
 					// A sub-node
 					//trace ("---> style " + String((contentChildren[i] as XML).name()));
-					te = new TextElement(contentChildren[i], getStyle(String((contentChildren[i] as XML).name())).getAsElementFormat(__ef, __fd));
-					te.userData = contentChildren[i];
+					ts = getStyle(String((contentChildren[i] as XML).name()));
+					if (Boolean(ts)) {
+						// The style exists
+						te = new TextElement(contentChildren[i], ts.getAsElementFormat(__ef, __fd));
+						te.userData = contentChildren[i];
+					} else {
+						// Style doesn't exist
+						// TODO: do something different here? render the tags?
+						te = new TextElement(contentChildren[i], __ef);
+					}
 				} else {
 					// No node, just add the text
 					te = new TextElement(contentChildren[i], __ef);
@@ -212,21 +220,6 @@ package com.zehfernando.display.components {
 			return new GroupElement(elements);
 		}
 
-		protected function getElementAtPos(__element:ContentElement, __pos:int): ContentElement {
-			if (__element is GroupElement) {
-				return getElementAtPos((__element as GroupElement).getElementAtCharIndex(__pos), __pos);
-//				var ge:GroupElement = (__element as GroupElement);
-//				for (var i:int = 0; i < ge.elementCount; i++) {
-//					trace (i, ge.);
-//					//if (ge.getElementAt(i).getElementAtCharIndex(pos)
-//				}
-			} else {
-				return __element;
-			}
-			
-			return null;
-		}
-
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
@@ -246,17 +239,19 @@ package com.zehfernando.display.components {
 
 		protected function onMouseMove(e:MouseEvent): void {
 			// Check to see if it's over a link
-			var p:Point = new Point(stage.mouseX, stage.mouseY);
-			var lastLine:TextLine = textBlock.firstLine;
-			var pos:int = -1;
-			while (Boolean(lastLine)) {
-				pos = lastLine.getAtomIndexAtPoint(p.x, p.y);
-				if (pos > -1) {
-					pos += lastLine.getAtomTextBlockBeginIndex(0);
-					break;
-				}
-				lastLine = lastLine.nextLine;
-			}
+//			var p:Point = new Point(stage.mouseX, stage.mouseY);
+//			var lastLine:TextLine = textBlock.firstLine;
+//			var pos:int = -1;
+//			while (Boolean(lastLine)) {
+//				pos = lastLine.getAtomIndexAtPoint(p.x, p.y);
+//				if (pos > -1) {
+//					pos += lastLine.getAtomTextBlockBeginIndex(0);
+//					break;
+//				}
+//				lastLine = lastLine.nextLine;
+//			}
+
+			var pos:int = getCharAtMousePosition();
 			
 			if (pos > -1) {
 				var elementUnderMouse:ContentElement = getElementAtPos(textBlock.content, pos);
@@ -309,6 +304,8 @@ package com.zehfernando.display.components {
 			style.alpha = __alpha;
 			
 			styles.push(style);
+			
+			redraw();
 		}
 
 		public function getTextStyles(): Vector.<TextStyle> {
@@ -320,11 +317,10 @@ package com.zehfernando.display.components {
 			styles = __styles;
 		}
 	}
-}
+	}
 
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
-
 class TextStyle {
 	
 	// Properties

@@ -1,7 +1,7 @@
-package com.zehfernando.display.components {
-	import flash.text.engine.TextLineCreationResult;
+package com.zehfernando.display.components.text {
 	import flash.display.Sprite;
 	import flash.text.engine.TextLine;
+	import flash.text.engine.TextLineCreationResult;
 
 	/**
 	 * @author zeh

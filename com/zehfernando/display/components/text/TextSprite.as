@@ -1,10 +1,13 @@
-package com.zehfernando.display.components {
+package com.zehfernando.display.components.text {
+
 	import flash.display.Sprite;
+	import flash.geom.Point;
 	import flash.text.engine.CFFHinting;
 	import flash.text.engine.ContentElement;
 	import flash.text.engine.ElementFormat;
 	import flash.text.engine.FontDescription;
 	import flash.text.engine.FontLookup;
+	import flash.text.engine.GroupElement;
 	import flash.text.engine.RenderingMode;
 	import flash.text.engine.TextBaseline;
 	import flash.text.engine.TextBlock;
@@ -124,6 +127,41 @@ package com.zehfernando.display.components {
 			var ef:ElementFormat = elementFormat.clone();
 			ef.fontDescription = fd;
 			return new TextElement(__text, ef);
+		}
+
+		protected function getCharAtMousePosition(): int {
+			if (!Boolean(stage)) return -1;
+			return getCharAtPosition(stage.mouseX, stage.mouseY);
+		}
+		
+		protected function getCharAtPosition(__stageX:Number, __stageY:Number): int {
+			var p:Point = new Point(__stageX, __stageY);
+			var lastLine:TextLine = textBlock.firstLine;
+			var pos:int = -1;
+			while (Boolean(lastLine)) {
+				pos = lastLine.getAtomIndexAtPoint(p.x, p.y);
+				if (pos > -1) {
+					pos += lastLine.getAtomTextBlockBeginIndex(0);
+					break;
+				}
+				lastLine = lastLine.nextLine;
+			}
+			return pos;
+		}
+
+		protected function getElementAtPos(__element:ContentElement, __pos:int): ContentElement {
+			if (__element is GroupElement) {
+				return getElementAtPos((__element as GroupElement).getElementAtCharIndex(__pos), __pos);
+//				var ge:GroupElement = (__element as GroupElement);
+//				for (var i:int = 0; i < ge.elementCount; i++) {
+//					trace (i, ge.);
+//					//if (ge.getElementAt(i).getElementAtCharIndex(pos)
+//				}
+			} else {
+				return __element;
+			}
+			
+			return null;
 		}
 	
 		protected function redraw(): void {

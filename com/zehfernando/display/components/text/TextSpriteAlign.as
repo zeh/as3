@@ -1,4 +1,4 @@
-package com.zehfernando.display.components {
+package com.zehfernando.display.components.text {
 
 	/**
 	 * @author Zeh
