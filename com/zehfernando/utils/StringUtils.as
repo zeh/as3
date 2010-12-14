@@ -4,7 +4,11 @@ package com.zehfernando.utils {
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class StringUtils {
-
+		
+		public static const VALIDATION_EMAIL:RegExp = /^[a-z][\w.-]+@\w[\w.-]+\.[\w.-]*[a-z][a-z]$/i;
+		
+		protected static var uniqueSerialNumber:int = 0;
+		
 		public static function stripDoubleCRLF(__text:String): String {
 			if (__text == null) return null;
 			return __text.split("\r\n").join("\n");
@@ -182,5 +186,46 @@ package com.zehfernando.utils {
 			
 			return newText;
 		}
+
+		public static function URLEncode(__text:String): String {
+			__text = escape(__text);
+			__text = __text.split("@").join("%40");
+			__text = __text.split("+").join("%2B");
+			__text = __text.split("/").join("%2F");
+			return __text;
+		}
+
+		public static function generateGUID(): String {
+			// http://en.wikipedia.org/wiki/Globally_unique_identifier
+			// This one is actually more unorthodox
+			var i:int;
+			
+			var nums:Vector.<int> = new Vector.<int>();
+			nums.push(getUniqueSerialNumber());
+			nums.push(getUniqueSerialNumber());
+			for (i = 0; i < 10; i++) {
+				nums.push(Math.round(Math.random() * 255));
+			}
+			
+			var strs:Vector.<String> = new Vector.<String>();
+			for (i = 0; i < nums.length; i++) {
+				strs.push(("00" + nums[i].toString(16)).substr(-2,2));
+			}
+			var now:Date = new Date();
+
+			var secs:String = ("0000" + now.getMilliseconds().toString(16)).substr(-4, 4);
+			
+			// 4-2-2-6
+			return strs[0]+strs[1]+strs[2]+strs[3]+"-"+secs+"-"+strs[4]+strs[5]+"-"+strs[6]+strs[7]+strs[8]+strs[9]+strs[10]+strs[11];
+		}
+
+		public static function getUniqueSerialNumber(): int {
+			return uniqueSerialNumber++;
+		}
+
+		public static function validate(__text:String, __expression:RegExp):Boolean {
+			return __expression.test(__text);
+		}
+
 	}
 }
