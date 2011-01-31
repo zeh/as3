@@ -64,7 +64,7 @@ package com.zehfernando.utils {
 					var wx = (screen.width - __width)/2;
 					var wy = (screen.height - __height)/2;
 
-					var newWindow = window.open(__url, __name, "top="+wx+",left="+wy+",width="+__width+",height="+__height);
+					var newWindow = window.open(__url, __name, "top="+wy+",left="+wx+",width="+__width+",height="+__height);
 					if (newWindow.focus) newWindow.focus();
 
 				}
