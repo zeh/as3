@@ -69,10 +69,100 @@ package com.zehfernando.utils {
 
 		public static function xsdDateTimeToDateUniversal(__date:String): Date {
 			// Converts a data from DateTime XML format to a normal Date
-			// This is the same format that comes from YouTube dumps
+			// This should be the final, universal one
 			// Example: 2010-06-30T21:19:01.000Z
-			// Or:      2010-08-13T21:12:40+0000
+			// Or:      2002-05-30T09:30:10.5
+			// Or:      2002-05-30T09:30:10Z
+			// Or:      2002-05-30T09:30:10-06:00
+			// Or:      2002-05-30T09:30:10+06:00
+			// Or:      2010-08-13
 			// Reference: http://www.w3schools.com/Schema/schema_dtypes_date.asp
+			// http://books.xmlschemata.org/relaxng/ch19-77049.html
+			// [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+
+			if (!Boolean(__date) || __date.length < 10) return null;
+
+			var year:int = 0;
+			var month:int = 0;
+			var day:int = 0;
+			var hours:int = 0;
+			var minutes:int = 0;
+			var seconds:Number = 0;
+			
+			var timeZoneHour:int = 0;
+			var timeZoneMinutes:int = 0;
+
+			var readOffset:Number = 0;
+
+			// Finally, parses the date
+
+			year = parseInt(__date.substr(0, 4), 10);
+			month = parseInt(__date.substr(5, 2), 10) - 1;
+			day = parseInt(__date.substr(8, 2), 10);
+			
+
+			readOffset = 10;
+
+			// Parses the time if available
+			if (__date.length > readOffset && __date.substr(readOffset, 1).toUpperCase() == "T") {
+				hours = parseInt(__date.substr(11, 2), 10);
+				minutes = parseInt(__date.substr(14, 2), 10);
+				
+				var secondsSize:int = 0;
+				var cutPos:int = __date.length;
+				var zPos:int = __date.toUpperCase().indexOf("Z", 19);
+				var plusPos:int = __date.indexOf("+", 19);
+				var minusPos:int = __date.indexOf("-", 19);
+				
+				if (zPos > -1) cutPos = Math.min(cutPos, zPos);
+				if (plusPos > -1) cutPos = Math.min(cutPos, plusPos);
+				if (minusPos > -1) cutPos = Math.min(cutPos, minusPos);
+				
+				secondsSize = cutPos - 17;
+				seconds = parseFloat(__date.substr(17, secondsSize));
+				
+				readOffset = 17 + secondsSize;
+			}
+			
+			if (__date.length > readOffset) {
+				var lastSymbol:String = __date.substr(readOffset, 1).toUpperCase();
+				
+				if (lastSymbol == "Z") {
+					// Universal time
+				} else {
+					if (lastSymbol == "+" || lastSymbol == "-") {
+						// Time adjustments
+						var hourSize:int = __date.indexOf(":", readOffset) - readOffset;
+						if (readOffset > 0) {
+							timeZoneHour = parseInt(__date.substr(readOffset, hourSize), 10);
+							timeZoneMinutes = parseInt(__date.substr(readOffset + hourSize + 1), 10);
+						}
+					}
+				}
+			}
+
+			// Set the date
+			var tt:Date = new Date();
+
+			tt.fullYearUTC = year;
+			tt.monthUTC = month;
+			tt.dateUTC = day;
+			tt.hoursUTC = hours;
+			tt.minutesUTC = minutes;
+			tt.secondsUTC = Math.floor(seconds);
+			tt.millisecondsUTC = (seconds - Math.floor(seconds)) * 1000;
+			
+			var minutesOffset:int = timeZoneHour * 60 + timeZoneMinutes;
+			
+			tt.time -= minutesOffset * 60 * 1000;
+			
+			return tt;
+		}
+
+		public static function xsdDateTimeToDateUniversalOld(__date:String): Date {
+			// Converts a data from DateTime XML format to a normal Date
+			// This is the same format that comes from YouTube dumps?
+
 			if (!Boolean(__date) || __date.length < 24) return null;
 			
 			var tt:Date = new Date();
