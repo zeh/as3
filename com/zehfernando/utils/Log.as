@@ -1,5 +1,7 @@
 package com.zehfernando.utils {
+
 	import flash.events.Event;
+	import flash.external.ExternalInterface;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
 	/**
@@ -20,6 +22,7 @@ package com.zehfernando.utils {
 		
 		protected static var _useTrace:Boolean;
 		protected static var _useScreen:Boolean;
+		protected static var _useJavascriptConsole:Boolean;
 		
 		protected static var textField:TextField;
 		
@@ -29,6 +32,7 @@ package com.zehfernando.utils {
 		{
 			_useTrace = true;
 			_useScreen = false;
+			_useJavascriptConsole = false;
 		}
 
 
@@ -55,6 +59,10 @@ package com.zehfernando.utils {
 			if (_useScreen) {
 				textField.text = textField.text + output + "\n"; // do not use append
 				textField.scrollV = textField.maxScrollV;
+			}
+			
+			if (_useJavascriptConsole) {
+				ExternalInterface.call("function(__message) { if(typeof(console) !== 'undefined' && console != null) { console.log(__message); } }", output);
 			}
 
 		}
@@ -100,6 +108,13 @@ package com.zehfernando.utils {
 		}
 		public static function set useTrace(__value:Boolean): void {
 			_useTrace = __value;
+		}
+
+		public static function get useJavascriptConsole(): Boolean {
+			return _useJavascriptConsole;
+		}
+		public static function set useJavascriptConsole(__value:Boolean): void {
+			_useJavascriptConsole = __value;
 		}
 
 		public static function get useScreen(): Boolean {
