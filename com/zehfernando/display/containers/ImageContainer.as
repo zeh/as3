@@ -1,4 +1,5 @@
 package com.zehfernando.display.containers {
+
 	import flash.display.Bitmap;
 	import flash.display.Loader;
 	import flash.events.Event;
@@ -11,6 +12,10 @@ package com.zehfernando.display.containers {
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class ImageContainer extends DynamicDisplayAssetContainer {
+		
+		// Constants
+		// Exception fault: SecurityError: Error #2123: Security sandbox violation: BitmapData.draw: http://fakehost.com/5GUM_COACHELLA2912/deploy/site/index.swf cannot access http://static.ak.fbcdn.net/rsrc.php/v1/yL/r/HsTZSDw4avx.gif?type=large. No policy files granted access.
+		public static const EVENT_SECURITY_SANDBOX_VIOLATION:String = "onSecuritySandboxViolation";
 		
 		// Properties
 		protected var _isConnectionOpened:Boolean;
@@ -53,7 +58,18 @@ package com.zehfernando.display.containers {
 		}		
 
 		override protected function applySmoothing(): void {
-			if (_isLoaded && Boolean(loader.content)) Bitmap(loader.content).smoothing = _smoothing;
+			if (_isLoaded) {
+				try {
+					if (Boolean(loader.content)) {
+						Bitmap(loader.content).smoothing = _smoothing;
+						// Connection to http://static.ak.fbcdn.net/rsrc.php/v1/yL/r/HsTZSDw4avx.gif?type=large halted - not permitted from http://fakehost.com/5GUM_COACHELLA2912/deploy/site/index.swf
+					}
+				} catch (e:Error) {
+					// Error here - meaning it's probably trying to load content not allowed
+					dispatchEvent(new Event(EVENT_SECURITY_SANDBOX_VIOLATION));
+					trace ("Error when trying to access loader.content smoothing!");
+				}
+			}
 		}
 
 
@@ -68,8 +84,19 @@ package com.zehfernando.display.containers {
 			_isLoading = false;
 			_isConnectionOpened = false;
 			_isLoaded = true;
-			_contentWidth = loader.content.width;
-			_contentHeight = loader.content.height;
+			try {
+				_contentWidth = loader.content.width;
+				_contentHeight = loader.content.height;
+			} catch (e:Error) {
+				// Error here - meaning it's probably trying to load content not allowed
+				_contentWidth = 100;
+				_contentHeight = 100;
+				updateCompletedLoadingStats();
+				removeLoaderEvents();
+				trace ("Error when trying to access loader.content width/height!");
+				dispatchEvent(new Event(EVENT_SECURITY_SANDBOX_VIOLATION));
+				return;
+			}
 			updateCompletedLoadingStats();
 			removeLoaderEvents();
 			redraw();
