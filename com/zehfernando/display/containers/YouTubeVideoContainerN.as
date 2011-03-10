@@ -8,7 +8,9 @@ package com.zehfernando.display.containers {
 	/**
 	 * @author zeh
 	 */
-	public class YouTubeVideoContainer extends DynamicDisplayAssetContainer implements IVideoContainer {
+	public class YouTubeVideoContainerN extends DynamicDisplayAssetContainer implements IVideoContainer {
+		
+		// Important: the final "N" on the class name is just to create a different name that will force SVN to update it properly, since the previous case change (from "Youtube" to "YouTube") wasn't properly done
 
 		// Events
 		// Common
@@ -72,7 +74,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function YouTubeVideoContainer(__width:Number = 100, __height:Number = 100, __color:Number = 0x000000) {
+		public function YouTubeVideoContainerN(__width:Number = 100, __height:Number = 100, __color:Number = 0x000000) {
 			super(__width, __height, __color);
 		}
 
