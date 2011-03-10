@@ -1,39 +1,42 @@
 package com.zehfernando.display.containers {
 
+	import com.zehfernando.net.loaders.VideoLoader;
+	import com.zehfernando.net.loaders.VideoLoaderCuePointEvent;
+	import com.zehfernando.net.loaders.VideoLoaderEvent;
+	import com.zehfernando.utils.Console;
 	import com.zehfernando.utils.MathUtils;
 
 	import flash.display.BitmapData;
 	import flash.events.Event;
-	import flash.events.NetStatusEvent;
+	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.geom.Matrix;
 	import flash.media.SoundTransform;
-	import flash.media.Video;
-	import flash.net.NetConnection;
-	import flash.net.NetStream;
+	import flash.net.URLRequest;
 
 	/**
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class VideoContainer extends DynamicDisplayAssetContainer implements IVideoContainer {
-
+		
 		// Events
 		// Common
-		public static const EVENT_PLAY_START:String = "onVideoPlay";									// Only at the first play!
-		public static const EVENT_SEEK_NOTIFY:String = "onSeekNotify";							// Ok?
-		public static const EVENT_PAUSE:String = "onVideoPause";								// Ok apparently
-		public static const EVENT_FINISH:String = "onVideoFinish";								// Test?
-		public static const EVENT_LOADING_START:String = "onStartedLoading";					// Ok
-		public static const EVENT_LOADING_PROGRESS:String = "onProgressLoading";				// Ok
-		public static const EVENT_LOADING_ERROR:String = "onProgressLoading";					// Ok
-		public static const EVENT_LOADING_COMPLETE:String = "onCompletedLoading";				// Ok
+		public static const EVENT_PLAY_START:String = "onVideoPlayStart";						// Test! Only at the first play?
+		public static const EVENT_PLAY_STOP:String = "onVideoStop";								// Test!
+		public static const EVENT_PLAY_FINISH:String = "onVideoPlayFinish";						// Test!
+		public static const EVENT_SEEK_NOTIFY:String = "onSeekNotify";							// Test!
+		public static const EVENT_PAUSE:String = "onVideoPause";								// Test!
+		public static const EVENT_LOADING_START:String = "onStartedLoading";					// Test!
+		public static const EVENT_LOADING_PROGRESS:String = "onProgressLoading";				// Test!
+		public static const EVENT_LOADING_ERROR:String = "onProgressLoading";					// Test!
+		public static const EVENT_LOADING_COMPLETE:String = "onCompletedLoading";				// Test!
 
 		// Specific
-//		public static const EVENT_START:String = "onPlayVideoStart"; // This event is shit
-		public static const EVENT_LOOP:String = "onStopVideoEndLoop";							// Test?
-		public static const EVENT_BUFFER_EMPTY:String = "onBufferEmpty";						// Ok apparently
-		public static const EVENT_BUFFER_FULL:String = "onBufferFull";							// Ok apparently
-		public static const EVENT_RECEIVED_METADATA:String = "onReceivedMetaData";				// Ok
+		public static const EVENT_LOOP:String = "onStopVideoEndLoop";							// Test!
+		public static const EVENT_BUFFER_EMPTY:String = "onBufferEmpty";						// Test!
+		public static const EVENT_BUFFER_FLUSH:String = "onBufferFlush";						// Test!
+		public static const EVENT_BUFFER_FULL:String = "onBufferFull";							// Test!
+		public static const EVENT_RECEIVED_METADATA:String = "onReceivedMetaData";				// Test!
 		public static const EVENT_CUE_POINT:String = "onReceivedCuePoint";
 
 		// Properties
@@ -43,14 +46,9 @@ package com.zehfernando.display.containers {
 		protected var _loop:Boolean;
 		protected var _bufferTime:Number;					// In seconds
 		protected var _volume:Number;						// Volume for this video
-		protected var _duration:Number;						// Video duration, in miliseconds
-		protected var _framerate:Number;					// Video framerate
-		protected var _hasMetaData:Boolean;					// Whether metadata was already received or not
 		protected var _maximumTime:Number;
 		
-		protected var netConnection:NetConnection;
-		protected var netStream:NetStream;
-		protected var video:Video;
+		protected var videoLoader:VideoLoader;
 		protected var isMonitoringLoading:Boolean;
 
 		protected var lastCuePoint:Object;
@@ -76,18 +74,18 @@ package com.zehfernando.display.containers {
 		}
 
 		override protected function applySmoothing(): void {
-			if (_hasVideo) video.smoothing = _smoothing;
+			if (_hasVideo) videoLoader.smoothing = _smoothing;
 		}
 		
 		protected function applyBufferTime(): void {
-			if (_hasVideo) netStream.bufferTime = _bufferTime;
+			if (_hasVideo) videoLoader.bufferTime = _bufferTime;
 		}
 		
 		protected function applyVolume(): void {
 			if (_hasVideo) {
-				var st:SoundTransform = netStream.soundTransform;
-				st.volume = _volume; 
-				netStream.soundTransform = st;
+				var st:SoundTransform = videoLoader.soundTransform;
+				st.volume = _volume;
+				videoLoader.soundTransform = st;
 			}
 		}
 
@@ -96,171 +94,109 @@ package com.zehfernando.display.containers {
 				_bytesLoaded = 0;
 				_bytesTotal = 0;
 			} else {
-				//var obl:Number = _bytesLoaded;
-				_bytesLoaded = netStream.bytesLoaded;
-				_bytesTotal = netStream.bytesTotal;
-				//if ((isNaN(obl) || obl == 0) && _bytesLoaded > 0) onLoadStart();
-				//if (_bytesTotal > 0 && _bytesTotal >= _bytesLoaded && !__skipCompleteDispatch) onLoadComplete();
+				_bytesLoaded = videoLoader.bytesLoaded;
+				_bytesTotal = videoLoader.bytesTotal;
 			}
 		}
 
-		protected function startMonitoringLoading(): void {
-			// Monitos video loading
-			if (!isMonitoringLoading) {
-				isMonitoringLoading = true;
-				addEventListener(Event.ENTER_FRAME, onEnterFrameMonitorLoading, false, 0, true);
-				onLoadProgress();
-				//onEnterFrameMonitorLoading(null);
-				//updateByteCount();
-			}
-		}
-
-		protected function stopMonitoringLoading(): void {
-			if (isMonitoringLoading) {
-				isMonitoringLoading = false;
-				removeEventListener(Event.ENTER_FRAME, onEnterFrameMonitorLoading);
+		override protected function redraw(): void {
+			super.redraw();
+			if (_hasVideo) {
+				videoLoader.width = _contentWidth;
+				videoLoader.height = _contentHeight;
 			}
 		}
 		
+		protected function updateMaximumTime(): void {
+			_maximumTime = Math.max(time, _maximumTime);
+		}		
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		// Crappy netStream 'client' events
-
-		public function	onXMPData(info:Object):void {
+		protected function onXMPData(e:Event):void {
 			//trace ("VideoContainer :: onXMPData :: " + info);
 			// TODO: do something with this data
 		} 
 	
-	    public function onMetaData(info:Object):void {
+	    protected function onMetaData(e:VideoLoaderEvent):void {
 			//trace("metadata: duration=" + info.duration + " width=" + info.width + " height=" + info.height + " framerate=" + info.framerate);
-			_hasMetaData = true;
-			
-			_duration = info["duration"];
-			_framerate = info["framerate"];
-			
-			_contentWidth = info["width"];
-			_contentHeight = info["height"];
+			_contentWidth = videoLoader.metaData["width"];
+			_contentHeight = videoLoader.metaData["height"];
 			
 			redraw();
 			
 			dispatchEvent(new Event(EVENT_RECEIVED_METADATA));
 	    }
 	
-	    public function onCuePoint(info:Object):void {
-			trace("VideoContainer :: onCuePoint: time=" + info["time"] + " name=" + info["name"] + " type=" + info["type"]);
-	    	lastCuePoint = info;
+	    protected function onCuePoint(e:VideoLoaderCuePointEvent):void {
+			//trace("VideoContainer :: onCuePoint: time=" + info["time"] + " name=" + info["name"] + " type=" + info["type"]);
+	    	lastCuePoint = {time:e.cuePointTime, name:e.cuePointName, type:e.cuePointType};
 	    	dispatchEvent(new Event(EVENT_CUE_POINT));
 		}
 
-		// Other events
+		protected function onSecurityError(e:SecurityError): void {
+			Console.log("securityErrorHandler: " + e);
+			dispatchEvent(new Event(EVENT_LOADING_ERROR));
+		}
 		
-		protected function onLoadStart(): void {
-			// Pseudo-event
+		protected function onStreamNotFound(e:VideoLoaderEvent): void {
+			dispatchEvent(new Event(EVENT_LOADING_ERROR));
+		}
+		
+		protected function onLoadingStart(e:Event): void {
 			updateStartedLoadingStats();
 			dispatchEvent(new Event(EVENT_LOADING_START));
 		}
 
-		protected function onEnterFrameMonitorLoading(e:Event): void {
-			onLoadProgress();
-		}
-
-		protected function onLoadProgress(__skipCompleteDispatch:Boolean = false): void {
-			var obl:Number = _bytesLoaded;
+		protected function onLoadingProgress(e:ProgressEvent): void {
 			updateByteCount();
-			if (_hasVideo && (isNaN(obl) || obl == 0) && _bytesLoaded > 0) onLoadStart();
-			
-			if (_hasVideo && _bytesLoaded > 0) {
-				updateMaximumTime();
-
-				dispatchEvent(new Event(EVENT_LOADING_PROGRESS));
-			
-				if (_bytesTotal > 0 && _bytesLoaded >= _bytesTotal && !__skipCompleteDispatch) onLoadComplete();
-			}
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_LOADING_PROGRESS));
 		}
 
-		protected function onLoadComplete(): void {
-			// Pseudo-progress event
-			//updateByteCount(true);
-			//dispatchEvent(new Event(EVENT_LOADING_PROGRESS));
-			
+		protected function onLoadingComplete(e:Event): void {
 			_isLoaded = true;
 			updateCompletedLoadingStats();
-			stopMonitoringLoading();
 			dispatchEvent(new Event(EVENT_LOADING_COMPLETE));
 		}
-
-		protected function onNetStatus(event:NetStatusEvent):void {
-			//trace ("VideoContainer :: onNetStatus :: "+event.info.code);
-			
-			/* 
-			event.info.code could be:
-			
-			NetConnection.Connect.Success -- // Fired *immediately* after nc.connect(null)
-			NetStream.Play.StreamNotFound
-			NetStream.Play.Start - stream starts loading?
-			NetStream.Buffer.Full
-			NetStream.Buffer.Flush
-			NetStream.Seek.Notify
-			
-			When it finishes:
-			NetStream.Buffer.Flush
-			NetStream.Buffer.Flush
-			NetStream.Play.Stop
-			NetStream.Buffer.Empty
-			*/
-			
-			//trace ("videocontainer onNetStatus :: " + event.info.code);
-            switch (event.info["code"]) {
-				case "NetStream.Play.StreamNotFound":
-                	// TODO: add error event here
-                    trace("VideoContainer :: Stream [" + _contentURL + "] not found!");
-                    break;
-                case "NetStream.Seek.Notify":
-                	//trace ("netstream.seek.notify " + _contentURL+ " @ " + netStream.time);
-                	dispatchEvent(new Event(EVENT_SEEK_NOTIFY));
-                	break;
-                case "NetStream.Play.Start":
-                	//trace ("netstream.play.start " + _contentURL);
-//                	//trace ("Play.start @ t = " + time);
-//                	if (time == 0) onVideoStart();
-////                	onVideoPlay();
-					dispatchEvent(new Event(EVENT_PLAY_START));
-                	break;
-            	case "NetStream.Buffer.Empty":
-            		dispatchEvent(new Event(EVENT_BUFFER_EMPTY));
-            		break;
-            	case "NetStream.Buffer.Full":
-            		dispatchEvent(new Event(EVENT_BUFFER_FULL));
-            		//trace ("BUFFER FULL FOR " + _contentURL);
-					break;
-            	case "NetStream.Play.Stop":
-            		dispatchEvent(new Event(EVENT_PAUSE));
-            		if (time >= duration - 0.1) onVideoFinish(); // ugh
-            		break;
-            }
-
+		
+		protected function onSeekNotify(e:VideoLoaderEvent): void {
 			updateMaximumTime();
-        }
+			dispatchEvent(new Event(EVENT_SEEK_NOTIFY));
+		}
 
-//        protected function onVideoPlay():void {
-//        	// Video has started playing
-//    		// Dispatch event
-//    		var e:Event = new Event(EVENT_PLAY);
-//    		// TODO: add target to event
-//    		dispatchEvent(e);
-//        }
+		protected function onBufferEmpty(e:VideoLoaderEvent): void {
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_BUFFER_EMPTY));
+		}
 
-//        protected function onVideoStart():void {
-//        	// Video has started playing at the very start
-//    		// Dispatch event
-//    		var e:Event = new Event(EVENT_START);
-//    		// TODO: add target to event
-//    		dispatchEvent(e);
-//        }
+		protected function onBufferFlush(e:VideoLoaderEvent): void {
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_BUFFER_FLUSH));
+		}
 
-        protected function onVideoFinish():void {
+		protected function onBufferFull(e:VideoLoaderEvent): void {
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_BUFFER_FULL));
+		}
+
+		protected function onPlayStart(e:VideoLoaderEvent): void {
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_PLAY_START));
+		}
+
+		protected function onPlayStop(e:VideoLoaderEvent): void {
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_PLAY_STOP));
+		}
+
+		protected function onPlayFinish(e:VideoLoaderEvent): void {
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_PLAY_FINISH));
+		}
+
+        protected function onVideoPlayFinish(oe:VideoLoaderEvent):void {
         	// Video has automatically stopped after the end
        		var e:Event;
        		// TODO: this is still sort of crappy
@@ -276,32 +212,96 @@ package com.zehfernando.display.containers {
         	} else {
         		// Dispatch event
         		_isPlaying = false;
-       			e = new Event(EVENT_FINISH); // TODO: add target to event
+       			e = new Event(EVENT_PLAY_FINISH); // TODO: add target to event
         		dispatchEvent(e);
 			}
         }
+        
+        protected function setVideoLoaderInternal(__videoLoader:VideoLoader): void {
+        	videoLoader = __videoLoader;
+        	
+			videoLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 
-        protected function onNetError(event:SecurityErrorEvent):void {
-            trace("VideoContainer :: onNetError :: securityErrorHandler: " + event);
+			videoLoader.addEventListener(Event.OPEN, onLoadingStart);
+			videoLoader.addEventListener(ProgressEvent.PROGRESS, onLoadingProgress);
+			videoLoader.addEventListener(Event.COMPLETE, onLoadingComplete);
+
+			videoLoader.addEventListener(VideoLoaderEvent.SEEK_NOTIFY, onSeekNotify);
+			videoLoader.addEventListener(VideoLoaderEvent.STREAM_NOT_FOUND, onStreamNotFound);
+			videoLoader.addEventListener(VideoLoaderEvent.BUFFER_EMPTY, onBufferEmpty);
+			videoLoader.addEventListener(VideoLoaderEvent.BUFFER_FULL, onBufferFull);
+			videoLoader.addEventListener(VideoLoaderEvent.BUFFER_FLUSH, onBufferFlush);
+			videoLoader.addEventListener(VideoLoaderEvent.PLAY_START, onPlayStart);
+			videoLoader.addEventListener(VideoLoaderEvent.PLAY_STOP, onPlayStop);
+			videoLoader.addEventListener(VideoLoaderEvent.PLAY_FINISH, onPlayFinish);
+			videoLoader.addEventListener(VideoLoaderEvent.RECEIVED_METADATA, onMetaData);
+			videoLoader.addEventListener(VideoLoaderEvent.RECEIVED_XMP_DATA, onXMPData);
+			videoLoader.addEventListener(VideoLoaderCuePointEvent.CUE_POINT, onCuePoint);
+			
+			setAsset(videoLoader);
         }
         
-//        protected function onChangeGlobalVolume(e:Event): void {
-//        	applyVolume();
-//        }
+        protected function removeVideoLoaderInternal(__disposeVideoLoader:Boolean = true): void {
+			if (Boolean(videoLoader)) {
+				videoLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 
-		override protected function redraw(): void {
-			super.redraw();
-			if (_hasVideo) {
-				video.width = _contentWidth;
-				video.height = _contentHeight;
+				videoLoader.removeEventListener(Event.OPEN, onLoadingStart);
+				videoLoader.removeEventListener(ProgressEvent.PROGRESS, onLoadingProgress);
+				videoLoader.removeEventListener(Event.COMPLETE, onLoadingComplete);
+
+				videoLoader.removeEventListener(VideoLoaderEvent.SEEK_NOTIFY, onSeekNotify);
+				videoLoader.removeEventListener(VideoLoaderEvent.STREAM_NOT_FOUND, onStreamNotFound);
+				videoLoader.removeEventListener(VideoLoaderEvent.BUFFER_EMPTY, onBufferEmpty);
+				videoLoader.removeEventListener(VideoLoaderEvent.BUFFER_FULL, onBufferFull);
+				videoLoader.removeEventListener(VideoLoaderEvent.BUFFER_FLUSH, onBufferFlush);
+				videoLoader.removeEventListener(VideoLoaderEvent.PLAY_START, onPlayStart);
+				videoLoader.removeEventListener(VideoLoaderEvent.PLAY_STOP, onPlayStop);
+				videoLoader.removeEventListener(VideoLoaderEvent.PLAY_FINISH, onPlayFinish);
+				videoLoader.removeEventListener(VideoLoaderEvent.RECEIVED_METADATA, onMetaData);
+				videoLoader.removeEventListener(VideoLoaderEvent.RECEIVED_XMP_DATA, onXMPData);
+				videoLoader.removeEventListener(VideoLoaderCuePointEvent.CUE_POINT, onCuePoint);
+
+				removeAsset();
+
+				if (__disposeVideoLoader) videoLoader.dispose();
+				videoLoader = null;
 			}
-		}
-		
-		protected function updateMaximumTime(): void {
-			_maximumTime = Math.max(time, _maximumTime);
-		}
+        }
+        
+        protected function loadVideoLoader(__videoLoader:VideoLoader): void {
+        	// Dangerously duplicated from load()!!!
+        	// TODO: get rid of load() altogether and only use this one?
+        	super.load(__videoLoader.url);
+			
+			_isLoaded = false;
+			_hasVideo = true;
+			
+			setVideoLoaderInternal(__videoLoader);
 
-		
+			applyBufferTime();
+			applySmoothing();
+			applyVolume();
+
+			if (videoLoader.hasMetaData) {
+				_contentWidth = videoLoader.metaData["width"];
+				_contentHeight = videoLoader.metaData["height"];
+			} else {
+				_contentWidth = _width;
+				_contentHeight = _height;
+			}
+			
+			_isLoading = true;
+
+			redraw();
+			
+			if (_autoPlay) {
+				playVideo();
+			} else {
+				pauseVideo();
+			}
+        }
+
+
 		// ================================================================================================================
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
 
@@ -314,7 +314,7 @@ package com.zehfernando.display.containers {
 			var mtx:Matrix = new Matrix();
 			mtx.scale(_contentWidth/100, _contentHeight/100);
 			//mtx.scale(video.width/_contentWidth, video.height/_contentHeight);
-			bmp.draw(video, mtx);
+			bmp.draw(videoLoader, mtx);
 			return bmp;
 		}
 
@@ -322,49 +322,56 @@ package com.zehfernando.display.containers {
 			super.load(__url);
 			
 			_isLoaded = false;
-
-			netConnection = new NetConnection();
-			netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-    		netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onNetError);
-			netConnection.connect(null);
-
 			_hasVideo = true;
-	
-			netStream = new NetStream(netConnection);
-			applyBufferTime();
-			netStream.checkPolicyFile = true;
-			netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			netStream.client = this;
-
-			video = new Video(_width, _height);
-			video.attachNetStream(netStream);
-			applySmoothing();
-			//contentHolder.addChild(video);
-			setAsset(video);
 			
-			netStream.play(_contentURL);
-			//netStream.seek(0);
+			setVideoLoaderInternal(new VideoLoader());
 
-			_contentWidth = video.width;
-			_contentHeight = video.height;
+			videoLoader.load(new URLRequest(_contentURL));
+
+			applyBufferTime();
+			applySmoothing();
+			applyVolume();
+
+			setAsset(videoLoader);
+			
+			_contentWidth = _width;
+			_contentHeight = _height;
 
 			_isLoading = true;
 
 			redraw();
-			
-			applyVolume();
 			
 			if (_autoPlay) {
 				playVideo();
 			} else {
 				pauseVideo();
 			}
+		}
 
-			startMonitoringLoading();
+		public function setVideoLoader(__videoLoader:VideoLoader):void {
+			// Replaces the current video loader with another video loader
+			if (videoLoader != __videoLoader) {
+				unload();
+				loadVideoLoader(__videoLoader);
+			}
+		}
+
+		public function detachVideoLoader():void {
+			// Removes the video loader without disposing -- temp!
+			// TODO: make this better
+			
+			pauseVideo();
+
+			_hasVideo = false;
+			_isLoaded = false;
+			_isLoading = false;
+			
+			removeVideoLoaderInternal(false);
+
+			super.unload();
 		}
 
 		override public function unload(): void {
-			stopMonitoringLoading();
 
 			pauseVideo();
 
@@ -372,39 +379,21 @@ package com.zehfernando.display.containers {
 			_isLoaded = false;
 			_isLoading = false;
 
-			_duration = NaN;
-			_framerate = NaN;
-			_hasMetaData = false;
+			removeVideoLoaderInternal();
 
-			if (Boolean(video)) {
-				//contentHolder.removeChild(video);
-				removeAsset();
-				video = null;
-			}
-
-			if (Boolean(netStream)) {
-				netStream.close();
-				netStream = null;
-			}
-
-			if (Boolean(netConnection)) {
-				netConnection.close();
-				netConnection = null;
-			}
-			
 			super.unload();
 		}
 
 		public function playVideo():void {
 			_isPlaying = true;
 			updateMaximumTime();
-			if (_hasVideo) netStream.resume();
+			if (_hasVideo) videoLoader.resume();
 		}
 
 		public function pauseVideo():void {
 			_isPlaying = false;
 			updateMaximumTime();
-			if (_hasVideo) netStream.pause();
+			if (_hasVideo) videoLoader.pause();
 		}
 
 		public function stopVideo():void {
@@ -452,14 +441,14 @@ package com.zehfernando.display.containers {
 		// Additional video data
 		public function get duration(): Number {
 			if (!_hasVideo) return 0;
-			if (!_hasMetaData) return 0;
-			return _duration;
+			if (!hasMetaData) return 0;
+			return videoLoader.duration;
 		}
 
 		public function get framerate(): Number {
 			if (!_hasVideo) return 0;
-			if (!_hasMetaData) return 0;
-			return _framerate;
+			if (!hasMetaData) return 0;
+			return videoLoader.framerate;
 		}
 
 		public function get isPlaying(): Boolean {
@@ -470,28 +459,28 @@ package com.zehfernando.display.containers {
 		// Time/position control
 		public function get time(): Number {
 			if (!_hasVideo) return 0;
-			return netStream.time;
+			return videoLoader.time;
 		}
 		public function set time(__value:Number): void {
 			if (!_hasVideo) return;
-			netStream.seek(__value);
+			videoLoader.seek(__value);
 			updateMaximumTime();
 		}
 
 		public function get position(): Number {
 			if (!_hasVideo) return 0;
-			if (!_hasMetaData) return 0;
+			if (!hasMetaData) return 0;
 			return time / duration;
 		}
 		public function set position(__value:Number): void {
 			if (!_hasVideo) return;
-			if (!_hasMetaData) return;
+			if (!hasMetaData) return;
 			time = __value * duration;
 		}
 
 		public function get bufferLength(): Number {
 			if (!_hasVideo) return 0;
-			return netStream.bufferLength;
+			return videoLoader.bufferLength;
 		}
 		
 		public function get autoPlay(): Boolean {
@@ -534,23 +523,22 @@ package com.zehfernando.display.containers {
 		}
 		
 		public function get hasMetaData():Boolean {
-			return _hasMetaData;
+			return videoLoader.hasMetaData;
 		}
 
 		public function getLastCuePoint(): Object {
 			return lastCuePoint;
 		}
 		public function get droppedFrames(): int {
-			return _hasVideo ? netStream.info.droppedFrames : 0;
+			return _hasVideo ? videoLoader.metaData["droppedFrames"] : 0;
 		}
 		public function get decodedFrames(): int {
-			return _hasVideo ? netStream.decodedFrames : 0;
+			return _hasVideo ? videoLoader.decodedFrames : 0;
 		}
 		
-		public function get fps(): int {
-			return _hasVideo ? netStream.currentFPS : 0;
+		public function get currentFPS(): int {
+			return _hasVideo ? videoLoader.currentFPS : 0;
 		}
-		
 	}
 }
 
