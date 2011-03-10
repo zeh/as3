@@ -26,6 +26,18 @@ package com.zehfernando.utils {
 			if (Boolean(__nodeValue)) return __nodeValue;
 			return __default;
 		}
+		
+		public static function stripXMLNamespaces(__xml:XML):XML {
+			// Source: http://active.tutsplus.com/articles/roundups/15-useful-as3-snippets-on-snipplr-com/
+			var s:String = __xml.toString();
+			var pattern1:RegExp = /\s*xmlns[^\'\"]*=[\'\"][^\'\"]*[\'\"]/gi;
+			s = s.replace(pattern1, "");
+			var pattern2:RegExp = /&lt;[\/]{0,1}(\w+:).*?&gt;/i;
+			while(pattern2.test(s)) {
+				s = s.replace(pattern2.exec(s)[1], "");
+			}
+			return XML(s);
+		}
 
 		public static function getNodeAsInteger(__xml:XML, __nodeName:String, __default:int = 0): int {
 			return int(getNodeAsFloat(__xml, __nodeName, __default));
