@@ -31,6 +31,14 @@ package com.zehfernando.utils {
 			// Transforms a title into a stub
 			return __text.toLowerCase().replace(" ", "-").replace(/[^a-z0-9\-]/gi, "");
 		}
+		
+		public static function slugify(__text:String):String {
+			// Source: http://active.tutsplus.com/articles/roundups/15-useful-as3-snippets-on-snipplr-com/
+			const pattern1:RegExp = /[^\w- ]/g; // Matches anything except word characters, space and -
+			const pattern2:RegExp = / +/g; // Matches one or more space characters
+			var s:String = __text;
+			return s.replace(pattern1, "").replace(pattern2, "-").toLowerCase();
+		}
 
 		public static function parseBBCodeToHTML(__text:String): String {
 
@@ -193,6 +201,24 @@ package com.zehfernando.utils {
 			__text = __text.split("+").join("%2B");
 			__text = __text.split("/").join("%2F");
 			return __text;
+		}
+
+		public static function generatePropertyName(): String {
+			return "f" + getRandomAlphanumericString(16) + ("00000000" + getUniqueSerialNumber().toString(16)).substr(-8,8);
+		}
+		
+		public static function getRandomAlphanumericString(__chars:int = 1): String {
+			// Returns a random alphanumeric string with the specific number of chars
+			var chars:String = "0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
+			var i:int;
+			
+			var str:String = "";
+			
+			for (i = 0; i < __chars; i++) {
+				str += chars.substr(Math.floor(Math.random() * chars.length), 1);
+			}
+			
+			return str;
 		}
 
 		public static function generateGUID(): String {
