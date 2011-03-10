@@ -1,6 +1,7 @@
-package com.zehfernando.data.assets {
+package com.zehfernando.net.assets {
 
 	import com.zehfernando.net.LoadingQueue;
+	import com.zehfernando.net.loaders.VideoLoader;
 
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
@@ -60,6 +61,17 @@ package com.zehfernando.data.assets {
 				libraries.push(__library);
 			}
 		}
+
+		protected static function removeLibrary(__library:AssetLibrary): void {
+			
+			if (!Boolean(libraries)) {
+				libraries = new Vector.<AssetLibrary>();
+			}
+			
+			if (libraries.indexOf(__library) != -1) {
+				libraries.splice(libraries.indexOf(__library), 1);
+			}
+		}
 		
 		public static function getLibrary(__name:String = ""): AssetLibrary {
 			// Use object list instead?
@@ -102,15 +114,28 @@ package com.zehfernando.data.assets {
 		protected function onURLLoaderComplete(e:Event): void {
 			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
 			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
-			ai.isLoaded = true;
-			ai.isLoading = false;
+			if (Boolean(ai)) {
+				ai.isLoaded = true;
+				ai.isLoading = false;
+			}
 		}
 
 		protected function onLoaderComplete(e:Event): void {
 			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
 			var ai:AssetItemInfo = getAssetItemInfoByContentLoaderInfo(e.target as LoaderInfo);
-			ai.isLoaded = true;
-			ai.isLoading = false;
+			if (Boolean(ai)) {
+				ai.isLoaded = true;
+				ai.isLoading = false;
+			}
+		}
+
+		protected function onVideoLoaderComplete(e:Event): void {
+			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
+			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
+			if (Boolean(ai)) {
+				ai.isLoaded = true;
+				ai.isLoading = false;
+			}
 		}
 
 		
@@ -127,6 +152,7 @@ package com.zehfernando.data.assets {
 		
 		public function getAssetItemInfoByName(__name:String): AssetItemInfo {
 			// Use object list instead?
+			if (!Boolean(assets)) return null;
 			var i:int;
 			for (i = 0; i < assets.length; i++) {
 				if (assets[i].name == __name) return assets[i];
@@ -136,6 +162,7 @@ package com.zehfernando.data.assets {
 
 		public function getAssetItemInfoByURL(__url:String): AssetItemInfo {
 			// Use object list instead?
+			if (!Boolean(assets)) return null;
 			var i:int;
 			for (i = 0; i < assets.length; i++) {
 				if (assets[i].url == __url) return assets[i];
@@ -145,6 +172,7 @@ package com.zehfernando.data.assets {
 
 		public function getAssetItemInfoByObject(__object:Object): AssetItemInfo {
 			// Use object list instead?
+			if (!Boolean(assets)) return null;
 			var i:int;
 			for (i = 0; i < assets.length; i++) {
 				if (assets[i].loadingObject == __object) return assets[i];
@@ -154,9 +182,12 @@ package com.zehfernando.data.assets {
 
 		public function getAssetItemInfoByContentLoaderInfo(__contentLoaderInfo:LoaderInfo): AssetItemInfo {
 			// Use object list instead?
-			var i:int;
-			for (i = 0; i < assets.length; i++) {
-				if (assets[i].loadingObject is Loader && (assets[i].loadingObject as Loader).contentLoaderInfo == __contentLoaderInfo) return assets[i];
+			// Sometimes this can get fired by an asset library that has already been disposed and removed, so test first to see if the asset list exists
+			if (Boolean(assets)) {
+				var i:int;
+				for (i = 0; i < assets.length; i++) {
+					if (assets[i].loadingObject is Loader && (assets[i].loadingObject as Loader).contentLoaderInfo == __contentLoaderInfo) return assets[i];
+				}
 			}
 			return null;
 		}
@@ -183,8 +214,13 @@ package com.zehfernando.data.assets {
 							(assets[i].loadingObject as Loader).contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderComplete, false, 0, true);
 							queue.addLoader(assets[i].loadingObject, new URLRequest(assets[i].url));
 							break;
+						case AssetType.VIDEO:
+							assets[i].loadingObject = new VideoLoader();
+							(assets[i].loadingObject as VideoLoader).addEventListener(Event.COMPLETE, onVideoLoaderComplete, false, 0, true);
+							queue.addVideoLoader(assets[i].loadingObject, new URLRequest(assets[i].url));
+							break;
 						default:
-							throw new Error ("AssetLibrary :: startLoads :: can't start loading of asset type '" + assets[i].type + "'!");
+							throw new Error ("AssetLibrary :: startLoads :: can't start loading of asset [" + assets[i].url + "] type '" + assets[i].type + "'!");
 					}
 					assets[i].isLoading = true;
 				}
@@ -192,7 +228,7 @@ package com.zehfernando.data.assets {
 			
 			if (queue.paused) queue.resume();
 		}
-		
+
 		// Type-specific content functions
 		public function getAssetByName(__name:String): Object {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
@@ -206,7 +242,6 @@ package com.zehfernando.data.assets {
 			return null;
 		}
 
-
 		public function getXML(__name:String): XML {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (Boolean(ai)) return ai.getAsXML();
@@ -218,11 +253,28 @@ package com.zehfernando.data.assets {
 			if (Boolean(ai)) return ai.getAsDisplayObject();
 			return null;
 		}
-		
+
+		public function getVideoLoader(__name:String): VideoLoader {
+			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
+			if (Boolean(ai)) return ai.getAsVideoLoader();
+			return null;
+		}
+
 		public function getStyleSheet(__name:String): StyleSheet {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (Boolean(ai)) return ai.getAsStyleSheet();
 			return null; 
+		}
+
+		public function dispose(): void {
+			removeLibrary(this);
+
+			for (var i:int = 0; i < assets.length; i++) {
+				assets[i].dispose();
+			}
+			assets = null;
+			queue.dispose();
+			queue = null;
 		}
 
 		// ================================================================================================================
@@ -234,7 +286,8 @@ package com.zehfernando.data.assets {
 	}
 }
 
-import com.zehfernando.data.assets.AssetType;
+import com.zehfernando.net.assets.AssetType;
+import com.zehfernando.net.loaders.VideoLoader;
 
 import flash.display.DisplayObject;
 import flash.display.Loader;
@@ -276,11 +329,13 @@ class AssetItemInfo {
 			switch (type) {
 				case AssetType.XML:
 					return getAsXML();
-				case AssetType.IMAGE:
-				case AssetType.SWF:
-					return getAsDisplayObject();
 				case AssetType.CSS:
 					return getAsStyleSheet();
+				case AssetType.SWF:
+				case AssetType.IMAGE:
+					return getAsDisplayObject();
+				case AssetType.VIDEO:
+					return getAsVideoLoader();
 			}
 		}
 		return null;
@@ -291,11 +346,6 @@ class AssetItemInfo {
 		return null;
 	}
 
-	public function getAsDisplayObject(): DisplayObject {
-		if (isLoaded) return (loadingObject as Loader).content;
-		return null;
-	}
-	
 	public function getAsStyleSheet(): StyleSheet {
 		if (isLoaded) {
 			var ss:StyleSheet = new StyleSheet();
@@ -304,7 +354,33 @@ class AssetItemInfo {
 		}
 		return null;
 	}
-
+	
+	public function getAsDisplayObject(): DisplayObject {
+		if (isLoaded) return (loadingObject as Loader).content;
+		return null;
+	}
+	
+	public function getAsVideoLoader(): VideoLoader {
+		if (isLoaded) return loadingObject as VideoLoader;
+		return null;
+	}
+	
+	public function dispose(): void {
+		switch (type) {
+			case AssetType.XML:
+			case AssetType.CSS:
+				break;
+			case AssetType.SWF:
+			case AssetType.IMAGE:
+				(loadingObject as Loader).unloadAndStop();
+				break;
+			case AssetType.VIDEO:
+				if (isLoaded) getAsVideoLoader().dispose();
+				break;
+		}
+		loadingObject = null;
+	}
+	
 	/*
 	public function get data(): * {
 		if (loadingObject is URLLoader) {

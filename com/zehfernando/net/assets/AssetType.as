@@ -1,4 +1,4 @@
-package com.zehfernando.data.assets {
+package com.zehfernando.net.assets {
 
 	/**
 	 * @author Zeh
@@ -10,6 +10,7 @@ package com.zehfernando.data.assets {
 		public static const XML:String = "xml";
 		public static const IMAGE:String = "image";
 		public static const SWF:String = "swf";
+		public static const VIDEO:String = "video";
 		
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
@@ -17,8 +18,10 @@ package com.zehfernando.data.assets {
 		public static function getTypes(): Vector.<String> {
 			var types:Vector.<String> = new Vector.<String>();
 			types.push(AssetType.CSS);
-			types.push(AssetType.IMAGE);
 			types.push(AssetType.XML);
+			types.push(AssetType.IMAGE);
+			types.push(AssetType.SWF);
+			types.push(AssetType.VIDEO);
 			
 			return types;
 		}
@@ -29,19 +32,26 @@ package com.zehfernando.data.assets {
 			var vv:Vector.<String> = new Vector.<String>(); 
 			
 			switch (__type) {
-				case AssetType.XML:
-					vv.push("xml");
-					break;
 				case AssetType.CSS:
 					vv.push("css");
 					break;
-				case AssetType.SWF:
-					vv.push("swf");
+				case AssetType.XML:
+					vv.push("xml");
+					break;
 				case AssetType.IMAGE:
 					vv.push("jpg");
 					vv.push("jpeg");
 					vv.push("gif");
 					vv.push("png");
+					break;
+				case AssetType.SWF:
+					vv.push("swf");
+					break;
+				case AssetType.VIDEO:
+					vv.push("flv");
+					vv.push("f4v");
+					vv.push("mov");
+					vv.push("mp4");
 					break;
 			}
 			
