@@ -78,11 +78,15 @@ package com.zehfernando.display.progressbars {
 		public function get amount(): Number {
 			return _value.target;
 		}
-		
+
 		public function set amount(__value:Number): void {
 			if (_value.target != __value) {
 				setAmount(__value);
 			}
+		}
+
+		public function get visibleAmount(): Number {
+			return _value.current;
 		}
 	}
 }
