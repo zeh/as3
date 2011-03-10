@@ -11,6 +11,9 @@ package com.zehfernando.display.shapes {
 	public class GradientBox extends Sprite {
 		
 		// Properties
+		protected var _width:Number;
+		protected var _height:Number;
+
 		protected var _type:String;
 		protected var _angle:Number;
 		protected var _colors:Array;
@@ -21,6 +24,9 @@ package com.zehfernando.display.shapes {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function GradientBox(__width:Number = 100, __height:Number = 100, __angle:Number = 0, __colors:Array = null, __alphas:Array = null, __ratios:Array = null, __type:String = null) {
+
+			_width = __width;
+			_height = __height;
 			
 			var i:int;
 			
@@ -44,9 +50,6 @@ package com.zehfernando.display.shapes {
 			if (!Boolean(__type)) __type = GradientType.LINEAR;
 			_type = __type;
 
-			scaleX = __width/100;
-			scaleY = __height/100;
-
 			paint();
 		}
 
@@ -56,12 +59,12 @@ package com.zehfernando.display.shapes {
 
 		protected function paint(): void {
 			var mtx:Matrix = new Matrix();
-			mtx.createGradientBox(100, 100, (_angle / 180) * Math.PI, 0, 0);
+			mtx.createGradientBox(_width, _height, (_angle / 180) * Math.PI, 0, 0);
 			
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginGradientFill(_type, _colors, _alphas, _ratios, mtx, SpreadMethod.PAD, InterpolationMethod.RGB);
-			graphics.drawRect(0, 0, 100, 100);
+			graphics.drawRect(0, 0, _width, _height);
 			graphics.endFill();
 		}
 
@@ -103,5 +106,20 @@ package com.zehfernando.display.shapes {
 			paint();
 		}
 
+		override public function get width(): Number { return _width; }
+		override public function set width(__value:Number): void {
+			if (_width != __value) {
+				_width = __value;
+				paint();
+			}
+		}
+
+		override public function get height(): Number { return _height; }
+		override public function set height(__value:Number): void {
+			if (_height != __value) {
+				_height = __value;
+				paint();
+			}
+		}
 	}
 }
