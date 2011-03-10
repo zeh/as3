@@ -12,7 +12,7 @@ package com.zehfernando.display.shapes {
 		protected var _color:Number;
 
 		protected var _radius:Number;
-		protected var _borderSize:Number; 
+		protected var _outlineWidth:Number;
 		protected var _topLeftRadius:Number;
 		protected var _topRightRadius:Number;
 		protected var _bottomLeftRadius:Number;
@@ -27,7 +27,7 @@ package com.zehfernando.display.shapes {
 			_height = __height;
 			
 			_radius = _topLeftRadius = _topRightRadius = _bottomLeftRadius = _bottomRightRadius = __radius;
-			_borderSize = __outlineWidth;
+			_outlineWidth = __outlineWidth;
 			
 			paint();
 		}
@@ -42,7 +42,7 @@ package com.zehfernando.display.shapes {
 			graphics.beginFill(_color, 1);
 			graphics.drawRoundRectComplex(0, 0, _width, _height, _topLeftRadius, _topRightRadius, _bottomLeftRadius, _bottomRightRadius);
 			
-			if (_borderSize != 0) graphics.drawRoundRectComplex(_borderSize, _borderSize, _width - _borderSize * 2, _height - _borderSize * 2, _topLeftRadius - _borderSize, _topRightRadius - _borderSize, _bottomLeftRadius - _borderSize, _bottomRightRadius - _borderSize);
+			if (_outlineWidth != 0) graphics.drawRoundRectComplex(_outlineWidth, _outlineWidth, _width - _outlineWidth * 2, _height - _outlineWidth * 2, _topLeftRadius - _outlineWidth, _topRightRadius - _outlineWidth, _bottomLeftRadius - _outlineWidth, _bottomRightRadius - _outlineWidth);
 
 			graphics.endFill();
 		}
@@ -118,11 +118,11 @@ package com.zehfernando.display.shapes {
 			}
 		}
 
-		public function get borderSize(): Number { return _borderSize; }
+		public function get borderSize(): Number { return _outlineWidth; }
 
 		public function set borderSize(__value:Number): void {
-			if (_borderSize != __value) {
-				_borderSize = __value;
+			if (_outlineWidth != __value) {
+				_outlineWidth = __value;
 				paint();
 			}
 		}
