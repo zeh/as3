@@ -1,4 +1,5 @@
 package com.zehfernando.utils {
+
 	import flash.external.ExternalInterface;
 
 	/**
@@ -38,7 +39,7 @@ package com.zehfernando.utils {
 			_verbose = true;
 			_simulated = false;
 			
-			if (_verbose) trace ("GAUtils :: initialized :: verbose set to ["+_verbose+"] and simulated set to ["+_simulated+"]");
+			if (_verbose) Console.log ("Initialized :: verbose set to ["+_verbose+"] and simulated set to ["+_simulated+"]");
 		}
 
 
@@ -48,14 +49,12 @@ package com.zehfernando.utils {
 		// TODO: test for presence of tracking object?
 
 		public static function trackPageView(__url:String): void {
-			if (_verbose) trace ("GAUtils :: trackPageView :: [" + __url + "]");
-			//if (!_simulatedMode) _tracker.trackPageview(__url);
+			if (_verbose) Console.log ("[" + __url + "]");
 			if (!_simulated) ExternalInterface.call("function(__url){_gaq.push(['_trackPageview', __url]);}", __url);
 		}
 
 		public static function trackEvent(__category:String, __action:String, __label:String = null, __value:Number = 0): void {
-			if (_verbose) trace ("GAUtils :: trackEvent :: Category: ["+__category+"] Action:["+__action+"] Label:["+__label+"] Value:["+__value+"]");
-			//if (!_simulatedMode) _tracker.trackEvent(__category, __action, __label, __value);
+			if (_verbose) Console.log ("Category: ["+__category+"] Action:["+__action+"] Label:["+__label+"] Value:["+__value+"]");
 			if (!_simulated) ExternalInterface.call("function(__category, __action, __label, __value){_gaq.push(['_trackEvent', __category, __action, __label, __value]);}", __category, __action, __label, __value);
 			//("Videos", "Video Load Time", "Gone With the Wind", downloadTime);
 			//("Videos", "Play", "Gone With the Wind");
@@ -95,6 +94,7 @@ package com.zehfernando.utils {
 		public static function set simulated(__value:Boolean): void {
 			if (_simulated != __value) {
 				_simulated = __value;
+				Console.log("simulated is " + _simulated);
 			}
 		}
 
@@ -104,6 +104,7 @@ package com.zehfernando.utils {
 		public static function set verbose(__value:Boolean): void {
 			if (_verbose != __value) {
 				_verbose = __value;
+				Console.log("verbose is " + _verbose);
 			}
 		}
 	}
