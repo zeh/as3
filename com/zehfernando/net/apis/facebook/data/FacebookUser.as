@@ -1,4 +1,5 @@
 package com.zehfernando.net.apis.facebook.data {
+
 	import com.zehfernando.net.apis.facebook.FacebookDataUtils;
 
 	/**
@@ -46,7 +47,7 @@ package com.zehfernando.net.apis.facebook.data {
 
 		public static function fromJSONObject(o:Object): FacebookUser {
 			if (!Boolean(o)) return null;
-
+			
 			var user:FacebookUser = new FacebookUser();
 
 			user.id =										o["id"];
@@ -70,6 +71,33 @@ package com.zehfernando.net.apis.facebook.data {
 			user.updated =									FacebookDataUtils.getResultStringAsDate(o["updated"]);
 
 			return user;
+		}
+
+		public static function fromJSONObjectObject(o:Object): Vector.<FacebookUser> {
+			// Example:
+			// https://graph.facebook.com/?ids=zehfernando,19292868552
+			// {"zehfernando":{"id":"711322444","name":"Zeh Fernando"}, "zehfernando":{"id":"711322444","name":"Zeh Fernando"}}
+			var users:Vector.<FacebookUser> = new Vector.<FacebookUser>();
+
+			if (!Boolean(o)) return users;
+
+			for (var iis:String in o) {
+				users.push(FacebookUser.fromJSONObject(o[iis]));
+			}
+
+			return users;
+		}
+
+		public static function fromJSONObjectArray(o:Array): Vector.<FacebookUser> {
+			var users:Vector.<FacebookUser> = new Vector.<FacebookUser>();
+
+			if (!Boolean(o)) return users;
+
+			for (var i:int = 0; i < o.length; i++) {
+				users.push(FacebookUser.fromJSONObject(o[i]));
+			}
+
+			return users;
 		}
 	}
 }

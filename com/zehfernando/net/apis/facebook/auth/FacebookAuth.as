@@ -3,6 +3,7 @@ package com.zehfernando.net.apis.facebook.auth {
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.net.apis.facebook.events.FacebookAuthEvent;
 	import com.zehfernando.utils.HTMLUtils;
+	import com.zehfernando.utils.Console;
 
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -60,26 +61,50 @@ package com.zehfernando.net.apis.facebook.auth {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 		
 		public static function onLoginSuccessLC(__accessToken:String): void {
-			trace("FacebookAuth :: Login success with access token " + __accessToken);
+			Console.log("Login success with access token " + __accessToken);
 			_accessToken = __accessToken;
 			_loggedIn = true;
+			closeLocalConnection();
 			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.LOG_IN_SUCCESS));
-			localConnection.close();
 		}
 
 		public static function onLoginErrorLC(__errorReason:String, __errorType:String, __errorDescription:String): void {
-			trace("FacebookAuth :: Login error with reason ["+__errorReason+"], type ["+__errorType+"], description ["+__errorDescription+"]");
+			Console.log("Login error with reason ["+__errorReason+"], type ["+__errorType+"], description ["+__errorDescription+"]");
 			_loggedIn = false;
+			closeLocalConnection();
 			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.LOG_IN_ERROR));
-			localConnection.close();
 		}
 
+		protected static function onLoginWindowClosedLC(): void {
+			if (Boolean(localConnection)) {
+				// Window closed, while a local connection still exists
+				Console.log("Login error (window closed)");
+				_loggedIn = false;
+				closeLocalConnection();
+				dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.LOG_IN_ERROR));
+			} else {
+				// Window closed, but after an error or success was already registered
+			}
+		}
+
+		// ================================================================================================================
+		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
+
+		protected static function closeLocalConnection(): void {
+			if (Boolean(localConnection)) {
+				localConnection.close();
+				localConnection = null;
+			}
+		}
+		
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function login(): void {
+		public static function login(__permissions:Array = null): void {
 			// Open the popup window asking for login permission
+			
+			closeLocalConnection();
 			
 			localConnection = new LocalConnection();
 			localConnection.allowDomain("*");
@@ -87,11 +112,15 @@ package com.zehfernando.net.apis.facebook.auth {
 			try {
 				localConnection.connect("_zFacebookAuthConn");
 			} catch (e:Error) {
-				trace("FacebookAuth :: Login failed because it's already connected!");
+				Console.log("Login failed because the LocalConnection is already connected somewhere else!");
 			}
 
-			var url:String = FacebookConstants.AUTHORIZE_URL.split(FacebookConstants.PARAMETER_APP_ID).join(appId).split(FacebookConstants.PARAMETER_REDIRECT_URL).join(redirectURL);
-			HTMLUtils.openPopup(url);
+			if (!Boolean(__permissions)) __permissions = [];
+			var permissions:String = __permissions.join(",");
+
+			var url:String = FacebookConstants.AUTHORIZE_URL.split(FacebookConstants.PARAMETER_AUTH_APP_ID).join(appId).split(FacebookConstants.PARAMETER_AUTH_REDIRECT_URL).join(redirectURL).split(FacebookConstants.PARAMETER_AUTH_PERMISSIONS).join(permissions);
+			
+			HTMLUtils.openPopup(url, 600, 400, "_blank", onLoginWindowClosedLC);
 
 			// https://graph.facebook.com/oauth/authorize?client_id=147149585329358&redirect_uri=http://www.facebook.com/connect/login_success.html&type=user_agent&display=popup
 			// Goes to

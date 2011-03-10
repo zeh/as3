@@ -7,37 +7,37 @@ package com.zehfernando.net.apis.facebook.services {
 
 	import flash.events.Event;
 	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	/**
 	 * @author zeh
 	 */
-	public class FacebookUserRequest extends BasicFacebookRequest {
-		
-		// http://developers.facebook.com/docs/reference/api/user
-		// https://graph.facebook.com/711322444
+	public class FacebookUsersRequest extends BasicFacebookRequest {
 		
 		// Properties
-		protected var _userId:String;
+		protected var _userIds:Vector.<String>;
+		
+		// TODO: THIS IS NOT USED NOW
 		
 		// Parameters
 		protected var _limit:int;
 		
 		// Results
-		protected var _user:FacebookUser;
+		protected var _users:Vector.<FacebookUser>;
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function FacebookUserRequest() {
+		public function FacebookUsersRequest() {
 			super();
 
 			// Basic service configuration
-			requestURL = FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_USER;
+			requestURL = FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_USERS;
 			requestMethod = URLRequestMethod.GET;
 
 			// Parameters
 			// http://developers.facebook.com/docs/reference/api/page
 
-			_userId = "";
+			_userIds = new Vector.<String>();
 			
 		}
 
@@ -52,26 +52,28 @@ package com.zehfernando.net.apis.facebook.services {
 //			return vars;
 //		}
 
+		override protected function getURLVariables():URLVariables {
+			var vars:URLVariables = super.getURLVariables();
+
+			vars[FacebookConstants.PARAMETER_IDS_NAME] = _userIds.join(FacebookConstants.PARAMETER_LIST_SEPARATOR);
+
+			return vars;
+		}
+
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
 			
-			_user = FacebookUser.fromJSONObject(response);
+			_users = FacebookUser.fromJSONObjectObject(response);
 			
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
-
 		
 		override public function execute():void {
-
-			// TODO: using the query parameter "ids" here instead of the normal url userId, one can get data for several users at the same time - redo this?
-			// 'ids' also accept links!
-
-			requestURL = requestURL.replace(FacebookConstants.PARAMETER_USER_ID, _userId);
-			
 			super.execute();
 		}
 
@@ -80,17 +82,17 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Parameters
 
-		public function get userId():String {
-			return _userId;
+		public function get userIds(): Vector.<String> {
+			return _userIds;
 		}
-		public function set userId(__value:String):void {
-			_userId = __value;
+		public function set userIds(__value:Vector.<String>):void {
+			_userIds = __value;
 		}
 
 		// Results
 		
-		public function get user(): FacebookUser {
-			return _user;
+		public function get users(): Vector.<FacebookUser> {
+			return _users;
 		}
 	}
 }
