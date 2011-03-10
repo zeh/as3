@@ -9,7 +9,7 @@ package com.zehfernando.localization {
 		// Constants
 		public static const LANGUAGE_LIST_SEPARATOR:String = ",";
 		public static const ID_HYERARCHY_SEPARATOR:String = "/";
-		public static const VALUE_NOT_FOUND:String = "[null]";
+		public static const VALUE_NOT_FOUND:String = "[null]"; // TODO: properly return null when this happens? or the string id itself?
 		
 		// Properties
 		protected static var strings:StringListGroup;
@@ -108,7 +108,11 @@ package com.zehfernando.localization {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public static function setFromXML(__xml:XML): void {
-			strings = getXMLListAsGroup(__xml.children());
+			if (!Boolean(strings)) {
+				strings = new StringListGroup();
+			}
+			//strings = getXMLListAsGroup(__xml.children());
+			strings.add(getXMLListAsGroup(__xml.children()));
 			// TODO: read XML data correctly? replace unix/windows line feed....
 		}
 
@@ -130,10 +134,12 @@ package com.zehfernando.localization {
 
 		public static function getValue(__id:String, ... __languages): * {
 			
+			var i:int;
+			
 			// Get the full path to the value name
 			var ids:Array = __id.split(ID_HYERARCHY_SEPARATOR);
 			var names:Vector.<String> = new Vector.<String>();
-			for (var i:int = 0; i < ids.length; i++) names.push(ids[i]);
+			for (i = 0; i < ids.length; i++) names.push(ids[i]);
 
 			var langsToUse:Vector.<String>;
 			if (Boolean(__languages) && __languages.length > 0) {
@@ -142,8 +148,45 @@ package com.zehfernando.localization {
 			} else {
 				langsToUse = StringList.getCurrentLanguages();
 			}
+
+			// TODO: this is shitty, should also be able to preprocess numbers, booleans, etc - should ALWAYS store as string
 			
-			return strings.getValueByNames(names, langsToUse);
+			var val:* = strings.getValueByNames(names, langsToUse);
+
+			if (val is String) {
+				val = getProcessedString.apply(null, ([val] as Array).concat(__languages));
+			} else if (val is Array) {
+				var newVal:Array = (val as Array).concat();
+				for (i = 0; i < newVal.length; i++) {
+					newVal[i] = getProcessedString.apply(null, ([newVal[i]] as Array).concat(__languages));
+					//newVal[i] = getProcessedString.apply(null, ([([val] as Array)[i]] as Array).concat(__languages));
+				}
+				val = newVal;
+			}
+			//if (val is String) val = preProcessString(val, langsToUse)
+			
+			return val;
+		}
+
+		public static function getArray(__id:String, ... __languages): Array {
+			var args:Array = [__id];
+			args = args.concat(__languages);
+			
+			return getValue.apply(null, args) as Array;
+		}
+
+		public static function getNumber(__id:String, ... __languages): Number {
+			var args:Array = [__id];
+			args = args.concat(__languages);
+			
+			return getValue.apply(null, args);
+		}
+
+		public static function getBoolean(__id:String, ... __languages): Boolean {
+			var args:Array = [__id];
+			args = args.concat(__languages);
+			
+			return getValue.apply(null, args);
 		}
 
 		public static function getColor(__id:String, ... __languages): int {
@@ -160,9 +203,45 @@ package com.zehfernando.localization {
 			return getValue.apply(null, args);
 		}
 
+		public static function getProcessedString(__string:String, ... __languages): String {
+			// Returns a string with processed codes
+			// For example "this is an ${examples/example}!" returns "this is an EXAMPLE!" (where the value of examples/example in strings.xml is "EXAMPLE")
+			
+			// Should be recursive
+
+			var newString:String = "";
+
+			var codes:RegExp = /\$\{(.+?)\}/ig;
+			var result:Object = codes.exec(__string);
+			
+			var lastIndex:Number = 0;
+			var newIndex:Number;
+
+			while (Boolean(result)) {
+				newIndex = result["index"];
+				
+				// What came before the tag
+				newString += __string.substring(lastIndex, newIndex);
+
+				// The tag tex
+				newString += getString.apply(null, ([result[1]] as Array).concat(__languages));
+
+				lastIndex = codes.lastIndex;
+
+				result = codes.exec(__string);
+			}
+			
+			// End text after last tag
+			newString += __string.substring(lastIndex, __string.length);
+
+//			trace ("OUTPUT ============================ " + newString);
+
+			return newString;
+		}
 
 
-		public static function getProcessedString(__string:String):String {
+
+		public static function getProcessedStringOld(__string:String):String {
 			// Returns a string with processed codes
 			// For example "this is an ${examples/example}!" returns "this is an EXAMPLE!" (where the value of examples/example in strings.xml is "EXAMPLE")
 			
@@ -226,6 +305,8 @@ import com.zehfernando.localization.StringList;
 // ================================================================================================================
 // AUXILIARY classes ----------------------------------------------------------------------------------------------
 
+// TODO: this is shitty, should also be able to preprocess numbers, booleans, etc - should ALWAYS store as string
+
 class StringListItem {
 
 	// Properties
@@ -255,6 +336,24 @@ class StringListGroup extends StringListItem {
 		//super();
 
 		items = new Vector.<StringListItem>();
+	}
+
+	public function add(__strings:StringListGroup):void {
+		// Adds items from another string list group, overwriting items if they have the same name
+		// Warning - only overwrites on a top level!
+		// TODO: proper overwrite of sub-elements only
+		var i:int, j:int;
+		for (i = 0; i < __strings.items.length; i++) {
+			for (j = 0; j < items.length; j++) {
+				if (items[j].name == __strings.items[i].name) {
+					items.splice(j, 1);
+					j--;
+				}
+			}
+			items.push(__strings.items[i]);
+		}
+		
+		//Log.echo("Strings has " + items.length + "items!");
 	}
 
 	// Public functions
@@ -288,6 +387,7 @@ class StringListGroup extends StringListItem {
 		// Not found at all
 		return StringList.VALUE_NOT_FOUND;
 	}
+
 }
 
 class StringListArray extends StringListItem {
