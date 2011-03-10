@@ -130,13 +130,13 @@ package com.zehfernando.data.serialization.json {
 						switch (c) {
 							case "{":
 								// Starting object
-//								trace ("-> starting object @ ",__input.length-i);
+								//trace ("-> starting object @ ",__input.length-i);
 								parsingType = PARSING_TYPE_VALUE_OBJECT_PRE_ITEM;
 								parsingObject = {};
 								break;
 							case "[":
 								// Starting array
-//								trace ("-> starting array @ ",__input.length-i);
+								//trace ("-> starting array @ ",__input.length-i);
 								parsingType = PARSING_TYPE_VALUE_ARRAY_PRE_ITEM;
 								parsingObject = [];
 
@@ -336,8 +336,15 @@ package com.zehfernando.data.serialization.json {
 						switch(c) {
 							case "]":
 								// Empty array?
+								//trace("  --> ending empty array @ " + i);
 								parsingType = PARSING_TYPE_VALUE_ARRAY_POST_ITEM;
 								i--;
+								break;
+							case " ":
+							case "\r":
+							case "\n":
+							case "\t":
+								// Whitespace elements
 								break;
 							default:
 								// Everything that comes after is a new value that must be added to this object
@@ -358,7 +365,7 @@ package com.zehfernando.data.serialization.json {
 								break;
 							case "]":
 								// Ending array
-//								trace ("-> ending array @ ",__input.length-i);
+								//trace ("-> ending array @ " + i);
 								mustEnd = true;
 								
 								returnObject.object = parsingObject;
