@@ -1,4 +1,5 @@
 package com.zehfernando.net.apis {
+	import flash.net.URLRequestHeader;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
@@ -105,6 +106,10 @@ package com.zehfernando.net.apis {
 			req.url = requestURL;
 			req.method = requestMethod;
 			req.data = vars;
+			
+			req.requestHeaders = new Array();
+			//req.requestHeaders.push(new URLRequestHeader("Content-type", "application/x-www-form-urlencoded"));
+			//req.requestHeaders.push(new URLRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
 			
 			loader = new URLLoader();
 			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
