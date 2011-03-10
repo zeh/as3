@@ -36,18 +36,6 @@ package com.zehfernando.utils {
 			return root;
 		}
 
-		public static function getStackTrace(): String {
-			var stackTrace:String = "";
-			try {
-				throw new Error("Stack trace");
-			} catch (e:Error) {
-				stackTrace = e.getStackTrace();
-			}
-			
-			return stackTrace;
-		}
-
-		
 		public static function getFlashVar(__parameter:String): String {
 			return LoaderInfo(root.loaderInfo).parameters[__parameter];
 		}
@@ -96,13 +84,13 @@ package com.zehfernando.utils {
 		public static function isDebugSWF(): Boolean {
 			// Whether the SWF is compiled for debugging or not
 			// http://michaelvandaniker.com/blog/2008/11/25/how-to-check-debug-swf/
-			
-		    if (!hasDeterminedDebugStatus) {
-                var stackTrace:String = new Error().getStackTrace();
-                _isDebuggingSWF = stackTrace != null && stackTrace.indexOf("[") != -1;
-                hasDeterminedDebugStatus = true;
-            }
-            return _isDebuggingSWF;
+
+			if (!hasDeterminedDebugStatus) {
+				var stackTrace:String = new Error().getStackTrace();
+				_isDebuggingSWF = stackTrace != null && stackTrace.indexOf("[") != -1;
+				hasDeterminedDebugStatus = true;
+			}
+			return _isDebuggingSWF;
         }
 
 		// Userlayer stuff
@@ -114,6 +102,10 @@ package com.zehfernando.utils {
 			//var mi:ContextMenuItem = new ContextMenuItem("Toggle Fullscreen");
 			//mi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, toggleFullScreen);
 			//root.contextMenu.customItems.push(mi);
+		}
+		
+		public static function isDebugPlayer(): Boolean {
+			return Capabilities.isDebugger;
 		}
 		
 		public static function toggleFullScreen(): void {
