@@ -1,5 +1,6 @@
 package com.zehfernando.display.shapes {
-	import flash.display.Sprite;	
+
+	import flash.display.Sprite;
 	
 	/**
 	 * @author Zeh Fernando
@@ -7,18 +8,23 @@ package com.zehfernando.display.shapes {
 	public class Box extends Sprite {
 		
 		// Properties
+		protected var _width:Number;
+		protected var _height:Number;
 		protected var _color:int;
+
+		protected var _outlineWidth:Number;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function Box(__width:Number = 100, __height:Number = 100, __color:int = 0xff0000) {
+		public function Box(__width:Number = 100, __height:Number = 100, __color:int = 0xff0000, __outlineWidth:Number = 0) {
 			
+			_width = __width;
+			_height = __height;
 			_color = __color & 0xffffff;
-			
-			scaleX = __width/100;
-			scaleY = __height/100;
 
+			_outlineWidth = __outlineWidth;
+			
 			paint();
 		}
 
@@ -30,7 +36,10 @@ package com.zehfernando.display.shapes {
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginFill(_color);
-			graphics.drawRect(0, 0, 100, 100);
+			graphics.drawRect(0, 0, _width, _height);
+
+			if (_outlineWidth != 0) graphics.drawRect(_outlineWidth, _outlineWidth, _width - _outlineWidth * 2, _height - _outlineWidth * 2);
+
 			graphics.endFill();
 		}
 
@@ -44,6 +53,25 @@ package com.zehfernando.display.shapes {
 		public function set color(__value:int): void {
 			if (_color != __value) {
 				_color = __value;
+				paint();
+			}
+		}
+
+		// TODO: use invalidate
+		// The repetitive redraws don't look good but impact in rendering is virtually none
+
+		override public function get width(): Number { return _width; }
+		override public function set width(__value:Number): void {
+			if (_width != __value) {
+				_width = __value;
+				paint();
+			}
+		}
+
+		override public function get height(): Number { return _height; }
+		override public function set height(__value:Number): void {
+			if (_height != __value) {
+				_height = __value;
 				paint();
 			}
 		}
