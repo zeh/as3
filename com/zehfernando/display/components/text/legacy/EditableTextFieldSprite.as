@@ -16,6 +16,7 @@ package com.zehfernando.display.components.text.legacy {
 		
 		// Events
 		public static const EVENT_GOT_FOCUS:String = "onGotFocus";
+		public static const EVENT_CHANGED:String = "onChanged";
 		public static const EVENT_LOST_FOCUS:String = "onLostFocus";
 		
 		// Instances
@@ -36,6 +37,7 @@ package com.zehfernando.display.components.text.legacy {
 			
 			textField.addEventListener(FocusEvent.FOCUS_IN, onGotFocus, false, 0, true);
 			textField.addEventListener(FocusEvent.FOCUS_OUT, onLostFocus, false, 0, true);
+			textField.addEventListener(Event.CHANGE, onChanged, false, 0, true);
 			
 			tabEnabled = false;
 			
@@ -76,12 +78,16 @@ package com.zehfernando.display.components.text.legacy {
 		protected function onLostFocus(e:FocusEvent): void {
 			dispatchEvent(new Event(EVENT_LOST_FOCUS));
 		}
+		
+		protected function onChanged(e:Event): void {
+			dispatchEvent(new Event(EVENT_CHANGED));
+		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public function focus():void {
-			stage.focus = textField;
+			if (Boolean(stage)) stage.focus = textField;
 		}
 
 //		public function unfocus():void {
@@ -128,6 +134,27 @@ package com.zehfernando.display.components.text.legacy {
 		}
 		override public function set tabIndex(__value:int): void {
 			textField.tabIndex = __value;
+		}
+		
+		public function get wordWrap(): Boolean {
+			return textField.wordWrap;
+		}
+		public function set wordWrap(__value:Boolean): void {
+			textField.wordWrap = __value;
+		}
+
+		public function get editable(): Boolean {
+			return textField.type == TextFieldType.INPUT;
+		}
+		public function set editable(__value:Boolean): void {
+			textField.type = __value ? TextFieldType.INPUT : TextFieldType.DYNAMIC;
+		}
+
+		public function get selectable(): Boolean {
+			return textField.selectable;
+		}
+		public function set selectable(__value:Boolean): void {
+			textField.selectable = __value;
 		}
 	}
 }
