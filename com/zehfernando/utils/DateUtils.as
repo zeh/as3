@@ -79,6 +79,8 @@ package com.zehfernando.utils {
 			// Reference: http://www.w3schools.com/Schema/schema_dtypes_date.asp
 			// http://books.xmlschemata.org/relaxng/ch19-77049.html
 			// [-]CCYY-MM-DDThh:mm:ss[Z|(+|-)hh:mm]
+			
+			// RFC3339 = "2006-01-02T15:04:05Z07:00"
 
 			if (!Boolean(__date) || __date.length < 10) return null;
 
