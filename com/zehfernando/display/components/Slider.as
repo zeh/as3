@@ -44,7 +44,7 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function Slider(__wheelTarget:DisplayObject) {
+		public function Slider(__wheelTarget:DisplayObject = null) {
 			wheelTarget = __wheelTarget;
 
 			super();
