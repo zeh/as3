@@ -48,7 +48,9 @@ package com.zehfernando.display.abstracts {
 		private function redrawPerspective(): void {
 			// 3D Transforms
 			
+			// Based on wh0's work:
 			// http://wonderfl.net/c/sxQJ
+			// With original matrix equations from Mathlab
 			var w:Number = _assumedWidth;
 			var h:Number = _assumedHeight;
 			
@@ -56,31 +58,31 @@ package com.zehfernando.display.abstracts {
 
 			_container3d.rotationX = 0;
 			
-            var pp:PerspectiveProjection = new PerspectiveProjection();
-            pp.projectionCenter = new Point (640, 400); // Doesn't matter?
-            transform.perspectiveProjection = pp;
+			var pp:PerspectiveProjection = new PerspectiveProjection();
+			pp.projectionCenter = new Point (640, 400); // Doesn't matter?
+			transform.perspectiveProjection = pp;
 
-            var v:Vector.<Number> = _container3d.transform.matrix3D.rawData;
+			var v:Vector.<Number> = _container3d.transform.matrix3D.rawData;
 
-        	var cx:Number = transform.perspectiveProjection.projectionCenter.x;
-        	var cy:Number = transform.perspectiveProjection.projectionCenter.y;
-        	var cz:Number = transform.perspectiveProjection.focalLength;
+			var cx:Number = transform.perspectiveProjection.projectionCenter.x;
+			var cy:Number = transform.perspectiveProjection.projectionCenter.y;
+			var cz:Number = transform.perspectiveProjection.focalLength;
 
-            v[12] = _topLeft.x;
-            v[13] = _topLeft.y;
-            v[0] = -(cx*_topLeft.x*_bottomLeft.y-cx*_bottomLeft.x*_topLeft.y-cx*_topLeft.x*_bottomRight.y-cx*_topRight.x*_bottomLeft.y+cx*_bottomLeft.x*_topRight.y+cx*_bottomRight.x*_topLeft.y+cx*_topRight.x*_bottomRight.y-cx*_bottomRight.x*_topRight.y-_topLeft.x*_bottomLeft.x*_topRight.y+_topRight.x*_bottomLeft.x*_topLeft.y+_topLeft.x*_bottomRight.x*_topRight.y-_topRight.x*_bottomRight.x*_topLeft.y+_topLeft.x*_bottomLeft.x*_bottomRight.y-_topLeft.x*_bottomRight.x*_bottomLeft.y-_topRight.x*_bottomLeft.x*_bottomRight.y+_topRight.x*_bottomRight.x*_bottomLeft.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / w;
-            v[1] = -(cy*_topLeft.x*_bottomLeft.y-cy*_bottomLeft.x*_topLeft.y-cy*_topLeft.x*_bottomRight.y-cy*_topRight.x*_bottomLeft.y+cy*_bottomLeft.x*_topRight.y+cy*_bottomRight.x*_topLeft.y+cy*_topRight.x*_bottomRight.y-cy*_bottomRight.x*_topRight.y-_topLeft.x*_topRight.y*_bottomLeft.y+_topRight.x*_topLeft.y*_bottomLeft.y+_topLeft.x*_topRight.y*_bottomRight.y-_topRight.x*_topLeft.y*_bottomRight.y+_bottomLeft.x*_topLeft.y*_bottomRight.y-_bottomRight.x*_topLeft.y*_bottomLeft.y-_bottomLeft.x*_topRight.y*_bottomRight.y+_bottomRight.x*_topRight.y*_bottomLeft.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / w;
-            v[2] = (cz*_topLeft.x*_bottomLeft.y-cz*_bottomLeft.x*_topLeft.y-cz*_topLeft.x*_bottomRight.y-cz*_topRight.x*_bottomLeft.y+cz*_bottomLeft.x*_topRight.y+cz*_bottomRight.x*_topLeft.y+cz*_topRight.x*_bottomRight.y-cz*_bottomRight.x*_topRight.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / w;
-            v[4] = (cx*_topLeft.x*_topRight.y-cx*_topRight.x*_topLeft.y-cx*_topLeft.x*_bottomRight.y+cx*_topRight.x*_bottomLeft.y-cx*_bottomLeft.x*_topRight.y+cx*_bottomRight.x*_topLeft.y+cx*_bottomLeft.x*_bottomRight.y-cx*_bottomRight.x*_bottomLeft.y-_topLeft.x*_topRight.x*_bottomLeft.y+_topRight.x*_bottomLeft.x*_topLeft.y+_topLeft.x*_topRight.x*_bottomRight.y-_topLeft.x*_bottomRight.x*_topRight.y+_topLeft.x*_bottomRight.x*_bottomLeft.y-_bottomLeft.x*_bottomRight.x*_topLeft.y-_topRight.x*_bottomLeft.x*_bottomRight.y+_bottomLeft.x*_bottomRight.x*_topRight.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / h;
-            v[5] = (cy*_topLeft.x*_topRight.y-cy*_topRight.x*_topLeft.y-cy*_topLeft.x*_bottomRight.y+cy*_topRight.x*_bottomLeft.y-cy*_bottomLeft.x*_topRight.y+cy*_bottomRight.x*_topLeft.y+cy*_bottomLeft.x*_bottomRight.y-cy*_bottomRight.x*_bottomLeft.y-_topLeft.x*_topRight.y*_bottomLeft.y+_bottomLeft.x*_topLeft.y*_topRight.y+_topRight.x*_topLeft.y*_bottomRight.y-_bottomRight.x*_topLeft.y*_topRight.y+_topLeft.x*_bottomLeft.y*_bottomRight.y-_bottomLeft.x*_topLeft.y*_bottomRight.y-_topRight.x*_bottomLeft.y*_bottomRight.y+_bottomRight.x*_topRight.y*_bottomLeft.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / h;
-            v[6] = -(cz*_topLeft.x*_topRight.y-cz*_topRight.x*_topLeft.y-cz*_topLeft.x*_bottomRight.y+cz*_topRight.x*_bottomLeft.y-cz*_bottomLeft.x*_topRight.y+cz*_bottomRight.x*_topLeft.y+cz*_bottomLeft.x*_bottomRight.y-cz*_bottomRight.x*_bottomLeft.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / h;
+			v[12] = _topLeft.x;
+			v[13] = _topLeft.y;
+			v[0] = -(cx*_topLeft.x*_bottomLeft.y-cx*_bottomLeft.x*_topLeft.y-cx*_topLeft.x*_bottomRight.y-cx*_topRight.x*_bottomLeft.y+cx*_bottomLeft.x*_topRight.y+cx*_bottomRight.x*_topLeft.y+cx*_topRight.x*_bottomRight.y-cx*_bottomRight.x*_topRight.y-_topLeft.x*_bottomLeft.x*_topRight.y+_topRight.x*_bottomLeft.x*_topLeft.y+_topLeft.x*_bottomRight.x*_topRight.y-_topRight.x*_bottomRight.x*_topLeft.y+_topLeft.x*_bottomLeft.x*_bottomRight.y-_topLeft.x*_bottomRight.x*_bottomLeft.y-_topRight.x*_bottomLeft.x*_bottomRight.y+_topRight.x*_bottomRight.x*_bottomLeft.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / w;
+			v[1] = -(cy*_topLeft.x*_bottomLeft.y-cy*_bottomLeft.x*_topLeft.y-cy*_topLeft.x*_bottomRight.y-cy*_topRight.x*_bottomLeft.y+cy*_bottomLeft.x*_topRight.y+cy*_bottomRight.x*_topLeft.y+cy*_topRight.x*_bottomRight.y-cy*_bottomRight.x*_topRight.y-_topLeft.x*_topRight.y*_bottomLeft.y+_topRight.x*_topLeft.y*_bottomLeft.y+_topLeft.x*_topRight.y*_bottomRight.y-_topRight.x*_topLeft.y*_bottomRight.y+_bottomLeft.x*_topLeft.y*_bottomRight.y-_bottomRight.x*_topLeft.y*_bottomLeft.y-_bottomLeft.x*_topRight.y*_bottomRight.y+_bottomRight.x*_topRight.y*_bottomLeft.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / w;
+			v[2] = (cz*_topLeft.x*_bottomLeft.y-cz*_bottomLeft.x*_topLeft.y-cz*_topLeft.x*_bottomRight.y-cz*_topRight.x*_bottomLeft.y+cz*_bottomLeft.x*_topRight.y+cz*_bottomRight.x*_topLeft.y+cz*_topRight.x*_bottomRight.y-cz*_bottomRight.x*_topRight.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / w;
+			v[4] = (cx*_topLeft.x*_topRight.y-cx*_topRight.x*_topLeft.y-cx*_topLeft.x*_bottomRight.y+cx*_topRight.x*_bottomLeft.y-cx*_bottomLeft.x*_topRight.y+cx*_bottomRight.x*_topLeft.y+cx*_bottomLeft.x*_bottomRight.y-cx*_bottomRight.x*_bottomLeft.y-_topLeft.x*_topRight.x*_bottomLeft.y+_topRight.x*_bottomLeft.x*_topLeft.y+_topLeft.x*_topRight.x*_bottomRight.y-_topLeft.x*_bottomRight.x*_topRight.y+_topLeft.x*_bottomRight.x*_bottomLeft.y-_bottomLeft.x*_bottomRight.x*_topLeft.y-_topRight.x*_bottomLeft.x*_bottomRight.y+_bottomLeft.x*_bottomRight.x*_topRight.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / h;
+			v[5] = (cy*_topLeft.x*_topRight.y-cy*_topRight.x*_topLeft.y-cy*_topLeft.x*_bottomRight.y+cy*_topRight.x*_bottomLeft.y-cy*_bottomLeft.x*_topRight.y+cy*_bottomRight.x*_topLeft.y+cy*_bottomLeft.x*_bottomRight.y-cy*_bottomRight.x*_bottomLeft.y-_topLeft.x*_topRight.y*_bottomLeft.y+_bottomLeft.x*_topLeft.y*_topRight.y+_topRight.x*_topLeft.y*_bottomRight.y-_bottomRight.x*_topLeft.y*_topRight.y+_topLeft.x*_bottomLeft.y*_bottomRight.y-_bottomLeft.x*_topLeft.y*_bottomRight.y-_topRight.x*_bottomLeft.y*_bottomRight.y+_bottomRight.x*_topRight.y*_bottomLeft.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / h;
+			v[6] = -(cz*_topLeft.x*_topRight.y-cz*_topRight.x*_topLeft.y-cz*_topLeft.x*_bottomRight.y+cz*_topRight.x*_bottomLeft.y-cz*_bottomLeft.x*_topRight.y+cz*_bottomRight.x*_topLeft.y+cz*_bottomLeft.x*_bottomRight.y-cz*_bottomRight.x*_bottomLeft.y)/(_topRight.x*_bottomLeft.y-_bottomLeft.x*_topRight.y-_topRight.x*_bottomRight.y+_bottomRight.x*_topRight.y+_bottomLeft.x*_bottomRight.y-_bottomRight.x*_bottomLeft.y) / h;
 
 			try {
-	        	_container3d.transform.matrix3D.rawData = v;
+				_container3d.transform.matrix3D.rawData = v;
 			} catch(e:Error) {
 				trace("PerspectiveSprite :: Error: " + e);
 			}
-            
+
 		}
 		
 		private function scheduleRedraw(): void {
