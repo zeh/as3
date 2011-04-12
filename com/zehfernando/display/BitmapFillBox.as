@@ -4,6 +4,7 @@ package com.zehfernando.display {
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
+	import flash.geom.Matrix;
 	import flash.geom.Point;
 	/**
 	 * @author zeh
@@ -26,6 +27,9 @@ package com.zehfernando.display {
 		// Properties
 		protected var _alignHorizontal:String;
 		protected var _alignVertical:String;
+		protected var _smoothing:Boolean;
+		protected var _bitmapScaleX:Number;
+		protected var _bitmapScaleY:Number;
 
 		// Instances
 		protected var bitmapData:BitmapData;
@@ -41,6 +45,8 @@ package com.zehfernando.display {
 			
 			_alignHorizontal = __alignHorizontal;
 			_alignHorizontal = __alignVertical;
+			_bitmapScaleX = 1;
+			_bitmapScaleY = 1;
 		}
 
 		// ================================================================================================================
@@ -57,14 +63,19 @@ package com.zehfernando.display {
 		protected function redraw(): void {
 			removeBitmap();
 			
-			if (Boolean(source)) {
+			if (Boolean(source) && _width > 0 && _height > 0) {
 				
 				var w:Number = Math.round(_width);
 				var h:Number = Math.round(_height);
 				
 				var i:int, j:int;
-			
+				
 				bitmapData = new BitmapData (w, h, true, 0x00000000);
+				
+				var sourceResized:BitmapData = new BitmapData(Math.round(source.width * _bitmapScaleX), Math.round(source.height * _bitmapScaleY), source.transparent, 0x00000000);
+				var mtx:Matrix = new Matrix();
+				mtx.scale(sourceResized.width / source.width, sourceResized.height / source.height);
+				sourceResized.draw(source, mtx, null, null, null, true);
 				
 				// Find starting points
 				var posX:int;
@@ -75,16 +86,16 @@ package com.zehfernando.display {
 						posX = 0;
 						break;
 					case ALIGN_HORIZONTAL_CENTER:
-						posX = Math.round(w / 2 - source.width / 2);
+						posX = Math.round(w / 2 - sourceResized.width / 2);
 						break;
 					case ALIGN_HORIZONTAL_RIGHT:
-						posX = w - source.width;
+						posX = w - sourceResized.width;
 						break;
 					case ALIGN_HORIZONTAL_RANDOM:
-						posX = Math.round(Math.random() * -source.width);
+						posX = Math.round(Math.random() * -sourceResized.width);
 						break;
 					case ALIGN_HORIZONTAL_RANDOM_NO_SEAMS:
-						posX = Math.round(Math.random() * (w - source.width));
+						posX = Math.round(Math.random() * (w - sourceResized.width));
 						break;
 					default:
 						posX = 0;
@@ -95,34 +106,43 @@ package com.zehfernando.display {
 						posY = 0;
 						break;
 					case ALIGN_VERTICAL_MIDDLE:
-						posY = Math.round(h / 2 - source.height / 2);
+						posY = Math.round(h / 2 - sourceResized.height / 2);
 						break;
 					case ALIGN_VERTICAL_BOTTOM:
-						posY = w - source.width;
+						posY = w - sourceResized.width;
 						break;
 					case ALIGN_VERTICAL_RANDOM:
-						posY = Math.round(Math.random() * -source.height);
+						posY = Math.round(Math.random() * -sourceResized.height);
 						break;
 					case ALIGN_VERTICAL_RANDOM_NO_SEAMS:
-						posY = Math.round(Math.random() * (h - source.height));
+						posY = Math.round(Math.random() * (h - sourceResized.height));
 						break;
 					default:
 						posY = 0;
 				}
 				
 				// Adjust starting position in case it's inside the target image
-				while (posX > 0) posX -= source.width;
-				while (posY > 0) posY -= source.height;
+				while (posX > 0) posX -= sourceResized.width;
+				while (posY > 0) posY -= sourceResized.height;
 
-				for (i = posX; i < w; i += source.width) {
-					for (j = posY; j < h; j += source.height) {
-						bitmapData.copyPixels(source, source.rect, new Point(i, j));
+				for (i = posX; i < w; i += sourceResized.width) {
+					for (j = posY; j < h; j += sourceResized.height) {
+						bitmapData.copyPixels(sourceResized, sourceResized.rect, new Point(i, j));
 					}
 				}
+				
+				sourceResized.dispose();
+				sourceResized = null;
 			
 				bitmap = new Bitmap(bitmapData);
 				addChild(bitmap);
+				
+				applySmoothing();
 			}
+		}
+		
+		protected function applySmoothing(): void {
+			if (Boolean(bitmap)) bitmap.smoothing = _smoothing;
 		}
 		
 		protected function removeBitmap(): void {
@@ -171,6 +191,39 @@ package com.zehfernando.display {
 		public function dispose(): void {
 			removeBitmap();
 			removeSource();
+		}
+		
+		// ================================================================================================================
+		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
+
+		public function get smoothing(): Boolean {
+			return _smoothing;
+		}
+		public function set smoothing(__value:Boolean): void {
+			if (_smoothing != __value) {
+				_smoothing = __value;
+				applySmoothing();
+			}
+		}
+
+		public function get bitmapScaleY(): Number {
+			return _bitmapScaleY;
+		}
+		public function set bitmapScaleY(__value:Number): void {
+			if (_bitmapScaleY != __value) {
+				_bitmapScaleY = __value;
+				redraw();
+			}
+		}
+		
+		public function get bitmapScaleX(): Number {
+			return _bitmapScaleX;
+		}
+		public function set bitmapScaleX(__value:Number): void {
+			if (_bitmapScaleX != __value) {
+				_bitmapScaleX = __value;
+				redraw();
+			}
 		}
 	}
 }
