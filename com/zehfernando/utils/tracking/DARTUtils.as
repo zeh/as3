@@ -1,8 +1,9 @@
-package com.zehfernando.utils {
+package com.zehfernando.utils.tracking {
+	import com.zehfernando.utils.AppUtils;
 	import flash.display.Loader;
 	import flash.events.IOErrorEvent;
 	import flash.external.ExternalInterface;
-	import flash.net.URLRequest;	
+	import flash.net.URLRequest;
 
 	/**
 	 * @author Zeh Fernando

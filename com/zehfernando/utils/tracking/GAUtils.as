@@ -1,4 +1,6 @@
-package com.zehfernando.utils {
+package com.zehfernando.utils.tracking {
+
+	import com.zehfernando.utils.Console;
 
 	import flash.external.ExternalInterface;
 
