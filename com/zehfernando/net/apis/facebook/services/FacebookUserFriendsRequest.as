@@ -93,7 +93,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		public function get fields():Vector.<String> {
-			return _fields;
+			return _fields; // id, name, location
 		}
 		public function set fields(__value:Vector.<String>):void {
 			_fields = __value;
