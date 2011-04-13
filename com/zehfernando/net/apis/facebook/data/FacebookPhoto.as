@@ -1,4 +1,5 @@
 package com.zehfernando.net.apis.facebook.data {
+
 	import com.zehfernando.net.apis.facebook.FacebookDataUtils;
 
 	/**
@@ -81,6 +82,9 @@ package com.zehfernando.net.apis.facebook.data {
 			photo.updated =									FacebookDataUtils.getResultStringAsDate(o["updated_time"]);
 			photo.numComments =								Boolean(o["comments"]) ? o["comments"]["count"] : 0;
 			photo.comments =								Boolean(o["comments"]) ? FacebookComment.fromJSONObjectArray(o["comments"]["data"]) : new Vector.<FacebookComment>();
+			
+			//photo.picture = FacebookDataUtils.getImageURLSafeReplacement(photo.picture);
+			photo.source = FacebookDataUtils.getImageURLSafeReplacement(photo.source);
 
 			return photo;
 		}
