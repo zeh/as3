@@ -1,4 +1,5 @@
 package com.zehfernando.net.apis.facebook {
+
 	import flash.system.Security;
 	/**
 	 * @author zeh
@@ -34,16 +35,27 @@ package com.zehfernando.net.apis.facebook {
 		public static const SERVICE_USER_PHOTOS:String = "/[[user_id]]/photos";
 		
 		public static const SERVICE_FILE_PICTURE:String = "/[[author_id]]/picture";
+		public static const SERVICE_FILE_PICTURE_SQUARE:String = "/[[author_id]]/picture?type=square";		// 50x50 but zoomed (default)
+		public static const SERVICE_FILE_PICTURE_SMALL:String = "/[[author_id]]/picture?type=small";		// 50 pixels wide, variable height
+		public static const SERVICE_FILE_PICTURE_NORMAL:String = "/[[author_id]]/picture?type=normal";		// 100x100
 		public static const SERVICE_FILE_PICTURE_LARGE:String = "/[[author_id]]/picture?type=large";		// 200 pixels wide, variable height
 		
 		public static const AUTHORIZE_URL:String = "https://graph.facebook.com/oauth/authorize?client_id=[[app_id]]&redirect_uri=[[redirect_url]]&type=user_agent&display=popup&scope=[[scope]]";
+		public static const LOGOUT_URL:String = "http://m.facebook.com/logout.php?confirm=1&next=[[redirect_url]]";
+		//public static const LOGOUT_URL:String = "http://www.facebook.com/logout.php?api_key=[[app_id]]&;session_key=[[session_key]]";
 		
+		// UGH. This is temporary. Hopefully.
+		// First is original, rest is replacements (random)
+		public static const IMAGE_DOMAIN_REPLACEMENTS:Array = [["https://fbcdn-sphotos-a.akamaihd.net/", "http://a1.sphotos.ak.fbcdn.net/", "http://a2.sphotos.ak.fbcdn.net/", "http://a3.sphotos.ak.fbcdn.net/", "http://a4.sphotos.ak.fbcdn.net/", "http://a5.sphotos.ak.fbcdn.net/", "http://a6.sphotos.ak.fbcdn.net/", "http://a7.sphotos.ak.fbcdn.net/", "http://a8.sphotos.ak.fbcdn.net/"]];
 		// Initializations
 		
 		{
-			Security.loadPolicyFile("http://graph.facebook.com");
-			//Security.loadPolicyFile("https://graph.facebook.com");
+			Security.loadPolicyFile("http://graph.facebook.com/crossdomain.xml");
+			Security.loadPolicyFile("https://graph.facebook.com/crossdomain.xml");
+			//Security.loadPolicyFile("http://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
+			//Security.loadPolicyFile("https://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
 			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
+			Security.loadPolicyFile("https://profile.ak.fbcdn.net/crossdomain.xml");
 			//Security.loadPolicyFile("http://static.ak.fbcdn.net/crossdomain.xml"); // Doesn't allow
 		}
 		
