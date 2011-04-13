@@ -2,6 +2,7 @@ package com.zehfernando.display.components.text.legacy {
 
 	import com.zehfernando.display.abstracts.ResizableSprite;
 
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.text.AntiAliasType;
@@ -86,8 +87,9 @@ package com.zehfernando.display.components.text.legacy {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function focus():void {
+		public function focus(__stage:Stage = null):void {
 			if (Boolean(stage)) stage.focus = textField;
+			if (Boolean(__stage)) __stage.focus = textField;
 		}
 
 //		public function unfocus():void {
@@ -121,6 +123,22 @@ package com.zehfernando.display.components.text.legacy {
 			applyTextFormat();
 		}
 		
+		public function get letterSpacing(): Number {
+			return textFormat.letterSpacing as Number;
+		}
+		public function set letterSpacing(__value:Number): void {
+			textFormat.letterSpacing = __value;
+			applyTextFormat();
+		}
+		
+		public function get leading(): Number {
+			return textFormat.leading as Number;
+		}
+		public function set leading(__value:Number): void {
+			textFormat.leading = __value;
+			applyTextFormat();
+		}
+		
 		public function get text(): String {
 			return textField.text;
 		}
@@ -141,6 +159,7 @@ package com.zehfernando.display.components.text.legacy {
 		}
 		public function set wordWrap(__value:Boolean): void {
 			textField.wordWrap = __value;
+			textField.multiline = __value;
 		}
 
 		public function get editable(): Boolean {
@@ -155,6 +174,41 @@ package com.zehfernando.display.components.text.legacy {
 		}
 		public function set selectable(__value:Boolean): void {
 			textField.selectable = __value;
+		}
+		
+		public function get sharpness(): Number {
+			return textField.sharpness;
+		}
+		public function set sharpness(__value:Number): void {
+			textField.sharpness = __value;
+		}
+
+		public function get maxChars(): int {
+			return textField.maxChars;
+		}
+		public function set maxChars(__value:int): void {
+			textField.maxChars = __value;
+		}
+		
+		public function get thickness(): Number {
+			return textField.thickness;
+		}
+		public function set thickness(__value:Number): void {
+			textField.thickness = __value;
+		}
+		
+		public function get restrict(): String {
+			return textField.restrict;
+		}
+		public function set restrict(__value:String): void {
+			textField.restrict = __value;
+		}
+		
+		public function get embedFonts(): Boolean {
+			return textField.embedFonts;
+		}
+		public function set embedFonts(__value:Boolean): void {
+			textField.embedFonts = __value;
 		}
 	}
 }
