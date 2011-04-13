@@ -102,7 +102,6 @@ package com.zehfernando.utils {
 			month = parseInt(__date.substr(5, 2), 10) - 1;
 			day = parseInt(__date.substr(8, 2), 10);
 			
-
 			readOffset = 10;
 
 			// Parses the time if available
@@ -144,7 +143,7 @@ package com.zehfernando.utils {
 			}
 
 			// Set the date
-			var tt:Date = new Date();
+			var tt:Date = new Date(0);
 
 			tt.fullYearUTC = year;
 			tt.monthUTC = month;
@@ -153,9 +152,17 @@ package com.zehfernando.utils {
 			tt.minutesUTC = minutes;
 			tt.secondsUTC = Math.floor(seconds);
 			tt.millisecondsUTC = (seconds - Math.floor(seconds)) * 1000;
-			
+
+//			tt.fullYearUTC = year;
+//			tt.monthUTC = month;
+//			tt.dateUTC = day;
+//			tt.hoursUTC = hours;
+//			tt.minutesUTC = minutes;
+//			tt.secondsUTC = Math.floor(seconds);
+//			tt.millisecondsUTC = (seconds - Math.floor(seconds)) * 1000;
+
 			var minutesOffset:int = timeZoneHour * 60 + timeZoneMinutes;
-			
+
 			tt.time -= minutesOffset * 60 * 1000;
 			
 			return tt;
