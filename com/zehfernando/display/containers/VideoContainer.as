@@ -192,30 +192,22 @@ package com.zehfernando.display.containers {
 		}
 
 		protected function onPlayFinish(e:VideoLoaderEvent): void {
-			updateMaximumTime();
-			dispatchEvent(new Event(EVENT_PLAY_FINISH));
-		}
 
-        protected function onVideoPlayFinish(oe:VideoLoaderEvent):void {
-        	// Video has automatically stopped after the end
-       		var e:Event;
-       		// TODO: this is still sort of crappy
        		if (_loop) {
-        		// Auto restart
+        		// Finished; loop
         		if (_isPlaying) {
-        			e = new Event(EVENT_LOOP); // TODO: add target to event
-        			dispatchEvent(e);
-        			//position = 0;
         			time = 0;
         			//playVideo();
+        			//Console.log("loop");
+        			dispatchEvent(new Event(EVENT_LOOP));
         		}
         	} else {
-        		// Dispatch event
+        		// Finished; dispatch event
         		_isPlaying = false;
-       			e = new Event(EVENT_PLAY_FINISH); // TODO: add target to event
-        		dispatchEvent(e);
+				updateMaximumTime();
+				dispatchEvent(new Event(EVENT_PLAY_FINISH));
 			}
-        }
+		}
         
         protected function setVideoLoaderInternal(__videoLoader:VideoLoader): void {
         	videoLoader = __videoLoader;
