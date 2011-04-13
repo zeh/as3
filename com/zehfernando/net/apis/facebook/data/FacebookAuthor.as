@@ -41,17 +41,18 @@ package com.zehfernando.net.apis.facebook.data {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		// Picture ?types:
-		//  "square" = 50x50 but zoomed (default)
-		//  "small" = 50x50 (50 pixels wide, variable height)
-		//  "normal" = 100x100
-		//  "large" = 200x200 (about 200 pixels wide, variable height):
-		
 		public function get pictureLarge(): String {
+			// 200 pixels wide, variable height
 			return (FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_FILE_PICTURE_LARGE).replace(FacebookConstants.PARAMETER_AUTHOR_ID, id);
 		}
 
+		public function get pictureNormal(): String {
+			// 100x100
+			return (FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_FILE_PICTURE_NORMAL).replace(FacebookConstants.PARAMETER_AUTHOR_ID, id);
+		}
+
 		public function get picture():String {
+			// // 50x50, zoomed (same as square)
 			// If the direct link to the profile picture has been supplied, use it. If not, use the service that redirects to the picture
 			return Boolean (_picture) ? _picture : (FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_FILE_PICTURE).replace(FacebookConstants.PARAMETER_AUTHOR_ID, id);
 		}
