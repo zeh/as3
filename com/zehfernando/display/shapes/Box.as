@@ -75,5 +75,13 @@ package com.zehfernando.display.shapes {
 				paint();
 			}
 		}
+
+		public function get outlineWidth(): Number { return _outlineWidth; }
+		public function set outlineWidth(__value:Number): void {
+			if (_outlineWidth != __value) {
+				_outlineWidth = __value;
+				paint();
+			}
+		}
 	}
 }
