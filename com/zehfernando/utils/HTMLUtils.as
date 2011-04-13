@@ -151,6 +151,21 @@ package com.zehfernando.utils {
 			ExternalInterface.call(js);
 		}
 
+		public static function reload():void {
+			var js:XML;
+			/*FDT_IGNORE*/
+			js = <script><![CDATA[
+				function() {
+					
+					window.location.reload();
+					
+				}
+			]]></script>;
+			/*FDT_IGNORE*/
+
+			ExternalInterface.call(js);
+		}
+
 //		public static function setSessionCookie(__name:String, __value:String = ""): void {
 //
 //			var js:XML;
