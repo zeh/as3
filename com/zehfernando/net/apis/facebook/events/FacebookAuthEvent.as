@@ -9,6 +9,8 @@ package com.zehfernando.net.apis.facebook.events {
 		public static const LOG_IN_SUCCESS:String = "onLogInSuccess";
 		public static const LOG_IN_ERROR:String = "onLogInError";
 
+		public static const LOG_OUT_SUCCESS:String = "onLogOutSuccess";
+
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
