@@ -2,8 +2,8 @@ package com.zehfernando.net.apis.facebook.auth {
 
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.net.apis.facebook.events.FacebookAuthEvent;
-	import com.zehfernando.utils.HTMLUtils;
 	import com.zehfernando.utils.Console;
+	import com.zehfernando.utils.HTMLUtils;
 
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -20,6 +20,7 @@ package com.zehfernando.net.apis.facebook.auth {
 		// Properties
 		public static var appId:String;
 		public static var redirectURL:String;
+		public static var redirectLogoutURL:String;
 		
 		protected static var localConnection:LocalConnection;
 		protected static var _accessToken:String;
@@ -87,6 +88,10 @@ package com.zehfernando.net.apis.facebook.auth {
 			}
 		}
 
+		protected static function onLogoutWindowClosedLC(): void {
+			Console.log("Logout window closed");
+		}
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
@@ -135,6 +140,29 @@ package com.zehfernando.net.apis.facebook.auth {
 			// https://graph.facebook.com/me?access_token=2227470867%7C2.ymbE61jcLXs8V0LybrlzPA__.3600.1287158400-711322444%7Cz8rYDB_GlfbSaEiJ0-3j6MZxBCg
 			// https://graph.facebook.com/me/friends?access_token=2227470867|2.ymbE61jcLXs8V0LybrlzPA__.3600.1287158400-711322444|z8rYDB_GlfbSaEiJ0-3j6MZxBCg
 		}
+
+		public static function logout(__forceSiteLogout:Boolean = false):void {
+			if (_loggedIn) {
+				dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.LOG_OUT_SUCCESS));
+				_loggedIn = false;
+				closeLocalConnection();
+				
+				if (__forceSiteLogout) {
+					// Method 1
+					// http://m.facebook.com/logout.php?confirm=1&next=http://yoursitename.com
+					
+					Console.log("redirecting to "+redirectLogoutURL);
+					
+					var url:String = FacebookConstants.LOGOUT_URL.split(FacebookConstants.PARAMETER_AUTH_REDIRECT_URL).join(redirectLogoutURL);
+					HTMLUtils.openPopup(url, 600, 400, "_blank", onLogoutWindowClosedLC);
+
+					// Method 2
+					// http://www.facebook.com/logout.php?api_key={0}&;session_key={1}
+					// http://stackoverflow.com/questions/2764436/facebook-oauth-logout
+				}
+			}
+		}
+
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
