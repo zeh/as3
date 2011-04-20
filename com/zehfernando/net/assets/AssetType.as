@@ -62,6 +62,13 @@ package com.zehfernando.net.assets {
 			// Based on the extension of an URL file, return the type
 			// TODO: must test for querystrings!
 			// TODO: must test for other URLs with dots on them!
+			
+			var lastDot:Number = 0;
+			while (__url.indexOf(".", lastDot+1) > -1) {
+				lastDot = __url.indexOf(".", lastDot+1);
+			}
+			__url = __url.substr(lastDot);
+
 			var extSearch:RegExp = /\.([A-Za-z0-9]+)(\?*|)/i;
 			var result:Object = extSearch.exec(__url);
 			//trace ("search [" + __url + "] = " + result + " @ " + (Boolean(result) ? result.index : null));
