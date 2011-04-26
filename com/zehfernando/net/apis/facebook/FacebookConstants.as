@@ -37,7 +37,7 @@ package com.zehfernando.net.apis.facebook {
 		public static const SERVICE_FILE_PICTURE:String = "/[[author_id]]/picture";
 		public static const SERVICE_FILE_PICTURE_SQUARE:String = "/[[author_id]]/picture?type=square";		// 50x50 but zoomed (default)
 		public static const SERVICE_FILE_PICTURE_SMALL:String = "/[[author_id]]/picture?type=small";		// 50 pixels wide, variable height
-		public static const SERVICE_FILE_PICTURE_NORMAL:String = "/[[author_id]]/picture?type=normal";		// 100x100
+		public static const SERVICE_FILE_PICTURE_NORMAL:String = "/[[author_id]]/picture?type=normal";		// 100 pixels wide, variable height
 		public static const SERVICE_FILE_PICTURE_LARGE:String = "/[[author_id]]/picture?type=large";		// 200 pixels wide, variable height
 		
 		public static const AUTHORIZE_URL:String = "https://graph.facebook.com/oauth/authorize?client_id=[[app_id]]&redirect_uri=[[redirect_url]]&type=user_agent&display=popup&scope=[[scope]]";
