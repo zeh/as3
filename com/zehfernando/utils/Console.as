@@ -119,7 +119,11 @@ package com.zehfernando.utils {
 			if (_useJS) {
 				var jsFunction:String = JS_FUNCTION_LOG;
 				if (ExternalInterface.available) {
-					ExternalInterface.call("function(__message) { if(typeof(console) !== 'undefined' && console != null) { " + jsFunction + "(__message); } }", __output);
+					try {
+						ExternalInterface.call("function(__message) { if(typeof(console) !== 'undefined' && console != null) { " + jsFunction + "(__message); } }", __output);
+					} catch (e:Error) {
+						trace ("Log.echo error: Tried calling console.log(), but ExternalInterface is not available! Error: " + e);
+					}
 				} else {
 					trace ("Log.echo error: Tried calling console.log(), but ExternalInterface is not available!");
 				}
