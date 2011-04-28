@@ -53,12 +53,14 @@ package com.zehfernando.net.apis.facebook {
 			Security.loadPolicyFile("http://graph.facebook.com/crossdomain.xml");
 			Security.loadPolicyFile("https://graph.facebook.com/crossdomain.xml");
 			//Security.loadPolicyFile("http://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
-			//Security.loadPolicyFile("https://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
+			//Security.loadPolicyFile("https://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml"); // Not allowed (missing secure="false"), replaced by the fbcdn.net equivalent via IMAGE_DOMAIN_REPLACEMENTS
 			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("https://profile.ak.fbcdn.net/crossdomain.xml");
-			//Security.loadPolicyFile("http://static.ak.fbcdn.net/crossdomain.xml"); // Doesn't allow
+			Security.loadPolicyFile("http://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
+			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
+			//Security.loadPolicyFile("http://static.ak.fbcdn.net/crossdomain.xml"); // For default profile image loading - doesn't allow any cross domain use though
+
+			// TODO: monitor for redirects and do the automatic cross-domain requests... ugh? http://www.arpitonline.com/blog/2008/06/17/debugging-crossdomain-issues-following-http-302s/
 		}
-		
-		//https://graph.facebook.com/oauth/authorize?client_id=147149585329358&redirect_uri=http://www.facebook.com/connect/login_success.html&type=user_agent&display=popup
 	}
 }
