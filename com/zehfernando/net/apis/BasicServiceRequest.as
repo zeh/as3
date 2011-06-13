@@ -1,5 +1,5 @@
 package com.zehfernando.net.apis {
-	import flash.net.URLRequestHeader;
+
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.HTTPStatusEvent;
