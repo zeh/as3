@@ -1,7 +1,9 @@
 package com.zehfernando.data.types {
-	import flash.events.EventDispatcher;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.utils.getTimer;
 
 	/**
 	 * @author zeh
@@ -9,8 +11,8 @@ package com.zehfernando.data.types {
 	public class AttenuatedNumber extends EventDispatcher {
 		
 		// Events
-		public static const EVENT_TICK:String = "onTick";
-		public static const EVENT_CHANGED:String = "onChanged";
+		public static const EVENT_TICK:String = "onTick";					// Every frame
+		public static const EVENT_CHANGED:String = "onChanged";				// Every frame, IF there's a change on the value (of minimum _minimumChange)
 		
 		// Properties
 		protected var _divisor:Number;
@@ -20,8 +22,12 @@ package com.zehfernando.data.types {
 		
 		protected var _current:Number;
 		protected var _target:Number;
+		
+		protected var _tickRate:Number;						// Number of ticks per second (if NaN, uses the normal framerate)
 
 		protected var _prevValue:Number;
+		
+		protected var lastTickTime:int;						// Time last tick occured
 		
 		// Instances
 		protected var container:Sprite;
@@ -29,10 +35,12 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function AttenuatedNumber(__divisor:Number = 2, __targetValue:Number = 0, __currentValue:Number = NaN, __paused:Boolean = false) {
+		public function AttenuatedNumber(__divisor:Number = 2, __targetValue:Number = 0, __currentValue:Number = NaN, __paused:Boolean = false, __tickRate:Number = NaN) {
 			// 1 = no attenuation
 			_divisor = __divisor;
 			_isRunning = false;
+			
+			_tickRate = __tickRate;
 			
 			_current = !isNaN(__currentValue) ? __currentValue : __targetValue;
 			_target = __targetValue;
@@ -45,19 +53,30 @@ package com.zehfernando.data.types {
 		
 		protected function tick(): void {
 			// Updates all values
-			
+			_prevValue = _current;
 			_current += (_target - _current) / _divisor;
+			dispatchEvent(new Event(EVENT_TICK));
+			if (Math.abs(_current - _prevValue) > _minimumChange) dispatchEvent(new Event(EVENT_CHANGED));
 		}
 		
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		protected function onEnterFrameTick(e:Event): void {
-			_prevValue = _current;
-			tick();
-			dispatchEvent(new Event(EVENT_TICK));
 			
-			if (Math.abs(_current - _prevValue) > _minimumChange) dispatchEvent(new Event(EVENT_CHANGED));
+			if (isNaN(_tickRate)) {
+				// Always update, ignore time
+				tick();
+			} else {
+				// Update if needed, as many times as needed
+				var now:int = getTimer();
+				var tickFrameTime:Number = 1000/_tickRate;
+
+				while (now > lastTickTime + tickFrameTime) {
+					tick();
+					lastTickTime += tickFrameTime;
+				}
+			}
 		}
 
 		// ================================================================================================================
@@ -68,6 +87,7 @@ package com.zehfernando.data.types {
 				container = new Sprite();
 				container.addEventListener(Event.ENTER_FRAME, onEnterFrameTick, false, 0, true);
 				_isRunning = true;
+				lastTickTime = getTimer();
 			}
 		}
 		
