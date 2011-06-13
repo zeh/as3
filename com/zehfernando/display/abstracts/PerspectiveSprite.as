@@ -148,6 +148,10 @@ package com.zehfernando.display.abstracts {
 		override public function swapChildrenAt(__index1:int, __index2:int): void {
 			_container3d.swapChildrenAt(__index1, __index2);
 		}
+		
+		override public function get numChildren() : int {
+			return _container3d.numChildren;
+		}
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
