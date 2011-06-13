@@ -41,6 +41,8 @@ package com.zehfernando.display.abstracts {
 		protected function redrawVisibility(): void {
 			alpha = _visibility;
 			visible = _visibility > 0;
+			
+			mouseEnabled = mouseChildren = _visibility == 1;
 		}
 
 		// ================================================================================================================
