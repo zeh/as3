@@ -62,6 +62,7 @@ package com.zehfernando.display.shapes {
 
 		override public function get width(): Number { return _width; }
 		override public function set width(__value:Number): void {
+			if (isNaN(__value)) __value = 0;
 			if (_width != __value) {
 				_width = __value;
 				paint();
@@ -70,6 +71,7 @@ package com.zehfernando.display.shapes {
 
 		override public function get height(): Number { return _height; }
 		override public function set height(__value:Number): void {
+			if (isNaN(__value)) __value = 0;
 			if (_height != __value) {
 				_height = __value;
 				paint();
@@ -78,6 +80,7 @@ package com.zehfernando.display.shapes {
 
 		public function get outlineWidth(): Number { return _outlineWidth; }
 		public function set outlineWidth(__value:Number): void {
+			if (isNaN(__value)) __value = 0;
 			if (_outlineWidth != __value) {
 				_outlineWidth = __value;
 				paint();
