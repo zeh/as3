@@ -146,6 +146,8 @@ package com.zehfernando.net.assets {
 			if (!Boolean(__type)) __type = AssetType.getFromURL(__url);
 			var ai:AssetItemInfo = new AssetItemInfo(__name, __type);
 			ai.url = __url;
+			
+			// TODO: add option to allow an asset to be loaded/monitored without being fully loaded? VideoLoaders can be used even if not available yet...
 
 			assets.push(ai);
 		}
@@ -236,6 +238,10 @@ package com.zehfernando.net.assets {
 			return null;
 		}
 
+		public function getAssetByIndex(__index:int): Object {
+			return assets[__index].getAsset();
+		}
+
 		public function getAssetByURL(__url:String): Object {
 			var ai:AssetItemInfo = getAssetItemInfoByURL(__url);
 			if (Boolean(ai)) return ai.getAsset();
@@ -283,6 +289,10 @@ package com.zehfernando.net.assets {
 		public function get name(): String {
 			return _name;
 		}
+		
+		public function get numAssets(): int {
+			return Boolean(assets) ? assets.length : 0;
+		}
 	}
 }
 
@@ -325,18 +335,16 @@ class AssetItemInfo {
 	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 	public function getAsset(): Object {
-		if (isLoaded) {
-			switch (type) {
-				case AssetType.XML:
-					return getAsXML();
-				case AssetType.CSS:
-					return getAsStyleSheet();
-				case AssetType.SWF:
-				case AssetType.IMAGE:
-					return getAsDisplayObject();
-				case AssetType.VIDEO:
-					return getAsVideoLoader();
-			}
+		switch (type) {
+			case AssetType.XML:
+				return getAsXML();
+			case AssetType.CSS:
+				return getAsStyleSheet();
+			case AssetType.SWF:
+			case AssetType.IMAGE:
+				return getAsDisplayObject();
+			case AssetType.VIDEO:
+				return getAsVideoLoader();
 		}
 		return null;
 	}
@@ -361,8 +369,10 @@ class AssetItemInfo {
 	}
 	
 	public function getAsVideoLoader(): VideoLoader {
-		if (isLoaded) return loadingObject as VideoLoader;
-		return null;
+		return loadingObject as VideoLoader;
+		// TODO: allow download to check whether the request needs a fully loaded file or not?
+		//if (isLoaded) return loadingObject as VideoLoader;
+		//return null;
 	}
 	
 	public function dispose(): void {
@@ -375,7 +385,8 @@ class AssetItemInfo {
 				(loadingObject as Loader).unloadAndStop();
 				break;
 			case AssetType.VIDEO:
-				if (isLoaded) getAsVideoLoader().dispose();
+				getAsVideoLoader().dispose();
+				//if (isLoaded) getAsVideoLoader().dispose();
 				break;
 		}
 		loadingObject = null;
