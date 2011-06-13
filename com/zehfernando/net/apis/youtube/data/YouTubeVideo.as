@@ -1,4 +1,5 @@
 package com.zehfernando.net.apis.youtube.data {
+
 	import com.zehfernando.net.apis.youtube.YouTubeConstants;
 	import com.zehfernando.net.apis.youtube.YouTubeDataUtils;
 	import com.zehfernando.utils.DateUtils;
@@ -143,8 +144,8 @@ package com.zehfernando.net.apis.youtube.data {
 			video.categories = new Vector.<YouTubeCategory>();
 			video.thumbnails = new Vector.<YouTubeThumbnail>();
 			
-			video.published = DateUtils.xsdDateTimeToDateUniversal(__xml.child("published").toString());
-			video.updated = DateUtils.xsdDateTimeToDateUniversal(__xml.child("updated").toString());
+			video.published = DateUtils.xsdDateTimeToDate(__xml.child("published").toString());
+			video.updated = DateUtils.xsdDateTimeToDate(__xml.child("updated").toString());
 			video.title = __xml.child("title").toString();
 			video.content = __xml.child("content").toString();
 			video.author = __xml.child("author").child("name").toString();

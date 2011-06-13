@@ -9,7 +9,7 @@ package com.zehfernando.net.apis.facebook {
 
 		public static function getResultStringAsDate(__text:String):Date {
 			// Converts '2010-08-13T21:12:40+0000' to a real date
-			return DateUtils.xsdDateTimeToDateUniversal(__text);
+			return DateUtils.xsdDateTimeToDate(__text);
 		}
 		
 		public static function getImageURLSafeReplacement(__url:String): String {
