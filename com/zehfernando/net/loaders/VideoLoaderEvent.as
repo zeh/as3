@@ -11,16 +11,14 @@ package com.zehfernando.net.loaders {
 		public static const BUFFER_EMPTY:String = "onBufferEmpty";
 		public static const BUFFER_FULL:String = "onBufferFull";
 		public static const BUFFER_FLUSH:String = "onBufferFlush";
-		public static const PLAY_START:String = "onPlayStart";
+		public static const PLAY_START:String = "onPlayStart";			// First play
+		public static const RESUME:String = "onResume";					// Any play
+		public static const PAUSE:String = "onPause";					// Any pause
 		public static const PLAY_STOP:String = "onPlayStop";
 		public static const PLAY_FINISH:String = "onPlayFinish";
-		public static const RECEIVED_XMP_DATA : String = "onReceivedXMPData";
-		public static const RECEIVED_METADATA : String = "onReceivedMetaData";
-		
-		// Properties
-		protected var _data:Object;
-		protected var _status_code:int;
-		protected var _status_txt:String;
+		public static const RECEIVED_XMP_DATA: String = "onReceivedXMPData";
+		public static const RECEIVED_METADATA: String = "onReceivedMetaData";
+		public static const TIME_CHANGE: String = "onTimeChange";
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------

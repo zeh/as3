@@ -1,6 +1,7 @@
 package com.zehfernando.net.loaders {
-
-	import com.zehfernando.utils.Console;
+	import com.zehfernando.data.serialization.json.JSON;
+	import com.zehfernando.utils.MathUtils;
+	import com.zehfernando.utils.console.log;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -12,6 +13,8 @@ package com.zehfernando.net.loaders {
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	import flash.net.URLRequest;
+	import flash.utils.getTimer;
+
 
 	/**
 	 * @author zeh
@@ -38,6 +41,8 @@ package com.zehfernando.net.loaders {
 		protected var _video:Video;
 
 		protected var isMonitoringLoading:Boolean;
+		protected var isMonitoringTime:Boolean;
+
 		protected var _metaData:Object;
 		
 		protected var _hasStartedLoading:Boolean;
@@ -45,6 +50,9 @@ package com.zehfernando.net.loaders {
 		protected var _hasMetaData:Boolean;
 		protected var _isLoading:Boolean;
 		protected var _isLoaded:Boolean;
+		
+		protected var _timeStartedLoading:int;
+		protected var _timeCompletedLoading:int;
 		
 		protected var _hasVideo:Boolean;
 
@@ -56,6 +64,7 @@ package com.zehfernando.net.loaders {
 
 		public function VideoLoader() {
 			isMonitoringLoading = false;
+			isMonitoringTime = false;
 
 			_metaData = {};
 
@@ -72,7 +81,7 @@ package com.zehfernando.net.loaders {
 			_netStream.checkPolicyFile = true;
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			_netStream.client = this;
-
+			
 			_video = new Video(100, 100);
 			_video.attachNetStream(_netStream);
 			addChild(_video);
@@ -99,6 +108,20 @@ package com.zehfernando.net.loaders {
 			}
 		}
 		
+		protected function startMonitoringTime(): void {
+			if (!isMonitoringTime) {
+				isMonitoringTime = true;
+				addEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime, false, 0, true);
+			}
+		}
+
+		protected function stopMonitoringTime(): void {
+			if (isMonitoringTime) {
+				isMonitoringTime = false;
+				removeEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime);
+			}
+		}
+		
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
@@ -119,8 +142,13 @@ package com.zehfernando.net.loaders {
 	    		//Log.echo(" --> " + iis + " = " + __newData[iis]);
 	    		_metaData[iis] = __newData[iis];
 	    	}
+
+			//log(_request.url + " METADATA ==============> " + JSON.encode(_metaData));
+
 			_hasMetaData = true;
 			dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.RECEIVED_METADATA));
+
+			onEnterFrameMonitorTime(null);
 			
 			/* Examples of metadata (received from a f4v video encoded in after effects):
 			aacaot = 2
@@ -145,11 +173,210 @@ package com.zehfernando.net.loaders {
 			videodatarate = 1000
 			videoframerate = 24
 			width = 1280
+			
+			Another (SAME f4v, twice!!):
+{
+    "videocodecid" : "avc1",
+    "seekpoints" : [
+        {
+            "time" : 0,
+            "offset" : 18781
+        },
+        {
+            "time" : 0.542,
+            "offset" : 192561
+        },
+        {
+            "time" : 1.917,
+            "offset" : 649419
+        },
+        {
+            "time" : 2.208,
+            "offset" : 738741
+        },
+        {
+            "time" : 3.583,
+            "offset" : 1024958
+        },
+        {
+            "time" : 4.958,
+            "offset" : 1327587
+        },
+        {
+            "time" : 5.417,
+            "offset" : 1455272
+        },
+        {
+            "time" : 6.792,
+            "offset" : 1599767
+        },
+        {
+            "time" : 8.167,
+            "offset" : 1844573
+        },
+        {
+            "time" : 9.542,
+            "offset" : 2184481
+        },
+        {
+            "time" : 10.917,
+            "offset" : 2536579
+        },
+        {
+            "time" : 12.292,
+            "offset" : 2787705
+        }
+    ],
+    "width" : 1280,
+    "avcprofile" : 100,
+    "height" : 720,
+    "aacaot" : 2,
+    "avclevel" : 51,
+    "audiocodecid" : "mp4a",
+    "moovposition" : 36,
+    "audiosamplerate" : 44100,
+    "videoframerate" : 24,
+    "trackinfo" : [
+        {
+            "sampledescription" : [
+                {
+                    "sampletype" : "avc1"
+                }
+            ],
+            "language" : "eng",
+            "timescale" : 90000,
+            "length" : 1188750
+        },
+        {
+            "sampledescription" : [
+                {
+                    "sampletype" : "mp4a"
+                }
+            ],
+            "language" : "eng",
+            "timescale" : 44100,
+            "length" : 584704
+        },
+        {
+            "sampledescription" : [
+                {
+                    "sampletype" : "amf0"
+                }
+            ],
+            "language" : "eng",
+            "timescale" : 90000,
+            "length" : 1188750
+        }
+    ],
+    "duration" : 13.25859410430839,
+    "audiochannels" : 2
+}
+{
+    "videocodecid" : 7,
+    "videodatarate" : 1799.998,
+    "framerate" : 24,
+    "seekpoints" : [
+        {
+            "time" : 0,
+            "offset" : 18781
+        },
+        {
+            "time" : 0.542,
+            "offset" : 192561
+        },
+        {
+            "time" : 1.917,
+            "offset" : 649419
+        },
+        {
+            "time" : 2.208,
+            "offset" : 738741
+        },
+        {
+            "time" : 3.583,
+            "offset" : 1024958
+        },
+        {
+            "time" : 4.958,
+            "offset" : 1327587
+        },
+        {
+            "time" : 5.417,
+            "offset" : 1455272
+        },
+        {
+            "time" : 6.792,
+            "offset" : 1599767
+        },
+        {
+            "time" : 8.167,
+            "offset" : 1844573
+        },
+        {
+            "time" : 9.542,
+            "offset" : 2184481
+        },
+        {
+            "time" : 10.917,
+            "offset" : 2536579
+        },
+        {
+            "time" : 12.292,
+            "offset" : 2787705
+        }
+    ],
+    "width" : 1280,
+    "avcprofile" : 100,
+    "audiodelay" : 0.036,
+    "height" : 720,
+    "aacaot" : 2,
+    "avclevel" : 51,
+    "audiodatarate" : 112,
+    "audiocodecid" : 10,
+    "canSeekToEnd" : true,
+    "moovposition" : 36,
+    "audiosamplerate" : 44100,
+    "videoframerate" : 24,
+    "trackinfo" : [
+        {
+            "sampledescription" : [
+                {
+                    "sampletype" : "avc1"
+                }
+            ],
+            "language" : "eng",
+            "timescale" : 90000,
+            "length" : 1188750
+        },
+        {
+            "sampledescription" : [
+                {
+                    "sampletype" : "mp4a"
+                }
+            ],
+            "language" : "eng",
+            "timescale" : 44100,
+            "length" : 584704
+        },
+        {
+            "sampledescription" : [
+                {
+                    "sampletype" : "amf0"
+                }
+            ],
+            "language" : "eng",
+            "timescale" : 90000,
+            "length" : 1188750
+        }
+    ],
+    "duration" : 13.208,
+    "audiochannels" : 2
+}
 			*/
 	    }
 	
 	    public function onCuePoint(__cueInfo:Object):void {
-			Console.log(" --> time=" + __cueInfo["time"] + " name=" + __cueInfo["name"] + " type=" + __cueInfo["type"]);
+			//log(" --> time=" + __cueInfo["time"] + " name=" + __cueInfo["name"] + " type=" + __cueInfo["type"]);
 	    	//lastCuePoint = info;
 	    	dispatchEvent(new VideoLoaderCuePointEvent(VideoLoaderCuePointEvent.CUE_POINT, __cueInfo["time"], __cueInfo["name"], __cueInfo["type"]));
 		}
@@ -157,22 +384,24 @@ package com.zehfernando.net.loaders {
 		// Other events
 		protected function onLoadStart(): void {
 			// Pseudo-event
+			_timeStartedLoading = getTimer();
 			_hasStartedLoading = true;
-			//Log.echo(url);
+			//log(url);
 			dispatchEvent(new Event(Event.OPEN));
 		}
 
 		protected function onLoadProgress(): void {
 			// Pseudo-event
-			//Log.echo("bytes = " + bytesLoaded + " / " + bytesTotal);
+			//log(url + " / bytes = " + bytesLoaded + " / " + bytesTotal);
 			dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, bytesLoaded, bytesTotal));
 		}
 
 		protected function onLoadComplete(): void {
 			// Pseudo-event
-			//Log.echo();
+			//log(url);
 
 			_isLoaded = true;
+			_timeCompletedLoading = getTimer();
 			stopMonitoringLoading();
 
 			dispatchEvent(new Event(Event.COMPLETE));
@@ -195,6 +424,10 @@ package com.zehfernando.net.loaders {
 					onLoadComplete();
 				}
 			}
+		}
+		
+		protected function onEnterFrameMonitorTime(e:Event): void {
+			dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.TIME_CHANGE));
 		}
 
 		protected function onNetStatus(event:NetStatusEvent):void {
@@ -220,7 +453,7 @@ package com.zehfernando.net.loaders {
 			//trace ("videocontainer onNetStatus :: " + event.info.code);
             switch (event.info["code"]) {
 				case "NetStream.Play.StreamNotFound":
-                	Console.log("Stream location [" + _request.url + "] not found!");
+                	log("Stream location [" + _request.url + "] not found!");
                 	dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.STREAM_NOT_FOUND));
                 	stopMonitoringLoading();
                     break;
@@ -228,7 +461,9 @@ package com.zehfernando.net.loaders {
                 	dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.SEEK_NOTIFY));
                 	break;
                 case "NetStream.Play.Start":
+                	// Apparently this only works with streaming netstreams? 
                 	//trace ("netstream.play.start " + _contentURL);
+                	startMonitoringTime();
                 	dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_START));
                 	break;
             	case "NetStream.Buffer.Empty":
@@ -241,6 +476,7 @@ package com.zehfernando.net.loaders {
             		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.BUFFER_FLUSH));
 					break;
             	case "NetStream.Play.Stop":
+            		stopMonitoringTime();
             		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_STOP));
             		if (time > duration - 0.1) dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_FINISH));
             		break;
@@ -248,7 +484,7 @@ package com.zehfernando.net.loaders {
         }
 
         protected function onNetError(e:SecurityErrorEvent):void {
-			Console.log("securityErrorHandler: " + e);
+			log("securityErrorHandler: " + e);
 			dispatchEvent(e);
 			
 			stopMonitoringLoading();
@@ -272,6 +508,7 @@ package com.zehfernando.net.loaders {
 
 		public function dispose(): void {
 			stopMonitoringLoading();
+			stopMonitoringTime();
 
 			_isLoaded = false;
 			_isLoading = false;
@@ -297,15 +534,26 @@ package com.zehfernando.net.loaders {
 		// Functions that extend the existing objects
 		
 		public function resume(): void {
-			if (_hasVideo) _netStream.resume();
+			if (_hasVideo) {
+				_netStream.resume();
+				startMonitoringTime();
+				dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.RESUME));
+			}
 		}
 
 		public function pause(): void {
-			if (_hasVideo) _netStream.pause();
+			if (_hasVideo) {
+				_netStream.pause();
+				stopMonitoringTime();
+				dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PAUSE));
+			}
 		}
 		
 		public function seek(__time:Number): void {
-			if (_hasVideo) _netStream.seek(__time);
+			if (_hasVideo) {
+				_netStream.seek(__time);
+				onEnterFrameMonitorTime(null);
+			}
 		}
 
 		// ================================================================================================================
@@ -365,6 +613,10 @@ package com.zehfernando.net.loaders {
 			return _hasVideo ? _netStream.decodedFrames : 0;
 		}
 		
+		public function get droppedFrames(): uint {
+			return _hasVideo ? _netStream.info.droppedFrames : 0;
+		}
+		
 		public function get currentFPS(): Number {
 			return _hasVideo ? _netStream.currentFPS : 0; // The number of frames per second being displayed. If you are exporting video files to be played back on a number of systems, you can check this value during testing to help you determine how much compression to apply when exporting the file
 		}
@@ -378,6 +630,27 @@ package com.zehfernando.net.loaders {
 		
 		public function get url(): String {
 			return Boolean(_request) ? _request.url : null;
+		}
+		
+		public function getLoadingSpeed(): Number {
+			// Returns the loading speed, in bytes per second
+			if (_isLoading) {
+				return bytesLoaded / ((getTimer() - _timeStartedLoading) / 1000);
+			} else if (_isLoaded) {
+				return bytesLoaded / ((_timeCompletedLoading - _timeStartedLoading) / 1000);
+			}
+			return 0;
+		}
+
+		public function getFullBufferingLevel(): Number {
+			// Returns a number between 0 and 1 that's the percentage of data that is loaded to provide a full non-stop playback
+			// 0 = nothing loaded; 1 = can probably provide a nonstop playback
+			if (duration == 0 || !_hasMetaData || bytesTotal == 0 || isNaN(_timeStartedLoading)) return 0;
+			if (_isLoaded) return 1;
+			var remainingPlaybackTime:Number = duration - time;									// Remaining video playback time, in seconds
+			var remainingLoadingTime:Number = (bytesTotal - bytesLoaded) / getLoadingSpeed();	// Time needed to play the remaining data, in seconds
+			//return remainingLoadingTime <= remainingPlaybackTime;
+			return MathUtils.clamp(remainingPlaybackTime / remainingLoadingTime);
 		}
 
 //		public function get video(): Video {
