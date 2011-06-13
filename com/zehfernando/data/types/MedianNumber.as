@@ -1,7 +1,5 @@
 package com.zehfernando.data.types {
 
-	import com.zehfernando.utils.Console;
-
 	import flash.events.EventDispatcher;
 	/**
 	 * @author zeh
