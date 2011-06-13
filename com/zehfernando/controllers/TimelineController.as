@@ -1,4 +1,5 @@
 package com.zehfernando.controllers {
+
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -108,9 +109,13 @@ package com.zehfernando.controllers {
 		}
 		public function set frame(__value:Number): void {
 			if (_movieClip.currentFrame != __value) {
-				_movieClip.gotoAndStop(__value);
+				_movieClip.gotoAndStop(Math.round(__value));
 				_actualFrame = __value;
 			}
+		}
+		
+		public function get totalFrames(): int {
+			return _movieClip.totalFrames;
 		}
 		
 		public function get isPlaying(): Boolean {
