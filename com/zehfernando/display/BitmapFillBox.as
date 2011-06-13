@@ -81,6 +81,8 @@ package com.zehfernando.display {
 				var posX:int;
 				var posY:int;
 				
+				// TODO: use beginBitmapFill() instead
+				
 				switch (_alignHorizontal) {
 					case ALIGN_HORIZONTAL_LEFT:
 						posX = 0;
