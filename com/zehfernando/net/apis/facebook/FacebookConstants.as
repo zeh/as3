@@ -37,7 +37,7 @@ package com.zehfernando.net.apis.facebook {
 		public static const SERVICE_FILE_PICTURE:String = "/[[author_id]]/picture";
 		public static const SERVICE_FILE_PICTURE_SQUARE:String = "/[[author_id]]/picture?type=square";		// 50x50 but zoomed (default)
 		public static const SERVICE_FILE_PICTURE_SMALL:String = "/[[author_id]]/picture?type=small";		// 50 pixels wide, variable height
-		public static const SERVICE_FILE_PICTURE_NORMAL:String = "/[[author_id]]/picture?type=normal";		// 100 pixels wide, variable height
+		public static const SERVICE_FILE_PICTURE_NORMAL:String = "/[[author_id]]/picture?type=normal";		// 100x100
 		public static const SERVICE_FILE_PICTURE_LARGE:String = "/[[author_id]]/picture?type=large";		// 200 pixels wide, variable height
 		
 		public static const AUTHORIZE_URL:String = "https://graph.facebook.com/oauth/authorize?client_id=[[app_id]]&redirect_uri=[[redirect_url]]&type=user_agent&display=popup&scope=[[scope]]";
@@ -53,14 +53,16 @@ package com.zehfernando.net.apis.facebook {
 			Security.loadPolicyFile("http://graph.facebook.com/crossdomain.xml");
 			Security.loadPolicyFile("https://graph.facebook.com/crossdomain.xml");
 			//Security.loadPolicyFile("http://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
-			//Security.loadPolicyFile("https://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml"); // Not allowed (missing secure="false"), replaced by the fbcdn.net equivalent via IMAGE_DOMAIN_REPLACEMENTS
+			//Security.loadPolicyFile("https://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
 			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("https://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("http://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
 			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
-			//Security.loadPolicyFile("http://static.ak.fbcdn.net/crossdomain.xml"); // For default profile image loading - doesn't allow any cross domain use though
-
+			//Security.loadPolicyFile("http://static.ak.fbcdn.net/crossdomain.xml"); // Doesn't allow
+			
 			// TODO: monitor for redirects and do the automatic cross-domain requests... ugh? http://www.arpitonline.com/blog/2008/06/17/debugging-crossdomain-issues-following-http-302s/
 		}
+		
+		//https://graph.facebook.com/oauth/authorize?client_id=147149585329358&redirect_uri=http://www.facebook.com/connect/login_success.html&type=user_agent&display=popup
 	}
 }
