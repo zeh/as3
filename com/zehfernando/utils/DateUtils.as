@@ -33,41 +33,7 @@ package com.zehfernando.utils {
 			return num;
 		}
 
-		public static function simpleDateToDate(__date:String): Date {
-			// Converts 2010-01-01 to a date
-			var tt:Date = new Date();
-			tt.fullYearUTC = parseInt(__date.substr(0, 4), 10);
-			tt.monthUTC = parseInt(__date.substr(5, 2), 10) - 1;
-			tt.dateUTC = parseInt(__date.substr(8, 2), 10);
-			tt.hoursUTC = 0;
-			tt.secondsUTC = 0;
-			tt.millisecondsUTC = 0;
-			return tt;
-		}
-
 		public static function xsdDateTimeToDate(__date:String): Date {
-			// Converts a data from DateTime XML format to a normal Date
-			// This is the same format that comes from .NET database dumps as XML
-			// Example: 2009-10-19T17:20:08-04:00
-			// Reference: http://www.w3schools.com/Schema/schema_dtypes_date.asp
-			if (!Boolean(__date) || __date.length < 25) return null;
-			
-			var tt:Date = new Date();
-			tt.fullYear = parseInt(__date.substr(0, 4), 10);
-			tt.month = parseInt(__date.substr(5, 2), 10) - 1;
-			tt.date = parseInt(__date.substr(8, 2), 10);
-			tt.hours = parseInt(__date.substr(11, 2), 10);
-			tt.minutes = parseInt(__date.substr(14, 2), 10);
-			tt.seconds = parseInt(__date.substr(17, 2), 10);
-			
-			// Timezone is ignored
-			//tt.timezoneOffset = parseInt(__date.substr(20, 2), 10) * 60 + parseInt(__date.substr(23, 2), 10);
-			//if (__date.substr(19, 1) == "-") tt.timezoneOffset *= -1;
-			
-			return tt;
-		}
-
-		public static function xsdDateTimeToDateUniversal(__date:String): Date {
 			// Converts a data from DateTime XML format to a normal Date
 			// This should be the final, universal one
 			// Example: 2010-06-30T21:19:01.000Z
@@ -153,14 +119,6 @@ package com.zehfernando.utils {
 			tt.secondsUTC = Math.floor(seconds);
 			tt.millisecondsUTC = (seconds - Math.floor(seconds)) * 1000;
 
-//			tt.fullYearUTC = year;
-//			tt.monthUTC = month;
-//			tt.dateUTC = day;
-//			tt.hoursUTC = hours;
-//			tt.minutesUTC = minutes;
-//			tt.secondsUTC = Math.floor(seconds);
-//			tt.millisecondsUTC = (seconds - Math.floor(seconds)) * 1000;
-
 			var minutesOffset:int = timeZoneHour * 60 + timeZoneMinutes;
 
 			tt.time -= minutesOffset * 60 * 1000;
@@ -168,28 +126,8 @@ package com.zehfernando.utils {
 			return tt;
 		}
 
-		public static function xsdDateTimeToDateUniversalOld(__date:String): Date {
-			// Converts a data from DateTime XML format to a normal Date
-			// This is the same format that comes from YouTube dumps?
-
-			if (!Boolean(__date) || __date.length < 24) return null;
-			
-			var tt:Date = new Date();
-			tt.fullYearUTC = parseInt(__date.substr(0, 4), 10);
-			tt.monthUTC = parseInt(__date.substr(5, 2), 10) - 1;
-			tt.dateUTC = parseInt(__date.substr(8, 2), 10);
-			tt.hoursUTC = parseInt(__date.substr(11, 2), 10);
-			tt.minutesUTC = parseInt(__date.substr(14, 2), 10);
-			tt.secondsUTC = parseInt(__date.substr(17, 2), 10);
-			tt.millisecondsUTC = parseInt(__date.substr(20, 3), 10);
-			
-			// TODO: it's ignoring time zone!
-			
-			return tt;
-		}
-
 		public static function descriptiveDifference(__date:Date): String {
-			// Ugh, rename this?
+			// TODO: rename this, add parameters
 			// Returns a friendly description of a time difference ("2 hours", "1 day", "10 seconds", "1 year" etc)
 			
 			// Full data
