@@ -1,10 +1,9 @@
 package com.zehfernando.display.containers {
-
+	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.loaders.VideoLoader;
 	import com.zehfernando.net.loaders.VideoLoaderCuePointEvent;
 	import com.zehfernando.net.loaders.VideoLoaderEvent;
-	import com.zehfernando.utils.Console;
-	import com.zehfernando.utils.MathUtils;
+	import com.zehfernando.utils.console.log;
 
 	import flash.display.BitmapData;
 	import flash.events.Event;
@@ -13,6 +12,7 @@ package com.zehfernando.display.containers {
 	import flash.geom.Matrix;
 	import flash.media.SoundTransform;
 	import flash.net.URLRequest;
+
 
 	/**
 	 * @author Zeh Fernando - z at zeh.com.br
@@ -23,13 +23,15 @@ package com.zehfernando.display.containers {
 		// Common
 		public static const EVENT_PLAY_START:String = "onVideoPlayStart";						// Test! Only at the first play?
 		public static const EVENT_PLAY_STOP:String = "onVideoStop";								// Test!
+		public static const EVENT_RESUME:String = "onVideoResume";								// Test!
+		public static const EVENT_PAUSE:String = "onVideoPause";								// Test!
 		public static const EVENT_PLAY_FINISH:String = "onVideoPlayFinish";						// Test!
 		public static const EVENT_SEEK_NOTIFY:String = "onSeekNotify";							// Test!
-		public static const EVENT_PAUSE:String = "onVideoPause";								// Test!
 		public static const EVENT_LOADING_START:String = "onStartedLoading";					// Test!
 		public static const EVENT_LOADING_PROGRESS:String = "onProgressLoading";				// Test!
 		public static const EVENT_LOADING_ERROR:String = "onProgressLoading";					// Test!
 		public static const EVENT_LOADING_COMPLETE:String = "onCompletedLoading";				// Test!
+		public static const EVENT_VOLUME_CHANGE:String = "onVolumeChanged";
 
 		// Specific
 		public static const EVENT_LOOP:String = "onStopVideoEndLoop";							// Test!
@@ -38,6 +40,7 @@ package com.zehfernando.display.containers {
 		public static const EVENT_BUFFER_FULL:String = "onBufferFull";							// Test!
 		public static const EVENT_RECEIVED_METADATA:String = "onReceivedMetaData";				// Test!
 		public static const EVENT_CUE_POINT:String = "onReceivedCuePoint";
+		public static const EVENT_TIME_CHANGE:String = "onTimeChanged";
 
 		// Properties
 		protected var _isPlaying:Boolean;
@@ -125,7 +128,7 @@ package com.zehfernando.display.containers {
 			_contentHeight = videoLoader.metaData["height"];
 			
 			redraw();
-			
+
 			dispatchEvent(new Event(EVENT_RECEIVED_METADATA));
 	    }
 	
@@ -136,7 +139,7 @@ package com.zehfernando.display.containers {
 		}
 
 		protected function onSecurityError(e:SecurityError): void {
-			Console.log("securityErrorHandler: " + e);
+			log("securityErrorHandler: " + e);
 			dispatchEvent(new Event(EVENT_LOADING_ERROR));
 		}
 		
@@ -191,6 +194,20 @@ package com.zehfernando.display.containers {
 			dispatchEvent(new Event(EVENT_PLAY_STOP));
 		}
 
+		protected function onResume(e:VideoLoaderEvent): void {
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_RESUME));
+		}
+
+		protected function onPause(e:VideoLoaderEvent): void {
+			updateMaximumTime();
+			dispatchEvent(new Event(EVENT_PAUSE));
+		}
+
+		protected function onTimeChange(e:VideoLoaderEvent): void {
+			dispatchEvent(new Event(EVENT_TIME_CHANGE));
+		}
+
 		protected function onPlayFinish(e:VideoLoaderEvent): void {
 
        		if (_loop) {
@@ -225,9 +242,12 @@ package com.zehfernando.display.containers {
 			videoLoader.addEventListener(VideoLoaderEvent.BUFFER_FLUSH, onBufferFlush);
 			videoLoader.addEventListener(VideoLoaderEvent.PLAY_START, onPlayStart);
 			videoLoader.addEventListener(VideoLoaderEvent.PLAY_STOP, onPlayStop);
+			videoLoader.addEventListener(VideoLoaderEvent.RESUME, onResume);
+			videoLoader.addEventListener(VideoLoaderEvent.PAUSE, onPause);
 			videoLoader.addEventListener(VideoLoaderEvent.PLAY_FINISH, onPlayFinish);
 			videoLoader.addEventListener(VideoLoaderEvent.RECEIVED_METADATA, onMetaData);
 			videoLoader.addEventListener(VideoLoaderEvent.RECEIVED_XMP_DATA, onXMPData);
+			videoLoader.addEventListener(VideoLoaderEvent.TIME_CHANGE, onTimeChange);
 			videoLoader.addEventListener(VideoLoaderCuePointEvent.CUE_POINT, onCuePoint);
 			
 			setAsset(videoLoader);
@@ -248,9 +268,12 @@ package com.zehfernando.display.containers {
 				videoLoader.removeEventListener(VideoLoaderEvent.BUFFER_FLUSH, onBufferFlush);
 				videoLoader.removeEventListener(VideoLoaderEvent.PLAY_START, onPlayStart);
 				videoLoader.removeEventListener(VideoLoaderEvent.PLAY_STOP, onPlayStop);
+				videoLoader.removeEventListener(VideoLoaderEvent.RESUME, onResume);
+				videoLoader.removeEventListener(VideoLoaderEvent.PAUSE, onPause);
 				videoLoader.removeEventListener(VideoLoaderEvent.PLAY_FINISH, onPlayFinish);
 				videoLoader.removeEventListener(VideoLoaderEvent.RECEIVED_METADATA, onMetaData);
 				videoLoader.removeEventListener(VideoLoaderEvent.RECEIVED_XMP_DATA, onXMPData);
+				videoLoader.removeEventListener(VideoLoaderEvent.TIME_CHANGE, onTimeChange);
 				videoLoader.removeEventListener(VideoLoaderCuePointEvent.CUE_POINT, onCuePoint);
 
 				removeAsset();
@@ -402,23 +425,14 @@ package com.zehfernando.display.containers {
 		}
 
 		override public function getLoadingSpeed(): Number {
-			updateByteCount();
-			return super.getLoadingSpeed();
+			//updateByteCount();
+			//return super.getLoadingSpeed();
+			return videoLoader.getLoadingSpeed();
 		}
 		
-		public function getFullBufferingLevel(): Number { // TODO: ugh, rename this function?
-			// Returns a number between 0 and 1 that's the percentage of data that is loaded to provide a full non-stop playback
-			// 0 = nothing loaded; 1 = can probably provide a nonstop playback
-			//AflactPlayer.getInstance().ttrace(" >> " + _contentURL + " _timeStartedLoading = " + _timeStartedLoading);
-			//AflactPlayer.getInstance().ttrace(" >> " + _contentURL + " loaded = " + loaded);
+		public function getFullBufferingLevel(): Number {
 			updateByteCount();
-			if (duration == 0 || _bytesTotal == 0 || isNaN(_timeStartedLoading)) return 0;
-			//AflactPlayer.getInstance().ttrace(" >> " + _contentURL + " IS OK");
-			if (isLoaded) return 1;
-			var remainingPlaybackTime:Number = duration - time;									// Remaining video playback time, in seconds
-			var remainingLoadingTime:Number = (_bytesTotal - _bytesLoaded) / getLoadingSpeed();	// Time needed to play the remaining data, in seconds
-			//return remainingLoadingTime <= remainingPlaybackTime;
-			return MathUtils.clamp(remainingPlaybackTime / remainingLoadingTime);
+			return videoLoader.getFullBufferingLevel();
 		}
 		
 		public function getMaximumPositionPlayed(): Number {
@@ -496,6 +510,8 @@ package com.zehfernando.display.containers {
 		public function set volume(__value:Number):void {
 			_volume = __value;
 			applyVolume();
+			// TODO: move this to video loader?
+			dispatchEvent(new Event(EVENT_VOLUME_CHANGE));
 		}
 
 		public function get loop(): Boolean {
@@ -522,7 +538,8 @@ package com.zehfernando.display.containers {
 			return lastCuePoint;
 		}
 		public function get droppedFrames(): int {
-			return _hasVideo ? videoLoader.metaData["droppedFrames"] : 0;
+			//return _hasVideo ? videoLoader.metaData["droppedFrames"] : 0;
+			return _hasVideo ? videoLoader.droppedFrames : 0;
 		}
 		public function get decodedFrames(): int {
 			return _hasVideo ? videoLoader.decodedFrames : 0;
