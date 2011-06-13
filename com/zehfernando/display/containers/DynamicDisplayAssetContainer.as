@@ -78,7 +78,7 @@ package com.zehfernando.display.containers {
 		}
 
 		public function getLoadingSpeed(): Number {
-			// Returns the loading speed, in kilobytes per second
+			// Returns the loading speed, in bytes per second
 			if (isLoading) {
 				return _bytesLoaded / ((getTimer() - _timeStartedLoading) / 1000);
 			} else if (isLoaded) {
