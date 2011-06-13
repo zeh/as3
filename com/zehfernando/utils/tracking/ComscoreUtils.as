@@ -1,12 +1,13 @@
 package com.zehfernando.utils.tracking {
 
-	import com.zehfernando.utils.Console;
+	import com.zehfernando.utils.console.log;
 
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.net.URLRequest;
 	import flash.system.LoaderContext;
+
 	/**
 	 * @author zeh
 	 */
@@ -30,7 +31,7 @@ package com.zehfernando.utils.tracking {
 			_verbose = true;
 			_simulated = false;
 			
-			if (_verbose) Console.log ("Initialized :: verbose set to ["+_verbose+"] and simulated set to ["+_simulated+"]");
+			if (_verbose) log ("Initialized :: verbose set to ["+_verbose+"] and simulated set to ["+_simulated+"]");
 			
 			loaders = new Vector.<LoaderInfo>();
 		}
@@ -49,7 +50,7 @@ package com.zehfernando.utils.tracking {
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
 		public static function trackURL(__url:String): void {
-			if (_verbose) Console.log ("[" + __url + "]");
+			if (_verbose) log ("[" + __url + "]");
 			if (!_simulated && Boolean(__url)) {
 				var loader:Loader = new Loader();
 				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderComplete);
@@ -68,7 +69,7 @@ package com.zehfernando.utils.tracking {
 		public static function set simulated(__value:Boolean): void {
 			if (_simulated != __value) {
 				_simulated = __value;
-				Console.log("simulated is " + _simulated);
+				log("simulated is " + _simulated);
 			}
 		}
 
@@ -78,7 +79,7 @@ package com.zehfernando.utils.tracking {
 		public static function set verbose(__value:Boolean): void {
 			if (_verbose != __value) {
 				_verbose = __value;
-				Console.log("verbose is " + _verbose);
+				log("verbose is " + _verbose);
 			}
 		}
 	}

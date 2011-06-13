@@ -2,7 +2,7 @@ package com.zehfernando.net {
 
 	import com.zehfernando.net.loaders.VideoLoader;
 	import com.zehfernando.net.loaders.VideoLoaderEvent;
-	import com.zehfernando.utils.Console;
+	import com.zehfernando.utils.console.log;
 
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
@@ -14,6 +14,7 @@ package com.zehfernando.net {
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.system.LoaderContext;
+
 
 	/**
 	 * @author Zeh
@@ -257,7 +258,7 @@ package com.zehfernando.net {
 				queue.push(q);
 			} else {
 				// Maximum tries already
-				Console.log("Can't load: reached maximum number of tries for URLLoader [" +q.request.url + "] !");
+				log("Can't load: reached maximum number of tries for URLLoader [" +q.request.url + "] !");
 			}
 		}
 
@@ -265,7 +266,7 @@ package com.zehfernando.net {
 
 		protected function onVideoLoaderProgress(e:ProgressEvent): void {
 			//Log.echo("current = " + currentLoaders.length + ", total = " + queue.length);
-
+			
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
 			q.bytesLoaded = e.bytesLoaded;
 			q.bytesTotal = e.bytesTotal;
@@ -304,7 +305,7 @@ package com.zehfernando.net {
 				queue.push(q);
 			} else {
 				// Maximum tries already
-				Console.log("Can't load: reached maximum number of tries for VideoLoader [" +q.request.url + "] !");
+				log("Can't load: reached maximum number of tries for VideoLoader [" +q.request.url + "] !");
 			}
 		}
 		
@@ -347,7 +348,7 @@ package com.zehfernando.net {
 				queue.push(q);
 			} else {
 				// Maximum tries already
-				Console.log("Can't load: reached maximum number of tries for Loader [" +q.request.url + "] !");
+				log("Can't load: reached maximum number of tries for Loader [" +q.request.url + "] !");
 			}
 		}
 		
