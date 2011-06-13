@@ -1,27 +1,43 @@
 package com.zehfernando.display.containers {
+
+	import com.zehfernando.utils.console.log;
+
+	import flash.display.BitmapData;
+	import flash.events.ActivityEvent;
 	import flash.events.Event;
-	import flash.events.NetStatusEvent;
+	import flash.events.StatusEvent;
+	import flash.geom.Matrix;
 	import flash.media.Camera;
 	import flash.media.Video;
-	import flash.net.NetConnection;
-	import flash.net.NetStream;
+	import flash.utils.getTimer;
+
 
 	/**
 	 * @author zeh
 	 */
 	public class CameraContainer extends DisplayAssetContainer {
 
-		// Constants
+		// Events
 		public static const EVENT_CAMERA_ACTIVATED:String = "onCameraActivated";
-		public static const EVENT_CONNECTED:String = "onConnect";
 		public static const EVENT_CAMERA_NOT_AVAILABLE:String = "onCameraNotAvailable";
+		public static const EVENT_CAMERA_DENIED:String = "onCameraDenied";
+		public static const EVENT_AUTO_SELECT_SUCCESS:String = "onAutoSelectSuccess";
+		public static const EVENT_AUTO_SELECT_FAILED:String = "onAutoSelectFailed";
+		
+		// Constants
+		public static const TIME_TO_WAIT_FOR_VALID_ACTIVITY:Number = 100;	// Time, in ms, to wait for camera activity during auto-selection process (when activity is higher than -1) 
+		public static const TIME_TO_WAIT_FOR_ANY_ACTIVITY:Number = 500;		// Time, in ms, to wait for camera activity during auto-selection process (after starting, even if it's still -1) 
 
 		// Properties
 		protected var _isStarted:Boolean;
 		protected var _isConnected:Boolean;
-		protected var _isRecording:Boolean;
 		protected var _video:Video;
 		protected var _camera:Camera;
+		protected var isFindingActiveCameras:Boolean;
+		protected var autoSelectFirstActiveCamera:Boolean;
+		protected var lastCameraTried:int;
+		protected var timeStartedCheckingCamera:int;
+		protected var timeStartedCheckingCameraHadActivity:int;
 		
 		protected var _streamName:String;
 
@@ -29,8 +45,7 @@ package com.zehfernando.display.containers {
 		
 		protected var isWaitingForCamera:Boolean;
 		
-		protected var netConnection:NetConnection;
-		protected var netStream:NetStream;
+		protected var validCameras:Vector.<Boolean>;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -41,29 +56,29 @@ package com.zehfernando.display.containers {
 
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
+		
+		override protected function setDefaultData():void {
+			super.setDefaultData();
 
-		override protected function createContent(): void {
-			super.createContent();
 			_isStarted = false;
-			_video = new Video(100, 100);
-			_video.smoothing = _smoothing;
-			addAsset(_video);
 		}
+		
+		override protected function createContentHolder():void {
+			super.createContentHolder();
 
-		override protected function destroyContent(): void {
-			stopRecording();
-			disconnect();
-			stop();
-			super.destroyContent();
+			_video = new Video(100, 100);
+			redrawSmoothing();
+			setAsset(_video, 100, 100);
 		}
 		
 		protected function redrawSmoothing(): void {
 			//if (_isLoaded && Boolean(loader.content)) Bitmap(loader.content).smoothing = _smoothing;
-			if (Boolean(_video)) _video.smoothing = false;
+			if (Boolean(_video)) _video.smoothing = _smoothing;
 		}
 		
 		protected function startWaitingForCamera(): void {
 			if (!isWaitingForCamera) {
+				_camera.addEventListener(StatusEvent.STATUS, onCameraChangeStatus);
 				addEventListener(Event.ENTER_FRAME, onEnterFrameWaitForCamera);
 				isWaitingForCamera = true;
 			}
@@ -71,6 +86,7 @@ package com.zehfernando.display.containers {
 
 		protected function stopWaitingForCamera(): void {
 			if (isWaitingForCamera) {
+				_camera.removeEventListener(StatusEvent.STATUS, onCameraChangeStatus);
 				removeEventListener(Event.ENTER_FRAME, onEnterFrameWaitForCamera);
 				isWaitingForCamera = false;
 			}
@@ -81,54 +97,160 @@ package com.zehfernando.display.containers {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		protected function onEnterFrameWaitForCamera(e:Event): void {
-			if (_camera.currentFPS > 0) {
+			//Console.log("waiting for camera..." + _camera.muted);
+			
+			// TODO: checking currentfps is bad... for some reason it doesn't always work (just first time?). Using mute is better,
+			// so it's probably better to use the change status event only instead 
+			if (_camera.currentFPS > 0 || !_camera.muted) {
 				// FPS is higher than 0, therefore it's working
 				dispatchEvent(new Event(EVENT_CAMERA_ACTIVATED));
 				stopWaitingForCamera();
 			}
 		}
+
+		protected function onCameraChangeStatus(e:Event): void {
+			log("camera changed status: " + e);
+			if (_camera.muted) {
+				stop();
+				dispatchEvent(new Event(EVENT_CAMERA_DENIED));
+			}
+		}
+
+		protected function tryNextCamera(): void {
+			var cam:int = lastCameraTried + 1;
+			
+			if (cam < Camera.names.length) {
+				lastCameraTried = cam;
+
+				log("Trying camera ["+lastCameraTried+"] : " + Camera.names[lastCameraTried] + "...");
+				timeStartedCheckingCamera = -1;
+				timeStartedCheckingCameraHadActivity = -1;
+				setCamera(lastCameraTried);
+				addEventListener(Event.ENTER_FRAME, onWaitForRealCameraActivity);
+			} else {
+				// Finished testing all cameras
+
+				stopFindingActiveCameras();
+
+				if (getNumValidCameras() > 0) {
+					// Has at least one valid camera
+					log("Found at least one valid camera!!!");
+
+					if (autoSelectFirstActiveCamera) {
+						// Pick the first valid camera
+						setCamera(validCameras.indexOf(true));
+					} else {
+						// Pick the default camera
+						setCamera();
+					}
+
+					dispatchEvent(new Event(EVENT_AUTO_SELECT_SUCCESS));
+				} else {
+					// No valid cameras found
+					log("Could not find valid camera!!!");
+					dispatchEvent(new Event(EVENT_AUTO_SELECT_FAILED));
+				}
+			}
+		}
+
+		protected function setCamera(__index:int = -1): void {
+			unsetCamera();
+			_camera = Camera.getCamera(__index == -1 ? null : __index.toString(10));
+			if (Boolean(_camera)) {
+				_video.attachCamera(_camera);
+				_camera.setMotionLevel(0);
+				_camera.addEventListener(ActivityEvent.ACTIVITY, onActivityOnCamera);
+				setCameraMode(320, 240, 20);
+				startWaitingForCamera();
+			}
+		}	
 		
-		protected function onNetConnectionStatus(e:NetStatusEvent): void {
-			trace ("net status event [info.code="+e.info.code+"] : " + e);
-
-			var info:Object = e.info;
-
-                //Checking the event.info.code for the current NetConnection status string	
-                switch (info.code) {
-					//code == NetConnection.Connect.Success when Netconnection has successfully
-					//connected
-					case "NetConnection.Connect.Success":
-						dispatchEvent(new Event(EVENT_CONNECTED));
-						break;
-					//code == NetConnection.Connect.Rejected when Netconnection did
-					//not have permission to access the application.		
-						case "NetConnection.Connect.Rejected":
-						trace("onNetConnectionStatus :: Connection rejected.");
-						break;
-
-					//code == NetConnection.Connect.Failed when Netconnection has failed to connect
-					//either because your network connection is down or the server address doesn't exist.
-					case "NetConnection.Connect.Failed":
-						trace("onNetConnectionStatus :: Connection failed.");
-						break;
-
-					//code == NetConnection.Connect.Closed when Netconnection has been closed successfully.	
-					case "NetConnection.Connect.Closed":
-						trace("onNetConnectionStatus :: Connection closed.");
-						break;
-                }
+		protected function unsetCamera(): void {
+			if (Boolean(_camera)) {
+				_camera.removeEventListener(ActivityEvent.ACTIVITY, onActivityOnCamera);
+				stopWaitingForCamera();
+				_video.attachCamera(null);
+				_camera = null;
+			}
+		}
+		protected function stopFindingActiveCameras(): void {
+			if (isFindingActiveCameras) {
+				isFindingActiveCameras = false;
+			}
 		}
 
 		// ================================================================================================================
-		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 		
+		protected function onActivityOnCamera(e:ActivityEvent): void {
+			// ...
+		}
+		
+		protected function onWaitForRealCameraActivity(e:Event): void {
+			if (_camera.activityLevel > 0) {
+				// Real camera active
+				onCurrentAutoCameraActivity();
+			} else {
+				if (timeStartedCheckingCamera == -1) {
+					timeStartedCheckingCamera = getTimer();
+				}
+				
+				if (_camera.activityLevel > -1) {
+					// Camera is somehow active, continue waiting
+					if (timeStartedCheckingCameraHadActivity == -1) {
+						// First time active, set the time it started
+						timeStartedCheckingCameraHadActivity = getTimer();
+					} else if (timeStartedCheckingCameraHadActivity + TIME_TO_WAIT_FOR_VALID_ACTIVITY < getTimer()) {
+						// Waited for too long
+						onCurrentAutoCameraNoActivity();
+					}
+				} else {
+					if (timeStartedCheckingCamera + TIME_TO_WAIT_FOR_ANY_ACTIVITY < getTimer()) {
+						// Too long without any activity
+						onCurrentAutoCameraNoActivity();
+					}
+				}
+			}
+		}
+
+		protected function onCurrentAutoCameraActivity(): void {
+			// While waiting for a camera, it had activity
+			log("Camera is active!!");
+			validCameras[lastCameraTried] = true;
+			removeEventListener(Event.ENTER_FRAME, onWaitForRealCameraActivity);
+			tryNextCamera();
+			// TODO: skip next if must short-circuit for a quicker camera selection?
+		}
+
+		protected function onCurrentAutoCameraNoActivity(): void {
+			// While waiting for a camera, it failed to have any activity
+			log("Camera is not active!!");
+			validCameras[lastCameraTried] = false;
+			removeEventListener(Event.ENTER_FRAME, onWaitForRealCameraActivity);
+			tryNextCamera();
+		}
+
+
+		// ================================================================================================================
+		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+
+		public function getFrame(): BitmapData {
+			// Captures the current frame as a BitmapData
+			var bmp:BitmapData = new BitmapData(_contentWidth, _contentHeight, false, 0x000000);
+			
+			var mtx:Matrix = new Matrix();
+			mtx.scale(_contentWidth/100, _contentHeight/100);
+			//mtx.scale(video.width/_contentWidth, video.height/_contentHeight);
+			bmp.draw(_video, mtx);
+			return bmp;
+		}
+
 		public function setCameraMode(__width:Number, __height:Number, __fps:Number = 24): void {
-			if (!Boolean(_video)) createContent();
 			if (Boolean(_camera)) _camera.setMode(__width, __height, __fps);
 			_contentWidth = __width;
 			_contentHeight = __height;
 			_video.width = __width;
-			_video.width = __height;
+			_video.height = __height;
 			redraw();
 		}
 
@@ -137,83 +259,67 @@ package com.zehfernando.display.containers {
 		}
 
 		public function start(): void {
+			// Start capturing from user
 			if (!_isStarted) {
 				
-				if (!Boolean(_video)) createContent();
-				
-				_camera = Camera.getCamera();
+				setCamera();
 				//trace ("camera ==== " + _camera);
 				//_camera.setMode(320, 240, 24);
 				if (Boolean(_camera)) {
-					startWaitingForCamera();
-					_video.attachCamera(_camera);
-					setCameraMode(320, 240, 24);
 					_isStarted = true;
 				} else {
+					log("Camera not available");
 					dispatchEvent(new Event(EVENT_CAMERA_NOT_AVAILABLE));
 				}
 				
 				//_contentWidth = 100;
 				//_contentHeight = 100;
 				
-
 				redraw();
 			}
 		}
-
-		public function connect(__url:String, __streamName:String):void {
-			if (!_isConnected) {
-				_streamName = __streamName;
-				netConnection = new NetConnection();
-                netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetConnectionStatus);
-				netConnection.connect(__url);
+		
+		public function findActiveCameras(__autoSelect:Boolean = false): void {
+			// Cycle through cameras, automatically selecting the valid one
+			// If __tryAll is true, continue picking cameras even when a valid camera is found (useful to find ALL valid cameras)
+			if (!isFindingActiveCameras) {
+				isFindingActiveCameras = true;
+				autoSelectFirstActiveCamera = __autoSelect;
 				
-				_isConnected = true;
-			}
-		}
-
-		public function disconnect(): void {
-			if (_isConnected) {
-				netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetConnectionStatus);
-				netConnection.connect(null);
-				netConnection = null;
+				validCameras = new Vector.<Boolean>(Camera.names.length);
 				
-				_isConnected = false;
-			}
-		}
-
-		public function startRecording(): void {
-			if (!_isRecording) {
-				trace ("CameraContainer :: startRecording()");
-				netStream = new NetStream(netConnection);
-				netStream.client = new Object();
-			
-				netStream.attachCamera(_camera);
-				netStream.publish(_streamName, "record");
+				log("auto-selecting camera...");
 				
-				_isRecording = true;
-			}
-		}
-
-		public function stopRecording(): void {
-			if (_isRecording) {
-				trace ("CameraContainer :: stopRecording()");
+				lastCameraTried = -1;
 				
-				netStream.close();
-				
-				_isRecording = false;
+				tryNextCamera();
 			}
 		}
 
 		public function stop(): void {
 			if (_isStarted) {
-				stopWaitingForCamera();
-				_video.attachCamera(null);
-				_camera = null;
+				unsetCamera();
 				_isStarted = false;
 			}
 		}
 
+		public function getNumValidCameras(): int {
+			// Returns the number of valid cameras, after a autoSelectActiveCamera() call
+			var c:int = 0;
+			for (var i:int = 0; i < validCameras.length; i++) {
+				if (validCameras[i]) c++;
+			}
+			return c;
+		}
+		
+		override public function dispose():void {
+			stopFindingActiveCameras();
+			stop();
+			removeAsset();
+			_video = null;
+
+			super.dispose();
+		}
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
@@ -231,10 +337,6 @@ package com.zehfernando.display.containers {
 			_smoothing = __value;
 			redrawSmoothing();
 		}
-
-		public function getNetStream(): NetStream {
-			return netStream;
-		}
-
+		
 	}
 }
