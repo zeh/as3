@@ -1,5 +1,5 @@
 package com.zehfernando.display.containers {
-	import com.zehfernando.data.serialization.json.JSON;
+
 	import com.zehfernando.net.loaders.VideoLoader;
 	import com.zehfernando.net.loaders.VideoLoaderCuePointEvent;
 	import com.zehfernando.net.loaders.VideoLoaderEvent;
@@ -134,7 +134,7 @@ package com.zehfernando.display.containers {
 	
 	    protected function onCuePoint(e:VideoLoaderCuePointEvent):void {
 			//trace("VideoContainer :: onCuePoint: time=" + info["time"] + " name=" + info["name"] + " type=" + info["type"]);
-	    	lastCuePoint = {time:e.cuePointTime, name:e.cuePointName, type:e.cuePointType};
+	    	lastCuePoint = {time:e.cuePointTime, name:e.cuePointName, type:e.cuePointType, parameters:e.cuePointParameters};
 	    	dispatchEvent(new Event(EVENT_CUE_POINT));
 		}
 
