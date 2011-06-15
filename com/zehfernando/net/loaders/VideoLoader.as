@@ -1,5 +1,5 @@
 package com.zehfernando.net.loaders {
-	import com.zehfernando.data.serialization.json.JSON;
+
 	import com.zehfernando.utils.MathUtils;
 	import com.zehfernando.utils.console.log;
 
@@ -148,6 +148,9 @@ package com.zehfernando.net.loaders {
 			_hasMetaData = true;
 			dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.RECEIVED_METADATA));
 
+			//if (_isLoading) onEnterFrameMonitorLoading(null);
+			//log(">>>>> " + _isLoading, _netStream.bytesLoaded, _netStream.bytesTotal);
+			//onEnterFrameMonitorLoading(null);
 			onEnterFrameMonitorTime(null);
 			
 			/* Examples of metadata (received from a f4v video encoded in after effects):
@@ -378,7 +381,9 @@ package com.zehfernando.net.loaders {
 	    public function onCuePoint(__cueInfo:Object):void {
 			//log(" --> time=" + __cueInfo["time"] + " name=" + __cueInfo["name"] + " type=" + __cueInfo["type"]);
 	    	//lastCuePoint = info;
-	    	dispatchEvent(new VideoLoaderCuePointEvent(VideoLoaderCuePointEvent.CUE_POINT, __cueInfo["time"], __cueInfo["name"], __cueInfo["type"]));
+	    	dispatchEvent(new VideoLoaderCuePointEvent(VideoLoaderCuePointEvent.CUE_POINT, false, false, __cueInfo["time"], __cueInfo["name"], __cueInfo["type"], __cueInfo["parameters"]));
+	    	//log ("--> " + typeof __cueInfo.parameters);
+ 		    //for (var iis:String in __cueInfo.parameters) log(iis, __cueInfo.parameters[iis], typeof __cueInfo.parameters[iis]);
 		}
 
 		// Other events
@@ -409,6 +414,8 @@ package com.zehfernando.net.loaders {
 
 		protected function onEnterFrameMonitorLoading(e:Event): void {
 			// Some load progress has been made
+			
+			//log("HAS META = " + _hasMetaData);
 			
 			if (!_hasStartedLoading) {
 				// First loading event
@@ -645,6 +652,8 @@ package com.zehfernando.net.loaders {
 		public function getFullBufferingLevel(): Number {
 			// Returns a number between 0 and 1 that's the percentage of data that is loaded to provide a full non-stop playback
 			// 0 = nothing loaded; 1 = can probably provide a nonstop playback
+			if (bytesTotal > 0 && bytesLoaded >= bytesTotal) return 1;
+			//log (duration, _hasMetaData, bytesTotal, bytesLoaded, _timeStartedLoading);
 			if (duration == 0 || !_hasMetaData || bytesTotal == 0 || isNaN(_timeStartedLoading)) return 0;
 			if (_isLoaded) return 1;
 			var remainingPlaybackTime:Number = duration - time;									// Remaining video playback time, in seconds
