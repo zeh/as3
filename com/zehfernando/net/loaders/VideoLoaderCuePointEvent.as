@@ -1,4 +1,5 @@
 package com.zehfernando.net.loaders {
+
 	import flash.events.Event;
 	/**
 	 * @author zeh
@@ -12,16 +13,18 @@ package com.zehfernando.net.loaders {
 		protected var _cuePointTime:Number;
 		protected var _cuePointName:String;
 		protected var _cuePointType:String;
+		protected var _cuePointParameters:Object;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function VideoLoaderCuePointEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false, __cuePointTime:Number = NaN, __cuePointName:String = "", __cuePointType:String = ""): void {
+		public function VideoLoaderCuePointEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false, __cuePointTime:Number = NaN, __cuePointName:String = "", __cuePointType:String = "", __cuePointParameters:Object = ""): void {
 			super(__type, __bubbles, __cancelable);
 			
 			_cuePointTime = __cuePointTime;
 			_cuePointName = __cuePointName;
 			_cuePointType = __cuePointType;
+			_cuePointParameters = __cuePointParameters;
 		}
 
 		// ================================================================================================================
@@ -44,6 +47,10 @@ package com.zehfernando.net.loaders {
 		
 		public function get cuePointType():String {
 			return _cuePointType;
+		}
+
+		public function get cuePointParameters():Object {
+			return _cuePointParameters;
 		}
 
 	}
