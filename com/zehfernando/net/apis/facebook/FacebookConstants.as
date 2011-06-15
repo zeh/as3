@@ -53,7 +53,7 @@ package com.zehfernando.net.apis.facebook {
 			Security.loadPolicyFile("http://graph.facebook.com/crossdomain.xml");
 			Security.loadPolicyFile("https://graph.facebook.com/crossdomain.xml");
 			//Security.loadPolicyFile("http://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
-			//Security.loadPolicyFile("https://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
+			//Security.loadPolicyFile("https://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");			// Not allowed (missing secure="false"), replaced by the fbcdn.net equivalent via IMAGE_DOMAIN_REPLACEMENTS
 			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("https://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("http://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
