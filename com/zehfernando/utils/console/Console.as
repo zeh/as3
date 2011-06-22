@@ -30,7 +30,11 @@ package com.zehfernando.utils.console {
 		public static const GROUP_START_FORMAT:String = PARAM_GROUP_NAME + " \\\\\\ -------";
 		public static const GROUP_END_FORMAT:String = PARAM_GROUP_NAME + " //// -------";
 		
-		public static var globalPrefix:String = "### ";
+		public static var prefixDebug:String = "[D] ";
+		public static var prefixInfo:String = "[i] ";
+		public static var prefixWarning:String = "/!\\ ";
+		public static var prefixError:String = "(X) ";
+		public static var prefixLog:String = "--- ";
 		public static var groupPrefix:String = "  ";
 		
 		public static var echoFormat:String = ECHO_FORMAT_SHORT;
@@ -105,50 +109,63 @@ package com.zehfernando.utils.console {
 		
 		protected static function echo(__output:String, __type:String = null): void {
 			// Raw writes something to the required outputs
+
+			var currCall:Vector.<String> = DebugUtils.getCurrentCallStack()[3]; // Package, class, function
+			
+			var output:String = echoFormat;
+			output = output.split(PARAM_PACKAGE_NAME).join(currCall[0]);
+			output = output.split(PARAM_CLASS_NAME).join(currCall[1]);
+			output = output.split(PARAM_FUNCTION_NAME).join(currCall[2]);
+			output = output.split(PARAM_OUTPUT).join(__output);
+			
+			output = getGroupsPrefix() + output;
+
+			var jsFunction:String;
 			
 			// Adds group spacing
-			
-			__output = getGroupsPrefix() + __output;
-			__output = globalPrefix + __output;
+
+			switch (__type) {
+				case LOG_TYPE_DEBUG:
+					jsFunction = JS_FUNCTION_DEBUG;
+					output = prefixDebug + output;
+					break;
+				case LOG_TYPE_INFO:
+					jsFunction = JS_FUNCTION_INFO;
+					output = prefixInfo + output;
+					break;
+				case LOG_TYPE_WARNING:
+					jsFunction = JS_FUNCTION_WARNING;
+					output = prefixWarning + output;
+					break;
+				case LOG_TYPE_ERROR:
+					jsFunction = JS_FUNCTION_ERROR;
+					output = prefixError + output;
+					break;
+				case LOG_TYPE_LOG:
+				case null:
+					jsFunction = JS_FUNCTION_LOG;
+					output = prefixLog + output;
+					break;
+			}
 
 			if (_useTrace) {
-				trace (__output);
+				trace (output);
 			}
 
 			if (_useScreen) {
-				textField.text = textField.text + __output + "\n"; // do not use append()
+				textField.text = textField.text + output + "\n"; // do not use append()
 				textField.scrollV = textField.maxScrollV;
 			}
-			
-			if (_useJS) {
-				var jsFunction:String;
-				switch (__type) {
-					case LOG_TYPE_DEBUG:
-						jsFunction = JS_FUNCTION_DEBUG;
-						break;
-					case LOG_TYPE_INFO:
-						jsFunction = JS_FUNCTION_INFO;
-						break;
-					case LOG_TYPE_WARNING:
-						jsFunction = JS_FUNCTION_WARNING;
-						break;
-					case LOG_TYPE_ERROR:
-						jsFunction = JS_FUNCTION_ERROR;
-						break;
-					case LOG_TYPE_LOG:
-					case null:
-						jsFunction = JS_FUNCTION_LOG;
-						break;
-				}
 
+			if (_useJS) {
 				if (ExternalInterface.available) {
 					try {
 						ExternalInterface.call("function(__message) { if(typeof(console) !== 'undefined' && console != null) { " + jsFunction + "(__message); } }", __output);
 					} catch (e:Error) {
-						trace ("Log.echo error: Tried calling console.log(), but ExternalInterface is not available! Error: " + e);
+						trace ("Console.echo error: Tried calling console.log(), but ExternalInterface is not available! Error: " + e);
 					}
 				} else {
-					trace ("Log.echo error: Tried calling console.log(), but ExternalInterface is not available!");
+					trace ("Console.echo error: Tried calling console.log(), but ExternalInterface is not available!");
 				}
 			}
 		}
@@ -170,18 +187,27 @@ package com.zehfernando.utils.console {
 
 		public static function log(__args:Array): void {
 			// Logs something
-			
-			// TODO: organize this better. move all to echo()?
-			
-			var currCall:Vector.<String> = DebugUtils.getCurrentCallStack()[2]; // Package, class, function
-			
-			var output:String = echoFormat;
-			output = output.split(PARAM_PACKAGE_NAME).join(currCall[0]);
-			output = output.split(PARAM_CLASS_NAME).join(currCall[1]);
-			output = output.split(PARAM_FUNCTION_NAME).join(currCall[2]);
-			output = output.split(PARAM_OUTPUT).join(__args.join(" "));
-			
-			echo(output, LOG_TYPE_LOG);
+			echo(__args.join(" "), LOG_TYPE_LOG);
+		}
+		
+		public static function info(__args:Array): void {
+			// Logs something as an info
+			echo(__args.join(" "), LOG_TYPE_INFO);
+		}
+
+		public static function debug(__args:Array): void {
+			// Logs something as debug
+			echo(__args.join(" "), LOG_TYPE_DEBUG);
+		}
+		
+		public static function warn(__args:Array): void {
+			// Logs something as warning
+			echo(__args.join(" "), LOG_TYPE_WARNING);
+		}
+		
+		public static function error(__args:Array): void {
+			// Logs something as an error
+			echo(__args.join(" "), LOG_TYPE_ERROR);
 		}
 		
 		public static function time(__name:String): void {
