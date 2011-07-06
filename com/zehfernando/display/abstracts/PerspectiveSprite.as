@@ -187,5 +187,13 @@ package com.zehfernando.display.abstracts {
 			_bottomRight = __value;
 			scheduleRedraw();
 		}
+
+		public function get assumedWidth():Number {
+			return _assumedWidth;
+		}
+
+		public function get assumedHeight():Number {
+			return _assumedHeight;
+		}
 	}
 }
