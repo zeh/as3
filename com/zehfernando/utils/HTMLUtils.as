@@ -1,15 +1,36 @@
 package com.zehfernando.utils {
 
-	import flash.external.ExternalInterface;
+	import com.zehfernando.utils.console.error;
+	import com.zehfernando.utils.console.log;
 
+	import flash.external.ExternalInterface;
+	
 	/**
 	 * @author zeh
 	 */
 	public class HTMLUtils {
 		
+		protected static var _isJavaScriptAvailable:Boolean;
+		protected static var _isJavaScriptAvailableKnown:Boolean;
 		protected static var _SWFName:String;
 
+		// ================================================================================================================
+		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
+
+		protected static function testJavascript(): Boolean {
+			if (!isJavaScriptAvailable) {
+				error("ERROR: no javascript available!");
+				return false;
+			}
+			return true;
+		}
+
+		// ================================================================================================================
+		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+		
 		public static function setCookie(__name:String, __value:String = "", __expireDays:Number = 0): void {
+			
+			if (!testJavascript()) return;
 
 			var js:XML;
 			/*FDT_IGNORE*/
@@ -26,6 +47,8 @@ package com.zehfernando.utils {
 		}
 
 		public static function getCookie(__name:String): String {
+			
+			if (!testJavascript()) return null;
 
 			var js:XML;
 			/*FDT_IGNORE*/
@@ -55,6 +78,10 @@ package com.zehfernando.utils {
 			
 			// If already found, just return the existing name
 			if (Boolean(_SWFName)) return _SWFName;
+			
+			if (Boolean(ExternalInterface.objectID)) return ExternalInterface.objectID;
+			
+			if (!testJavascript()) return null;
 			
 			// Reliable only if attributes.id and attributes.name is defined
 			// if (Boolean(ExternalInterface.objectID)) return ExternalInterface.objectID;
@@ -87,6 +114,8 @@ package com.zehfernando.utils {
 		}
 
 		public static function openPopup(__url:String, __width:int = 600, __height:int = 400, __name:String = "_blank", __onClosed:Function = null): void {
+			
+			if (!testJavascript()) return;
 
 			var js:XML;
 			/*FDT_IGNORE*/
@@ -127,6 +156,12 @@ package com.zehfernando.utils {
 			
 			var __onClosedString:String = "";
 			
+			log ("===== " + ExternalInterface.available);
+
+			if (!ExternalInterface.available) {
+				trace ("No ExternalInterface available!");
+				return;
+			}
 			
 			if (Boolean(__onClosed)) {
 				__onClosedString = StringUtils.generatePropertyName();
@@ -137,6 +172,9 @@ package com.zehfernando.utils {
 		}
 
 		public static function closeWindow() : void {
+			
+			if (!testJavascript()) return;
+
 			var js:XML;
 			/*FDT_IGNORE*/
 			js = <script><![CDATA[
@@ -150,8 +188,11 @@ package com.zehfernando.utils {
 
 			ExternalInterface.call(js);
 		}
-
-		public static function reload():void {
+		
+		public static function reload(): void {
+			
+			if (!testJavascript()) return;
+			
 			var js:XML;
 			/*FDT_IGNORE*/
 			js = <script><![CDATA[
@@ -164,6 +205,29 @@ package com.zehfernando.utils {
 			/*FDT_IGNORE*/
 
 			ExternalInterface.call(js);
+		}
+
+		// ================================================================================================================
+		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
+
+		public static function get isJavaScriptAvailable(): Boolean {
+			if (!_isJavaScriptAvailableKnown) {
+				// Test to see if javascript is available
+				
+				if (ExternalInterface.available) {
+					try {
+						_isJavaScriptAvailable = ExternalInterface.call("function() { return true; }");
+					} catch (e:Error) {
+						_isJavaScriptAvailable = false;
+					}
+				} else {
+					_isJavaScriptAvailable = false;
+				}
+				
+				_isJavaScriptAvailableKnown = true;
+
+			}
+			return _isJavaScriptAvailable;
 		}
 
 //		public static function setSessionCookie(__name:String, __value:String = ""): void {
