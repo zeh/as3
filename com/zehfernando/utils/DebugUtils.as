@@ -33,7 +33,7 @@ package com.zehfernando.utils {
 
 		protected static function onMouseDownDraggableObject(e:MouseEvent): void {
 			// Start dragging an object
-			var sp:Sprite = e.target as Sprite;
+			var sp:Sprite = e.currentTarget as Sprite;
 			draggingObject = sp;
 			draggingObjectOffset = new Point(sp.parent.mouseX - sp.x, sp.parent.mouseY - sp.y);
 			
@@ -102,6 +102,8 @@ package com.zehfernando.utils {
 				ll.push("?");
 				ll.push("?");
 				ll.push("?");
+				ll.push("?");
+				tt.push(ll);
 				tt.push(ll);
 				tt.push(ll);
 				tt.push(ll);
