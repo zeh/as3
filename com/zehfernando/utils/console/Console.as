@@ -87,8 +87,9 @@ package com.zehfernando.utils.console {
 			textField = new TextField();
 			textField.mouseEnabled = false;
 			textField.embedFonts = false;
+			textField.wordWrap = true;
 			
-			var fmt:TextFormat = new TextFormat("_sans", 10, 0xffffff);
+			var fmt:TextFormat = new TextFormat("_sans", 10, 0x000000);
 			textField.defaultTextFormat = fmt;
 			textField.setTextFormat(fmt);
 			
