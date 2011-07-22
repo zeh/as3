@@ -43,9 +43,6 @@ package com.zehfernando.display.shapes {
 			if (!Boolean(__type)) __type = GradientType.LINEAR;
 			_type = __type;
 
-			scaleX = __width/100;
-			scaleY = __height/100;
-
 			super(__width, __height, 0x000000, __radius);
 		}
 
