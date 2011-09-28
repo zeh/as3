@@ -34,6 +34,8 @@ package com.zehfernando.utils {
 		}
 
 		public static function xsdDateTimeToDate(__date:String): Date {
+			// TODO: use RFC 3339? http://www.ietf.org/rfc/rfc3339.txt
+
 			// Converts a data from DateTime XML format to a normal Date
 			// This should be the final, universal one
 			// Example: 2010-06-30T21:19:01.000Z
@@ -163,6 +165,45 @@ package com.zehfernando.utils {
 			
 			return "";
 		}
+
+//		protected function getDescriptiveDifference(__date:Date): String {
+//			// Returns a friendly description of a time difference ("2 hours", "1 day", "10 seconds", "1 year" etc)
+//			
+//			// Full data
+//			var seconds:Number = __date.time / 1000;
+//			var minutes:Number = seconds / 60;
+//			var hours:Number = minutes / 60;
+//			var days:Number = hours / 24;
+//			var weeks:Number = days / 7;
+//			var months:Number = days / (365.25 / 12);
+//			var years:Number = days / 365.25;
+//			
+//			seconds = Math.floor(seconds);
+//			minutes = Math.floor(minutes);
+//			hours = Math.floor(hours);
+//			days = Math.floor(days);
+//			weeks = Math.floor(weeks);
+//			months = Math.floor(months); 
+//			years = Math.floor(years);
+//			
+//			if (years > 1)		return years + " years";
+//			if (years == 1)		return years + " year";
+//			if (months > 1)		return months + " months";
+//			if (months == 1)	return months + " month";
+//			if (weeks > 1 && days % 7 == 0)		return weeks + " weeks";
+//			if (weeks == 1 && days == 7)		return weeks + " week";
+//			if (days > 1)		return days + " days";
+//			if (days == 1)		return days + " day";
+//			if (hours > 1)		return hours + " hours";
+//			if (hours == 1)		return hours + " hour";
+//			if (minutes > 1)	return minutes + " minutes";
+//			if (minutes == 1)	return minutes + " minute";
+//			if (seconds > 1)	return seconds + " seconds";
+//			if (seconds == 1)	return seconds + " second";
+//			
+//			return "";
+//		}
+
 
 	}
 }
