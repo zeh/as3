@@ -18,8 +18,8 @@ package com.zehfernando.display.components {
 		public static const EVENT_POSITION_CHANGED_BY_USER:String = "onPositionChangedByUser";
 		
 		// Properties
-		protected var _backgroundColor:Number;
-		protected var _pickerColor:Number;
+		protected var _backgroundColor:int;
+		protected var _pickerColor:int;
 
 		protected var _position:Number;
 		protected var _minimumPickerHeight:Number;
@@ -211,6 +211,36 @@ package com.zehfernando.display.components {
 		public function set wheelDeltaScale(__value:Number): void {
 			if (_wheelDeltaScale != __value) {
 				_wheelDeltaScale = __value;
+			}
+		}
+		
+		public function get backgroundColor(): int {
+			return _backgroundColor;
+		}
+		public function set backgroundColor(__value:int): void {
+			if (_backgroundColor != __value) {
+				_backgroundColor = __value;
+				background.color = _backgroundColor;
+			}
+		}
+		
+		public function get pickerColor(): int {
+			return _pickerColor;
+		}
+		public function set pickerColor(__value:int): void {
+			if (_pickerColor != __value) {
+				_pickerColor = __value;
+				picker.color = _pickerColor;
+			}
+		}
+		
+		public function get pickerScale(): Number {
+			return _pickerScale;
+		}
+		public function set pickerScale(__value:Number): void {
+			if (_pickerScale != __value) {
+				_pickerScale = __value;
+				redrawPosition();
 			}
 		}
 	}
