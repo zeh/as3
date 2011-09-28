@@ -1,7 +1,6 @@
 package com.zehfernando.utils {
 
 	import com.zehfernando.utils.console.error;
-	import com.zehfernando.utils.console.log;
 
 	import flash.external.ExternalInterface;
 	
@@ -156,8 +155,6 @@ package com.zehfernando.utils {
 			
 			var __onClosedString:String = "";
 			
-			log ("===== " + ExternalInterface.available);
-
 			if (!ExternalInterface.available) {
 				trace ("No ExternalInterface available!");
 				return;
@@ -171,7 +168,7 @@ package com.zehfernando.utils {
 			ExternalInterface.call(js, __url, __width, __height, __name, getSWFObjectName(), __onClosedString);
 		}
 
-		public static function closeWindow() : void {
+		public static function closeWindow(): void {
 			
 			if (!testJavascript()) return;
 
