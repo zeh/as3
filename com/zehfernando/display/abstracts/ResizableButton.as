@@ -28,7 +28,7 @@ package com.zehfernando.display.abstracts {
 			addEventListener(MouseEvent.ROLL_OVER, onRollOver, false, 0, true);
 			addEventListener(MouseEvent.ROLL_OUT, onRollOut, false, 0, true);
 			
-			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
+			//addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 		}
 
 
