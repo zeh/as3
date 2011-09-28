@@ -17,6 +17,9 @@ package com.zehfernando.data.types {
 		
 		protected var _h:Number = 0;		// for hue preservation when desaturated
 
+		// ================================================================================================================
+		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
+
 		public function Color() {
 			_r = 0;
 			_g = 0;
