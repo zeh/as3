@@ -110,6 +110,85 @@ package com.zehfernando.utils {
 			return null;
 		}
 		
+		public static function replaceHTMLLinksInsideHTML(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"): String {
+			// Replaces links like replaceHTMLLinks(), but preserving existing HTML code (avoid creating double links)
+			
+			var __txt:String = "";
+			var i:int;
+			
+			var xml:XML = new XML(__text);
+			
+			// Tag open begin
+			__txt += "<"+xml.name();
+
+			// Add attributes
+			for (i = 0; i < xml.attributes().length(); i++) {
+				__txt += " " + (xml.attributes()[i] as XML).name() + "=\"" + (xml.attributes()[i] as XML).toString() + "\"";
+			}
+			
+			// Tag open end
+			__txt += ">";
+			
+			// Add children
+			for (i = 0; i < xml.children().length(); i++) {
+				if ((xml.children()[i] as XML).nodeKind() == "element") {
+					if (String((xml.children()[i] as XML).name()) == "a") {
+						__txt += (xml.children()[i] as XML).toXMLString();
+					} else {
+						__txt += replaceHTMLLinksInsideHTML((xml.children()[i] as XML).toXMLString(), __target, __twitterSearchTemplate, __twitterUserTemplate);
+					}
+				} else {
+					__txt += replaceHTMLLinks((xml.children()[i] as XML).toString(), __target, __twitterSearchTemplate, __twitterUserTemplate);
+				}
+			}
+
+			// Tag close
+			__txt += "</"+xml.name()+">";
+			
+			return __txt; 
+			
+		}
+		
+		public static function getHTMLWithStrippedTags(__text:String, __tagsToKeep:Array = null): String {
+			if (__tagsToKeep == null) __tagsToKeep = [];
+
+			var xml:XML = new XML(__text);
+			var __txt:String = "";
+			var i:int;
+			
+			if (__tagsToKeep.indexOf(String(xml.name())) > -1) {
+				// Keep tag
+
+				// Tag open begin
+				__txt += "<"+xml.name();
+	
+				// Add attributes
+				for (i = 0; i < xml.attributes().length(); i++) {
+					__txt += " " + (xml.attributes()[i] as XML).name() + "=\"" + (xml.attributes()[i] as XML).toString() + "\"";
+				}
+				
+				// Tag open end
+				__txt += ">";
+			}
+			
+			// Add children
+			for (i = 0; i < xml.children().length(); i++) {
+				if ((xml.children()[i] as XML).nodeKind() == "element") {
+					__txt += getHTMLWithStrippedTags((xml.children()[i] as XML).toXMLString(), __tagsToKeep);
+				} else {
+					__txt += (xml.children()[i] as XML).toString();
+				}
+			}
+
+			if (__tagsToKeep.indexOf(String(xml.name())) > -1) {
+				// Tag close
+				__txt += "</"+xml.name()+">";
+			}
+			
+			return __txt;
+
+		}
+		
 		public static function replaceHTMLLinks(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"): String {
 			
 			// Create links for urls, hashtags and whatnot on the text
@@ -154,6 +233,27 @@ package com.zehfernando.utils {
 
 			// Links for URLs
 			regexSearch = /(http:\/\/+[\S]*)/gi;
+			regexResult = regexSearch.exec(__text);
+			while (regexResult != null) {
+				str = regexResult[0];
+				// Inserts in a sorted manner otherwise it won't work when looping
+				for (i = 0; i <= linkStart.length; i++) {
+					if (i == linkStart.length || regexResult["index"] < linkStart[i]) {
+						linkURL.splice(i, 0, str);
+						linkStart.splice(i, 0, regexResult["index"]);
+						linkLength.splice(i, 0, str.length);
+						break;
+					}
+				}
+//				linkURL.push(str);
+//				linkStart.push(regexResult["index"]);
+//				linkLength.push(str.length);
+				regexResult = regexSearch.exec(__text);
+				//trace ("URL --> [" + str + "]");
+			}
+
+			// More links for URLs
+			regexSearch = /(www\.[\S]*)/gi;
 			regexResult = regexSearch.exec(__text);
 			while (regexResult != null) {
 				str = regexResult[0];
