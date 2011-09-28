@@ -21,11 +21,13 @@ package com.zehfernando.net.apis.facebook {
 		public static const PARAMETER_TARGET_ID:String = "[[target_id]]";
 		
 		public static const PARAMETER_AUTH_APP_ID:String = "[[app_id]]";
+		public static const PARAMETER_AUTH_APP_SECRET:String = "[[app_secret]]";
 		public static const PARAMETER_AUTH_REDIRECT_URL:String = "[[redirect_url]]";
 		public static const PARAMETER_AUTH_PERMISSIONS:String = "[[scope]]";
 		
 		public static const SERVICE_DOMAIN:String = "https://graph.facebook.com";
 		public static const SERVICE_FEED:String = "/[[author_id]]/feed";
+		public static const SERVICE_POSTS:String = "/[[author_id]]/posts";
 		public static const SERVICE_FEED_POST:String = "/[[target_id]]/feed";
 		public static const SERVICE_ALBUMS:String = "/[[author_id]]/albums";
 		public static const SERVICE_ALBUM_PHOTOS:String = "/[[album_id]]/photos";
@@ -41,6 +43,7 @@ package com.zehfernando.net.apis.facebook {
 		public static const SERVICE_FILE_PICTURE_LARGE:String = "/[[author_id]]/picture?type=large";		// 200 pixels wide, variable height
 		
 		public static const AUTHORIZE_URL:String = "https://graph.facebook.com/oauth/authorize?client_id=[[app_id]]&redirect_uri=[[redirect_url]]&type=user_agent&display=popup&scope=[[scope]]";
+		public static const AUTHORIZE_APP_URL:String = "https://graph.facebook.com/oauth/access_token?client_id=[[app_id]]&client_secret=[[app_secret]]&grant_type=client_credentials";
 		public static const LOGOUT_URL:String = "http://m.facebook.com/logout.php?confirm=1&next=[[redirect_url]]";
 		//public static const LOGOUT_URL:String = "http://www.facebook.com/logout.php?api_key=[[app_id]]&;session_key=[[session_key]]";
 		
