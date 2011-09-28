@@ -187,7 +187,7 @@ package com.zehfernando.localization {
 			return null;
 		}
 
-		protected static function getProcessedString(__string:String, __languages:Vector.<String>): String {
+		protected static function getProcessedStringInternal(__string:String, __languages:Vector.<String>): String {
 			// Returns a string with processed codes
 			// For example "this is an ${examples/example}!" returns "this is an EXAMPLE!" (where the value of examples/example in strings.xml is "EXAMPLE")
 			
@@ -248,7 +248,19 @@ package com.zehfernando.localization {
 		public static function getCurrentLanguages(): Vector.<String> {
 			return currentLanguages.concat();
 		}
+		
+		public static function setString(__id:String, __value:String): void {
+			var vs:ValueString = new ValueString();
+			vs.name = __id;
+			vs.value = __value;
+			vs.type = TYPE_STRING;
 
+			var vg:ValueGroup = new ValueGroup();
+			vg.items.push(vs);
+
+			values.add(vg);
+		}
+		
 		public static function getValue(__id:String, ... __languages): * {
 			var i:int;
 			
@@ -271,7 +283,7 @@ package com.zehfernando.localization {
 			
 			if (node is ValueString) {
 				// Any standard string node
-				return convertStringToType(getProcessedString((node as ValueString).value, langsToUse), node.type);
+				return convertStringToType(getProcessedStringInternal((node as ValueString).value, langsToUse), node.type);
 			
 			} else if (node is ValueArray)  {
 				// Any array node
@@ -306,7 +318,7 @@ package com.zehfernando.localization {
 				}
 
 				for (i = 0; i < (node as ValueArray).items.length; i++) {
-					lst["push"](convertStringToType(getProcessedString((node as ValueArray).items[i], langsToUse), itemType));
+					lst["push"](convertStringToType(getProcessedStringInternal((node as ValueArray).items[i], langsToUse), itemType));
 				}
 				
 				return lst;
@@ -335,6 +347,27 @@ package com.zehfernando.localization {
 			args = args.concat(__languages);
 			
 			return getValue.apply(null, args);
+		}
+
+
+		public static function getXML(__id:String, ... __languages): XML {
+			var args:Array = [__id];
+			args = args.concat(__languages);
+			
+			return getValue.apply(null, args);
+		}
+
+		public static function getProcessedString(__text:String, ... __languages): String {
+			var langsToUse:Vector.<String>;
+			var i:int;
+			if (Boolean(__languages) && __languages.length > 0) {
+				langsToUse = new Vector.<String>();
+				for (i = 0; i < __languages.length; i++) langsToUse.push(__languages[i]); 
+			} else {
+				langsToUse = StringList.getCurrentLanguages();
+			}
+
+			return getProcessedStringInternal(__text, langsToUse);
 		}
 
 		public static function getBoolean(__id:String, ... __languages): Boolean {
@@ -478,7 +511,9 @@ class ValueGroup extends ValueNode {
 					j--;
 				}
 			}
+			//if (__strings.items[i] is ValueString) trace(">>>>>>>>>>>>> " + __strings.items[i].name, (__strings.items[i] as ValueString).value);
 			items.push(__strings.items[i]);
+			//if (__strings.items[i] is ValueString) trace(">>>>>>>>>>>>> " + items.length);
 		}
 		
 		//Log.echo("Strings has " + items.length + "items!");
