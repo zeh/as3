@@ -1,5 +1,4 @@
 package com.zehfernando.net.assets {
-
 	import com.zehfernando.net.LoadingQueue;
 	import com.zehfernando.net.loaders.VideoLoader;
 
@@ -86,7 +85,9 @@ package com.zehfernando.net.assets {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-
+		protected function getRandomURLSuffix(__singleParameter:Boolean): String {
+			return (__singleParameter ? "?" : "&") + "r="+Math.floor(Math.random() * 9999999);
+		}
 
 		// ================================================================================================================
 		// EVENT functions ------------------------------------------------------------------------------------------------
@@ -111,12 +112,32 @@ package com.zehfernando.net.assets {
 		}
 		*/
 
+		protected function onURLLoaderProgress(e:ProgressEvent): void {
+			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
+			if (Boolean(ai)) {
+				ai.bytesLoaded = e.bytesLoaded;
+				ai.bytesTotal = e.bytesTotal;
+				ai.loadingPhase = e.bytesLoaded / e.bytesTotal;
+			}
+		}
+		
 		protected function onURLLoaderComplete(e:Event): void {
 			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
 			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
 			if (Boolean(ai)) {
 				ai.isLoaded = true;
 				ai.isLoading = false;
+				ai.bytesLoaded = ai.bytesTotal;
+				ai.loadingPhase = 1;
+			}
+		}
+
+		protected function onLoaderProgress(e:ProgressEvent): void {
+			var ai:AssetItemInfo = getAssetItemInfoByContentLoaderInfo(e.target as LoaderInfo);
+			if (Boolean(ai)) {
+				ai.bytesLoaded = e.bytesLoaded;
+				ai.bytesTotal = e.bytesTotal;
+				ai.loadingPhase = e.bytesLoaded / e.bytesTotal;
 			}
 		}
 
@@ -126,6 +147,17 @@ package com.zehfernando.net.assets {
 			if (Boolean(ai)) {
 				ai.isLoaded = true;
 				ai.isLoading = false;
+				ai.bytesLoaded = ai.bytesTotal;
+				ai.loadingPhase = 1;
+			}
+		}
+
+		protected function onVideoLoaderProgress(e:ProgressEvent): void {
+			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
+			if (Boolean(ai)) {
+				ai.bytesLoaded = e.bytesLoaded;
+				ai.bytesTotal = e.bytesTotal;
+				ai.loadingPhase = e.bytesLoaded / e.bytesTotal;
 			}
 		}
 
@@ -135,6 +167,8 @@ package com.zehfernando.net.assets {
 			if (Boolean(ai)) {
 				ai.isLoaded = true;
 				ai.isLoading = false;
+				ai.bytesLoaded = ai.bytesTotal;
+				ai.loadingPhase = 1;
 			}
 		}
 
@@ -142,9 +176,13 @@ package com.zehfernando.net.assets {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function addDynamicAsset(__url:String, __name:String = "", __type:String = ""): void {
+		public function addAssetItemInfo(__assetItemInfo:AssetItemInfo):void {
+			assets.push(__assetItemInfo);
+		}
+
+		public function addDynamicAsset(__url:String, __name:String = "", __avoidCache:Boolean = false, __type:String = ""): void {
 			if (!Boolean(__type)) __type = AssetType.getFromURL(__url);
-			var ai:AssetItemInfo = new AssetItemInfo(__name, __type);
+			var ai:AssetItemInfo = new AssetItemInfo(__name, __type, __avoidCache);
 			ai.url = __url;
 			
 			// TODO: add option to allow an asset to be loaded/monitored without being fully loaded? VideoLoaders can be used even if not available yet...
@@ -160,6 +198,12 @@ package com.zehfernando.net.assets {
 				if (assets[i].name == __name) return assets[i];
 			}
 			return null;
+		}
+		
+		public function getAssetItemInfoByIndex(__index:int): AssetItemInfo {
+			// Use object list instead?
+			if (!Boolean(assets) || __index > assets.length) return null;
+			return assets[__index];
 		}
 
 		public function getAssetItemInfoByURL(__url:String): AssetItemInfo {
@@ -200,26 +244,38 @@ package com.zehfernando.net.assets {
 			//trace("AssetLibrary.startLoadings()");
 			
 			var i:int;
+			var url:String;
+			var urlSuffix:String;
 			for (i = 0; i < assets.length; i++) {
 				if (!assets[i].isLoading && !assets[i].isLoaded) {
+					
 					switch (assets[i].type) {
 						case AssetType.XML:
 						case AssetType.CSS:
 							// Text, use an URLLoader
 							assets[i].loadingObject = new URLLoader();
+							(assets[i].loadingObject as URLLoader).addEventListener(ProgressEvent.PROGRESS, onURLLoaderProgress, false, 0, true);
 							(assets[i].loadingObject as URLLoader).addEventListener(Event.COMPLETE, onURLLoaderComplete, false, 0, true);
-							queue.addURLLoader(assets[i].loadingObject, new URLRequest(assets[i].url));
+							url = assets[i].url;
+							urlSuffix = assets[i].avoidCache ? getRandomURLSuffix(url.indexOf("?") == -1) : "";
+							queue.addURLLoader(assets[i].loadingObject, new URLRequest(url + urlSuffix));
 							break;
 						case AssetType.SWF:
 						case AssetType.IMAGE:
 							assets[i].loadingObject = new Loader();
+							(assets[i].loadingObject as Loader).contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onLoaderProgress, false, 0, true);
 							(assets[i].loadingObject as Loader).contentLoaderInfo.addEventListener(Event.COMPLETE, onLoaderComplete, false, 0, true);
-							queue.addLoader(assets[i].loadingObject, new URLRequest(assets[i].url));
+							url = assets[i].url;
+							urlSuffix = assets[i].avoidCache ? getRandomURLSuffix(url.indexOf("?") == -1) : "";
+							queue.addLoader(assets[i].loadingObject, new URLRequest(url + urlSuffix));
 							break;
 						case AssetType.VIDEO:
 							assets[i].loadingObject = new VideoLoader();
+							(assets[i].loadingObject as VideoLoader).addEventListener(ProgressEvent.PROGRESS, onVideoLoaderProgress, false, 0, true);
 							(assets[i].loadingObject as VideoLoader).addEventListener(Event.COMPLETE, onVideoLoaderComplete, false, 0, true);
-							queue.addVideoLoader(assets[i].loadingObject, new URLRequest(assets[i].url));
+							url = assets[i].url;
+							urlSuffix = assets[i].avoidCache ? getRandomURLSuffix(url.indexOf("?") == -1) : "";
+							queue.addVideoLoader(assets[i].loadingObject, new URLRequest(url + urlSuffix));
 							break;
 						default:
 							throw new Error ("AssetLibrary :: startLoads :: can't start loading of asset [" + assets[i].url + "] type '" + assets[i].type + "'!");
@@ -231,6 +287,14 @@ package com.zehfernando.net.assets {
 			if (queue.paused) queue.resume();
 		}
 
+		public function getAssetLoadedPhase(__name:String): Number {
+			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
+			if (!Boolean(ai)) return 0;
+			if (ai.isLoaded) return 1;
+			if (ai.isLoading) return ai.loadingPhase * 0.99;
+			return 0;
+		}
+
 		// Type-specific content functions
 		public function getAssetByName(__name:String): Object {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
@@ -239,7 +303,9 @@ package com.zehfernando.net.assets {
 		}
 
 		public function getAssetByIndex(__index:int): Object {
-			return assets[__index].getAsset();
+			var ai:AssetItemInfo = getAssetItemInfoByIndex(__index);
+			if (Boolean(ai)) return ai.getAsset();
+			return null;
 		}
 
 		public function getAssetByURL(__url:String): Object {
@@ -295,7 +361,6 @@ package com.zehfernando.net.assets {
 		}
 	}
 }
-
 import com.zehfernando.net.assets.AssetType;
 import com.zehfernando.net.loaders.VideoLoader;
 
@@ -318,17 +383,25 @@ class AssetItemInfo {
 	public var isLoading:Boolean;						// Whether it's already loading or not
 	public var isLoaded:Boolean;						// Whether it's already loaded or not
 	public var url:String;
+	public var avoidCache:Boolean;
+	public var bytesLoaded:int;
+	public var bytesTotal:int;
+	public var loadingPhase:Number;
 
 	// ================================================================================================================
 	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-	public function AssetItemInfo(__name:String, __type:String) {
+	public function AssetItemInfo(__name:String, __type:String, __avoidCache:Boolean) {
 		name = __name;
 		type = __type;
 		isLoading = false;
 		isLoaded = false;
 		url = "";
 		loadingObject = null;
+		avoidCache = __avoidCache;
+		bytesLoaded = 0;
+		bytesTotal = 0;
+		loadingPhase = 0;
 	}
 	
 	// ================================================================================================================
