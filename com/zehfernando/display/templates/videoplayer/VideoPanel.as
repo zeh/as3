@@ -81,11 +81,15 @@ package com.zehfernando.display.templates.videoplayer {
 		
 		protected function redrawVisibility(): void {
 			var h:Number = Math.round(_contentHeight * _visibility);
-			contentMask.y = _height - h;
-			contentMask.height = h;
-			contentContainer.y = _height - h;
+			if (Boolean(contentMask)) {
+				contentMask.y = _height - h;
+				contentMask.height = h;
+			}
 			
-			contentContainer.visible = _visibility > 0;
+			if (Boolean(contentContainer)) {
+				contentContainer.y = _height - h;
+				contentContainer.visible = _visibility > 0;
+			}
 		}
 
 		// ================================================================================================================
