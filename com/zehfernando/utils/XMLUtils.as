@@ -15,8 +15,8 @@ package com.zehfernando.utils {
 		public static function getNodeAsBoolean(__xml:XML, __nodeName:String, __default:Boolean = false): Boolean {
 			if (!Boolean(__xml)) return __default;
 			var __nodeValue:String = getNodeValue(__xml.child(__nodeName));
-			if (__nodeValue == VALUE_TRUE) return true;
-			if (__nodeValue == VALUE_FALSE) return false;
+			if (__nodeValue.toLowerCase() == VALUE_TRUE) return true;
+			if (__nodeValue.toLowerCase() == VALUE_FALSE) return false;
 			return __default;
 		}
 
@@ -24,6 +24,20 @@ package com.zehfernando.utils {
 			if (!Boolean(__xml)) return __default;
 			var __nodeValue:String = getNodeValue(__xml.child(__nodeName));
 			if (Boolean(__nodeValue)) return __nodeValue;
+			return __default;
+		}
+
+		public static function getNodePathAsString(__xml:XML, __nodeNamePath:String, __default:String = ""): String {
+			if (!Boolean(__xml)) return __default;
+			if (!Boolean(__nodeNamePath)) return __default;
+			
+			var path:Array = __nodeNamePath.split("/");
+			
+			if (path.length == 1) return getNodeAsString(__xml, path[0]);
+			
+			var __subNodes:XMLList = __xml.child(path[0]);
+			if (__subNodes.length() > 0) return getNodePathAsString(__subNodes[0], path.slice(1).join("/"));
+
 			return __default;
 		}
 		
@@ -53,8 +67,8 @@ package com.zehfernando.utils {
 		public static function getAttributeAsBoolean(__xml:XML, __attributeName:String, __default:Boolean = false): Boolean {
 			if (!Boolean(__xml)) return __default;
 			var __attributeValue:String = __xml.attribute(__attributeName);
-			if (__attributeValue == VALUE_TRUE) return true;
-			if (__attributeValue == VALUE_FALSE) return false;
+			if (__attributeValue.toLowerCase() == VALUE_TRUE) return true;
+			if (__attributeValue.toLowerCase() == VALUE_FALSE) return false;
 			return __default;
 		}
 
@@ -87,6 +101,5 @@ package com.zehfernando.utils {
 			if (__xmlList.length() > 0) return __xmlList[0];
 			return null;
 		}
-
 	}
 }
