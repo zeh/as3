@@ -81,7 +81,7 @@ package com.zehfernando.net.loaders {
 			_netStream.checkPolicyFile = true;
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			_netStream.client = this;
-			
+
 			_video = new Video(100, 100);
 			_video.attachNetStream(_netStream);
 			addChild(_video);
@@ -613,7 +613,7 @@ package com.zehfernando.net.loaders {
 		}
 
 		public function get bytesTotal(): uint {
-			return _hasVideo ? _netStream.bytesTotal : 0;
+			return _hasVideo && _netStream.bytesTotal < 0xffffffff ? _netStream.bytesTotal : 0;
 		}
 		
 		public function get decodedFrames(): uint {
