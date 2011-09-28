@@ -17,11 +17,11 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function Box(__width:Number = 100, __height:Number = 100, __color:int = 0xff0000, __outlineWidth:Number = 0) {
+		public function Box(__width:Number = 100, __height:Number = 100, __color:int = -1, __outlineWidth:Number = 0) {
 			
 			_width = __width;
 			_height = __height;
-			_color = __color & 0xffffff;
+			_color = (__color < 0 ? Math.random() * 0xffffff : __color) & 0xffffff;
 
 			_outlineWidth = __outlineWidth;
 			
