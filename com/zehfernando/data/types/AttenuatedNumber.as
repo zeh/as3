@@ -101,6 +101,16 @@ package com.zehfernando.data.types {
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
+		
+		public function get divisor(): Number {
+			return _divisor;
+		}
+
+		public function set divisor(__value:Number): void {
+			if (_divisor != __value) {
+				_divisor = __value;
+			}
+		}
 
 		public function get current():Number {
 			return _current;
