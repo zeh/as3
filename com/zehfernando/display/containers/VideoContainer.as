@@ -133,7 +133,8 @@ package com.zehfernando.display.containers {
 	    }
 	
 	    protected function onCuePoint(e:VideoLoaderCuePointEvent):void {
-			//trace("VideoContainer :: onCuePoint: time=" + info["time"] + " name=" + info["name"] + " type=" + info["type"]);
+			//log("CUE POINT -- time=" + e.cuePointTime + " name=" + e.cuePointName + " type=" + e.cuePointType);
+			//log("===" + time);
 	    	lastCuePoint = {time:e.cuePointTime, name:e.cuePointName, type:e.cuePointType, parameters:e.cuePointParameters};
 	    	dispatchEvent(new Event(EVENT_CUE_POINT));
 		}
