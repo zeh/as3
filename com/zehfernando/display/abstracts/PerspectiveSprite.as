@@ -1,6 +1,7 @@
 package com.zehfernando.display.abstracts {
 
-	import flash.events.Event;
+	import com.zehfernando.utils.RenderUtils;
+
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.geom.PerspectiveProjection;
@@ -15,7 +16,7 @@ package com.zehfernando.display.abstracts {
 		private var _assumedWidth:Number;
 		private var _assumedHeight:Number;
 		
-		private var _redrawScheduled:Boolean;
+		//private var _redrawScheduled:Boolean;
 		
 		// Instances
 		private var _topLeft:Point;
@@ -86,20 +87,17 @@ package com.zehfernando.display.abstracts {
 		}
 		
 		private function scheduleRedraw(): void {
-			if (!_redrawScheduled) {
-				addEventListener(Event.EXIT_FRAME, onExitFrameRedraw);
-				_redrawScheduled = true;
-			}
+			RenderUtils.addFunction(redrawPerspective);
 		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 		
-		protected function onExitFrameRedraw(e:Event): void {
-			_redrawScheduled = false;
-			removeEventListener(Event.EXIT_FRAME, onExitFrameRedraw);
-			redrawPerspective();
-		}
+//		protected function onExitFrameRedraw(e:Event): void {
+//			_redrawScheduled = false;
+//			removeEventListener(Event.EXIT_FRAME, onExitFrameRedraw);
+//			redrawPerspective();
+//		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
@@ -107,6 +105,10 @@ package com.zehfernando.display.abstracts {
 		public function removeTransform(): void {
 			_container3d.transform.matrix3D = null;
 		}
+		
+//		public function redraw(): void {
+//			onExitFrameRedraw(null);
+//		}
 		
 		// Public overrides
 		override public function addChild(__child:DisplayObject): DisplayObject {
