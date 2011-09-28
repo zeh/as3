@@ -134,7 +134,7 @@ package com.zehfernando.display.components.text {
 			var elements:Vector.<ContentElement> = new Vector.<ContentElement>();
 
 			XML.ignoreWhitespace = false;
-
+			
 			var contentAsXML:XML = new XML("<root>" + __text + "</root>");
 			var contentChildren:XMLList = contentAsXML.children();
 			var te:TextElement;
@@ -295,6 +295,8 @@ package com.zehfernando.display.components.text {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public function setStyle(__name:String, __fontName:String = "", __fontSize:Number = NaN, __color:Number = NaN, __alpha:Number = NaN):void {
+			removeStyle(__name);
+
 			var style:TextStyle = new TextStyle();
 			style.name = __name;
 			
@@ -304,6 +306,17 @@ package com.zehfernando.display.components.text {
 			style.alpha = __alpha;
 			
 			styles.push(style);
+			
+			redraw();
+		}
+		
+		public function removeStyle(__name:String): void {
+			for (var i:int = 0; i < styles.length; i++) {
+				if (styles[i].name == __name) {
+					styles.splice(i, 1);
+					i--;
+				}
+			}
 			
 			redraw();
 		}
