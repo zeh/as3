@@ -34,7 +34,7 @@ package com.zehfernando.display.containers {
 		
 		protected var _minimumScale:Number;					// Minimum scale for scaleMode (1 = 1:1, 100%)
 		protected var _maximumScale:Number;					// Maximum scale for scaleMode (1 = 1:1, 100%)
-		
+
 		protected var _roundPositions:Boolean;				// 
 		
 		// Instances
@@ -51,7 +51,7 @@ package com.zehfernando.display.containers {
 			_width = __width;
 			_height = __height;
 			_roundPositions = false;
-
+			
 			setDefaultData();
 			
 			createBackground();
@@ -169,12 +169,12 @@ package com.zehfernando.display.containers {
 			}
 			
 			if (!isNaN(minimumScale)) {
-				if (baseScaleX < minimumScale) baseScaleX = minimumScale;
-				if (baseScaleY < minimumScale) baseScaleY = minimumScale;
+				if (baseScaleX < _minimumScale) baseScaleX = _minimumScale;
+				if (baseScaleY < _minimumScale) baseScaleY = _minimumScale;
 			}
-			if (!isNaN(maximumScale)) {
-				if (baseScaleX > maximumScale) baseScaleX = maximumScale;
-				if (baseScaleY > maximumScale) baseScaleY = maximumScale;
+			if (!isNaN(_maximumScale)) {
+				if (baseScaleX > _maximumScale) baseScaleX = _maximumScale;
+				if (baseScaleY > _maximumScale) baseScaleY = _maximumScale;
 			}
 			
 			return new Point(baseScaleX, baseScaleY);
@@ -226,7 +226,10 @@ package com.zehfernando.display.containers {
 		}
 
 		public function removeAsset(): void {
-			if (Boolean(contentAsset) && contentHolder.contains(contentAsset)) contentHolder.removeChild(contentAsset);
+			if (Boolean(contentAsset) && contentHolder.contains(contentAsset)) {
+				contentHolder.removeChild(contentAsset);
+				contentAsset = null;
+			}
 		}
 		
 		public function getTransformedPoint(__point:Point): Point {
