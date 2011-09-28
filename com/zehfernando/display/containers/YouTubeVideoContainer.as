@@ -1,5 +1,10 @@
 package com.zehfernando.display.containers {
+
+	import com.zehfernando.utils.MathUtils;
+	import com.zehfernando.utils.console.log;
+
 	import flash.display.Loader;
+	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.net.URLRequest;
@@ -8,19 +13,19 @@ package com.zehfernando.display.containers {
 	/**
 	 * @author zeh
 	 */
-	public class YouTubeVideoContainerN extends DynamicDisplayAssetContainer implements IVideoContainer {
+	public class YouTubeVideoContainer extends DynamicDisplayAssetContainer implements IVideoContainer {
 		
-		// Important: the final "N" on the class name is just to create a different name that will force SVN to update it properly, since the previous case change (from "Youtube" to "YouTube") wasn't properly done
-
 		// Events
 		// Common
 		public static const EVENT_PLAY:String = "onVideoPlayed";
 		public static const EVENT_PAUSE:String = "onVideoPaused";
-		public static const EVENT_FINISH:String = "onVideoFinish";
+		public static const EVENT_PLAY_FINISH:String = "onVideoFinish";
 		public static const EVENT_LOADING_START:String = "onStartedLoading";
 		public static const EVENT_LOADING_PROGRESS:String = "onProgressLoading";
 		public static const EVENT_LOADING_ERROR:String = "onProgressLoading";
 		public static const EVENT_LOADING_COMPLETE:String = "onCompletedLoading";
+		public static const EVENT_TIME_CHANGE:String = "onTimeChange";
+		
 
 		// Specific
 		public static const EVENT_CUED:String = "onVideoCued";
@@ -48,8 +53,9 @@ package com.zehfernando.display.containers {
 		// Properties
 		protected var youtubePlayerInitialized:Boolean;
 		protected var youtubePlayerReady:Boolean;
-		
 		protected var youtubePlayerLoadingTries:Number;
+
+		protected var isMonitoringTime:Boolean;		
 		
 		protected var waitingToLoad:Boolean;
 		
@@ -74,7 +80,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function YouTubeVideoContainerN(__width:Number = 100, __height:Number = 100, __color:Number = 0x000000) {
+		public function YouTubeVideoContainer(__width:Number = 100, __height:Number = 100, __color:Number = 0x000000) {
 			super(__width, __height, __color);
 		}
 
@@ -108,6 +114,7 @@ package com.zehfernando.display.containers {
 		}
 
 		protected function loadContent(): void {
+			//log ("===================================================> " + _id + " play");
 			waitingToLoad = false;
 			_isLoading = false;
 			_isLoaded = false;
@@ -131,7 +138,7 @@ package com.zehfernando.display.containers {
 		}
 
 		protected function applyVolume(): void {
-			if (youtubePlayerInitialized && _hasVideo) {
+			if (youtubePlayerReady && _hasVideo) {
 				youtubePlayer.content["setVolume"](Math.round(_volume * 100));
 			}
 		}
@@ -146,16 +153,15 @@ package com.zehfernando.display.containers {
 				
 				youtubePlayerLoadingTries++;
 				
-				Security.allowDomain("s.ytimg.com");
-				Security.allowDomain("www.youtube.com");
-				Security.allowInsecureDomain("s.ytimg.com");
-				Security.allowInsecureDomain("www.youtube.com");
+				Security.allowDomain("http://s.ytimg.com");
+				Security.allowDomain("http://www.youtube.com");
+				Security.allowInsecureDomain("http://s.ytimg.com");
+				Security.allowInsecureDomain("http://www.youtube.com");
 				
 				//Security.allowInsecureDomain("*"); // ugh
 				//Security.allowDomain("*");
 
 				youtubePlayer = new Loader();
-				setAsset(youtubePlayer);
 				
 				youtubePlayer.contentLoaderInfo.addEventListener(Event.INIT, onPlayerInit);
 				youtubePlayer.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onPlayerIOError);
@@ -178,7 +184,16 @@ package com.zehfernando.display.containers {
 //			_contentWidth = 320;
 //			_contentHeight = 240;
 
-			switch (videoQuality) {
+			if (_scaleMode == StageScaleMode.EXACT_FIT) {
+				_contentWidth = _width;
+				_contentHeight = _height;
+				youtubePlayer.content["setSize"](_contentWidth, _contentHeight);
+				return;
+			}
+			
+			// TODO: this is awful, redo. Always use EXACT_FIT with the above code? then youtube uses the equivalent of "SHOW_ALL" for the video content
+
+			switch (_videoQuality) {
 				case QUALITY_DEFAULT:
 					_contentWidth = 320;
 					_contentHeight = 240;
@@ -204,9 +219,27 @@ package com.zehfernando.display.containers {
 			youtubePlayer.content["setSize"](_contentWidth, _contentHeight);
 		}
 
+		protected function startMonitoringTime(): void {
+			if (!isMonitoringTime) {
+				isMonitoringTime = true;
+				addEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime, false, 0, true);
+			}
+		}
+
+		protected function stopMonitoringTime(): void {
+			if (isMonitoringTime) {
+				isMonitoringTime = false;
+				removeEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime);
+			}
+		}
+
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
+
+		protected function onEnterFrameMonitorTime(e:Event): void {
+			dispatchEvent(new Event(YouTubeVideoContainer.EVENT_TIME_CHANGE));
+		}
 
 		protected function onPlayerInit(e:Event): void {
 			youtubePlayer.contentLoaderInfo.removeEventListener(Event.INIT, onPlayerInit);
@@ -219,7 +252,7 @@ package com.zehfernando.display.containers {
 		}
 		
 		protected function onPlayerIOError(e:IOErrorEvent): void {
-			trace ("YoutubeVideoContainer :: IOError!! :: -----------------------------------------------------------------------------");
+			log("YoutubeVideoContainer :: IOError!! :: -----------------------------------------------------------------------------");
 			youtubePlayer.unload();
 			youtubePlayerInitialized = false;
 			
@@ -230,7 +263,7 @@ package com.zehfernando.display.containers {
 				// Try again
 				initializeYoutubePlayer();
 			} else {
-				trace ("YoutubeVideoContainer :: IOError!! :: FATAL! No more retries!");
+				log("YoutubeVideoContainer :: IOError!! :: FATAL! No more retries!");
 			}
 		}
 
@@ -242,7 +275,7 @@ package com.zehfernando.display.containers {
 		}
 		
 		protected function onPlayerStateChange(e:Event): void {
-			//trace ("YoutubeVideoContainer :: onPlayerStateChange :: " + e["data"]);
+			//log(_id + " changed state to " + e["data"]);
 			updateMaximumTime();
 			var stateType:int = parseInt(e["data"]);
 			switch (stateType) {
@@ -252,14 +285,18 @@ package com.zehfernando.display.containers {
 					break;
 				case 0:
 					// Ended
-					dispatchEvent(new Event(EVENT_FINISH));
+					dispatchEvent(new Event(EVENT_PLAY_FINISH));
 					break;
 				case 1:
 					// Playing
+					_isPlaying = true;
+					startMonitoringTime();
 					dispatchEvent(new Event(EVENT_PLAY));
 					break;
 				case 2:
 					// Paused
+					_isPlaying = false;
+					stopMonitoringTime();
 					dispatchEvent(new Event(EVENT_PAUSE));
 					break;
 				case 3:
@@ -272,7 +309,7 @@ package com.zehfernando.display.containers {
 					break;
 				default:
 					// Other
-					trace ("YoutubeVideoContainer :: onPlayerStateChange :: Unknown state type [" + stateType + "]");
+					log("Unknown state type [" + stateType + "]");
 					break;
 			}
 		}
@@ -282,7 +319,7 @@ package com.zehfernando.display.containers {
 		}
 
 		protected function onPlayerError(e:Event): void {
-			trace ("YoutubeVideoContainer :: onPlayerError :: " + e);
+			log("Error: " + e);
 			dispatchEvent(new Event(EVENT_LOADING_ERROR));
 		}
 		
@@ -320,25 +357,46 @@ package com.zehfernando.display.containers {
 		*/
 
 		override public function dispose(): void {
-			
+			//log ("disposing ===========================================> " + _id + " ++" + youtubePlayerInitialized, youtubePlayerReady, Boolean(youtubePlayer.content));
+			pauseVideo();
+			volume = 0;
+
 			if (youtubePlayerInitialized) {
 				youtubePlayer.contentLoaderInfo.removeEventListener(Event.INIT, onPlayerInit);
 				youtubePlayer.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onPlayerIOError);
 				youtubePlayerInitialized = false;
+				
+				if (Boolean(youtubePlayer.content)) {
+					youtubePlayer.content.removeEventListener(APIPLAYER_EVENT_READY, onPlayerReady);
+				    youtubePlayer.content.removeEventListener(APIPLAYER_EVENT_ERROR, onPlayerError);
+				    youtubePlayer.content.removeEventListener(APIPLAYER_EVENT_STATE_CHANGE, onPlayerStateChange);
+				    youtubePlayer.content.removeEventListener(APIPLAYER_EVENT_QUALITY_CHANGE, onVideoPlaybackQualityChange);
+				}
+
 				if (youtubePlayerReady) {
-					youtubePlayerReady = false;
 					youtubePlayer.content["stopVideo"]();
 					youtubePlayer.content["destroy"]();
+
+					youtubePlayerReady = false;
 				}
-				youtubePlayer.unload();
+			}
+			
+			if (Boolean(youtubePlayer)) {
+				youtubePlayer.unloadAndStop();
 				youtubePlayer = null;
 			}
 			
+			unload();
+			
+			stopMonitoringTime();
 			stopCheckingSize();
 			
 			firedVideoLoadEvent = false;
 			
+			waitingToLoad = false;
 			_isCued = false;
+			_hasVideo = false;
+
 			youtubePlayerLoadingTries = 0;
 			
 			super.dispose();
@@ -346,7 +404,7 @@ package com.zehfernando.display.containers {
 
 		public function getMaximumPositionPlayed(): Number {
 			updateMaximumTime();
-			return _maximumTime / duration;
+			return MathUtils.clamp(_maximumTime / duration);
 		}
 
 		public function playVideo(): void {
@@ -359,6 +417,7 @@ package com.zehfernando.display.containers {
 		public function seekTo(__val:Number): void {
 			//if (youtubePlayerInitialized) youtubePlayer.content["seekTo"](__val);
 			if (youtubePlayerReady && _hasVideo) youtubePlayer.content["seekTo"](__val);
+			onEnterFrameMonitorTime(null);
 		}
 
 
@@ -375,7 +434,19 @@ package com.zehfernando.display.containers {
 				//if (youtubePlayerInitialized) youtubePlayer.content["pauseVideo"]();
 				if (youtubePlayerReady) youtubePlayer.content["pauseVideo"]();
 			} catch (e:Error) {
-				trace ("YoutubeVideoContainer :: error ["+e+"] was thrown.");
+				log("Error ["+e+"] was thrown.");
+			}
+		}
+
+		public function stopVideo():void {
+			pauseVideo();
+		}
+		
+		public function playPauseVideo():void {
+			if (_isPlaying) {
+				pauseVideo();
+			} else {
+				playVideo();
 			}
 		}
 
@@ -394,10 +465,12 @@ package com.zehfernando.display.containers {
 			} else {
 				waitingToLoad = true;
 			}
+			
+			//log ("=====================================================> " + _id + " load");
 		}
 
 		override public function unload(): void {
-			if (youtubePlayerInitialized) youtubePlayer.content["stopVideo"]();
+			if (youtubePlayerReady) youtubePlayer.content["stopVideo"]();
 			super.unload();
 		}
 
@@ -434,7 +507,7 @@ package com.zehfernando.display.containers {
 		}
 
 		public function set time(__value:Number):void {
-			if (youtubePlayerReady && _hasVideo) youtubePlayer.content["seekTo"](__value);
+			if (youtubePlayerReady && _hasVideo) youtubePlayer.content["seekTo"](__value, false);
 			updateMaximumTime();
 		}
 
@@ -444,12 +517,6 @@ package com.zehfernando.display.containers {
 		
 		public function get id():String {
 			return _id;
-		}
-		
-		public function stopVideo():void {
-		}
-		
-		public function playPauseVideo():void {
 		}
 		
 		public function get position(): Number {
@@ -485,7 +552,5 @@ package com.zehfernando.display.containers {
 
 		public function set loop(__value:Boolean):void {
 		}
-		
-		
 	}
 }
