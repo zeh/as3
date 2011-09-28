@@ -3,6 +3,7 @@ package com.zehfernando.net.apis.youtube.data {
 	import com.zehfernando.net.apis.youtube.YouTubeConstants;
 	import com.zehfernando.net.apis.youtube.YouTubeDataUtils;
 	import com.zehfernando.utils.DateUtils;
+	import com.zehfernando.utils.console.log;
 
 
 
@@ -32,7 +33,7 @@ package com.zehfernando.net.apis.youtube.data {
 		public var favoriteCount:int;
 		public var viewCount:int;
 		
-		// Example: http://gdata.youtube.com/feeds/api/videos/jsvzVFL0Da8
+		// Example: http://gdata.youtube.com/feeds/api/videos/PjJnl8UUDzo
 		// TODO: add:
 		// <media:restriction type='country' relationship='deny'>DE</media:restriction>
 		// <media:content url='http://www.youtube.com/v/jsvzVFL0Da8?f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='55' yt:format='5'/>
