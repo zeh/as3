@@ -44,9 +44,10 @@ package com.zehfernando.display {
 			super();
 			
 			_alignHorizontal = __alignHorizontal;
-			_alignHorizontal = __alignVertical;
+			_alignVertical = __alignVertical;
 			_bitmapScaleX = 1;
 			_bitmapScaleY = 1;
+			_smoothing = false;
 		}
 
 		// ================================================================================================================
@@ -71,11 +72,13 @@ package com.zehfernando.display {
 				var i:int, j:int;
 				
 				bitmapData = new BitmapData (w, h, true, 0x00000000);
+				bitmapData.lock();
 				
 				var sourceResized:BitmapData = new BitmapData(Math.round(source.width * _bitmapScaleX), Math.round(source.height * _bitmapScaleY), source.transparent, 0x00000000);
 				var mtx:Matrix = new Matrix();
 				mtx.scale(sourceResized.width / source.width, sourceResized.height / source.height);
 				sourceResized.draw(source, mtx, null, null, null, true);
+				sourceResized.lock();
 				
 				// Find starting points
 				var posX:int;
@@ -135,6 +138,8 @@ package com.zehfernando.display {
 				
 				sourceResized.dispose();
 				sourceResized = null;
+				
+				bitmapData.unlock();
 			
 				bitmap = new Bitmap(bitmapData);
 				addChild(bitmap);
@@ -170,7 +175,7 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function setBitmap(__bitmap:Bitmap, __canDisposeOf:Boolean = true):void {
+		public function setBitmap(__bitmap:Bitmap, __canDisposeOf:Boolean = true): void {
 			setBitmapData(__bitmap.bitmapData, __canDisposeOf);
 			
 			if (__canDisposeOf) {
@@ -178,7 +183,7 @@ package com.zehfernando.display {
 			}
 		}
 		
-		public function setBitmapData(__bitmapData:BitmapData, __canDisposeOf:Boolean = true):void {
+		public function setBitmapData(__bitmapData:BitmapData, __canDisposeOf:Boolean = true): void {
 			removeSource();
 			
 			source = __bitmapData.clone();
@@ -226,6 +231,34 @@ package com.zehfernando.display {
 				_bitmapScaleX = __value;
 				redraw();
 			}
+		}
+		
+		public function get alignHorizontal(): String {
+			return _alignHorizontal;
+		}
+		public function set alignHorizontal(__value:String): void {
+			if (_alignHorizontal != __value || _alignHorizontal == BitmapFillBox.ALIGN_HORIZONTAL_RANDOM || _alignHorizontal == BitmapFillBox.ALIGN_HORIZONTAL_RANDOM_NO_SEAMS) {
+				_alignHorizontal = __value;
+				redraw();
+			}
+		}
+
+		public function get alignVertical(): String {
+			return _alignVertical;
+		}
+		public function set alignVertical(__value:String): void {
+			if (_alignVertical != __value || _alignVertical == BitmapFillBox.ALIGN_VERTICAL_RANDOM || _alignVertical == BitmapFillBox.ALIGN_VERTICAL_RANDOM_NO_SEAMS) {
+				_alignVertical = __value;
+				redraw();
+			}
+		}
+		
+		public function get bitmapWidth(): Number {
+			return bitmapData.width;
+		}
+
+		public function get bitmapHeight(): Number {
+			return bitmapData.height;
 		}
 	}
 }
