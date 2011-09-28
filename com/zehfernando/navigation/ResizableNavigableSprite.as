@@ -1,4 +1,5 @@
 package com.zehfernando.navigation {
+
 	import flash.events.Event;
 
 	/**
@@ -28,15 +29,19 @@ package com.zehfernando.navigation {
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
 		protected function redrawWidth(): void {
-			for (var i:int = 0; i < createdChildren.length; i++) createdChildren[i].width = _width;
+			for (var i:int = 0; i < createdChildren.length; i++) {
+				if (createdChildren[i].parent == _childrenContainer) createdChildren[i].width = _width;
+			}
 		}
 
 		protected function redrawHeight(): void {
-			for (var i:int = 0; i < createdChildren.length; i++) createdChildren[i].height = _height;
+			for (var i:int = 0; i < createdChildren.length; i++) {
+				if (createdChildren[i].parent == _childrenContainer) createdChildren[i].height = _height;
+			}
 		}
 
-		override protected function createChildInternal(__stub:String): NavigableSprite {
-			var ns:NavigableSprite = super.createChildInternal(__stub);
+		override protected function createChild(__stub:String): NavigableSprite {
+			var ns:NavigableSprite = super.createChild(__stub);
 			if (Boolean(ns)) {
 				redrawWidth();
 				redrawHeight();

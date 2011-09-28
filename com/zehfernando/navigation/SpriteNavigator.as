@@ -2,6 +2,8 @@ package com.zehfernando.navigation {
 
 	import com.asual.swfaddress.SWFAddress;
 	import com.asual.swfaddress.SWFAddressEvent;
+	import com.zehfernando.utils.console.log;
+	import com.zehfernando.utils.console.logOff;
 
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
@@ -38,7 +40,17 @@ package com.zehfernando.navigation {
 		
 		public static var lastCommandExecuted:String;
 		public static var lastCommandExecutedType:String;
-
+		
+		
+		// ================================================================================================================
+		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
+		
+		{
+			targetLocations = new Vector.<String>;
+			eventDispatcher = new EventDispatcher();
+			
+			logOff();
+		}
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -53,6 +65,7 @@ package com.zehfernando.navigation {
 		
 		protected static function executeNextNavigationCommand(): void {
 			// Sets title
+			log();
 			updateTitle(); // TODO: move this somewhere else?
 			
 			// TODO: this is being called unnecessarily before it actually starts navigating somewhere
@@ -63,7 +76,7 @@ package com.zehfernando.navigation {
 
 				if (targetLocations.length > 0) {
 					// Cut the navigation in the middle and jump to the new location -- test!
-					trace ("SpriteNavigator :: executeNextNavigationCommand :: halting execution for new destination");
+					log("Halting execution for new destination");
 					executingNavigationCommand = false;
 					changeAddressIfNeeded();
 					return;
@@ -71,7 +84,7 @@ package com.zehfernando.navigation {
 				executingNavigationCommand = true;
 				
 				var __nextCommand:String = navigationCommands.shift();
-				//trace ("SpriteNavigator :: executeNextNavigationCommand :: [" + __nextCommand + "]");
+				log("Executing command [" + __nextCommand + "]");
 				
 				eventDispatcher.dispatchEvent(new SpriteNavigatorEvent(SpriteNavigatorEvent.LOCATION_WILL_CHANGE));
 
@@ -86,10 +99,12 @@ package com.zehfernando.navigation {
 				// Finished executing all commands
 
 				executingNavigationCommand = false;
-//				trace ("SpriteNavigator :: executeNextNavigationCommand :: finished execution");
+				log ("Finished execution");
 				
 				var ns:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal);
 				ns.finishedExecutionAsCurrentArea(false);
+
+				eventDispatcher.dispatchEvent(new SpriteNavigatorEvent(SpriteNavigatorEvent.CHANGED_LOCATION_FINAL));
 				
 				changeAddressIfNeeded();
 			}
@@ -173,6 +188,8 @@ package com.zehfernando.navigation {
 		}
 
 		protected static function onSpriteAllowedToOpenChild(e:Event): void {
+			(e.target as NavigableSprite).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_OPEN_CHILD, onSpriteAllowedToOpenChild);
+
 			rootSprite.getChildByStubs(locationWaitingToOpen.slice(0, locationWaitingToOpen.length - 1)).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_PRE_OPEN_CHILD, onSpriteAllowedToOpenChild);
 			var locationWaitingToOpenSafe:Vector.<String> = locationWaitingToOpen;
 			locationWaitingToOpen = null;
@@ -180,12 +197,19 @@ package com.zehfernando.navigation {
 		}
 
 		protected static function onSpriteAllowedToOpen(e:Event): void {
+			(e.target as NavigableSprite).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_OPEN, onSpriteAllowedToOpen);
+
 			var locationWaitingToOpenSafe:Vector.<String> = locationWaitingToOpen;
 			locationWaitingToOpen = null;
 			openSpriteByLocation(locationWaitingToOpenSafe, true, true);
 		}
 
-		protected static function closeSprite(__allowedByParent:Boolean = false): void {
+		protected static function onSpriteAllowedToClose(e:Event): void {
+			(e.target as NavigableSprite).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE, onSpriteAllowedToClose);
+			closeSprite(true, true);
+		}
+
+		protected static function closeSprite(__allowedByParent:Boolean = false, __allowedBySelf:Boolean = false): void {
 			// Close the current sprite, going up on the hierarchy
 			
 			//trace ("SpriteNavigator :: closeSprite()");
@@ -196,17 +220,24 @@ package com.zehfernando.navigation {
 				// Request permission to really close first
 				var parentSprite:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal.slice(0, currentLocationInternal.length - 1));
 				parentSprite.addEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD, onSpriteAllowedToCloseChild);
-				parentSprite.requestPermissionToCloseChild(ns);
+				parentSprite.requestPermissionToCloseChild(ns, navigationCommands.length);
+			} else if (!__allowedBySelf) {
+				ns.addEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE, onSpriteAllowedToClose);
+				ns.requestPermissionToClose(navigationCommands.length-1);
 			} else {
 				// Finally, really closes it
 				ns.addEventListener(NavigableSpriteEvent.CLOSED, onClosedNavigableSprite);
 				var __isImmediate:Boolean = false; // TODO: when to use this?
-				ns.close(__isImmediate);
+				var __isLast:Boolean = navigationCommands.length == 0;
+				ns.close(__isImmediate,  __isLast);
+				//var __isImmediate:Boolean = false; // TODO: when to use this?
+				//ns.close(__isImmediate);
 			}
 		}
 
 		protected static function onSpriteAllowedToCloseChild(e:Event): void {
-			rootSprite.getChildByStubs(currentLocationInternal.slice(0, currentLocationInternal.length - 1)).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD, onSpriteAllowedToCloseChild);
+			var parentSprite:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal.slice(0, currentLocationInternal.length - 1));
+			parentSprite.removeEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD, onSpriteAllowedToCloseChild);
 			closeSprite(true);
 		}
 
@@ -241,16 +272,9 @@ package com.zehfernando.navigation {
 			if (!executingNavigationCommand && targetLocations.length > 0) {
 				var i:int;
 				
-		//		if (p_location == "") p_location = "/videos";
-		//		if (p_location == "") p_location = "/colecoes"; // *******
-		//		if (p_location == "") p_location = "/videos"; // *******
-		//		if (p_location == "") p_location = "/parcerias"; // *******
-		
 				var __oldLocation:Vector.<String> = Boolean(currentLocationInternal) ? currentLocationInternal : new Vector.<String>();
 				var __newLocation:Vector.<String> = getLocationAsVector(targetLocations.pop()); // go straight to it
 				targetLocations.length = 0;
-				//var __newLocation:Vector.<String> = getLocationAsVector(targetLocations.shift());
-				//var __newLocation:Vector.<String> = getLocationAsVector(getLocation());
 	
 				// Checks how much of the path is common between the two	
 				var __similarLocation:Vector.<String> = new Vector.<String>();
@@ -283,10 +307,10 @@ package com.zehfernando.navigation {
 					navigationCommands.push(__newLocation[i]);
 				}
 		
-//				trace ("SpriteNavigator ::        oldLocation: [" + __oldLocation + "] (" + __oldLocation.length + ")");
-//				trace ("SpriteNavigator ::        newLocation: [" + __newLocation + "] (" + __newLocation.length + ")");
-//				trace ("SpriteNavigator ::    similarLocation: [" + __similarLocation + "] (" + __similarLocation.length + ")");
-//				trace ("SpriteNavigator :: navigationCommands: [" + navigationCommands.join(" -> ") + "]");
+				log("       oldLocation: [" + __oldLocation + "] (" + __oldLocation.length + ")");
+				log("       newLocation: [" + __newLocation + "] (" + __newLocation.length + ")");
+				log("   similarLocation: [" + __similarLocation + "] (" + __similarLocation.length + ")");
+				log("navigationCommands: [" + navigationCommands.join(" -> ") + "]");
 		
 				// And starts by executing the next command
 				if (!executingNavigationCommand) executeNextNavigationCommand();
@@ -303,7 +327,7 @@ package com.zehfernando.navigation {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 		
 		protected static function onAddressChange(e:SWFAddressEvent): void {
-			trace ("SpriteNavigator :: Location should change from [" + currentLocationInternal + "] ("+ (Boolean(currentLocationInternal) ? currentLocationInternal.length : "-") +") to [" + getLocation() + "]");
+			log("Location should change from [" + currentLocationInternal + "] ("+ (Boolean(currentLocationInternal) ? currentLocationInternal.length : "-") +") to [" + getLocation() + "]");
 			targetLocations.push(getLocation());
 			changeAddressIfNeeded();
 		}
@@ -327,13 +351,12 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function init(__sprite:NavigableSprite): void {
+		public static function start(__sprite:NavigableSprite): void {
 			rootSprite = __sprite;
-			//currentLocation = null;
-			targetLocations = new Vector.<String>;
-			//navigationCommands = new Vector.<String>;
 			SWFAddress.addEventListener(SWFAddressEvent.CHANGE, onAddressChange);
-			eventDispatcher = new EventDispatcher();
+			//rootSprite.open();
+			//currentLocation = null;
+			//navigationCommands = new Vector.<String>;
 			//_commandList = new Array();
 			//_currentLocation = "/";
 			//_executingCommand = false;
@@ -341,6 +364,7 @@ package com.zehfernando.navigation {
 
 		public static function setLocation(__path:String): void {
 			// Open a new location, like "/file/2000"
+			log ("======================================================> SETTING as " + __path);
 			lastCommandExecutedType = COMMAND_TYPE_DIRECT;
 			SWFAddress.setValue(__path);
 		}
@@ -358,6 +382,7 @@ package com.zehfernando.navigation {
 				return Boolean(currentLocationInternal) ? "/" + currentLocationInternal.join("/") : "/";
 			}
 			var loc:String = SWFAddress.getValue();
+			//log("current location from SWFAddress is [" + loc + "]");
 			// Quick and dirty method to remove trailing slash
 			if (loc.substr(-1,1) == "/") loc = loc.substr(0, loc.length-1);
 			return loc;

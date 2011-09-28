@@ -1,5 +1,7 @@
 package com.zehfernando.navigation {
 
+	import com.zehfernando.utils.console.warn;
+
 	import flash.display.DisplayObject;
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Sprite;
@@ -9,26 +11,22 @@ package com.zehfernando.navigation {
 	 */
 	public class NavigableSprite extends Sprite {
 		
-		// A movie that can be navigated to -- to be used with the Navigator class
+		// A movie that can be navigated to -- to be used with the SpriteNavigator class
 		
 		// Properties
-		protected var _title:String;
-		protected var _stub:String;
-		protected var _childrenContainer:DisplayObjectContainer;
-		protected var _myLocation:String;
-		protected var _createChildrenDynamically:Boolean;
-		protected var _destroyChildrenAfterClosing:Boolean;
+		protected var _title:String;									// Title for the HTML
+		protected var _stub:String;										// stub for the address
+		protected var _childrenContainer:DisplayObjectContainer;		// Container that contains children created
+		protected var _myLocation:String;								// Full location for this instance
+		protected var _createChildrenDynamically:Boolean;				// Whether it can create children dynamically as needed
+		protected var _destroyChildrenAfterClosing:Boolean;				// Whether children must be destroyed after being closed
 
-		protected var createdChildren:Vector.<NavigableSprite>;
-
-		
-		//protected var _canSwitchChildren:Boolean;								// Whether this can do a hot child switch (one child stub to the other) or not (must close old child, and then show new child)
+		protected var createdChildren:Vector.<NavigableSprite>;			// List of children that were dynamically created
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 		
 		public function NavigableSprite() {
-			//_myLocation = null;
 			_title = "Default Area";
 			_stub = "default-area";
 			_myLocation = "/";
@@ -46,15 +44,8 @@ package com.zehfernando.navigation {
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 		
 		private function onOpeningInternal(e:NavigableSpriteEvent): void {
-			// TODO: this is a bit of a crappy method to open sub-sections... rethink this approach
-			//_myLocation = SpriteNavigator.getLocation();
-			//_myLocation = (Boolean(navigableParent) ? navigableParent.location :  "") + "/" + _stub;//SpriteNavigator.getLocation(true);
-			//trace ("==== "+this+" my location = " + _myLocation);
-			//_myLocation = SpriteNavigator.getLocation(true);
-			//_myLocation += (_myLocation.length > 1 ? "/" : "") + _stub;
+			// This NavigableSprite os opening, therefore, set its currenrt location
 			if (_myLocation == "/" || _stub == "default-area") _myLocation = "";
-			//trace ("NavigableSprite :: onOpeningInternal :: setting [" +_stub + "]'s location as [" + _myLocation + "]");
-			//trace ("---->" + SpriteNavigator.getLocation(true)+"/" + _stub);
 		}
 
 
@@ -66,10 +57,14 @@ package com.zehfernando.navigation {
 			//trace ("NavigableSprite :: createChild :: ["+__stub+"]");
 			var ns:NavigableSprite = createChildInstance(__stub);
 			if (Boolean(ns)) {
-				if (_destroyChildrenAfterClosing) ns.addEventListener(NavigableSpriteEvent.CLOSED, onClosedChildDestroy, false, 0, true);
+				ns.addEventListener(NavigableSpriteEvent.OPENING, onOpeningChild, false, 0, true);
+				ns.addEventListener(NavigableSpriteEvent.OPENED, onOpenedChild, false, 0, true);
+				ns.addEventListener(NavigableSpriteEvent.CLOSING, onClosingChild, false, 0, true);
+				ns.addEventListener(NavigableSpriteEvent.CLOSED, onClosedChild, false, 0, true);
 				ns.location = _myLocation + "/" + __stub;
 				createdChildren.push(ns);
-				_childrenContainer.addChildAt(ns, 0);
+				_childrenContainer.addChild(ns);
+				//_childrenContainer.addChildAt(ns, 0);
 				return ns;
 			} else {
 				trace ("NavigableSprite :: createChildInternal :: Child ["+__stub+"] creation failed!");
@@ -102,8 +97,16 @@ package com.zehfernando.navigation {
 
 		protected function destroyChild(__navigableSprite:NavigableSprite): void {
 			// Removes a navigable sub-area as it's not needed anymore
-			__navigableSprite.removeEventListener(NavigableSpriteEvent.CLOSED, onClosedChildDestroy);
-			_childrenContainer.removeChild(__navigableSprite);
+			__navigableSprite.removeEventListener(NavigableSpriteEvent.OPENING, onOpeningChild);
+			__navigableSprite.removeEventListener(NavigableSpriteEvent.OPENED, onOpenedChild);
+			__navigableSprite.removeEventListener(NavigableSpriteEvent.CLOSING, onClosingChild);
+			__navigableSprite.removeEventListener(NavigableSpriteEvent.CLOSED, onClosedChild);
+			__navigableSprite.dispose();
+			if (_childrenContainer.contains(__navigableSprite) && __navigableSprite.parent == _childrenContainer) {
+				_childrenContainer.removeChild(__navigableSprite);
+			} else {
+				warn("_childrenContainer didn't contain the navigable sprite being removed; it won't be removed. Do it manually?");
+			}
 			var i:int = createdChildren.indexOf(__navigableSprite);
 			if (i > -1) createdChildren.splice(i, 1);
 		}
@@ -124,8 +127,21 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onClosedChildDestroy(e:NavigableSpriteEvent): void {
-			destroyChild(e.target as NavigableSprite);
+		protected function onOpeningChild(e:NavigableSpriteEvent): void {
+			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.OPENING_CHILD));
+		}
+
+		protected function onOpenedChild(e:NavigableSpriteEvent): void {
+			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.OPENED_CHILD));
+		}
+
+		protected function onClosingChild(e:NavigableSpriteEvent): void {
+			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.CLOSING_CHILD));
+		}
+
+		protected function onClosedChild(e:NavigableSpriteEvent): void {
+			if (_destroyChildrenAfterClosing) destroyChild(e.target as NavigableSprite);
+			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.CLOSED_CHILD));
 		}
 		
 		// ================================================================================================================
@@ -146,7 +162,11 @@ package com.zehfernando.navigation {
 			// Navigation execution has finished, and this is the current area!
 		}
 
-		public function close(__immediate:Boolean = false): void {
+		public function dispose():void {
+			// Disposes of this (called when the parent's _destroyChildrenAfterClosing is set to true)
+		}
+
+		public function close(__immediate:Boolean = false, __isLast:Boolean = false): void {
 			if (__immediate) {
 				dispatchClosingEvent();
 				dispatchClosedEvent();
@@ -171,7 +191,7 @@ package com.zehfernando.navigation {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_OPEN_CHILD));
 		}
 		
-		public function requestPermissionToCloseChild(__child:NavigableSprite, __immediate:Boolean = false): void {
+		public function requestPermissionToCloseChild(__child:NavigableSprite, __furtherChildren:int, __immediate:Boolean = false): void {
 			// Requests permission to CLOSE a child sprite (meaning call close() on it)
 			// This usually should be immediate, but if a parent needs to close or hide something prior to closing a
 			// child, it must do so and only then dispatch the permission
@@ -183,6 +203,13 @@ package com.zehfernando.navigation {
 			// This usually should be immediate, but if a sprite needs to close or hide something prior to showing itself,
 			// it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_OPEN));
+		}
+				
+		public function requestPermissionToClose(__furtherChildren:int, __immediate:Boolean = false): void {
+			// Requests permission to close THIS sprite (meaning call close() on it)
+			// This usually should be immediate, but if a sprite needs to close or hide something prior to showing itself,
+			// it must do so and only then dispatch the permission
+			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_CLOSE));
 		}
 				
 		public function getChildByStubs(__stubList:Vector.<String>): NavigableSprite {
@@ -217,14 +244,25 @@ package com.zehfernando.navigation {
 		
 		public function getChildByStub(__stub:String, __allowDynamicCreation:Boolean = true): NavigableSprite {
 			
-			//trace ("NavigableSprite :: getChildByStub :: [" + __stub + "]");
-			//trace ("NavigableSprite :: getChildByStub :: _childrenContainer has " + _childrenContainer.numChildren + " children");
+			//log("Getting child [" + __stub + "] at [" + _stub + "], _childrenContainer has " + _childrenContainer.numChildren + " children");
 			
 			var ds:DisplayObject;
-			for (var i:int = 0; i < _childrenContainer.numChildren; i++) {
+			var i:int;
+			
+			// Looks for static ones
+			// TODO: remove? this is not needed anymore because it won't shouldn't be there
+			for (i = 0; i < _childrenContainer.numChildren; i++) {
 				ds = _childrenContainer.getChildAt(i);
+				//log("    Testing ["+ds+"]... " + (ds is NavigableSprite ? "[" + (ds as NavigableSprite).stub + "]" : ""));
 				if (ds is NavigableSprite && (ds as NavigableSprite).stub == __stub) return ds as NavigableSprite;
 			}
+			
+			// Looks for dynamically created ones that are NOT on the children container (otherwise the above code would find it)
+			for (i = 0; i < createdChildren.length; i++) {
+				if (createdChildren[i].stub == __stub) return createdChildren[i];
+			}
+			
+			//log("Children not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			
 			//trace ("NavigableSprite :: getChildByStub :: Stub [" + __stub + "] not found at ["+_stub+"], creating it"); 
 			if (_createChildrenDynamically && __allowDynamicCreation) return createChild(__stub);
@@ -256,7 +294,7 @@ package com.zehfernando.navigation {
 		public function set location(__value:String): void {
 			_myLocation = __value;
 		}
-		
+
 //		public function canSwitchChildren(): Boolean {
 //			return _canSwitchChildren;
 //		}

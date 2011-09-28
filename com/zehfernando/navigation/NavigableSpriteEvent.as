@@ -5,18 +5,25 @@ package com.zehfernando.navigation {
 	 * @author zeh
 	 */
 	public class NavigableSpriteEvent extends Event {
-		
-		public static const OPENING:String = "onOpening";
-		public static const OPENED:String = "onOpened";
-		public static const CLOSING:String = "onClosing";
-		public static const CLOSED:String = "onClosed";
-		public static const ALLOWED_TO_PRE_OPEN_CHILD:String = "allowedToPreOpenChild";
-		public static const ALLOWED_TO_OPEN_CHILD:String = "allowedToOpenChild";
-		public static const ALLOWED_TO_CLOSE_CHILD:String = "allowedToCloseChild";
 
-		public static const ALLOWED_TO_OPEN:String = "allowedToOpen";
+		// Enums		
+		public static const OPENING:String = "onOpening";				// A NavigableSprite is about to start opening
+		public static const OPENED:String = "onOpened";					// A NavigableSprite has finished opening
+		public static const CLOSING:String = "onClosing";				// A NavigableSprite is about to start closing
+		public static const CLOSED:String = "onClosed";					// A NavigableSprite has finished closing
 
-		
+		public static const OPENING_CHILD:String = "onOpeningChild";	// Implemented; test
+		public static const OPENED_CHILD:String = "onOpenedChild";		// Implemented; test
+		public static const CLOSING_CHILD:String = "onClosingChild";	// Implemented; test
+		public static const CLOSED_CHILD:String = "onClosedChild";		// Implemented; test
+
+		public static const ALLOWED_TO_OPEN:String = "allowedToOpen";						// Permission is given to call open() on this sprite
+		public static const ALLOWED_TO_CLOSE:String = "allowedToClose";						// Permission is given to call close() on this sprite
+
+		public static const ALLOWED_TO_PRE_OPEN_CHILD:String = "allowedToPreOpenChild";		// Permission is given to PRE-OPEN (create) a child
+		public static const ALLOWED_TO_OPEN_CHILD:String = "allowedToOpenChild";			// Permission is given to call open() on a child
+		public static const ALLOWED_TO_CLOSE_CHILD:String = "allowedToCloseChild";			// Permission is given to call close() on a child
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 		

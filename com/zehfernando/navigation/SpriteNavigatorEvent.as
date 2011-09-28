@@ -6,7 +6,8 @@ package com.zehfernando.navigation {
 	 */
 	public class SpriteNavigatorEvent extends Event {
 		
-		public static const CHANGED_LOCATION:String = "onChangedLocation";				// Location has changed
+		public static const CHANGED_LOCATION:String = "onChangedLocation";				// Location has changed, on ANY location hop
+		public static const CHANGED_LOCATION_FINAL:String = "onChangedLocationFinal";	// Location has changed, and it's on the final location
 		public static const LOCATION_WILL_CHANGE:String = "onLocationBeforeChange";		// Location will change
 
 		
