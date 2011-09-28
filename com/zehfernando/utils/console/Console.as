@@ -21,6 +21,9 @@ package com.zehfernando.utils.console {
 		public static const PARAM_TIME_NAME:String = "[[time-name]]";
 		public static const PARAM_TIME_VALUE:String = "[[time-value]]";
 		public static const PARAM_GROUP_NAME:String = "[[group]]";
+
+		public static const LOG_STATE_OFF:String = "off";
+		public static const LOG_STATE_ON:String = "on";
 		
 		public static const ECHO_FORMAT_FULL:String = PARAM_PACKAGE_NAME + "." + PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
 		public static const ECHO_FORMAT_SHORT:String = PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
@@ -62,6 +65,8 @@ package com.zehfernando.utils.console {
 		
 		protected static var textField:TextField;
 		
+		protected static var logStates:Array;
+		
 		protected static var timeTable:Object;						// Named array of ints
 		protected static var groups:Vector.<String>;
 
@@ -74,6 +79,8 @@ package com.zehfernando.utils.console {
 			_useTrace = true;
 			_useScreen = false;
 			_useJS = false;
+			
+			logStates = [];
 			
 			timeTable = {};
 			groups = new Vector.<String>();
@@ -108,10 +115,14 @@ package com.zehfernando.utils.console {
 			textField = null;
 		}
 		
-		protected static function echo(__output:String, __type:String = null): void {
+		protected static function echo(__output:String, __type:String = null, __callStackOffset:int = 0): void {
 			// Raw writes something to the required outputs
+			
+			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[3 + __callStackOffset]);
+			
+			if (logStates[className] == LOG_STATE_OFF) return;
 
-			var currCall:Vector.<String> = DebugUtils.getCurrentCallStack()[3]; // Package, class, function
+			var currCall:Vector.<String> = DebugUtils.getCurrentCallStack()[3 + __callStackOffset]; // Package, class, function
 			
 			var output:String = echoFormat;
 			output = output.split(PARAM_PACKAGE_NAME).join(currCall[0]);
@@ -161,7 +172,7 @@ package com.zehfernando.utils.console {
 			if (_useJS) {
 				if (ExternalInterface.available) {
 					try {
-						ExternalInterface.call("function(__message) { if(typeof(console) !== 'undefined' && console != null) { " + jsFunction + "(__message); } }", __output);
+						ExternalInterface.call("function(__message) { if(typeof(console) != 'undefined' && console != null) { " + jsFunction + "(__message); } }", output);
 					} catch (e:Error) {
 						trace ("Console.echo error: Tried calling console.log(), but ExternalInterface is not available! Error: " + e);
 					}
@@ -181,6 +192,15 @@ package com.zehfernando.utils.console {
 			return str;
 		}
 
+		protected static function getClassNameFromCallStack(__callStack:Vector.<String>): String {
+			//return __callStack[0] + "::" + __callStack[1] + "::" + __callStack[2];
+			var packageName:String = __callStack[0];
+			var className:String = __callStack[1];
+			if (className.indexOf("$") > 0) className = className.split("$")[0];
+			return  packageName + "::" + className;
+		}
+
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -190,7 +210,7 @@ package com.zehfernando.utils.console {
 			// Logs something
 			echo(__args.join(" "), LOG_TYPE_LOG);
 		}
-		
+
 		public static function info(__args:Array): void {
 			// Logs something as an info
 			echo(__args.join(" "), LOG_TYPE_INFO);
@@ -245,6 +265,29 @@ package com.zehfernando.utils.console {
 				echo(output);
 			}
 		}
+
+		public static function logOn(): void {
+			// Turns off log for one class
+			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[2]);
+			logStates[className] = LOG_STATE_ON;
+			echo("Log is now set to ON", LOG_TYPE_INFO);
+		}
+
+		public static function logOff(): void {
+			// Turns off log for one class
+			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[2]);
+			echo("Log is now set to OFF", LOG_TYPE_INFO);
+			logStates[className] = LOG_STATE_OFF;
+		}
+		
+		public static function logStackTrace(): void {
+			var stack:Vector.<Vector.<String>> = DebugUtils.getCurrentCallStack();
+			echo("STACK TRACE :");
+			for (var i:int = 1; i < stack.length; i++) {
+				echo("   --> " + stack[i].join(" ###### "), LOG_TYPE_LOG);
+			}
+		}
+		
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
