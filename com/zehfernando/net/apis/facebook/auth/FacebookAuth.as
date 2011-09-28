@@ -7,7 +7,12 @@ package com.zehfernando.net.apis.facebook.auth {
 
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.events.SecurityErrorEvent;
 	import flash.net.LocalConnection;
+	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
+	import flash.net.URLRequest;
 
 	/**
 	 * @author zeh
@@ -19,7 +24,8 @@ package com.zehfernando.net.apis.facebook.auth {
 		// Move this all to a more generic OAuth class?
 		
 		// Properties
-		public static var appId:String;
+		public static var appId:String;			// Needed for app access, login access
+		public static var appSecret:String;		// Needed for app access
 		public static var redirectURL:String;
 		public static var redirectLogoutURL:String;
 		
@@ -27,8 +33,11 @@ package com.zehfernando.net.apis.facebook.auth {
 		protected static var _accessToken:String;
 		
 		protected static var _loggedIn:Boolean;
+		protected static var _hasAppAccessToken:Boolean;
 		
 		protected static var eventDispatcher:EventDispatcher = new EventDispatcher();
+		
+		protected static var appAccessTokenLoader:URLLoader;
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -93,6 +102,25 @@ package com.zehfernando.net.apis.facebook.auth {
 			log("Logout window closed");
 		}
 
+		protected static function onGetAppAccessTokenSuccess(e:Event): void {
+			_accessToken = appAccessTokenLoader.data["access_token"];
+			_hasAppAccessToken = true;
+			destroyAppAccessTokenLoader();
+			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.GOT_APP_ACCESS_TOKEN_SUCCESS));
+		}
+
+		protected static function onGetAppAccessTokenIOError(e:Event): void {
+			log("I/O error when getting app access token!");
+			destroyAppAccessTokenLoader();
+			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.GOT_APP_ACCESS_TOKEN_ERROR));
+		}
+
+		protected static function onGetAppAccessTokenSecurityError(e:Event): void {
+			log("Security error when getting app access token!");
+			destroyAppAccessTokenLoader();
+			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.GOT_APP_ACCESS_TOKEN_ERROR));
+		}
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
@@ -102,7 +130,16 @@ package com.zehfernando.net.apis.facebook.auth {
 				localConnection = null;
 			}
 		}
-		
+
+		protected static function destroyAppAccessTokenLoader(): void {
+			if (Boolean(appAccessTokenLoader)) {
+				//appAccessTokenLoader.close();
+				appAccessTokenLoader.removeEventListener(Event.COMPLETE, onGetAppAccessTokenSuccess);
+				appAccessTokenLoader.removeEventListener(IOErrorEvent.IO_ERROR, onGetAppAccessTokenIOError);
+				appAccessTokenLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onGetAppAccessTokenSecurityError);
+				appAccessTokenLoader = null;
+			}
+		}		
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
@@ -141,7 +178,7 @@ package com.zehfernando.net.apis.facebook.auth {
 			// https://graph.facebook.com/me?access_token=2227470867%7C2.ymbE61jcLXs8V0LybrlzPA__.3600.1287158400-711322444%7Cz8rYDB_GlfbSaEiJ0-3j6MZxBCg
 			// https://graph.facebook.com/me/friends?access_token=2227470867|2.ymbE61jcLXs8V0LybrlzPA__.3600.1287158400-711322444|z8rYDB_GlfbSaEiJ0-3j6MZxBCg
 		}
-
+		
 		public static function logout(__forceSiteLogout:Boolean = false):void {
 			if (_loggedIn) {
 				dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.LOG_OUT_SUCCESS));
@@ -164,6 +201,20 @@ package com.zehfernando.net.apis.facebook.auth {
 			}
 		}
 
+		public static function getAppAccessToken(): void {
+			// Tries to get an access token for app access
+			destroyAppAccessTokenLoader();
+
+			var url:String = FacebookConstants.AUTHORIZE_APP_URL.split(FacebookConstants.PARAMETER_AUTH_APP_ID).join(appId).split(FacebookConstants.PARAMETER_AUTH_APP_SECRET).join(appSecret);
+
+			appAccessTokenLoader = new URLLoader();
+			appAccessTokenLoader.dataFormat = URLLoaderDataFormat.VARIABLES;
+			appAccessTokenLoader.addEventListener(Event.COMPLETE, onGetAppAccessTokenSuccess);
+			appAccessTokenLoader.addEventListener(IOErrorEvent.IO_ERROR, onGetAppAccessTokenIOError);
+			appAccessTokenLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onGetAppAccessTokenSecurityError);
+			appAccessTokenLoader.load(new URLRequest(url));
+		}
+
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
@@ -174,6 +225,10 @@ package com.zehfernando.net.apis.facebook.auth {
 
 		public static function get loggedIn(): Boolean {
 			return _loggedIn;
+		}
+
+		public static function get hasAppAccessToken(): Boolean {
+			return _hasAppAccessToken;
 		}
 
 	}

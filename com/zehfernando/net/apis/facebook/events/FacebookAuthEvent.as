@@ -11,6 +11,8 @@ package com.zehfernando.net.apis.facebook.events {
 
 		public static const LOG_OUT_SUCCESS:String = "onLogOutSuccess";
 
+		public static const GOT_APP_ACCESS_TOKEN_SUCCESS:String = "onGotAppAccessTokenSuccess";
+		public static const GOT_APP_ACCESS_TOKEN_ERROR:String = "onGotAppAccessTokenError";
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
