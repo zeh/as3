@@ -3,6 +3,7 @@ package com.zehfernando.utils.console {
 	import com.zehfernando.utils.AppUtils;
 	import com.zehfernando.utils.DebugUtils;
 
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.external.ExternalInterface;
 	import flash.text.TextField;
@@ -18,6 +19,8 @@ package com.zehfernando.utils.console {
 		public static const PARAM_CLASS_NAME:String = "[[class]]";
 		public static const PARAM_FUNCTION_NAME:String = "[[function]]";
 		public static const PARAM_OUTPUT:String = "[[output]]";
+		public static const PARAM_CURRENT_FRAME:String = "[[current-frame]]";
+		public static const PARAM_CURRENT_FRAME_FORMAT:String = "00000";
 		public static const PARAM_TIME_NAME:String = "[[time-name]]";
 		public static const PARAM_TIME_VALUE:String = "[[time-value]]";
 		public static const PARAM_GROUP_NAME:String = "[[group]]";
@@ -25,8 +28,8 @@ package com.zehfernando.utils.console {
 		public static const LOG_STATE_OFF:String = "off";
 		public static const LOG_STATE_ON:String = "on";
 		
-		public static const ECHO_FORMAT_FULL:String = PARAM_PACKAGE_NAME + "." + PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
-		public static const ECHO_FORMAT_SHORT:String = PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
+		public static const ECHO_FORMAT_FULL:String = "[" + PARAM_CURRENT_FRAME + "] " + PARAM_PACKAGE_NAME + "." + PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
+		public static const ECHO_FORMAT_SHORT:String = "[" + PARAM_CURRENT_FRAME + "] " + PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
 
 		public static const TIME_FORMAT:String = PARAM_TIME_NAME + ": " + PARAM_TIME_VALUE + "ms";
 		
@@ -69,6 +72,9 @@ package com.zehfernando.utils.console {
 		
 		protected static var timeTable:Object;						// Named array of ints
 		protected static var groups:Vector.<String>;
+		
+		protected static var currentFrame:int;
+		protected static var frameCounter:Sprite;
 
 		// http://getfirebug.com/logging
 		
@@ -82,8 +88,13 @@ package com.zehfernando.utils.console {
 			
 			logStates = [];
 			
+			currentFrame = 0;
+			
 			timeTable = {};
 			groups = new Vector.<String>();
+			
+			frameCounter = new Sprite();
+			frameCounter.addEventListener(Event.ENTER_FRAME, onEnterFrameCounter);
 		}
 
 
@@ -123,8 +134,10 @@ package com.zehfernando.utils.console {
 			if (logStates[className] == LOG_STATE_OFF) return;
 
 			var currCall:Vector.<String> = DebugUtils.getCurrentCallStack()[3 + __callStackOffset]; // Package, class, function
+			var currFrame:String = (PARAM_CURRENT_FRAME_FORMAT + currentFrame.toString(10)).substr(-PARAM_CURRENT_FRAME_FORMAT.length, PARAM_CURRENT_FRAME_FORMAT.length);
 			
 			var output:String = echoFormat;
+			output = output.split(PARAM_CURRENT_FRAME).join(currFrame);
 			output = output.split(PARAM_PACKAGE_NAME).join(currCall[0]);
 			output = output.split(PARAM_CLASS_NAME).join(currCall[1]);
 			output = output.split(PARAM_FUNCTION_NAME).join(currCall[2]);
@@ -198,6 +211,13 @@ package com.zehfernando.utils.console {
 			var className:String = __callStack[1];
 			if (className.indexOf("$") > 0) className = className.split("$")[0];
 			return  packageName + "::" + className;
+		}
+
+		// ================================================================================================================
+		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
+		
+		protected static function onEnterFrameCounter(e:Event): void {
+			currentFrame++;
 		}
 
 
