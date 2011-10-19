@@ -51,10 +51,7 @@ package com.zehfernando.net.assets {
 		// STATIC functions -----------------------------------------------------------------------------------------------
 		
 		protected static function addLibrary(__library:AssetLibrary): void {
-			
-			if (!Boolean(libraries)) {
-				libraries = new Vector.<AssetLibrary>();
-			}
+			if (!Boolean(libraries)) libraries = new Vector.<AssetLibrary>();
 			
 			if (libraries.indexOf(__library) == -1) {
 				libraries.push(__library);
@@ -62,10 +59,7 @@ package com.zehfernando.net.assets {
 		}
 
 		protected static function removeLibrary(__library:AssetLibrary): void {
-			
-			if (!Boolean(libraries)) {
-				libraries = new Vector.<AssetLibrary>();
-			}
+			if (!Boolean(libraries)) libraries = new Vector.<AssetLibrary>();
 			
 			if (libraries.indexOf(__library) != -1) {
 				libraries.splice(libraries.indexOf(__library), 1);
@@ -73,7 +67,6 @@ package com.zehfernando.net.assets {
 		}
 		
 		public static function getLibrary(__name:String = ""): AssetLibrary {
-			// Use object list instead?
 			var i:int;
 			for (i = 0; i < libraries.length; i++) {
 				if (libraries[i].name == __name) return libraries[i];
