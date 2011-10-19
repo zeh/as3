@@ -1,5 +1,4 @@
 package com.zehfernando.display.containers {
-
 	import com.zehfernando.utils.console.log;
 
 	import flash.display.BitmapData;
@@ -304,7 +303,7 @@ package com.zehfernando.display.containers {
 		}
 
 		public function getNumValidCameras(): int {
-			// Returns the number of valid cameras, after a autoSelectActiveCamera() call
+			// Returns the number of valid cameras, after a findActiveCameras() call
 			var c:int = 0;
 			for (var i:int = 0; i < validCameras.length; i++) {
 				if (validCameras[i]) c++;
@@ -336,6 +335,38 @@ package com.zehfernando.display.containers {
 		public function set smoothing(__value:Boolean): void {
 			_smoothing = __value;
 			redrawSmoothing();
+		}
+		
+		public function get muted(): Boolean {
+			return Boolean(_camera) ? _camera.muted : false;
+		}
+		
+		public function get currentFPS(): Number {
+			return Boolean(_camera) ? _camera.currentFPS : 0;
+		}
+
+		public function get fps(): Number {
+			return Boolean(_camera) ? _camera.fps : 0;
+		}
+
+		public function get activityLevel(): Number {
+			return Boolean(_camera) ? _camera.activityLevel : 0;
+		}
+		
+		public function get bandwidth(): int {
+			return Boolean(_camera) ? _camera.bandwidth : 0;
+		}
+		
+		public function get cameraWidth(): int {
+			return Boolean(_camera) ? _camera.width : 0;
+		}
+		
+		public function get cameraHeight(): int {
+			return Boolean(_camera) ? _camera.height : 0;
+		}
+		
+		public function get cameraName(): String {
+			return Boolean(_camera) ? _camera.name : null;
 		}
 		
 	}
