@@ -2,47 +2,37 @@ package com.zehfernando.localization {
 
 	import com.zehfernando.data.types.Color;
 	import com.zehfernando.utils.DateUtils;
+
+	import flash.events.EventDispatcher;
 	/**
 	 * @author zeh at zehfernando.com
 	 */
-	public class StringList {
+	public class StringList extends EventDispatcher {
 		
-//		Android:
-//		<color name="color">#ffffff</color>
-//		<dimen name="dimension">10px</dimen>
-//		<drawable name="drawable">#ffffff</drawable>
-//		<integer-array name="integer_array">
-//			<item>1312</item>
-//		</integer-array>
-//		<item format="color" type="color" name="item">#ffffff</item>
-//		<string name="string">0187390123</string>
-//		<string-array name="string_array">
-//			<item>lajsdhlas</item>
-//		</string-array>
-//		<style parent="asda" name="style_theme"></style>
 /*
-
-		<string>
-		<color>
-		<number>
-		<boolean>
-		<datetime>
+		<string name="myString" language="en,en-us">aaaa</string>
+		<color>#ffffff</color> <!-- Or any CSS-like value -->
+		<number>110.2</number>
+		<boolean>true</boolean>
+		<datetime>1980-01-01T00:00:00-06:00</datetime>
 		
-		<string-array>
+		<string-array><item>...</item></string-array>
 		<color-array>
 		<number-array>
 		<boolean-array>
 		<datetime-array>
 		
-		<group>
+		<group>...</group>
 		
-		<data>
+		<data><someXML/></data>
 */
-		
 
 		// Constants
 		public static const LANGUAGE_LIST_SEPARATOR:String = ",";
 		public static const ID_HYERARCHY_SEPARATOR:String = "/";
+
+		// Static properties
+		protected static var lists:Vector.<StringList>;
 		
 		// Value enums
 		protected static const VALUE_BOOLEAN_TRUE:String = "true";
@@ -54,8 +44,6 @@ package com.zehfernando.localization {
 		protected static const VALUE_BOOLEAN_DEFAULT:String = VALUE_BOOLEAN_FALSE;
 		protected static const VALUE_COLOR_DEFAULT:String = "#000000";
 		protected static const VALUE_DATETIME_DEFAULT:String = "1980-01-01T00:00:00-06:00";
-
-		protected static const VALUE_NOT_FOUND:String = "[null]"; // TODO: properly return null when this happens? or the string id itself?
 
 		// Type enums
 		protected static const TYPE_STRING:String = "string";
@@ -73,29 +61,56 @@ package com.zehfernando.localization {
 		protected static const TYPE_ITEM:String = "item";
 
 		// Properties
-		protected static var values:ValueGroup;
-		protected static var currentLanguages:Vector.<String>;						// Current language, ie, ["en", "en-us"]
-
-		// ================================================================================================================
-		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
-		
-		protected static function init(): void {
-			// ValueGroup is not accessible on the actual static init block, so initialize it manually
-			if (!Boolean(values)) {
-				values = new ValueGroup();
-			}
-		}
+		protected var _name:String;
+		protected var values:ValueGroup;									// Main group
+		protected var currentLanguages:Vector.<String>;						// Current language chain, e.g. ["en", "en-us"]
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function StringList() {
-			throw new Error("Instantiation not allowed");
+		public function StringList(__name:String = "") {
+			_name = __name;
+
+			values = new ValueGroup();
+			
+			StringList.addList(this);
 		}
 
 		// ================================================================================================================
-		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
+		// STATIC functions -----------------------------------------------------------------------------------------------
 		
+		{
+			lists = new Vector.<StringList>();
+		}
+		
+		protected static function addList(__list:StringList): void {
+			if (lists.indexOf(__list) == -1) {
+				lists.push(__list);
+			}
+		}
+
+		protected static function removeList(__list:StringList): void {
+			if (lists.indexOf(__list) != -1) {
+				lists.splice(lists.indexOf(__list), 1);
+			}
+		}
+		
+		public static function getList(__name:String = "", __canCreate:Boolean = true): StringList {
+			var i:int;
+			for (i = 0; i < lists.length; i++) {
+				if (lists[i].name == __name) return lists[i];
+			}
+
+			// Not found
+			if (__canCreate) {
+				// Create a new, empty list
+				return new StringList();
+			}
+			
+			// Error
+			return null;
+		}
+
 		protected static function getXMLAsItem(__item:XML): ValueNode {
 			// Converts XML data to a value node
 			var newItem:ValueNode;
@@ -109,6 +124,7 @@ package com.zehfernando.localization {
 				case TYPE_BOOLEAN:
 				case TYPE_COLOR:
 				case TYPE_DATETIME:
+					// String-based values are stored as string
 					newItem = new ValueString();
 					newItem.type = nodeName;
 					(newItem as ValueString).value = __item.toString();
@@ -118,18 +134,21 @@ package com.zehfernando.localization {
 				case TYPE_BOOLEAN_ARRAY:
 				case TYPE_COLOR_ARRAY:
 				case TYPE_DATETIME_ARRAY:
+					// Array-based values are stored as a list of strings
 					newItem = new ValueArray();
 					newItem.type = nodeName;
 					var subItems:XMLList = __item.child(TYPE_ITEM);
 					for (i = 0; i < subItems.length(); i++) {
-						(newItem as ValueArray).items.push(String(subItems[i]));
+						(newItem as ValueArray).items.push((subItems[i] as XML).toString());
 					}
 					break;
 				case TYPE_DATA:
+					// Data values are stored as its XML source
 					newItem = new ValueXML();
 					(newItem as ValueXML).value = __item;
 					break;
 				case TYPE_GROUP:
+					// Groups (with subitems) are stored as a special type
 					newItem = getXMLListAsGroup(__item.children());
 					break;
 				default:
@@ -155,7 +174,7 @@ package com.zehfernando.localization {
 		protected static function getXMLListAsGroup(__items:XMLList): ValueGroup {
 			// Converts XML data to a value group
 			var newGroup:ValueGroup = new ValueGroup();
-			newGroup.type = TYPE_GROUP; // TODO: this is redundant, remove?
+			newGroup.type = TYPE_GROUP; // This is a little bit redundant but consistent with how other types are treated
 			var i:int;
 			for (i = 0; i < __items.length(); i++) {
 				newGroup.items.push(getXMLAsItem(__items[i]));
@@ -164,6 +183,7 @@ package com.zehfernando.localization {
 		}
 
 		protected static function convertStringToType(__string:String, __type:String): * {
+			// Converts a string-based value to its specific value
 			switch(__type) {
 				case TYPE_STRING:
 					if (!Boolean(__string)) __string = VALUE_STRING_DEFAULT;
@@ -187,7 +207,50 @@ package com.zehfernando.localization {
 			return null;
 		}
 
-		protected static function getProcessedStringInternal(__string:String, __languages:Vector.<String>): String {
+		protected static function convertStringArrayToType(__strings:Vector.<String>, __type:String): * {
+			// Converts a string-based array to its specific value array
+			var lst:Object;
+			var itemType:String;
+			var i:int;
+
+			switch(__type) {
+				case TYPE_STRING_ARRAY:
+					lst = new Vector.<String>();
+					itemType = TYPE_STRING;
+					break;
+				case TYPE_NUMBER_ARRAY:
+					lst = new Vector.<Number>();
+					itemType = TYPE_NUMBER;
+					break;
+				case TYPE_BOOLEAN_ARRAY:
+					lst = new Vector.<Boolean>();
+					itemType = TYPE_BOOLEAN;
+					break;
+				case TYPE_COLOR_ARRAY:
+					lst = new Vector.<Color>();
+					itemType = TYPE_COLOR;
+					break;
+				case TYPE_DATETIME_ARRAY:
+					lst = new Vector.<Date>();
+					itemType = TYPE_DATETIME;
+					break;
+				default:
+					trace ("StringList :: Error trying to convert array to node of type ["+String(__type)+"]");
+					return null;
+				break;
+			}
+
+			for (i = 0; i < __strings.length; i++) {
+				lst["push"](convertStringToType(__strings[i], itemType));
+			}
+			
+			return lst;
+		}
+
+		// ================================================================================================================
+		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
+
+		protected function getProcessedStringInternal(__string:String, __languages:Vector.<String>): String {
 			// Returns a string with processed codes
 			// For example "this is an ${examples/example}!" returns "this is an EXAMPLE!" (where the value of examples/example in strings.xml is "EXAMPLE")
 			
@@ -218,50 +281,21 @@ package com.zehfernando.localization {
 			// End text after last tag
 			newString += __string.substring(lastIndex, __string.length);
 
-//			trace ("OUTPUT ============================ " + newString);
-
 			return newString;
 		}
 
-		// ================================================================================================================
-		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-
-		public static function setFromXML(__xml:XML): void {
-			init();
-
-			values.add(getXMLListAsGroup(__xml.children()));
-			// TODO: read string data replacing unix/windows line feed?
-		}
-
-		public static function setCurrentLanguage(__language:String): void {
-			setCurrentLanguages(__language);
-		}
-		
-		public static function setCurrentLanguages(... __languages): void {
-			currentLanguages = new Vector.<String>();
-			for (var i:int = 0; i < __languages.length; i++) {
-				currentLanguages.push(__languages[i]);
+		protected function getProcessedStringArrayInternal(__strings:Vector.<String>, __languages:Vector.<String>): Vector.<String> {
+			var i:int;
+			var newStrings:Vector.<String> = new Vector.<String>();
+			
+			for (i = 0; i < __strings.length; i++) {
+				newStrings.push(getProcessedStringInternal(__strings[i], __languages));
 			}
-			// TODO: add language change event listener
+			
+			return newStrings;
 		}
 
-		public static function getCurrentLanguages(): Vector.<String> {
-			return currentLanguages.concat();
-		}
-		
-		public static function setString(__id:String, __value:String): void {
-			var vs:ValueString = new ValueString();
-			vs.name = __id;
-			vs.value = __value;
-			vs.type = TYPE_STRING;
-
-			var vg:ValueGroup = new ValueGroup();
-			vg.items.push(vs);
-
-			values.add(vg);
-		}
-		
-		public static function getValue(__id:String, ... __languages): * {
+		protected function getValue(__id:String, __languages:Array): * {
 			var i:int;
 			
 			// Get the full path to the value name
@@ -274,7 +308,7 @@ package com.zehfernando.localization {
 				langsToUse = new Vector.<String>();
 				for (i = 0; i < __languages.length; i++) langsToUse.push(__languages[i]); 
 			} else {
-				langsToUse = StringList.getCurrentLanguages();
+				langsToUse = getCurrentLanguages();
 			}
 
 			var node:ValueNode = values.getValueNodeByNames(names, langsToUse);
@@ -284,148 +318,109 @@ package com.zehfernando.localization {
 			if (node is ValueString) {
 				// Any standard string node
 				return convertStringToType(getProcessedStringInternal((node as ValueString).value, langsToUse), node.type);
-			
 			} else if (node is ValueArray)  {
 				// Any array node
-				var lst:*;
-				var itemType:String;
-
-				switch(node.type) {
-					case TYPE_STRING_ARRAY:
-						lst = new Vector.<String>();
-						itemType = TYPE_STRING;
-						break;
-					case TYPE_NUMBER_ARRAY:
-						lst = new Vector.<Number>();
-						itemType = TYPE_NUMBER;
-						break;
-					case TYPE_BOOLEAN_ARRAY:
-						lst = new Vector.<Boolean>();
-						itemType = TYPE_BOOLEAN;
-						break;
-					case TYPE_COLOR_ARRAY:
-						lst = new Vector.<Color>();
-						itemType = TYPE_COLOR;
-						break;
-					case TYPE_DATETIME_ARRAY:
-						lst = new Vector.<Date>();
-						itemType = TYPE_DATETIME;
-						break;
-					default:
-						trace ("StringList :: Error trying to convert array to node of type ["+node.type+"]");
-						return null;
-					break;
-				}
-
-				for (i = 0; i < (node as ValueArray).items.length; i++) {
-					lst["push"](convertStringToType(getProcessedStringInternal((node as ValueArray).items[i], langsToUse), itemType));
-				}
-				
-				return lst;
+				return convertStringArrayToType(getProcessedStringArrayInternal((node as ValueArray).items, langsToUse), node.type);
 			} else if (node is ValueXML) {
 				// Any XML node
 				return (node as ValueXML).value;
-				
 			} else if (!Boolean(node)) {
 				// Not found at all
-				return VALUE_NOT_FOUND;
+				return null;
 			}
 
 			trace ("StringList :: Error trying to read node [" + node + "] of type ["+node.type+"]");			
 			return null;
 		}
 
-		public static function getString(__id:String, ... __languages): String {
-			var args:Array = [__id];
-			args = args.concat(__languages);
+		// ================================================================================================================
+		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-			return getValue.apply(null, args);
+		public function setFromXML(__xml:XML): void {
+			values.add(getXMLListAsGroup(__xml.children()));
+			// TODO: read string data replacing unix/windows line feed?
 		}
 
-		public static function getNumber(__id:String, ... __languages): Number {
-			var args:Array = [__id];
-			args = args.concat(__languages);
+		public function setCurrentLanguages(... __languages): void {
+			currentLanguages = new Vector.<String>();
+			for (var i:int = 0; i < __languages.length; i++) {
+				currentLanguages.push(__languages[i]);
+			}
 			
-			return getValue.apply(null, args);
+			dispatchEvent(new StringListEvent(StringListEvent.CHANGED_LANGUAGE));
 		}
 
-
-		public static function getXML(__id:String, ... __languages): XML {
-			var args:Array = [__id];
-			args = args.concat(__languages);
-			
-			return getValue.apply(null, args);
+		public function getCurrentLanguages(): Vector.<String> {
+			return currentLanguages.concat();
+		}
+		
+//		public function setString(__id:String, __value:String): void {
+//			var vs:ValueString = new ValueString();
+//			vs.name = __id;
+//			vs.value = __value;
+//			vs.type = TYPE_STRING;
+//
+//			var vg:ValueGroup = new ValueGroup();
+//			vg.items.push(vs);
+//
+//			values.add(vg);
+//		}
+		
+		public function getString(__id:String, ... __languages): String {
+			return getValue(__id, __languages);
 		}
 
-		public static function getProcessedString(__text:String, ... __languages): String {
+		public function getNumber(__id:String, ... __languages): Number {
+			return getValue(__id, __languages);
+		}
+
+		public function getBoolean(__id:String, ... __languages): Boolean {
+			return getValue(__id, __languages);
+		}
+
+		public function getColor(__id:String, ... __languages): uint {
+			return getValue(__id, __languages);
+		}
+
+		public function getXML(__id:String, ... __languages): XML {
+			return getValue(__id, __languages);
+		}
+
+		public function getProcessedString(__text:String, ... __languages): String {
 			var langsToUse:Vector.<String>;
 			var i:int;
 			if (Boolean(__languages) && __languages.length > 0) {
 				langsToUse = new Vector.<String>();
 				for (i = 0; i < __languages.length; i++) langsToUse.push(__languages[i]); 
 			} else {
-				langsToUse = StringList.getCurrentLanguages();
+				langsToUse = getCurrentLanguages();
 			}
 
 			return getProcessedStringInternal(__text, langsToUse);
 		}
 
-		public static function getBoolean(__id:String, ... __languages): Boolean {
-			var args:Array = [__id];
-			args = args.concat(__languages);
-			
-			return getValue.apply(null, args);
+		public function getStringArray(__id:String, ... __languages): Vector.<String> {
+			return getValue(__id, __languages);
 		}
 
-		public static function getColor(__id:String, ... __languages): int {
-			var args:Array = [__id];
-			args = args.concat(__languages);
-			
-			return getValue.apply(null, args);
+		public function getNumberArray(__id:String, ... __languages): Vector.<Number> {
+			return getValue(__id, __languages);
 		}
 
-		public static function getStringArray(__id:String, ... __languages): Vector.<String> {
-			var args:Array = [__id];
-			args = args.concat(__languages);
-			
-			return getValue.apply(null, args) as Vector.<String>;
+		public function getBooleanArray(__id:String, ... __languages): Vector.<Boolean> {
+			return getValue(__id, __languages);
 		}
 
-		public static function getNumberArray(__id:String, ... __languages): Vector.<Number> {
-			var args:Array = [__id];
-			args = args.concat(__languages);
-			
-			return getValue.apply(null, args) as Vector.<Number>;
+		public function getColorArray(__id:String, ... __languages): Vector.<uint> {
+			return getValue(__id, __languages);
 		}
 
-		public static function getBooleanArray(__id:String, ... __languages): Vector.<Boolean> {
-			var args:Array = [__id];
-			args = args.concat(__languages);
-			
-			return getValue.apply(null, args) as Vector.<Boolean>;
-		}
+		// ================================================================================================================
+		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public static function getColorArray(__id:String, ... __languages): Vector.<uint> {
-			var args:Array = [__id];
-			args = args.concat(__languages);
-			
-			return getValue.apply(null, args) as Vector.<uint>;
+		public function get name(): String {
+			return _name;
 		}
-
-//		public static function filter(__txt:String, __language:String = null): String {
-//			// If a string starts with "##", gets from list; if not, uses original
-//			if (Boolean(__txt) && __txt.substr(0, 2) == "##") {
-//				var st:String = StringList.getString(__txt.substr(1), __language);
-//				if (st == StringListItem.NULL_STRING) {
-//					return "["+__txt+"]";
-//				} else {
-//					return st;
-//				}
-//			} else {
-//				return __txt;
-//			}
-//			return "";
-//		}
 	}
 }
 
@@ -522,11 +517,11 @@ class ValueGroup extends ValueNode {
 	// Public functions
 	public function getValueNodeByNames(__names:Vector.<String>, __languages:Vector.<String>): ValueNode {
 		// Returns a value given its name path and languages
-		// Same as StringList.getValue(), but with pre-processed parameters
+		// Same as StringList.getValue(), but with pre-processed parameters (split)
 
 		var i:int, j:int;
 		
-		// Looks for all languages, one by one
+		// Looks for the string in all languages, one at a time
 		for (i = 0; i < __languages.length; i++) {
 			// Looks for all items
 			for (j = 0; j < items.length; j++) {
@@ -542,8 +537,7 @@ class ValueGroup extends ValueNode {
 			}
 		}
 
-		// Not found, try a value with no language
-		// TODO: redundant, refactor this
+		// Not found, try to find a value with no language
 		for (i = 0; i < items.length; i++) {
 			if (items[i].name == __names[0] && items[i].languages.length == 0) {
 				if (items[i] is ValueGroup) {
