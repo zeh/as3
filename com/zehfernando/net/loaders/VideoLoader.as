@@ -1,7 +1,10 @@
 package com.zehfernando.net.loaders {
 
+	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.utils.MathUtils;
+	import com.zehfernando.utils.console.debug;
 	import com.zehfernando.utils.console.log;
+	import com.zehfernando.utils.console.warn;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -58,6 +61,12 @@ package com.zehfernando.net.loaders {
 
 		protected var lastCuePoint:Object;
 		protected var _request:URLRequest;
+		
+		protected var resumeAfterMetaDataLoad:Boolean;
+		protected var pauseAfterMetaDataLoad:Boolean;
+		protected var isPlayingToForceMetaDataLoad:Boolean;
+		protected var previousSoundTransform:SoundTransform;
+		protected var timeStartedWaitingForMetaData:int;
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
@@ -71,6 +80,8 @@ package com.zehfernando.net.loaders {
 			_hasMetaData = false;
 			_isLoading = false;
 			_isLoaded = false;
+			
+			timeStartedWaitingForMetaData = 0;
 			
 			_netConnection = new NetConnection();
 			_netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
@@ -121,7 +132,31 @@ package com.zehfernando.net.loaders {
 				removeEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime);
 			}
 		}
-		
+
+		protected function startPlayingToForceMetaDataLoad(): void {
+			if (!isPlayingToForceMetaDataLoad) {
+				debug("Started waiting for forced metadata load");
+				isPlayingToForceMetaDataLoad = true;
+				previousSoundTransform = _netStream.soundTransform;
+				_netStream.soundTransform = new SoundTransform(0, 0);
+				_netStream.resume();
+				//seek(1);
+			}
+		}
+
+		protected function stopPlayingToForceMetaDataLoad(): void {
+			if (isPlayingToForceMetaDataLoad) {
+				debug("Stopped waiting for forced metadata load");
+				isPlayingToForceMetaDataLoad = false;
+				seek(0);
+				_netStream.pause();
+				_netStream.soundTransform = previousSoundTransform;
+				previousSoundTransform = null;
+
+				//if (pauseAfterMetaDataLoad) pause();
+				//if (resumeAfterMetaDataLoad) resume();
+			}
+		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
@@ -137,6 +172,14 @@ package com.zehfernando.net.loaders {
 			dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.RECEIVED_XMP_DATA));
 		} 
 	
+	    public function onTextData(__newData:Object):void {
+			log ("##### TEXT DATA : " + JSON.encode(__newData));
+		}
+
+	    public function onImageData(__newData:Object):void {
+			log ("##### IMAGE DATA : " + JSON.encode(__newData));
+		}
+
 	    public function onMetaData(__newData:Object):void {
 	    	for (var iis:String in __newData) {
 	    		//Log.echo(" --> " + iis + " = " + __newData[iis]);
@@ -144,8 +187,12 @@ package com.zehfernando.net.loaders {
 	    	}
 
 			//log(_request.url + " METADATA ==============> " + JSON.encode(_metaData));
+			
+			//log (">>> meta data received");
 
 			_hasMetaData = true;
+			stopPlayingToForceMetaDataLoad();
+
 			dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.RECEIVED_METADATA));
 
 			//if (_isLoading) onEnterFrameMonitorLoading(null);
@@ -411,7 +458,7 @@ package com.zehfernando.net.loaders {
 
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
-
+		
 		protected function onEnterFrameMonitorLoading(e:Event): void {
 			// Some load progress has been made
 			
@@ -426,15 +473,44 @@ package com.zehfernando.net.loaders {
 			onLoadProgress();
 			
 			if (bytesLoaded > 0) {
-				if (bytesTotal > 0 && bytesLoaded >= bytesTotal && _hasMetaData) {
-					// Completed loading
-					onLoadComplete();
+				if (bytesTotal > 0 && bytesLoaded >= bytesTotal) {
+					if (_hasMetaData) {
+						// Completed loading
+						if (isPlayingToForceMetaDataLoad) {
+							debug("Received metadata later");
+							stopPlayingToForceMetaDataLoad();
+						}
+						debug("Finished loading");
+						onLoadComplete();
+					} else {
+						// Fix for videos that complete loading without onMetaData dispatched
+						if (!isPlayingToForceMetaDataLoad) {
+							if (timeStartedWaitingForMetaData == 0) {
+								debug("Completed loading but doesn't have metadata yet! Waiting some more");
+								timeStartedWaitingForMetaData = getTimer();
+							} else {
+								if (getTimer() > timeStartedWaitingForMetaData + 750) {
+									warn("Too much time passed, forcing video playback");
+									startPlayingToForceMetaDataLoad();
+								}
+							}
+						}
+					}
 				}
 			}
 		}
 		
 		protected function onEnterFrameMonitorTime(e:Event): void {
-			dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.TIME_CHANGE));
+			if (!isPlayingToForceMetaDataLoad) {
+				dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.TIME_CHANGE));
+			}
+		}
+		
+		protected function onPlayStatus(event:NetStatusEvent):void {
+			log ("##### PLAY STATUS : " + event.info["code"]);
+			// NetStream.Play.Switch
+			// NetStream.Play.Complete
+			// NetStream.Play.TransitionComplete
 		}
 
 		protected function onNetStatus(event:NetStatusEvent):void {
@@ -470,8 +546,8 @@ package com.zehfernando.net.loaders {
                 case "NetStream.Play.Start":
                 	// Apparently this only works with streaming netstreams? 
                 	//trace ("netstream.play.start " + _contentURL);
-                	startMonitoringTime();
-                	dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_START));
+            		startMonitoringTime();
+            		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_START));
                 	break;
             	case "NetStream.Buffer.Empty":
             		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.BUFFER_EMPTY));
@@ -542,17 +618,34 @@ package com.zehfernando.net.loaders {
 		
 		public function resume(): void {
 			if (_hasVideo) {
-				_netStream.resume();
-				startMonitoringTime();
-				dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.RESUME));
+				//log(">>>>>>>>>>>>>>> resume");
+				//logStackTrace();
+				if (!_hasMetaData || isPlayingToForceMetaDataLoad) {
+					resumeAfterMetaDataLoad = true;
+					pauseAfterMetaDataLoad = false;
+				} else {
+					resumeAfterMetaDataLoad = false;
+					pauseAfterMetaDataLoad = false;
+					_netStream.resume();
+					startMonitoringTime();
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.RESUME));
+				}
 			}
 		}
 
 		public function pause(): void {
 			if (_hasVideo) {
-				_netStream.pause();
-				stopMonitoringTime();
-				dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PAUSE));
+				//log(">>>>>>>>>>>>>>> pause");
+				if (!_hasMetaData || isPlayingToForceMetaDataLoad) {
+					resumeAfterMetaDataLoad = false;
+					pauseAfterMetaDataLoad = true;
+				} else {
+					resumeAfterMetaDataLoad = false;
+					pauseAfterMetaDataLoad = false;
+					_netStream.pause();
+					stopMonitoringTime();
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PAUSE));
+				}
 			}
 		}
 		
