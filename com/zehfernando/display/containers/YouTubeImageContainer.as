@@ -1,10 +1,10 @@
 package com.zehfernando.display.containers {
 
-	import flash.system.Security;
 	import com.zehfernando.net.apis.youtube.data.YouTubeVideo;
 	import com.zehfernando.net.apis.youtube.events.YouTubeServiceEvent;
 	import com.zehfernando.net.apis.youtube.services.YouTubeVideoInfoRequest;
-	import flash.system.SecurityDomain;
+
+	import flash.system.Security;
 
 	/**
 	 * @author zeh at zehfernando.com
