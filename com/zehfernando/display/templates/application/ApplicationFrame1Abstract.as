@@ -89,7 +89,7 @@ package com.zehfernando.display.templates.application {
 			
 			frame2DataLoaded = false;
 			frame2DataLoadingPhase = 0;
-			frame2DataLoadingWeight = 200;
+			frame2DataLoadingWeight = 10;
 
 			timeStartedLoading = getTimer();
 			sizeAfterPreloader = loaderInfo.bytesLoaded;
@@ -101,9 +101,9 @@ package com.zehfernando.display.templates.application {
 
 			// Debug stuff
 			if (AppUtils.isDebugSWF()) {
-				var sg:StatGraph = new StatGraph(210);
-				sg.alpha = 0.8;
-				stage.addChild(sg);
+//				var sg:StatGraph = new StatGraph(210);
+//				sg.alpha = 0.8;
+//				stage.addChild(sg);
 
 				// stage.addChild(new QuickButton("BG INTERFACE: PAUSE", 10, 100, function():void { Main.getInstance().pauseBackgroundInterface(); }, 150, 26));
 				// stage.addChild(new QuickButton("BG INTERFACE: RESUME", 10, 130, function():void { Main.getInstance().resumeBackgroundInterface(); }, 150, 26));
@@ -251,16 +251,14 @@ package com.zehfernando.display.templates.application {
 			// EXTEND THIS
 		}
 		
-		protected function hideLoadingInterface(): void {
-			// EXTEND THIS
-			removeLoadingInterface();
-		}
-
 		protected function removeLoadingInterface(): void {
 			// EXTEND THIS
-			showFrame2();
 		}
 
+		protected function removeLoadingInterfaceAndShowFrame2(): void {
+			removeLoadingInterface();
+			showFrame2();
+		}
 
 		// ================================================================================================================
 		// EVENT functions ------------------------------------------------------------------------------------------------
@@ -403,7 +401,7 @@ package com.zehfernando.display.templates.application {
 			frame2.removeEventListener(ApplicationFrame2Event.INIT_COMPLETE, onFrame2InitComplete);
 			//showFrame2();
 			
-			hideLoadingInterface();
+			removeLoadingInterfaceAndShowFrame2();
 		}
 	}
 }
