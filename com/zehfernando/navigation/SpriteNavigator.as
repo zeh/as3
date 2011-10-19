@@ -26,6 +26,7 @@ package com.zehfernando.navigation {
 		
 		//public static var siteTitle:String = "siteTitle";
 		public static var titleSeparator:String = " - ";
+		public static var useLastTitleOnly:Boolean = false;						// TODO: make this a getter/setter
 		
 		protected static var currentLocationInternal:Vector.<String>;			// List of stubs
 		
@@ -389,7 +390,20 @@ package com.zehfernando.navigation {
 		}
 		
 		public static function getTitle(): String {
-			return getLocationTitles().join(titleSeparator);
+			var titles:Vector.<String> = getLocationTitles();
+			var lastTitle:String = "";
+			
+			// Get last title that is not empty
+			var i:int = titles.length - 1;
+			while (i >= 0) {
+				if (Boolean(titles[i])) {
+					lastTitle = titles[i];
+					break;
+				}
+				i--;
+			}
+			
+			return useLastTitleOnly ? lastTitle : titles.join(titleSeparator);
 		}
 		
 		/*
