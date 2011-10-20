@@ -2,7 +2,6 @@ package com.zehfernando.net.apis.facebook.services {
 
 	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
-	import com.zehfernando.net.apis.facebook.data.FacebookFeedPost;
 	import com.zehfernando.net.apis.facebook.data.FacebookFeedPostAction;
 	import com.zehfernando.net.apis.facebook.events.FacebookServiceEvent;
 
@@ -31,7 +30,7 @@ package com.zehfernando.net.apis.facebook.services {
 		protected var _targeting:String;			// ** Location and language restrictions for Page posts only. manage_pages. A JSON object containing comma separated lists of valid country , city , region and locale
 
 		// Results
-		protected var _posts:Vector.<FacebookFeedPost>;
+		protected var _postId:String;
 		
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -67,13 +66,13 @@ package com.zehfernando.net.apis.facebook.services {
 			var vars:URLVariables = super.getURLVariables();
 			var i:int;
 
-			if (Boolean(_message) > 0)     vars["message"] = _message;
-			if (Boolean(_picture) > 0)     vars["picture"] = _picture;
-			if (Boolean(_link) > 0)        vars["link"] = _link;
-			if (Boolean(_name) > 0)        vars["name"] = _name;
-			if (Boolean(_caption) > 0)     vars["caption"] = _caption;
-			if (Boolean(_description) > 0) vars["description"] = _description;
-			if (Boolean(_source) > 0)      vars["source"] = _source;
+			if (Boolean(_message))     vars["message"] = _message;
+			if (Boolean(_picture))     vars["picture"] = _picture;
+			if (Boolean(_link))        vars["link"] = _link;
+			if (Boolean(_name))        vars["name"] = _name;
+			if (Boolean(_caption))     vars["caption"] = _caption;
+			if (Boolean(_description)) vars["description"] = _description;
+			if (Boolean(_source))      vars["source"] = _source;
 			if (_actions.length > 0) {
 				var actionsList:Array = [];
 				for (i = 0; i < _actions.length; i++) {
@@ -91,7 +90,9 @@ package com.zehfernando.net.apis.facebook.services {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onComplete(e:Event): void {
-			//var response:Object = JSON.decode(loader.data);
+			var response:Object = JSON.decode(loader.data);
+			
+			_postId = response["id"];
 			
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
@@ -119,71 +120,63 @@ package com.zehfernando.net.apis.facebook.services {
 			return _message;
 		}
 		public function set message(__value:String): void {
-			if (_message != __value) {
-				_message = __value;
-			}
+			_message = __value;
 		}
 		
 		public function get picture(): String {
 			return _picture;
 		}
 		public function set picture(__value:String): void {
-			if (_picture != __value) {
-				_picture = __value;
-			}
+			_picture = __value;
 		}
 		
 		public function get link(): String {
 			return _link;
 		}
 		public function set link(__value:String): void {
-			if (_link != __value) {
-				_link = __value;
-			}
+			_link = __value;
 		}
 		
 		public function get name(): String {
 			return _name;
 		}
 		public function set name(__value:String): void {
-			if (_name != __value) {
-				_name = __value;
-			}
+			_name = __value;
 		}
 		
 		public function get caption(): String {
 			return _caption;
 		}
 		public function set caption(__value:String): void {
-			if (_caption != __value) {
-				_caption = __value;
-			}
+			_caption = __value;
 		}
 		
 		public function get description(): String {
 			return _description;
 		}
 		public function set description(__value:String): void {
-			if (_description != __value) {
-				_description = __value;
-			}
+			_description = __value;
 		}
 		
 		public function get source(): String {
 			return _source;
 		}
 		public function set source(__value:String): void {
-			if (_source != __value) {
-				_source = __value;
-			}
+			_source = __value;
 		}
 
 		public function get actions():Vector.<FacebookFeedPostAction> {
 			return _actions;
 		}
-
 		public function set actions(actions:Vector.<FacebookFeedPostAction>):void {
 			_actions = actions;
 		}
+
+		// Results
+		
+		public function get postId(): String {
+			return _postId;
+		}
+
 	}
 }
