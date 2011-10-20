@@ -19,6 +19,8 @@ package com.zehfernando.net.apis.facebook {
 		public static const PARAMETER_USER_ID:String = "[[user_id]]";
 		public static const PARAMETER_ALBUM_ID:String = "[[album_id]]";
 		public static const PARAMETER_TARGET_ID:String = "[[target_id]]";
+		public static const PARAMETER_PHOTO_ID:String = "[[photo_id]]";
+		public static const PARAMETER_ITEM_ID:String = "[[item_id]]";
 		
 		public static const PARAMETER_AUTH_APP_ID:String = "[[app_id]]";
 		public static const PARAMETER_AUTH_APP_SECRET:String = "[[app_secret]]";
@@ -27,10 +29,13 @@ package com.zehfernando.net.apis.facebook {
 		
 		public static const SERVICE_DOMAIN:String = "https://graph.facebook.com";
 		public static const SERVICE_FEED:String = "/[[author_id]]/feed";
+		public static const SERVICE_FEED_ITEM:String = "/[[item_id]]";
 		public static const SERVICE_POSTS:String = "/[[author_id]]/posts";
 		public static const SERVICE_FEED_POST:String = "/[[target_id]]/feed";
 		public static const SERVICE_ALBUMS:String = "/[[author_id]]/albums";
 		public static const SERVICE_ALBUM_PHOTOS:String = "/[[album_id]]/photos";
+		public static const SERVICE_PHOTO_CREATE:String = "/[[target_id]]/photos";
+		public static const SERVICE_PHOTO_TAG_CREATE:String = "/[[photo_id]]/tags";
 		public static const SERVICE_USER:String = "/[[user_id]]";
 		public static const SERVICE_USERS:String = "/";
 		public static const SERVICE_USER_FRIENDS:String = "/[[user_id]]/friends";
