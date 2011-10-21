@@ -9,26 +9,26 @@ package com.zehfernando.data.types {
 	 * @author zeh
 	 */
 	public class AttenuatedNumber extends EventDispatcher {
-		
+
 		// Events
 		public static const EVENT_TICK:String = "onTick";					// Every frame
 		public static const EVENT_CHANGED:String = "onChanged";				// Every frame, IF there's a change on the value (of minimum _minimumChange)
-		
+
 		// Properties
 		protected var _divisor:Number;
 		protected var _isRunning:Boolean;
-		
+
 		protected var _minimumChange:Number = 0;			// Minimum change for EVENT_CHANGED dispatch
-		
+
 		protected var _current:Number;
 		protected var _target:Number;
-		
+
 		protected var _tickRate:Number;						// Number of ticks per second (if NaN, uses the normal framerate)
 
 		protected var _prevValue:Number;
-		
+
 		protected var lastTickTime:int;						// Time last tick occured
-		
+
 		// Instances
 		protected var container:Sprite;
 
@@ -39,18 +39,18 @@ package com.zehfernando.data.types {
 			// 1 = no attenuation
 			_divisor = __divisor;
 			_isRunning = false;
-			
+
 			_tickRate = __tickRate;
-			
+
 			_current = !isNaN(__currentValue) ? __currentValue : __targetValue;
 			_target = __targetValue;
-			
+
 			if (!__paused) start();
 		}
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function tick(): void {
 			// Updates all values
 			_prevValue = _current;
@@ -58,12 +58,12 @@ package com.zehfernando.data.types {
 			dispatchEvent(new Event(EVENT_TICK));
 			if (Math.abs(_current - _prevValue) > _minimumChange) dispatchEvent(new Event(EVENT_CHANGED));
 		}
-		
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		protected function onEnterFrameTick(e:Event): void {
-			
+
 			if (isNaN(_tickRate)) {
 				// Always update, ignore time
 				tick();
@@ -90,7 +90,7 @@ package com.zehfernando.data.types {
 				lastTickTime = getTimer();
 			}
 		}
-		
+
 		public function stop(): void {
 			if (_isRunning) {
 				container.removeEventListener(Event.ENTER_FRAME, onEnterFrameTick);
@@ -101,7 +101,7 @@ package com.zehfernando.data.types {
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		public function get divisor(): Number {
 			return _divisor;
 		}
@@ -115,23 +115,23 @@ package com.zehfernando.data.types {
 		public function get current():Number {
 			return _current;
 		}
-		
+
 		public function set current(__value:Number):void {
 			_current = __value;
 		}
-		
+
 		public function get target():Number {
 			return _target;
 		}
-		
+
 		public function set target(__value:Number):void {
 			_target = __value;
 		}
-		
+
 		public function get minimumChange():Number {
 			return _minimumChange;
 		}
-		
+
 		public function set minimumChange(__value:Number):void {
 			_minimumChange = __value;
 		}

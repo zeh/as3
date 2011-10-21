@@ -20,34 +20,34 @@ package com.zehfernando.net.apis.facebook.auth {
 	public class FacebookAuth {
 
 		// http://developers.facebook.com/docs/authentication/javascript
-		
+
 		// Move this all to a more generic OAuth class?
-		
+
 		// Properties
 		public static var appId:String;			// Needed for app access, login access
 		public static var appSecret:String;		// Needed for app access
 		public static var redirectURL:String;
 		public static var redirectLogoutURL:String;
-		
+
 		protected static var localConnection:LocalConnection;
 		protected static var _accessToken:String;
-		
+
 		protected static var _loggedIn:Boolean;
 		protected static var _hasAppAccessToken:Boolean;
-		
+
 		protected static var eventDispatcher:EventDispatcher = new EventDispatcher();
-		
+
 		protected static var appAccessTokenLoader:URLLoader;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function FacebookAuth() {
 		}
-			
+
 		// ================================================================================================================
 		// EVENT DISPATCHER INTERFACE -------------------------------------------------------------------------------------
-		
+
 		public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false): void {
 			eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
@@ -67,10 +67,10 @@ package com.zehfernando.net.apis.facebook.auth {
 		public static function willTrigger(type:String): Boolean {
 			return eventDispatcher.willTrigger(type);
 		}
-		
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-		
+
 		public static function onLoginSuccessLC(__accessToken:String): void {
 			log("Login success with access token " + __accessToken);
 			_accessToken = __accessToken;
@@ -139,16 +139,16 @@ package com.zehfernando.net.apis.facebook.auth {
 				appAccessTokenLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onGetAppAccessTokenSecurityError);
 				appAccessTokenLoader = null;
 			}
-		}		
+		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public static function login(__permissions:Array = null): void {
 			// Open the popup window asking for login permission
-			
+
 			closeLocalConnection();
-			
+
 			localConnection = new LocalConnection();
 			localConnection.allowDomain("*");
 			localConnection.client = {onLoginSuccessLC:onLoginSuccessLC, onLoginErrorLC:onLoginErrorLC};
@@ -162,13 +162,13 @@ package com.zehfernando.net.apis.facebook.auth {
 			var permissions:String = __permissions.join(",");
 
 			var url:String = FacebookConstants.AUTHORIZE_URL.split(FacebookConstants.PARAMETER_AUTH_APP_ID).join(appId).split(FacebookConstants.PARAMETER_AUTH_REDIRECT_URL).join(redirectURL).split(FacebookConstants.PARAMETER_AUTH_PERMISSIONS).join(permissions);
-			
+
 			HTMLUtils.openPopup(url, 600, 400, "_blank", onLoginWindowClosedLC);
 
 			// https://graph.facebook.com/oauth/authorize?client_id=147149585329358&redirect_uri=http://www.facebook.com/connect/login_success.html&type=user_agent&display=popup
 			// Goes to
 			// http://www.facebook.com/connect/login_success.html#access_token=147149585329358|2.0FiQGOUJJO4c_Cn9ldS2sw__.3600.1287158400-711322444|DWZFLTJtB48ilCs73xp8uu1jn4E&expires_in=4997
-			
+
 			// https://graph.facebook.com/oauth/authorize?client_id=147149585329358&redirect_uri=http://fakehost.com/SANDBOX/deploy/fb_login_success.html&type=user_agent&display=popup
 			// Goes to
 			// http://fakehost.com/SANDBOX/deploy/fb_login_success.html#access_token=147149585329358|2.0FiQGOUJJO4c_Cn9ldS2sw__.3600.1287158400-711322444|DWZFLTJtB48ilCs73xp8uu1jn4E&expires_in=3677
@@ -178,19 +178,19 @@ package com.zehfernando.net.apis.facebook.auth {
 			// https://graph.facebook.com/me?access_token=2227470867%7C2.ymbE61jcLXs8V0LybrlzPA__.3600.1287158400-711322444%7Cz8rYDB_GlfbSaEiJ0-3j6MZxBCg
 			// https://graph.facebook.com/me/friends?access_token=2227470867|2.ymbE61jcLXs8V0LybrlzPA__.3600.1287158400-711322444|z8rYDB_GlfbSaEiJ0-3j6MZxBCg
 		}
-		
+
 		public static function logout(__forceSiteLogout:Boolean = false):void {
 			if (_loggedIn) {
 				dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.LOG_OUT_SUCCESS));
 				_loggedIn = false;
 				closeLocalConnection();
-				
+
 				if (__forceSiteLogout) {
 					// Method 1
 					// http://m.facebook.com/logout.php?confirm=1&next=http://yoursitename.com
-					
+
 					log("redirecting to "+redirectLogoutURL);
-					
+
 					var url:String = FacebookConstants.LOGOUT_URL.split(FacebookConstants.PARAMETER_AUTH_REDIRECT_URL).join(redirectLogoutURL);
 					HTMLUtils.openPopup(url, 600, 400, "_blank", onLogoutWindowClosedLC);
 

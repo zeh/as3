@@ -10,7 +10,7 @@ package com.zehfernando.display {
 	 * @author zeh
 	 */
 	public class BitmapFillBox extends ResizableSprite {
-		
+
 		// Constants
 		public static const ALIGN_HORIZONTAL_LEFT:String = "left";
 		public static const ALIGN_HORIZONTAL_CENTER:String = "center";
@@ -34,15 +34,15 @@ package com.zehfernando.display {
 		// Instances
 		protected var bitmapData:BitmapData;
 		protected var bitmap:Bitmap;
-		
+
 		protected var source:BitmapData;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function BitmapFillBox(__alignHorizontal:String = "left", __alignVertical:String = "top") {
 			super();
-			
+
 			_alignHorizontal = __alignHorizontal;
 			_alignVertical = __alignVertical;
 			_bitmapScaleX = 1;
@@ -60,32 +60,32 @@ package com.zehfernando.display {
 		override protected function redrawHeight(): void {
 			redraw();
 		}
-		
+
 		protected function redraw(): void {
 			removeBitmap();
-			
+
 			if (Boolean(source) && _width > 0 && _height > 0) {
-				
+
 				var w:Number = Math.round(_width);
 				var h:Number = Math.round(_height);
-				
+
 				var i:int, j:int;
-				
+
 				bitmapData = new BitmapData (w, h, true, 0x00000000);
 				bitmapData.lock();
-				
+
 				var sourceResized:BitmapData = new BitmapData(Math.round(source.width * _bitmapScaleX), Math.round(source.height * _bitmapScaleY), source.transparent, 0x00000000);
 				var mtx:Matrix = new Matrix();
 				mtx.scale(sourceResized.width / source.width, sourceResized.height / source.height);
 				sourceResized.draw(source, mtx, null, null, null, true);
 				sourceResized.lock();
-				
+
 				// Find starting points
 				var posX:int;
 				var posY:int;
-				
+
 				// TODO: use beginBitmapFill() instead
-				
+
 				switch (_alignHorizontal) {
 					case ALIGN_HORIZONTAL_LEFT:
 						posX = 0;
@@ -105,7 +105,7 @@ package com.zehfernando.display {
 					default:
 						posX = 0;
 				}
-				
+
 				switch (_alignVertical) {
 					case ALIGN_VERTICAL_TOP:
 						posY = 0;
@@ -125,7 +125,7 @@ package com.zehfernando.display {
 					default:
 						posY = 0;
 				}
-				
+
 				// Adjust starting position in case it's inside the target image
 				while (posX > 0) posX -= sourceResized.width;
 				while (posY > 0) posY -= sourceResized.height;
@@ -135,36 +135,36 @@ package com.zehfernando.display {
 						bitmapData.copyPixels(sourceResized, sourceResized.rect, new Point(i, j));
 					}
 				}
-				
+
 				sourceResized.dispose();
 				sourceResized = null;
-				
+
 				bitmapData.unlock();
-			
+
 				bitmap = new Bitmap(bitmapData);
 				addChild(bitmap);
-				
+
 				applySmoothing();
 			}
 		}
-		
+
 		protected function applySmoothing(): void {
 			if (Boolean(bitmap)) bitmap.smoothing = _smoothing;
 		}
-		
+
 		protected function removeBitmap(): void {
 			if (Boolean(bitmap)) {
 				removeChild(bitmap);
 				bitmap.bitmapData = null;
 				bitmap = null;
 			}
-				
+
 			if (Boolean(bitmapData)) {
 				bitmapData.dispose();
 				bitmapData = null;
 			}
 		}
-		
+
 		protected function removeSource(): void {
 			if (Boolean(source)) {
 				source.dispose();
@@ -177,29 +177,29 @@ package com.zehfernando.display {
 
 		public function setBitmap(__bitmap:Bitmap, __canDisposeOf:Boolean = true): void {
 			setBitmapData(__bitmap.bitmapData, __canDisposeOf);
-			
+
 			if (__canDisposeOf) {
 				__bitmap.bitmapData = null;
 			}
 		}
-		
+
 		public function setBitmapData(__bitmapData:BitmapData, __canDisposeOf:Boolean = true): void {
 			removeSource();
-			
+
 			source = __bitmapData.clone();
-			
+
 			if (__canDisposeOf) {
 				__bitmapData.dispose();
 			}
-			
+
 			redraw();
 		}
-		
+
 		public function dispose(): void {
 			removeBitmap();
 			removeSource();
 		}
-		
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
@@ -222,7 +222,7 @@ package com.zehfernando.display {
 				redraw();
 			}
 		}
-		
+
 		public function get bitmapScaleX(): Number {
 			return _bitmapScaleX;
 		}
@@ -232,7 +232,7 @@ package com.zehfernando.display {
 				redraw();
 			}
 		}
-		
+
 		public function get alignHorizontal(): String {
 			return _alignHorizontal;
 		}
@@ -252,7 +252,7 @@ package com.zehfernando.display {
 				redraw();
 			}
 		}
-		
+
 		public function get bitmapWidth(): Number {
 			return bitmapData.width;
 		}

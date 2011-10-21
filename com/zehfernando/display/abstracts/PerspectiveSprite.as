@@ -11,13 +11,13 @@ package com.zehfernando.display.abstracts {
 	 * @author zeh
 	 */
 	public class PerspectiveSprite extends Sprite {
-		
+
 		// Properties
 		private var _assumedWidth:Number;
 		private var _assumedHeight:Number;
-		
+
 		//private var _redrawScheduled:Boolean;
-		
+
 		// Instances
 		private var _topLeft:Point;
 		private var _topRight:Point;
@@ -34,12 +34,12 @@ package com.zehfernando.display.abstracts {
 
 			_container3d = new Sprite();
 			super.addChild(_container3d);
-			
+
 			_topLeft = new Point(0, 0);
 			_topRight = new Point(_assumedWidth, 0);
 			_bottomLeft = new Point(0, _assumedHeight);
 			_bottomRight = new Point(_assumedWidth, _assumedHeight);
-			
+
 			scheduleRedraw();
 		}
 
@@ -48,17 +48,17 @@ package com.zehfernando.display.abstracts {
 
 		private function redrawPerspective(): void {
 			// 3D Transforms
-			
+
 			// Based on wh0's work:
 			// http://wonderfl.net/c/sxQJ
 			// With original matrix equations from Mathlab
 			var w:Number = _assumedWidth;
 			var h:Number = _assumedHeight;
-			
+
 			removeTransform();
 
 			_container3d.rotationX = 0;
-			
+
 			var pp:PerspectiveProjection = new PerspectiveProjection();
 			pp.projectionCenter = new Point (640, 400); // Doesn't matter?
 			transform.perspectiveProjection = pp;
@@ -85,14 +85,14 @@ package com.zehfernando.display.abstracts {
 			}
 
 		}
-		
+
 		private function scheduleRedraw(): void {
 			RenderUtils.addFunction(redrawPerspective);
 		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-		
+
 //		protected function onExitFrameRedraw(e:Event): void {
 //			_redrawScheduled = false;
 //			removeEventListener(Event.EXIT_FRAME, onExitFrameRedraw);
@@ -105,16 +105,16 @@ package com.zehfernando.display.abstracts {
 		public function removeTransform(): void {
 			_container3d.transform.matrix3D = null;
 		}
-		
+
 //		public function redraw(): void {
 //			onExitFrameRedraw(null);
 //		}
-		
+
 		// Public overrides
 		override public function addChild(__child:DisplayObject): DisplayObject {
 			return _container3d.addChild(__child);
 		}
-		
+
 		override public function addChildAt(__child:DisplayObject, __index:int): DisplayObject {
 			return _container3d.addChildAt(__child, __index);
 		}
@@ -122,35 +122,35 @@ package com.zehfernando.display.abstracts {
 		override public function getChildAt(__index:int): DisplayObject {
 			return _container3d.getChildAt(__index);
 		}
-		
+
 		override public function getChildByName(__name:String): DisplayObject {
 			return _container3d.getChildByName(__name);
 		}
-		
+
 		override public function getChildIndex(__child:DisplayObject): int {
 			return _container3d.getChildIndex(__child);
 		}
-		
+
 		override public function removeChild(__child:DisplayObject): DisplayObject {
 			return _container3d.removeChild(__child);
 		}
-		
+
 		override public function removeChildAt(__index:int): DisplayObject {
 			return _container3d.removeChildAt(__index);
 		}
-		
+
 		override public function setChildIndex(__child:DisplayObject, __index:int): void {
 			_container3d.setChildIndex(__child, __index);
 		}
-		
+
 		override public function swapChildren(__child1:DisplayObject, __child2:DisplayObject): void {
 			_container3d.swapChildren(__child1, __child2);
 		}
-		
+
 		override public function swapChildrenAt(__index1:int, __index2:int): void {
 			_container3d.swapChildrenAt(__index1, __index2);
 		}
-		
+
 		override public function get numChildren() : int {
 			return _container3d.numChildren;
 		}
@@ -165,7 +165,7 @@ package com.zehfernando.display.abstracts {
 			_topLeft = __value;
 			scheduleRedraw();
 		}
-		
+
 		public function get topRight(): Point {
 			return _topRight;
 		}
@@ -173,7 +173,7 @@ package com.zehfernando.display.abstracts {
 			_topRight = __value;
 			scheduleRedraw();
 		}
-		
+
 		public function get bottomLeft(): Point {
 			return _bottomLeft;
 		}
@@ -181,7 +181,7 @@ package com.zehfernando.display.abstracts {
 			_bottomLeft = __value;
 			scheduleRedraw();
 		}
-		
+
 		public function get bottomRight(): Point {
 			return _bottomRight;
 		}

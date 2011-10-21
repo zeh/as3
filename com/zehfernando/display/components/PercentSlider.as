@@ -30,11 +30,11 @@ package com.zehfernando.display.components {
 		protected var _position:Number;
 
 		protected var _hitMargin:Number;
-		
+
 		protected var _isDragging:Boolean;
 		protected var _enabled:Boolean;
 //		protected var _wheelDeltaScale:Number;
-		
+
 		// Instances
 		protected var background:Box;
 		protected var foreground:RoundedBox;
@@ -44,11 +44,11 @@ package com.zehfernando.display.components {
 //		protected var wheelTarget:DisplayObject;
 
 		protected var selectorContainer:Sprite;
-		
+
 		protected var selectors:Vector.<Sprite>;
 		protected var selectorAlignments:Vector.<Number>;					// -1 (left) to 1 (right)
 
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -56,10 +56,10 @@ package com.zehfernando.display.components {
 //			wheelTarget = __wheelTarget;
 
 			super();
-			
+
 			setDefaultData();
 			createAssets();
-			
+
 			// End
 			enabled = true;
 		}
@@ -67,7 +67,7 @@ package com.zehfernando.display.components {
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function setDefaultData(): void {
 			_width = 20;
 			_position = 0;
@@ -91,27 +91,27 @@ package com.zehfernando.display.components {
 
 			background = new Box(100, 100, _backgroundColor);
 			barContent.addChild(background);
-			
+
 			foreground = new RoundedBox(100, 100, _foregroundColor);
 			barContent.addChild(foreground);
-			
+
 			hitter = new Box(100, 100, 0xff0000);
 			hitter.alpha = 0;
 			hitter.buttonMode = true;
 			hitter.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown, false, 0, true);
-			
+
 			addChild(hitter);
-			
+
 			selectorContainer = new Sprite();
 			selectorContainer.buttonMode = true;
 			addChild(selectorContainer);
-			
+
 			selectorAlignments = new Vector.<Number>();
 
 			selectorContainer.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownSelector, false, 0, true);
-			
+
 			redrawRadius();
-			
+
 //			if (Boolean(wheelTarget)) AppUtils.getStage().addEventListener(MouseEvent.MOUSE_WHEEL, onStageMouseWheel, false, 0, true);
 		}
 
@@ -121,7 +121,7 @@ package com.zehfernando.display.components {
 			foreground.width = _width;
 			hitter.x = -_hitMargin;
 			hitter.width = _width + _hitMargin * 2;
-			
+
 			var i:int;
 			for (i = 0; i < selectorContainer.numChildren; i++) {
 				selectorContainer.getChildAt(i).x = MathUtils.map(selectorAlignments[i], -1, 1, 0, _width);
@@ -132,27 +132,27 @@ package com.zehfernando.display.components {
 			barMask.height = _height;
 			background.height = _height;
 			foreground.height = _height;
-			
+
 			redrawPosition();
 		}
-		
+
 		protected function redrawPosition(): void {
 			foreground.y = -MathUtils.map(_position, 0, 1, _height, 0);
 			//foreground.height = MathUtils.map(_position, 0, 1, 0, _height);
-			
+
 			hitter.y = -_hitMargin;
 			hitter.height = _height + _hitMargin * 2;
 
 			selectorContainer.y = MathUtils.map(_position, 0, 1, 0, _height);
-			
+
 			dispatchEvent(new Event(EVENT_POSITION_REDRAWN));
 		}
-		
+
 		protected function redrawRadius(): void {
 			foreground.radius = _radius;
 			barMask.radius = _radius;
 		}
-		
+
 		protected function continueDragging(): void {
 			if (_isDragging) {
 				var newPos:Number = MathUtils.map(mouseY + mouseOffsetY, 0, _height, 0, 1, true);
@@ -171,7 +171,7 @@ package com.zehfernando.display.components {
 				AppUtils.getStage().removeEventListener(MouseEvent.MOUSE_UP, onDraggingMouseUp);
 
 				_isDragging = false;
-				
+
 				dispatchEvent(new Event(EVENT_POSITION_DRAG_END));
 			}
 		}
@@ -194,7 +194,7 @@ package com.zehfernando.display.components {
 		protected function onDraggingMouseUp(e:MouseEvent): void {
 			stopDragging();
 		}
-		
+
 //		protected function onStageMouseWheel(e:MouseEvent): void {
 //			if (_enabled) {
 //				position -= _wheelDeltaScale * e.delta;
@@ -219,7 +219,7 @@ package com.zehfernando.display.components {
 				AppUtils.getStage().addEventListener(MouseEvent.MOUSE_MOVE, onDraggingMouseMove, false, 0, true);
 				AppUtils.getStage().addEventListener(MouseEvent.MOUSE_UP, onDraggingMouseUp, false, 0, true);
 				_isDragging = true;
-				
+
 				dispatchEvent(new Event(EVENT_POSITION_DRAG_START));
 				continueDragging();
 			}
@@ -242,18 +242,18 @@ package com.zehfernando.display.components {
 				redrawPosition();
 			}
 		}
-		
+
 		public function get enabled(): Boolean {
 			return _enabled;
 		}
 		public function set enabled(__value:Boolean): void {
 			_enabled = hitter.mouseEnabled = __value;
 		}
-		
+
 		public function get isDragging(): Boolean {
 			return _isDragging;
 		}
-		
+
 		public function get backgroundColor(): int {
 			return _backgroundColor;
 		}
@@ -263,7 +263,7 @@ package com.zehfernando.display.components {
 				background.color = _backgroundColor;
 			}
 		}
-		
+
 		public function get foregroundColor(): int {
 			return _foregroundColor;
 		}
@@ -273,7 +273,7 @@ package com.zehfernando.display.components {
 				foreground.color = _foregroundColor;
 			}
 		}
-		
+
 //		public function get wheelDeltaScale(): Number {
 //			return _wheelDeltaScale;
 //		}
@@ -293,7 +293,7 @@ package com.zehfernando.display.components {
 				redrawHeight();
 			}
 		}
-		
+
 		public function get radius(): Number {
 			return _radius;
 		}

@@ -12,22 +12,22 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh
 	 */
 	public class FacebookUserPhotosRequest extends BasicFacebookRequest {
-		
+
 		// http://developers.facebook.com/docs/reference/api/user
 		// https://graph.facebook.com/711322444
-		
+
 		// Requires the user_photo_video_tags, friend_photo_video_tags, user_photos or friend_photos permissions
 		// https://graph.facebook.com/me/photos?access_token=2227470867|2.AtoDa6J_7K5Mhbs8Z__htQ__.3600.1295989200-711322444|Ocyc32KDWSciM_ALC1BeQVLQd5w
-		
+
 		// Properties
 		protected var _userId:String;
-		
+
 		// Parameters
 		protected var _limit:int;
-		
+
 		// Results
 		protected var _photos:Vector.<FacebookPhoto>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -40,9 +40,9 @@ package com.zehfernando.net.apis.facebook.services {
 
 			// Parameters
 			// http://developers.facebook.com/docs/reference/api/user
-			
+
 			_userId = "";
-			
+
 		}
 
 		// ================================================================================================================
@@ -61,14 +61,14 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_photos = FacebookPhoto.fromJSONObjectArray(response["data"]);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 
 			// TODO: using the query parameter "ids" here instead of the normal url userId, one can get data for several users at the same time - redo this?
@@ -76,7 +76,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// TODO: test whether one can get data for several different users for /friends too
 
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_USER_ID, _userId);
-			
+
 			super.execute();
 		}
 
@@ -100,7 +100,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Results
-		
+
 		public function get photos(): Vector.<FacebookPhoto> {
 			return _photos.concat();
 		}

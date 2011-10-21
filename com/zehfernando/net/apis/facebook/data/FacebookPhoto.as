@@ -6,12 +6,12 @@ package com.zehfernando.net.apis.facebook.data {
 	 * @author zeh
 	 */
 	public class FacebookPhoto {
-		
+
 		// https://graph.facebook.com/138296789536741/photos
-		
+
 		// http://developers.facebook.com/docs/reference/api/photo
 
-		// Properties		
+		// Properties
 		public var id:String;
 		public var from:FacebookAuthor;
 		public var tags:Vector.<FacebookTag>;
@@ -23,27 +23,27 @@ package com.zehfernando.net.apis.facebook.data {
 		// images
 		/*
 		 "images": [
-            {
-               "height": 453,
-               "width": 604,
-               "source": "http://sphotos.ak.fbcdn.net/hphotos-ak-ash1/hs744.ash1/163609_837287192727_13610420_46245965_1639588_n.jpg"
-            },
-            {
-               "height": 135,
-               "width": 180,
-               "source": "http://photos-e.ak.fbcdn.net/hphotos-ak-ash1/hs744.ash1/163609_837287192727_13610420_46245965_1639588_a.jpg"
-            },
-            {
-               "height": 97,
-               "width": 130,
-               "source": "http://photos-e.ak.fbcdn.net/hphotos-ak-ash1/hs744.ash1/163609_837287192727_13610420_46245965_1639588_s.jpg"
-            },
-            {
-               "height": 56,
-               "width": 75,
-               "source": "http://photos-e.ak.fbcdn.net/hphotos-ak-ash1/hs744.ash1/163609_837287192727_13610420_46245965_1639588_t.jpg"
-            }
-         ],
+			{
+			   "height": 453,
+			   "width": 604,
+			   "source": "http://sphotos.ak.fbcdn.net/hphotos-ak-ash1/hs744.ash1/163609_837287192727_13610420_46245965_1639588_n.jpg"
+			},
+			{
+			   "height": 135,
+			   "width": 180,
+			   "source": "http://photos-e.ak.fbcdn.net/hphotos-ak-ash1/hs744.ash1/163609_837287192727_13610420_46245965_1639588_a.jpg"
+			},
+			{
+			   "height": 97,
+			   "width": 130,
+			   "source": "http://photos-e.ak.fbcdn.net/hphotos-ak-ash1/hs744.ash1/163609_837287192727_13610420_46245965_1639588_s.jpg"
+			},
+			{
+			   "height": 56,
+			   "width": 75,
+			   "source": "http://photos-e.ak.fbcdn.net/hphotos-ak-ash1/hs744.ash1/163609_837287192727_13610420_46245965_1639588_t.jpg"
+			}
+		 ],
 		*/
 		public var link:String;
 		public var icon:String;
@@ -62,7 +62,7 @@ package com.zehfernando.net.apis.facebook.data {
 
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public static function fromJSONObject(o:Object): FacebookPhoto {
 			if (!Boolean(o)) return null;
 
@@ -82,7 +82,7 @@ package com.zehfernando.net.apis.facebook.data {
 			photo.updated =									FacebookDataUtils.getResultStringAsDate(o["updated_time"]);
 			photo.numComments =								Boolean(o["comments"]) ? o["comments"]["count"] : 0;
 			photo.comments =								Boolean(o["comments"]) ? FacebookComment.fromJSONObjectArray(o["comments"]["data"]) : new Vector.<FacebookComment>();
-			
+
 			//photo.picture = FacebookDataUtils.getImageURLSafeReplacement(photo.picture);
 			photo.source = FacebookDataUtils.getImageURLSafeReplacement(photo.source);
 

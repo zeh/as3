@@ -1,7 +1,7 @@
 package com.zehfernando.display {
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import flash.geom.Point;	
+	import flash.geom.Point;
 
 	/**
 	 * @author Zeh Fernando
@@ -22,7 +22,7 @@ package com.zehfernando.display {
 
 		public function PointSprite() {
 			super();
-			
+
 			// Reads the current __values to keep them
 			_x = super.x;
 			_y = super.y;

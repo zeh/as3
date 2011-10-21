@@ -3,7 +3,7 @@ package com.zehfernando.data.types {
 	 * @author zeh at zehfernando.com
 	 */
 	public class DateTime {
-		
+
 		// Properties
 		protected var _date:Date;
 

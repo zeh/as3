@@ -5,25 +5,25 @@ package com.zehfernando.display.shapes {
 	 * @author zeh
 	 */
 	public class Circle extends Sprite {
-		
+
 		// Properties
 		protected var _color:Number;
-		protected var _radius:Number; 
-		protected var _innerRadius:Number; 
+		protected var _radius:Number;
+		protected var _innerRadius:Number;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function Circle(__radius:Number = 100, __color:int = 0xff0000, __innerRadius:Number = 0) {
-			
+
 			_color = __color & 0xffffff;
 			_radius = __radius;
 			_innerRadius = __innerRadius;
-			
+
 			paint();
 		}
 
-		
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
@@ -32,7 +32,7 @@ package com.zehfernando.display.shapes {
 			graphics.lineStyle();
 			graphics.beginFill(_color);
 			graphics.drawCircle(0, 0, _radius);
-			
+
 			if (_innerRadius != 0) graphics.drawCircle(0, 0, _innerRadius);
 
 			graphics.endFill();

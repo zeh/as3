@@ -11,16 +11,16 @@ package com.zehfernando.display.components.text {
 	 * @author zeh
 	 */
 	public class Caret extends Sprite {
-		
+
 		// Constants
 		protected static const BLINKING_INTERVAL:Number = 500;
-		
+
 		// Properties
 		protected var _height:Number;
 		protected var _color:int;
-		
+
 		protected var blinkingTimer:Timer;
-		
+
 		// Instances
 		protected var rect:Box;
 
@@ -30,19 +30,19 @@ package com.zehfernando.display.components.text {
 		public function Caret() {
 			_color = 0x000000;
 			_height = 10;
-			
+
 			rect = new Box (1);
 			addChild(rect);
-			
+
 			redrawColor();
 			redrawHeight();
-			
+
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 		}
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function redrawColor(): void {
 			rect.color = _color;
 		}
@@ -50,7 +50,7 @@ package com.zehfernando.display.components.text {
 		protected function redrawHeight(): void {
 			rect.height = _height;
 		}
-		
+
 		protected function startBlinking(): void {
 			 if (!Boolean(blinkingTimer)) {
 			 	restartVisibilityCycle();
@@ -85,7 +85,7 @@ package com.zehfernando.display.components.text {
 			stopBlinking();
 			removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 		}
-		
+
 		protected function onBlinkingTimer(e:Event): void {
 			rect.visible = !rect.visible;
 		}
@@ -102,7 +102,7 @@ package com.zehfernando.display.components.text {
 				redrawHeight();
 			}
 		}
-		
+
 		public function get color(): int {
 			return _color;
 		}

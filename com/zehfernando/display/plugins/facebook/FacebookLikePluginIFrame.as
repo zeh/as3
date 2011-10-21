@@ -14,9 +14,9 @@ package com.zehfernando.display.plugins.facebook {
 	 * @author zeh
 	 */
 	public class FacebookLikePluginIFrame extends Sprite {
-		
+
 		// https://developers.facebook.com/docs/reference/plugins/like/#
-		
+
 		// Enums
 		public static const LAYOUT_STANDARD:String = "standard"; // displays social text to the right of the button and friends' profile photos below. Minimum width: 225 pixels. Default width: 450 pixels. Height: 35 pixels (without photos) or 80 pixels (with photos).
 		public static const LAYOUT_BUTTON_COUNT:String = "button_count"; // displays the total number of likes to the right of the button. Minimum width: 90 pixels. Default width: 90 pixels. Height: 20 pixels.
@@ -43,15 +43,15 @@ package com.zehfernando.display.plugins.facebook {
 		protected var _font:String;
 		protected var _colorScheme:String;
 		protected var _ref:String;
-		
+
 		protected var _desiredWidth:Number;
 		protected var _desiredHeight:Number;
-		
+
 		protected var id:String;
 		protected var hasIFrame:Boolean;
-		
+
 		protected var _stage:Stage;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -63,13 +63,13 @@ package com.zehfernando.display.plugins.facebook {
 			_font = FONT_TAHOMA;
 			_colorScheme = COLOR_SCHEME_LIGHT;
 			_ref = "";
-			
+
 			_desiredWidth = 0;
 			_desiredHeight = 0;
-			
+
 			id = "facebooklike_" + StringUtils.getRandomAlphanumericString(16);
 			hasIFrame = false;
-			
+
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
 		}
@@ -99,18 +99,18 @@ package com.zehfernando.display.plugins.facebook {
 			ExternalInterface.call(js, id, getIFrameURL());
 
 			hasIFrame = true;
-			
+
 			applyIFrameDimensions();
 			applyIFrameOpacity();
 		}
-		
+
 		protected function getIFrameURL(): String {
 			// Creates the URL with the given options
-			
+
 			var url:String = "";
-			
+
 			url += "http://www.facebook.com/plugins/like.php?";
-			
+
 //			url += "app_id=273818779310795"; // ???
 //			url += "&amp;";
 
@@ -121,13 +121,13 @@ package com.zehfernando.display.plugins.facebook {
 
 			url += "href=" + StringUtils.URLEncode(_href);
 			url += "&";
-			
+
 			url += "send=false";
 			url += "&";
-			
+
 			url += "layout=" + _layout;
 			url += "&";
-			
+
 			url += "show-faces=" + (_showFaces ? "true" : "false");
 			url += "&";
 
@@ -144,17 +144,17 @@ package com.zehfernando.display.plugins.facebook {
 			url += "&";
 
 			url += "height=" + getHeight();
-			
+
 			/*
 			layout=standard&amp;width=450&amp;show_faces=true&amp;action=like&amp;colorscheme=light&amp;font=tahoma&amp;height=80
 			scrolling="no"
 			frameborder="0"
 			style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
-			
+
 			<iframe id="contentFrame"
 
 			</iframe>*/
-			
+
 			return url;
 		}
 
@@ -170,18 +170,18 @@ package com.zehfernando.display.plugins.facebook {
 					}
 				]]></script>;
 				/*FDT_IGNORE*/
-	
+
 				ExternalInterface.call(js, id);
-				
+
 				hasIFrame = false;
 			}
 		}
 
 		protected function applyIFrameDimensions(): void {
-			
+
 			var p1:Point = localToGlobal(new Point(0, 0));
 			var p2:Point = localToGlobal(new Point(getWidth(), getHeight()));
-			
+
 			setIFrameStyleProperty("left", Math.round(p1.x) + "px");
 			setIFrameStyleProperty("top", Math.round(p1.y) + "px");
 			setIFrameStyleProperty("width", (Math.round(p2.x) - Math.round(p1.x)) + "px"); // Proper rounding to absolute value
@@ -193,7 +193,7 @@ package com.zehfernando.display.plugins.facebook {
 			setIFrameStyleProperty("opacity", alpha.toString(10));
 			setIFrameStyleProperty("filter", "alpha(opacity=" + Math.round(alpha * 100) + ")");
 		}
-		
+
 		protected function requestCreateIFrame(): void {
 			RenderUtils.addFunction(createIFrame);
 		}
@@ -205,11 +205,11 @@ package com.zehfernando.display.plugins.facebook {
 //		protected function requestApplyIFrameOpacity(): void {
 //			RenderUtils.addFunction(applyIFrameOpacity);
 //		}
-		
+
 		protected function setIFrameStyleProperty(__property:String, __value:String): void {
 
 			if (HTMLUtils.isJavaScriptAvailable && hasIFrame) {
-					
+
 				var js:XML;
 				/*FDT_IGNORE*/
 				js = <script><![CDATA[
@@ -218,26 +218,26 @@ package com.zehfernando.display.plugins.facebook {
 					}
 				]]></script>;
 				/*FDT_IGNORE*/
-	
+
 				ExternalInterface.call(js, id, __property, __value);
 			}
 		}
-		
+
 		protected function getWidth(): Number {
 			var minWidth:Number = 0;
 			var maxWidth:Number = 9999;
-			
+
 			if (_layout == LAYOUT_STANDARD) minWidth = 225;
 			if (_layout == LAYOUT_BUTTON_COUNT) minWidth = 90;
 			if (_layout == LAYOUT_BOX_COUNT) minWidth = 55;
 
 			return MathUtils.clamp(_desiredWidth, minWidth, maxWidth);
 		}
-		
+
 		protected function getHeight(): Number {
 			var minHeight:Number = 0;
 			var maxHeight:Number = 9999;
-			
+
 			if (_layout == LAYOUT_STANDARD) minHeight = maxHeight = (_showFaces ? 80 : 35);
 			if (_layout == LAYOUT_BUTTON_COUNT) minHeight = maxHeight = 20;
 			if (_layout == LAYOUT_BOX_COUNT) minHeight = maxHeight = 65;
@@ -253,7 +253,7 @@ package com.zehfernando.display.plugins.facebook {
 			_stage = stage;
 			_stage.addEventListener(Event.RESIZE, onStageResize);
 		}
-		
+
 		protected function onStageResize(e:Event): void {
 			requestApplyIFrameDimensions();
 		}
@@ -279,7 +279,7 @@ package com.zehfernando.display.plugins.facebook {
 				applyIFrameDimensions();
 			}
 		}
-		
+
 		override public function get width(): Number {
 			return getWidth();
 		}
@@ -290,7 +290,7 @@ package com.zehfernando.display.plugins.facebook {
 				//applyIFrameDimensions();
 			}
 		}
-		
+
 		override public function get height(): Number {
 			return getHeight();
 		}
@@ -315,7 +315,7 @@ package com.zehfernando.display.plugins.facebook {
 				applyIFrameOpacity();
 			}
 		}
-		
+
 		public function get layout(): String {
 			return _layout;
 		}

@@ -6,25 +6,25 @@ package com.zehfernando.display.decorators {
 	 * @author zeh
 	 */
 	public class BlurDecorator extends AbstractDecorator {
-		
+
 		// Properties
 		protected var _blurX:Number;
 		protected var _blurY:Number;
 		protected var _quality:Number;
- 
+
 		protected var _clearIfEmpty:Boolean;
-		
+
 
 		// ================================================================================================================
-		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------		
+		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function BlurDecorator(__target:DisplayObject) {
 			_blurX = 0;
 			_blurY = 0;
 			_quality = 1;
-			
+
 			_clearIfEmpty = true;
-			
+
 			super(__target);
 		}
 

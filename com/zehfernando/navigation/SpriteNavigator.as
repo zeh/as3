@@ -12,7 +12,7 @@ package com.zehfernando.navigation {
 	 * @author zeh
 	 */
 	public class SpriteNavigator {
-		
+
 		// Constants
 		public static const COMMAND_UP:String = "..";
 
@@ -23,39 +23,39 @@ package com.zehfernando.navigation {
 
 		// Properties
 		protected static var rootSprite:NavigableSprite;
-		
+
 		//public static var siteTitle:String = "siteTitle";
 		public static var titleSeparator:String = " - ";
 		public static var useLastTitleOnly:Boolean = false;						// TODO: make this a getter/setter
-		
+
 		protected static var currentLocationInternal:Vector.<String>;			// List of stubs
-		
+
 		protected static var navigationCommands:Vector.<String>;
 		protected static var executingNavigationCommand:Boolean;
-		
+
 		protected static var targetLocations:Vector.<String>;
-		
+
 		protected static var locationWaitingToOpen:Vector.<String>;
-		
+
 		protected static var eventDispatcher:EventDispatcher;
-		
+
 		public static var lastCommandExecuted:String;
 		public static var lastCommandExecutedType:String;
-		
-		
+
+
 		// ================================================================================================================
 		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
-		
+
 		{
 			targetLocations = new Vector.<String>;
 			eventDispatcher = new EventDispatcher();
-			
+
 			logOff();
 		}
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-		
+
 		public function SpriteNavigator() {
 			super();
 		}
@@ -63,15 +63,15 @@ package com.zehfernando.navigation {
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected static function executeNextNavigationCommand(): void {
 			// Sets title
 			log();
 			updateTitle(); // TODO: move this somewhere else?
-			
+
 			// TODO: this is being called unnecessarily before it actually starts navigating somewhere
 			eventDispatcher.dispatchEvent(new SpriteNavigatorEvent(SpriteNavigatorEvent.CHANGED_LOCATION));
-			
+
 			// Executes next command from the list
 			if (navigationCommands.length > 0) {
 
@@ -83,10 +83,10 @@ package com.zehfernando.navigation {
 					return;
 				}
 				executingNavigationCommand = true;
-				
+
 				var __nextCommand:String = navigationCommands.shift();
 				log("Executing command [" + __nextCommand + "]");
-				
+
 				eventDispatcher.dispatchEvent(new SpriteNavigatorEvent(SpriteNavigatorEvent.LOCATION_WILL_CHANGE));
 
 				if (__nextCommand == COMMAND_UP) {
@@ -101,12 +101,12 @@ package com.zehfernando.navigation {
 
 				executingNavigationCommand = false;
 				log ("Finished execution");
-				
+
 				var ns:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal);
 				ns.finishedExecutionAsCurrentArea(false);
 
 				eventDispatcher.dispatchEvent(new SpriteNavigatorEvent(SpriteNavigatorEvent.CHANGED_LOCATION_FINAL));
-				
+
 				changeAddressIfNeeded();
 			}
 		}
@@ -119,7 +119,7 @@ package com.zehfernando.navigation {
 
 		protected static function openSprite(__stub:String): void {
 			// Open a sprite, going down on the hierarchy
-			
+
 			// Sets the new location
 			var newLocation:Vector.<String>;
 			if (!Boolean(currentLocationInternal) || currentLocationInternal.length == 0) {
@@ -132,7 +132,7 @@ package com.zehfernando.navigation {
 			if (__stub != "") newLocation.push(__stub);
 
 			//trace ("SpriteNavigator :: openSprite() :: "+__stub+" :: new location becomes /" + newLocation.join("/"));
-			
+
 			if (newLocation.length > 0) {
 				// Wait for the parent to actually allow it
 				locationWaitingToOpen = newLocation;
@@ -143,7 +143,7 @@ package com.zehfernando.navigation {
 				// Just open it directly
 				openSpriteByLocation(newLocation);
 			}
-			
+
 		}
 
 		protected static function openSpriteByLocation(__location:Vector.<String>, __allowedByParent:Boolean = false, __allowedBySelf:Boolean = false): void {
@@ -152,7 +152,7 @@ package com.zehfernando.navigation {
 			// Opens the sprite
 			var ns:NavigableSprite = rootSprite.getChildByStubs(__location);
 			//trace ("SpriteNavigator :: openSprite() :: new area is " + ns);
-			
+
 			if (Boolean(ns)) {
 				if (__location.length > 0 && !__allowedByParent) {
 					// Request permission to really open first
@@ -167,7 +167,7 @@ package com.zehfernando.navigation {
 				} else {
 					// Finally, really opens it
 					ns.addEventListener(NavigableSpriteEvent.OPENED, onOpenedNavigableSprite);
-	
+
 					var __isImmediate:Boolean = false; // TODO: when to use this?
 					var __isLast:Boolean = navigationCommands.length == 0;
 					ns.open(__isImmediate, __isLast);
@@ -179,7 +179,7 @@ package com.zehfernando.navigation {
 				executeNextNavigationCommand();
 			}
 			//trace ("SpriteNavigator :: openSprite() :: done");
-		} 
+		}
 
 		protected static function onSpriteAllowedToPreOpenChild(e:Event): void {
 			rootSprite.getChildByStubs(locationWaitingToOpen.slice(0, locationWaitingToOpen.length - 1)).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_PRE_OPEN_CHILD, onSpriteAllowedToPreOpenChild);
@@ -212,11 +212,11 @@ package com.zehfernando.navigation {
 
 		protected static function closeSprite(__allowedByParent:Boolean = false, __allowedBySelf:Boolean = false): void {
 			// Close the current sprite, going up on the hierarchy
-			
+
 			//trace ("SpriteNavigator :: closeSprite()");
 
 			var ns:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal);
-	
+
 			if (!__allowedByParent) {
 				// Request permission to really close first
 				var parentSprite:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal.slice(0, currentLocationInternal.length - 1));
@@ -246,7 +246,7 @@ package com.zehfernando.navigation {
 			// Returns a list of the titles of the of all NavigableSprites currently open
 			var __currentLocation:Vector.<String> = Boolean(currentLocationInternal) ? currentLocationInternal : new Vector.<String>(); //getLocationAsVector(getLocation());
 			var __titles:Vector.<String> = new Vector.<String>();
-	
+
 			var i:int;
 			for (i = 0; i <= __currentLocation.length; i++) {
 				__titles.push(rootSprite.getChildByStubs(__currentLocation.slice(0, i) as Vector.<String>).title);
@@ -257,27 +257,27 @@ package com.zehfernando.navigation {
 		protected static function getLocationAsVector(__location:String): Vector.<String> {
 			// Based on an URL (for example, "/file/2000"), retorns a String Vector (for example, ["file", "2000"])
 			var locs:Array = !Boolean(__location) || __location == "/" ? [] : __location.substr(1).split("/");
-			
+
 			var nlocs:Vector.<String> = new Vector.<String>();
 			for (var i:int = 0; i < locs.length; i++) {
 				nlocs.push(locs[i]); // ugh
 			}
-			
+
 			return nlocs;
 		}
 
 
 		protected static function changeAddressIfNeeded(): void {
 			// Navigates from current location to the new one
-			
+
 			if (!executingNavigationCommand && targetLocations.length > 0) {
 				var i:int;
-				
+
 				var __oldLocation:Vector.<String> = Boolean(currentLocationInternal) ? currentLocationInternal : new Vector.<String>();
 				var __newLocation:Vector.<String> = getLocationAsVector(targetLocations.pop()); // go straight to it
 				targetLocations.length = 0;
-	
-				// Checks how much of the path is common between the two	
+
+				// Checks how much of the path is common between the two
 				var __similarLocation:Vector.<String> = new Vector.<String>();
 				for (i = 0; i < __oldLocation.length; i++) {
 					if (__newLocation.length <= i || __oldLocation[i] != __newLocation[i]) {
@@ -289,50 +289,50 @@ package com.zehfernando.navigation {
 
 				// Creates a list of needed commands
 				navigationCommands = new Vector.<String>();
-	
+
 				// TODO: implement NavigableSprite.canSwitchChildren!
 				// TODO: implement some kind of NavigableSprite.openChild command instead of calling directly? maybe .prepareChild then .open?
-	
+
 				if (!Boolean(currentLocationInternal)) {
 					navigationCommands.push("");
 					currentLocationInternal = new Vector.<String>();
 				}
-		
+
 				// Go back up...
 				for (i = __oldLocation.length; i > __similarLocation.length; i--) {
 					navigationCommands.push(COMMAND_UP);
 				}
-		
+
 				// Then, go down on sprites as needed
 				for (i = __similarLocation.length; i < __newLocation.length; i++) {
 					navigationCommands.push(__newLocation[i]);
 				}
-		
+
 				log("       oldLocation: [" + __oldLocation + "] (" + __oldLocation.length + ")");
 				log("       newLocation: [" + __newLocation + "] (" + __newLocation.length + ")");
 				log("   similarLocation: [" + __similarLocation + "] (" + __similarLocation.length + ")");
 				log("navigationCommands: [" + navigationCommands.join(" -> ") + "]");
-		
+
 				// And starts by executing the next command
 				if (!executingNavigationCommand) executeNextNavigationCommand();
-		
+
 		//		this._parent.mainTitle.setText(getAreaName(p_idx));
-		
+
 		//		SWFAddress.setValue(p_location);
-		
+
 				//currentLocationInternal = getLocation();
 			}
 		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-		
+
 		protected static function onAddressChange(e:SWFAddressEvent): void {
 			log("Location should change from [" + currentLocationInternal + "] ("+ (Boolean(currentLocationInternal) ? currentLocationInternal.length : "-") +") to [" + getLocation() + "]");
 			targetLocations.push(getLocation());
 			changeAddressIfNeeded();
 		}
-		
+
 		protected static function onOpenedNavigableSprite(e:NavigableSpriteEvent): void {
 			//trace ("SpriteNavigator :: onOpenedNavigableSprite :: " + e.target);
 			var ns:NavigableSprite = e.target as NavigableSprite;
@@ -388,11 +388,11 @@ package com.zehfernando.navigation {
 			if (loc.substr(-1,1) == "/") loc = loc.substr(0, loc.length-1);
 			return loc;
 		}
-		
+
 		public static function getTitle(): String {
 			var titles:Vector.<String> = getLocationTitles();
 			var lastTitle:String = "";
-			
+
 			// Get last title that is not empty
 			var i:int = titles.length - 1;
 			while (i >= 0) {
@@ -402,10 +402,10 @@ package com.zehfernando.navigation {
 				}
 				i--;
 			}
-			
+
 			return useLastTitleOnly ? lastTitle : titles.join(titleSeparator);
 		}
-		
+
 		/*
 		// Only works on opera?
 		public static function setStatus(__message:String): void {
@@ -416,7 +416,7 @@ package com.zehfernando.navigation {
 			SWFAddress.resetStatus();
 		}
 		*/
-		
+
 		// EventDispatcher extensions
 		public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false): void {
 			eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
@@ -425,15 +425,15 @@ package com.zehfernando.navigation {
 		public static function dispatchEvent(event:Event): Boolean {
 			return eventDispatcher.dispatchEvent(event);
 		}
-		
+
 		public static  function hasEventListener(type:String): Boolean {
 			return eventDispatcher.hasEventListener(type);
 		}
-		
+
 		public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false): void {
 			eventDispatcher.removeEventListener(type, listener, useCapture);
 		}
-		
+
 		public static function willTrigger(type:String):Boolean {
 			return eventDispatcher.willTrigger(type);
 		}
@@ -614,7 +614,7 @@ class MovieNavigator extends MovieClip {
 		var $location:Array = getLocationArray(_currentLocation);
 		$location.pop();
 		_currentLocation = "/" + $location.join("/");
-		
+
 		// Aí fecha o movie
 		$oldMovie.hide();
 	}

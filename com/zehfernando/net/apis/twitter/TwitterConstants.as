@@ -13,7 +13,7 @@ package com.zehfernando.net.apis.twitter {
 
 		public static const API_SEARCH_DOMAIN:String = "http://search.twitter.com";
 		public static const API_SEARCH_SERVICE:String = "/search.json";
-		
+
 
 	}
 }

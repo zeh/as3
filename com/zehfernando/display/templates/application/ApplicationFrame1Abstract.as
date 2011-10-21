@@ -21,7 +21,7 @@ package com.zehfernando.display.templates.application {
 	 * @author Zeh
 	 */
 	public class ApplicationFrame1Abstract extends MovieClip {
-		
+
 		// Constants
 		protected static const LIBRARY_ADDITIONAL_DATA:String = "additionalDataLibrary";
 
@@ -46,7 +46,7 @@ package com.zehfernando.display.templates.application {
 		protected var timeStartedLoading:int;
 		protected var sizeAfterPreloader:int;
 		protected var frame2ClassName:String;
-		
+
 		protected var userSpeedBytesPerSecond:Number;						// Measured user speed
 		protected var userSpeedBitsPerSecond:Number;						// Measured user speed
 		protected var userLoadingTime:Number;								// Total loading time, in seconds
@@ -58,11 +58,11 @@ package com.zehfernando.display.templates.application {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 		public function ApplicationFrame1Abstract() {
 			super();
-			
+
 			setDefaultProperties();
 			createAssets();
 			initialize();
-			
+
 			info("Initial loader byte size is " + root.loaderInfo.bytesLoaded + " bytes out of " + root.loaderInfo.bytesTotal + " bytes (" + ((root.loaderInfo.bytesLoaded / root.loaderInfo.bytesTotal) * 100).toFixed(2) + "% of total)");
 		}
 
@@ -86,7 +86,7 @@ package com.zehfernando.display.templates.application {
 			additionalDataLoading = false;
 			additionalDataLoadingPhase = 0;
 			additionalDataLoadingWeight = 10;
-			
+
 			frame2DataLoaded = false;
 			frame2DataLoadingPhase = 0;
 			frame2DataLoadingWeight = 10;
@@ -109,10 +109,10 @@ package com.zehfernando.display.templates.application {
 				// stage.addChild(new QuickButton("BG INTERFACE: RESUME", 10, 130, function():void { Main.getInstance().resumeBackgroundInterface(); }, 150, 26));
 			}
 		}
-		
+
 		protected function initialize(): void {
 			stop();
-			
+
 			AppUtils.init(stage, this);
 			AppUtils.resetContextMenu();
 
@@ -156,7 +156,7 @@ package com.zehfernando.display.templates.application {
 		protected function addAssetsToDataLibrary(__dataLibrary:AssetLibrary): void {
 			// EXTEND THIS
 		}
-		
+
 		protected function startLoadingAdditionalData(): void {
 			// Start loading additional XML data
 //			log("LOAD / ADDITIONAL DATA / INIT");
@@ -174,7 +174,7 @@ package com.zehfernando.display.templates.application {
 		protected function addAdditionalAssetsToDataLibrary(__dataLibrary:AssetLibrary): void {
 			// EXTEND THIS
 		}
-		
+
 		protected function checkIfCanInitFrame2():void {
 			if (additionalDataLoadingNeeded && dataLoaded && (!additionalDataLoading && !additionalDataLoaded)) {
 				// Must load additional data first
@@ -188,9 +188,9 @@ package com.zehfernando.display.templates.application {
 		protected function initFrame2():void {
 //			log("LOAD / FRAME 2 INIT / INIT");
 			isFrame2Inited = true;
-			
+
 			userLoadingTime = (getTimer() - timeStartedLoading) / 1000;
-			
+
 			var mainClass:Class = Class(getDefinitionByName(frame2ClassName));
 			frame2 = new mainClass();
 			frame2.userSpeedBytesPerSecond = userSpeedBytesPerSecond;
@@ -203,7 +203,7 @@ package com.zehfernando.display.templates.application {
 			frame2.init();
 			onResize(null);
 		}
-		
+
 		protected function showFrame2(): void {
 //			log();
 			frame2.show();
@@ -213,12 +213,12 @@ package com.zehfernando.display.templates.application {
 			// Returns the percentage (0-1) of loading done for everything
 			var l:Number = 0;
 			var t:Number = 0;
-			
+
 			l += swfLoadingPhase * swfLoadingWeight;
 			t += swfLoadingWeight;
-			
+
 //			log ("+++ ", swfLoadingPhase, swfLoadingWeight);
-			
+
 			if (dataLoadingNeeded) {
 				l += dataLoadingPhase * dataLoadingWeight;
 				t += dataLoadingWeight;
@@ -233,9 +233,9 @@ package com.zehfernando.display.templates.application {
 			l += frame2DataLoadingPhase * frame2DataLoadingWeight;
 			t += frame2DataLoadingWeight;
 //			log ("+++ ", frame2DataLoadingPhase, frame2DataLoadingWeight);
-			
+
 //			log ("==== " + l, t);
-			
+
 			return l / t;
 		}
 
@@ -250,7 +250,7 @@ package com.zehfernando.display.templates.application {
 		protected function resizeLoadingInterface(): void {
 			// EXTEND THIS
 		}
-		
+
 		protected function removeLoadingInterface(): void {
 			// EXTEND THIS
 		}
@@ -266,9 +266,9 @@ package com.zehfernando.display.templates.application {
 		protected function onResize(e:Event = null):void {
 			var w:Number = AppUtils.getStage().stageWidth;
 			var h:Number = AppUtils.getStage().stageHeight;
-			
+
 			if (w > 0 && h > 0) {
-			
+
 				resizeLoadingInterface();
 
 				if (Boolean(frame2)) {
@@ -277,7 +277,7 @@ package com.zehfernando.display.templates.application {
 				}
 			}
 		}
-		
+
 		protected function waitUntilStageSizeIsKnown(e:Event):void {
 			// visible = false;
 			if (AppUtils.getStage().stageWidth > 0) {
@@ -290,7 +290,7 @@ package com.zehfernando.display.templates.application {
 		protected function onSWFLoadingProgress(e:ProgressEvent):void {
 			swfLoadingPhase = e.bytesLoaded / e.bytesTotal;
 //			log("LOAD / SWF / PROGRESS @ " + swfLoadingPhase);
-			
+
 			updateLoadingInterface();
 		}
 
@@ -313,16 +313,16 @@ package com.zehfernando.display.templates.application {
 //			log("LOAD / SWF / COMPLETE");
 			swfLoadingPhase = 1;
 			swfLoaded = true;
-			
+
 			//var timeSpentLoading:Number = getTimer() - timeStartedLoading;
-			
+
 			var timeSpentLoading:Number = getTimer() - timeStartedLoading;
 			var sizeSpentLoading:Number = root.loaderInfo.bytesLoaded - sizeAfterPreloader;
 			userSpeedBytesPerSecond = sizeSpentLoading / (timeSpentLoading / 1000);
 			userSpeedBitsPerSecond = userSpeedBytesPerSecond * 8;
-			
+
 			info ("Spent " + timeSpentLoading + "ms loading the SWF; predicted speed is " + (userSpeedBytesPerSecond / 1024).toFixed(2) + " kbytes per second or " + (userSpeedBitsPerSecond / 1024).toFixed(2) + " kbits per second");
-			
+
 			nextFrame();
 
 			removeEventListener(Event.ENTER_FRAME, onSWFLoadingProgressHack);
@@ -336,7 +336,7 @@ package com.zehfernando.display.templates.application {
 		protected function onDataLoadingProgress(e:ProgressEvent):void {
 			dataLoadingPhase = e.bytesLoaded / e.bytesTotal;
 //			log("LOAD / DATA / PROGRESS @ " + dataLoadingPhase);
-			
+
 			updateLoadingInterface();
 		}
 
@@ -345,7 +345,7 @@ package com.zehfernando.display.templates.application {
 //			log("LOAD / DATA / COMPLETE");
 			dataLoadingPhase = 1;
 			dataLoaded = true;
-			
+
 			AssetLibrary.getLibrary().removeEventListener(ProgressEvent.PROGRESS, onDataLoadingProgress);
 			AssetLibrary.getLibrary().removeEventListener(Event.COMPLETE, onDataLoadingComplete);
 
@@ -356,7 +356,7 @@ package com.zehfernando.display.templates.application {
 		protected function onAdditionalDataLoadingProgress(e:ProgressEvent):void {
 			additionalDataLoadingPhase = e.bytesLoaded / e.bytesTotal;
 //			log("LOAD / ADDITIONAL DATA / PROGRESS @ " + additionalDataLoadingPhase);
-			
+
 			updateLoadingInterface();
 		}
 
@@ -366,10 +366,10 @@ package com.zehfernando.display.templates.application {
 			additionalDataLoadingPhase = 1;
 			additionalDataLoading = false;
 			additionalDataLoaded = true;
-			
+
 			var additionalLib:AssetLibrary = AssetLibrary.getLibrary(LIBRARY_ADDITIONAL_DATA);
 			var mainLib:AssetLibrary = AssetLibrary.getLibrary();
-			
+
 			additionalLib.removeEventListener(ProgressEvent.PROGRESS, onAdditionalDataLoadingProgress);
 			additionalLib.removeEventListener(Event.COMPLETE, onAdditionalDataLoadingComplete);
 
@@ -378,14 +378,14 @@ package com.zehfernando.display.templates.application {
 			for (i = 0; i < additionalLib.numAssets; i++) {
 				mainLib.addAssetItemInfo(additionalLib.getAssetItemInfoByIndex(i));
 			}
-			
+
 			additionalLib = null;
 
 			updateLoadingInterface();
 			checkIfCanInitFrame2();
-			
+
 		}
-		
+
 		protected function onFrame2InitProgress(e:Event): void {
 			frame2DataLoadingPhase = frame2.getInitPhase();
 //			log("LOAD / FRAME 2 INIT / PROGRESS @ " + frame2DataLoadingPhase);
@@ -400,7 +400,7 @@ package com.zehfernando.display.templates.application {
 			frame2.removeEventListener(ApplicationFrame2Event.INIT_PROGRESS, onFrame2InitProgress);
 			frame2.removeEventListener(ApplicationFrame2Event.INIT_COMPLETE, onFrame2InitComplete);
 			//showFrame2();
-			
+
 			removeLoadingInterfaceAndShowFrame2();
 		}
 	}

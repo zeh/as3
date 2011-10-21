@@ -7,21 +7,21 @@ package com.zehfernando.display.progressbars {
 	 * @author zeh
 	 */
 	public class AbstractProgressBar extends Sprite {
-		
+
 		/*
 		A nice loader with value easing.
 		*/
 
 		// Properties
 		protected var _value:AttenuatedNumber;								// Virtual amount
-		
+
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function AbstractProgressBar() {
 			_value = new AttenuatedNumber(4, 0, 0);
-			
+
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
 		}
@@ -29,10 +29,10 @@ package com.zehfernando.display.progressbars {
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function setAmount(__value:Number, __immediate:Boolean = false): void {
 			if (isNaN(__value)) __value = 0;
-			
+
 			if (__immediate) {
 				_value.target = _value.current = __value;
 				if (Boolean(stage)) redrawAmount();
@@ -71,10 +71,10 @@ package com.zehfernando.display.progressbars {
 			setAmount(__f, true);
 		}
 
-		
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		public function get amount(): Number {
 			return _value.target;
 		}

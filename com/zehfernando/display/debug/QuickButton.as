@@ -16,7 +16,7 @@ package com.zehfernando.display.debug {
 		protected var _width:Number;
 		protected var _height:Number;
 		protected var _text:String;
-		
+
 		// Instances
 		protected var background:RoundedBox;
 		protected var textField:TextField;
@@ -30,29 +30,29 @@ package com.zehfernando.display.debug {
 			_width = __width;
 			_height = __height;
 			_text = __text;
-			
+
 			//background = new RoundedBox(100, 100, 0x550033, 4);
 			background = new RoundedBox(100, 100, 0x885500, 4);
 			addChild(background);
-			
+
 			textField = new TextField();
 			textField.wordWrap = true;
 			textField.selectable = false;
 			textField.embedFonts = false;
 			addChild(textField);
-			
+
 			var fmt:TextFormat = new TextFormat();
 			fmt.font = "_sans";
 			fmt.size = 10;
 			fmt.color = 0xffffff;
 			fmt.align = TextFormatAlign.CENTER;
 			textField.defaultTextFormat = fmt;
-			
+
 			buttonMode = true;
 			mouseChildren = false;
-			
+
 			if (Boolean(__onClick)) addEventListener(MouseEvent.CLICK, __onClick);
-			
+
 			redraw();
 		}
 
@@ -63,7 +63,7 @@ package com.zehfernando.display.debug {
 		public function redraw(): void {
 			background.width = _width;
 			background.height = _height;
-			
+
 			textField.text = _text;
 			textField.x = 0;
 			textField.width = _width;
@@ -74,7 +74,7 @@ package com.zehfernando.display.debug {
 
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
-		
+
 		// TODO: use invalidate
 		// The repetitive redraws don't look good but impact in rendering is virtually none
 
@@ -101,7 +101,7 @@ package com.zehfernando.display.debug {
 				redraw();
 			}
 		}
-		
+
 
 	}
 }

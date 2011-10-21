@@ -27,11 +27,11 @@ package com.zehfernando.utils {
 			stage = __stage;
 			root = __root;
 		}
-		
+
 		public static function getStage(): Stage {
 			return stage;
 		}
-		
+
 		public static function getRoot():DisplayObjectContainer {
 			return root;
 		}
@@ -58,10 +58,10 @@ package com.zehfernando.utils {
 		public static function isLinux(): Boolean {
 			return Capabilities.os == "Linux";
 		}
-		
+
 		public static function isWindows(): Boolean {
-			//return Capabilities.os == "Windows" || Capabilities.os == "Windows 7" || Capabilities.os == "Windows XP" || Capabilities.os == "Windows 2000" || Capabilities.os == "Windows 98/ME" || Capabilities.os == "Windows 95" || Capabilities.os == "Windows CE"; 
-			//return Capabilities.os == "Windows" || Capabilities.os == "Windows 7" || Capabilities.os == "Windows XP" || Capabilities.os == "Windows 2000" || Capabilities.os == "Windows 98/ME" || Capabilities.os == "Windows 95" || Capabilities.os == "Windows CE"; 
+			//return Capabilities.os == "Windows" || Capabilities.os == "Windows 7" || Capabilities.os == "Windows XP" || Capabilities.os == "Windows 2000" || Capabilities.os == "Windows 98/ME" || Capabilities.os == "Windows 95" || Capabilities.os == "Windows CE";
+			//return Capabilities.os == "Windows" || Capabilities.os == "Windows 7" || Capabilities.os == "Windows XP" || Capabilities.os == "Windows 2000" || Capabilities.os == "Windows 98/ME" || Capabilities.os == "Windows 95" || Capabilities.os == "Windows CE";
 			return Capabilities.manufacturer == "Adobe Windows";
 		}
 
@@ -80,7 +80,7 @@ package com.zehfernando.utils {
 		public static function isTesting(): Boolean {
 			return Capabilities.playerType == "External";
 		}
-		
+
 		public static function isDebugSWF(): Boolean {
 			// Whether the SWF is compiled for debugging or not
 			// http://michaelvandaniker.com/blog/2008/11/25/how-to-check-debug-swf/
@@ -90,7 +90,7 @@ package com.zehfernando.utils {
 				hasDeterminedDebugStatus = true;
 			}
 			return _isDebuggingSWF;
-        }
+		}
 
 		// Userlayer stuff
 		public static function resetContextMenu(): void {
@@ -102,15 +102,15 @@ package com.zehfernando.utils {
 			//mi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, toggleFullScreen);
 			//root.contextMenu.customItems.push(mi);
 		}
-		
+
 		public static function isDebugPlayer(): Boolean {
 			return Capabilities.isDebugger;
 		}
-		
+
 		public static function toggleFullScreen(): void {
 			setFullScreen(stage.displayState == StageDisplayState.NORMAL);
 		}
-		
+
 		public static function setFullScreen(__fullScreen:Boolean): void {
 			stage.displayState = __fullScreen ? StageDisplayState.FULL_SCREEN : StageDisplayState.NORMAL;
 		}
@@ -125,7 +125,7 @@ package com.zehfernando.utils {
 			var di:DebugDisplayItem;
 			di = new DebugDisplayItemFPS();
 			stage.addChild(di);
-			
+
 			di = new DebugDisplayItemMemory();
 			di.y = 29;
 			stage.addChild(di);

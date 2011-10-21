@@ -11,25 +11,25 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh at zehfernando.com
 	 */
 	public class FacebookPhotoTagCreateRequest extends BasicFacebookRequest {
-		
+
 		// https://developers.facebook.com/docs/reference/api/photo/
 		// Requires publish_stream and user_photos
-		
+
 		// Properties
 		protected var _userId:String;
 		protected var _photoId:String;
 		protected var _x:Number;					// 0-1
 		protected var _y:Number;					// 0-1
-		
+
 		// Results
 		//protected var _albumId:String;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function FacebookPhotoTagCreateRequest() {
 			super();
-			
+
 			// Basic service configuration
 			requestURL = FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_PHOTO_TAG_CREATE;
 			requestMethod = URLRequestMethod.POST;
@@ -61,12 +61,12 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			//var response:Object = JSON.decode(loader.data);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_PHOTO_ID, _photoId);
 			super.execute();

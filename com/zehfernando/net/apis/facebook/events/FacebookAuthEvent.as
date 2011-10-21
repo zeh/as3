@@ -4,7 +4,7 @@ package com.zehfernando.net.apis.facebook.events {
 	 * @author zeh
 	 */
 	public class FacebookAuthEvent extends Event {
-		
+
 		// Constants
 		public static const LOG_IN_SUCCESS:String = "onLogInSuccess";
 		public static const LOG_IN_ERROR:String = "onLogInError";
@@ -13,7 +13,7 @@ package com.zehfernando.net.apis.facebook.events {
 
 		public static const GOT_APP_ACCESS_TOKEN_SUCCESS:String = "onGotAppAccessTokenSuccess";
 		public static const GOT_APP_ACCESS_TOKEN_ERROR:String = "onGotAppAccessTokenError";
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ package com.zehfernando.net.apis.facebook.events {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		override public function clone(): Event {
 			return new FacebookAuthEvent(type, bubbles, cancelable);
 		}

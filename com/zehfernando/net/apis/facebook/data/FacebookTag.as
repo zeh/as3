@@ -5,7 +5,7 @@ package com.zehfernando.net.apis.facebook.data {
 	 * @author zeh
 	 */
 	public class FacebookTag {
-		
+
 		/*
 		"tags": {
    			"data": [
@@ -25,9 +25,9 @@ package com.zehfernando.net.apis.facebook.data {
 				}
 			]
 		},
-        */
-		
-		// Properties		
+		*/
+
+		// Properties
 		public var id:String;
 		public var name:String;
 		public var x:int;
@@ -43,7 +43,7 @@ package com.zehfernando.net.apis.facebook.data {
 
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public static function fromJSONObject(o:Object): FacebookTag {
 			if (!Boolean(o)) return null;
 

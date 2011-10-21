@@ -5,7 +5,7 @@ package com.zehfernando.display.progressbars {
 	 * @author zeh
 	 */
 	public class CircularProgressBar extends AbstractProgressBar {
-		
+
 		// Properties
 		protected var angleOffset:Number;
 
@@ -18,9 +18,9 @@ package com.zehfernando.display.progressbars {
 
 		public function CircularProgressBar(__innerRadius:Number = 5, __outerRadius:Number = 10, __color:int = 0xffffff, __backgroundAlpha:Number = 0.25, __foregroundAlpha:Number = 1, __angleOffset:Number = -90) {
 			super();
-			
+
 			angleOffset = __angleOffset;
-			
+
 			// Create all assets
 			baseCircle = new CircleSlice(__outerRadius, __color, __innerRadius);
 			baseCircle.alpha = __backgroundAlpha;

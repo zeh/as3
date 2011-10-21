@@ -12,7 +12,7 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh at zehfernando.com
 	 */
 	public class FacebookFeedItemRequest extends BasicFacebookRequest {
-		
+
 		// Gets data on one single wall item
 
 		// Properties
@@ -20,7 +20,7 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Results
 		protected var _item:FacebookFeedPost;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -35,7 +35,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// http://developers.facebook.com/docs/reference/api/page
 
 			_itemId = "";
-			
+
 		}
 
 		// ================================================================================================================
@@ -43,14 +43,14 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			log ("--> " + response);
 			//_item = FacebookFeedPost.fromJSONObject(response["data"]);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_ITEM_ID, _itemId);
 			super.execute();
@@ -69,7 +69,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Results
-		
+
 		public function get item(): FacebookFeedPost {
 			return _item;
 		}

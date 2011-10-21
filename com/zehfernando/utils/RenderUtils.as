@@ -5,10 +5,10 @@ package com.zehfernando.utils {
 	 * @author zeh
 	 */
 	public class RenderUtils {
-		
+
 		// Properties
 		protected static var functionsToCall:Vector.<Function> = new Vector.<Function>();
-		
+
 		// Create functions that are called prior to rendering
 		protected static var isQueued:Boolean;
 
@@ -25,7 +25,7 @@ package com.zehfernando.utils {
 				isQueued = true;
 			}
 		}
-		
+
 		protected static function executeQueue(): void {
 			unQueue();
 
@@ -35,7 +35,7 @@ package com.zehfernando.utils {
 			while (functionsToCall.length > 0) {
 				functionsToCall.shift()();
 			}
-			
+
 			functionsToCall = new Vector.<Function>();
 		}
 

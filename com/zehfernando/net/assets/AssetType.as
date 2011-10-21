@@ -11,7 +11,7 @@ package com.zehfernando.net.assets {
 		public static const IMAGE:String = "image";
 		public static const SWF:String = "swf";
 		public static const VIDEO:String = "video";
-		
+
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
@@ -22,15 +22,15 @@ package com.zehfernando.net.assets {
 			types.push(AssetType.IMAGE);
 			types.push(AssetType.SWF);
 			types.push(AssetType.VIDEO);
-			
+
 			return types;
 		}
-		
+
 		public static function getExtensions(__type:String): Vector.<String> {
 			// TODO: use dictionaries/vectors of info classes/something that makes more sense
-			
-			var vv:Vector.<String> = new Vector.<String>(); 
-			
+
+			var vv:Vector.<String> = new Vector.<String>();
+
 			switch (__type) {
 				case AssetType.CSS:
 					vv.push("css");
@@ -54,15 +54,15 @@ package com.zehfernando.net.assets {
 					vv.push("mp4");
 					break;
 			}
-			
+
 			return vv;
 		}
-		
+
 		public static function getFromURL(__url:String): String {
 			// Based on the extension of an URL file, return the type
 			// TODO: must test for querystrings!
 			// TODO: must test for other URLs with dots on them!
-			
+
 			var lastDot:Number = 0;
 			while (__url.indexOf(".", lastDot+1) > -1) {
 				lastDot = __url.indexOf(".", lastDot+1);
@@ -74,16 +74,16 @@ package com.zehfernando.net.assets {
 			//trace ("search [" + __url + "] = " + result + " @ " + (Boolean(result) ? result.index : null));
 			var extension:String;
 			extension = Boolean(result) ? result[1] : "";
-			
+
 			var types:Vector.<String> = getTypes();
 			var i:int;
 			for (i = 0; i < types.length; i++) {
 				if (getExtensions(types[i]).indexOf(extension) > -1) {
-					return types[i]; 
+					return types[i];
 				}
 			}
 
-			return ""; 
+			return "";
 		}
 	}
 }

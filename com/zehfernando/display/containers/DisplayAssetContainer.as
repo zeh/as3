@@ -31,12 +31,12 @@ package com.zehfernando.display.containers {
 		protected var _contentScale:Number;					// Default = 1
 		protected var _scrollX:Number;						// -1 to 1
 		protected var _scrollY:Number;						// -1 to 1
-		
+
 		protected var _minimumScale:Number;					// Minimum scale for scaleMode (1 = 1:1, 100%)
 		protected var _maximumScale:Number;					// Maximum scale for scaleMode (1 = 1:1, 100%)
 
-		protected var _roundPositions:Boolean;				// 
-		
+		protected var _roundPositions:Boolean;				//
+
 		// Instances
 		protected var boundingBox:Sprite;
 		protected var contentHolder:Sprite;
@@ -51,15 +51,15 @@ package com.zehfernando.display.containers {
 			_width = __width;
 			_height = __height;
 			_roundPositions = false;
-			
+
 			setDefaultData();
-			
+
 			createBackground();
 			createContentHolder();
-			
+
 			redraw();
 		}
-		
+
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ package com.zehfernando.display.containers {
 			_contentScale = 1;
 			_scrollX = 0;
 			_scrollY = 0;
-			
+
 			_minimumScale = NaN;
 			_maximumScale = NaN;
 		}
@@ -87,7 +87,7 @@ package com.zehfernando.display.containers {
 			contentHolder = new Sprite();
 			addChild(contentHolder);
 		}
-		
+
 		protected function redrawBackground(): void {
 			boundingBox.graphics.clear();
 			boundingBox.graphics.lineStyle();
@@ -103,19 +103,19 @@ package com.zehfernando.display.containers {
 		protected function redrawContent(): void {
 
 			var baseScale:Point = getBaseScale();
-			
+
 			var newScaleX:Number = baseScale.x * _contentScale;
 			var newScaleY:Number = baseScale.y * _contentScale;
-			
+
 			var minX:Number = _margin;
 			var maxX:Number = _width - _margin - _contentWidth * newScaleX;
 			var minY:Number = _margin;
 			var maxY:Number = _height - _margin - _contentHeight * newScaleY;
 			// TODO - in some cases (SHOW_ALL) moving is not desirable?
-			
+
 			var px:Number = minX + (maxX-minX) * ((_scrollX+1)/2);
 			var py:Number = minY + (maxY-minY) * ((_scrollY+1)/2);
-			
+
 			contentHolder.x = _roundPositions ? Math.round(px) : px;
 			contentHolder.y = _roundPositions ? Math.round(py) : py;
 			//contentHolder.width = _contentWidth * newScaleX;
@@ -123,10 +123,10 @@ package com.zehfernando.display.containers {
 			contentHolder.scaleX = newScaleX;
 			contentHolder.scaleY = newScaleY;
 		}
-		
-		// Returns the base scale, which is what is the vertical and horizontal content scale for the current scaleMode 
+
+		// Returns the base scale, which is what is the vertical and horizontal content scale for the current scaleMode
 		protected function getBaseScale(__scaleMode:String = ""): Point {
-			
+
 			if (__scaleMode == "") __scaleMode = scaleMode;
 
 			var baseScaleX:Number, baseScaleY:Number;
@@ -151,7 +151,7 @@ package com.zehfernando.display.containers {
 					// Fit to outside, can crop
 					var contentRatio:Number = _contentWidth/_contentHeight;
 					var containerRatio:Number = fullW/fullH;
-					
+
 					if (contentRatio > containerRatio && __scaleMode == StageScaleMode.SHOW_ALL || contentRatio < containerRatio && __scaleMode == StageScaleMode.NO_BORDER) {
 						// The content is "longer" than the container AND it should fit inside,
 						// or the content is "higher" than the container AND it should fit outside
@@ -167,7 +167,7 @@ package com.zehfernando.display.containers {
 				default:
 					trace ("ERROR :: VideoContainer :: redraw :: No known resize method: "+__scaleMode);
 			}
-			
+
 			if (!isNaN(minimumScale)) {
 				if (baseScaleX < _minimumScale) baseScaleX = _minimumScale;
 				if (baseScaleY < _minimumScale) baseScaleY = _minimumScale;
@@ -176,13 +176,13 @@ package com.zehfernando.display.containers {
 				if (baseScaleX > _maximumScale) baseScaleX = _maximumScale;
 				if (baseScaleY > _maximumScale) baseScaleY = _maximumScale;
 			}
-			
+
 			return new Point(baseScaleX, baseScaleY);
 		}
 
 		protected function redraw(): void {
 			if (!isNaN(_contentWidth) && !isNaN(_contentHeight)) redrawContent();
-			
+
 			redrawBackground();
 			redrawScrollRect();
 		}
@@ -190,15 +190,15 @@ package com.zehfernando.display.containers {
 
 		// ================================================================================================================
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
-		
+
 		public function dispose(): void {
 			// Remove asset
 			removeAsset();
-			
+
 			// Remove content holder
 			removeChild(contentHolder);
 			contentHolder = null;;
-			
+
 			// Remove background
 			removeChild(boundingBox);
 			boundingBox = null;
@@ -212,10 +212,10 @@ package com.zehfernando.display.containers {
 			return altScale.x / myScale.x;
 			//return 1;
 		}
-		
+
 		public function setAsset(__displayObject:DisplayObject, __forcedWidth:Number = NaN, __forcedHeight:Number = NaN): void {
 			removeAsset();
-			
+
 			contentAsset = __displayObject;
 			contentHolder.addChild(contentAsset);
 
@@ -231,14 +231,14 @@ package com.zehfernando.display.containers {
 				contentAsset = null;
 			}
 		}
-		
+
 		public function getTransformedPoint(__point:Point): Point {
 			// Based on a given point on the original content, returns the transformed point based on this container position
-			
+
 			var p:Point = __point.clone();
 			p = contentHolder.localToGlobal(p);
 			p = parent.globalToLocal(p);
-			
+
 			return p;
 		}
 
@@ -275,7 +275,7 @@ package com.zehfernando.display.containers {
 			_margin = __value;
 			redraw();
 		}
-		
+
 		// Content scaling and display ----------------------------------
 
 		public function get scaleMode(): String {
@@ -287,7 +287,7 @@ package com.zehfernando.display.containers {
 				redraw();
 			}
 		}
-		
+
 		public function get minimumScale(): Number {
 			return _minimumScale;
 		}
@@ -317,7 +317,7 @@ package com.zehfernando.display.containers {
 				redraw();
 			}
 		}
-		
+
 		public function get scrollY(): Number {
 			return _scrollY;
 		}
@@ -339,7 +339,7 @@ package com.zehfernando.display.containers {
 		}
 
 		// Background stuff ----------------------------------
-		
+
 		public function get backgroundAlpha(): Number {
 			return boundingBox.alpha;
 		}
@@ -368,9 +368,9 @@ package com.zehfernando.display.containers {
 		public function get contentHeight(): Number {
 			return _contentHeight;
 		}
-		
+
 		// Round position
-		
+
 		public function get roundPositions(): Boolean {
 			return _roundPositions;
 		}

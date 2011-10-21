@@ -12,18 +12,18 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh
 	 */
 	public class FacebookUsersRequest extends BasicFacebookRequest {
-		
+
 		// Properties
 		protected var _userIds:Vector.<String>;
-		
+
 		// TODO: THIS IS NOT USED NOW
-		
+
 		// Parameters
 		protected var _limit:int;
-		
+
 		// Results
 		protected var _users:Vector.<FacebookUser>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// http://developers.facebook.com/docs/reference/api/page
 
 			_userIds = new Vector.<String>();
-			
+
 		}
 
 		// ================================================================================================================
@@ -66,13 +66,13 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_users = FacebookUser.fromJSONObjectObject(response);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
-		
+
 		override public function execute():void {
 			super.execute();
 		}
@@ -90,7 +90,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Results
-		
+
 		public function get users(): Vector.<FacebookUser> {
 			return _users;
 		}

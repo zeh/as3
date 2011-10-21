@@ -15,10 +15,10 @@ package com.zehfernando.display.plugins.facebook {
 	 * @author zeh
 	 */
 	public class FacebookLikePluginHTML5 extends Sprite {
-		
+
 		// https://developers.facebook.com/docs/reference/plugins/like/
 		// http://code.google.com/apis/analytics/docs/tracking/gaTrackingSocial.html#facebook
-		
+
 		// Enums
 		public static const LAYOUT_STANDARD:String = "standard"; // displays social text to the right of the button and friends' profile photos below. Minimum width: 225 pixels. Default width: 450 pixels. Height: 35 pixels (without photos) or 80 pixels (with photos).
 		public static const LAYOUT_BUTTON_COUNT:String = "button_count"; // displays the total number of likes to the right of the button. Minimum width: 90 pixels. Default width: 90 pixels. Height: 20 pixels.
@@ -45,15 +45,15 @@ package com.zehfernando.display.plugins.facebook {
 		protected var _font:String;
 		protected var _colorScheme:String;
 		protected var _ref:String;
-		
+
 		protected var _desiredWidth:Number;
 		protected var _desiredHeight:Number;
-		
+
 		protected var id:String;
 		protected var hasDiv:Boolean;
-		
+
 		protected var _stage:Stage;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -65,13 +65,13 @@ package com.zehfernando.display.plugins.facebook {
 			_font = FONT_TAHOMA;
 			_colorScheme = COLOR_SCHEME_LIGHT;
 			_ref = "";
-			
+
 			_desiredWidth = 0;
 			_desiredHeight = 0;
-			
+
 			id = "facebooklike_" + StringUtils.getRandomAlphanumericString(16);
 			hasDiv = false;
-			
+
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
 		}
@@ -93,7 +93,7 @@ package com.zehfernando.display.plugins.facebook {
 					newDiv.setAttribute("allowTransparency", "true");
 					newDiv.innerHTML = __content;
 					document.body.appendChild(newDiv);
-					
+
 					try {
 						FB.XFBML.parse();
 					} catch(e) {
@@ -103,16 +103,16 @@ package com.zehfernando.display.plugins.facebook {
 			/*FDT_IGNORE*/
 
 			ExternalInterface.call(js, id, getDivContent());
-			
+
 			hasDiv = true;
-			
+
 			applyDivDimensions();
 			applyDivOpacity();
 		}
-		
+
 		protected function getDivContent(): String {
 			var str:String = "";
-			
+
 			//str += '<script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>';
 
   			str += '<div class="fb-like"';
@@ -126,9 +126,9 @@ package com.zehfernando.display.plugins.facebook {
 				str += ' data-font="' + _font + '"';
 			str += '>';
 			str += '</div>';
-			
+
 			return str;
-			
+
 			// data-action="recommend" data-colorscheme="dark" data-font="lucida grande"></div>
 		}
 
@@ -144,18 +144,18 @@ package com.zehfernando.display.plugins.facebook {
 					}
 				]]></script>;
 				/*FDT_IGNORE*/
-	
+
 				ExternalInterface.call(js, id);
-				
+
 				hasDiv = false;
 			}
 		}
 
 		protected function applyDivDimensions(): void {
-			
+
 			var p1:Point = localToGlobal(new Point(0, 0));
 			var p2:Point = localToGlobal(new Point(getWidth(), getHeight()));
-			
+
 			setDivStyleProperty("left", Math.round(p1.x) + "px");
 			setDivStyleProperty("top", Math.round(p1.y) + "px");
 			setDivStyleProperty("width", (Math.round(p2.x) - Math.round(p1.x)) + "px"); // Proper rounding to absolute value
@@ -167,7 +167,7 @@ package com.zehfernando.display.plugins.facebook {
 			setDivStyleProperty("opacity", alpha.toString(10));
 			setDivStyleProperty("filter", "alpha(opacity=" + Math.round(alpha * 100) + ")");
 		}
-		
+
 		protected function requestCreateDiv(): void {
 			RenderUtils.addFunction(createDiv);
 		}
@@ -179,11 +179,11 @@ package com.zehfernando.display.plugins.facebook {
 //		protected function requestApplyDivOpacity(): void {
 //			RenderUtils.addFunction(applyDivOpacity);
 //		}
-		
+
 		protected function setDivStyleProperty(__property:String, __value:String): void {
 
 			if (HTMLUtils.isJavaScriptAvailable && hasDiv) {
-					
+
 				var js:XML;
 				/*FDT_IGNORE*/
 				js = <script><![CDATA[
@@ -192,26 +192,26 @@ package com.zehfernando.display.plugins.facebook {
 					}
 				]]></script>;
 				/*FDT_IGNORE*/
-	
+
 				ExternalInterface.call(js, id, __property, __value);
 			}
 		}
-		
+
 		protected function getWidth(): Number {
 			var minWidth:Number = 0;
 			var maxWidth:Number = 9999;
-			
+
 			if (_layout == LAYOUT_STANDARD) minWidth = 225;
 			if (_layout == LAYOUT_BUTTON_COUNT) minWidth = 90;
 			if (_layout == LAYOUT_BOX_COUNT) minWidth = 55;
 
 			return MathUtils.clamp(_desiredWidth, minWidth, maxWidth);
 		}
-		
+
 		protected function getHeight(): Number {
 			var minHeight:Number = 0;
 			var maxHeight:Number = 9999;
-			
+
 			if (_layout == LAYOUT_STANDARD) minHeight = maxHeight = (_showFaces ? 80 : 35);
 			if (_layout == LAYOUT_BUTTON_COUNT) minHeight = maxHeight = 20;
 			if (_layout == LAYOUT_BOX_COUNT) minHeight = maxHeight = 65;
@@ -227,7 +227,7 @@ package com.zehfernando.display.plugins.facebook {
 			_stage = stage;
 			_stage.addEventListener(Event.RESIZE, onStageResize);
 		}
-		
+
 		protected function onStageResize(e:Event): void {
 			requestApplyDivDimensions();
 		}
@@ -253,7 +253,7 @@ package com.zehfernando.display.plugins.facebook {
 				applyDivDimensions();
 			}
 		}
-		
+
 		override public function get width(): Number {
 			return getWidth();
 		}
@@ -264,7 +264,7 @@ package com.zehfernando.display.plugins.facebook {
 				//applyDivDimensions();
 			}
 		}
-		
+
 		override public function get height(): Number {
 			return getHeight();
 		}
@@ -289,7 +289,7 @@ package com.zehfernando.display.plugins.facebook {
 				applyDivOpacity();
 			}
 		}
-		
+
 		public function get layout(): String {
 			return _layout;
 		}

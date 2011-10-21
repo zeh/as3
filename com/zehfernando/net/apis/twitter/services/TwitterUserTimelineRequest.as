@@ -15,7 +15,7 @@ package com.zehfernando.net.apis.twitter.services {
 	 * @author zeh
 	 */
 	public class TwitterUserTimelineRequest extends BasicServiceRequest {
-		
+
 		// Example:
 		// http://api.twitter.com/1/statuses/user_timeline/zeh.json
 		// http://twitter.com/statuses/user_timeline.xml?screen_name=zeh
@@ -37,7 +37,7 @@ package com.zehfernando.net.apis.twitter.services {
 
 		// Results
 		protected var _tweets:Vector.<Tweet>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ package com.zehfernando.net.apis.twitter.services {
 			super.onSecurityError(e);
 			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
-		
+
 		override protected function onIOError(e:IOErrorEvent): void {
 			//trace ("twitter --> onIOError");
 			super.onIOError(e);
@@ -88,9 +88,9 @@ package com.zehfernando.net.apis.twitter.services {
 			//trace ("twitter --> onComplete");
 
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_tweets = Tweet.fromSearchJSONObjectArray(response["results"]);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.COMPLETE));
 		}
@@ -164,10 +164,10 @@ package com.zehfernando.net.apis.twitter.services {
 			_includeEntities = __value;
 		}
 
-		
+
 
 		// Results
-		
+
 		public function get tweets(): Vector.<Tweet> {
 			return _tweets.concat();
 		}

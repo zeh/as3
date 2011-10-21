@@ -9,7 +9,7 @@ package com.zehfernando.display.containers {
 	 * @author zeh
 	 */
 	public class NetStreamContainer  extends DisplayAssetContainer {
-		
+
 		// Ugh
 
 		// Constants
@@ -21,7 +21,7 @@ package com.zehfernando.display.containers {
 		protected var _isConnected:Boolean;
 		protected var _isStreaming:Boolean;
 		protected var _video:Video;
-		
+
 		protected var _smoothing:Boolean;
 
 		protected var _streamName:String;
@@ -29,7 +29,7 @@ package com.zehfernando.display.containers {
 		protected var netConnection:NetConnection;
 		protected var netStream:NetStream;
 
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ package com.zehfernando.display.containers {
 			stop();
 			super.destroyContent();
 		}
-		
+
 		protected function redrawSmoothing(): void {
 			//if (_isLoaded && Boolean(loader.content)) Bitmap(loader.content).smoothing = _smoothing;
 			if (Boolean(_video)) _video.smoothing = false;
@@ -69,15 +69,15 @@ package com.zehfernando.display.containers {
 
 			var info:Object = e.info;
 
-                //Checking the event.info.code for the current NetConnection status string	
-                switch (info.code) {
+				//Checking the event.info.code for the current NetConnection status string
+				switch (info.code) {
 					//code == NetConnection.Connect.Success when Netconnection has successfully
 					//connected
 					case "NetConnection.Connect.Success":
 						dispatchEvent(new Event(EVENT_CONNECTED));
 						break;
 					//code == NetConnection.Connect.Rejected when Netconnection did
-					//not have permission to access the application.		
+					//not have permission to access the application.
 						case "NetConnection.Connect.Rejected":
 						trace("NetStreamContainer :: onNetConnectionStatus :: Connection rejected.");
 						break;
@@ -88,24 +88,24 @@ package com.zehfernando.display.containers {
 						trace("NetStreamContainer :: onNetConnectionStatus :: Connection failed.");
 						break;
 
-					//code == NetConnection.Connect.Closed when Netconnection has been closed successfully.	
+					//code == NetConnection.Connect.Closed when Netconnection has been closed successfully.
 					case "NetConnection.Connect.Closed":
 						trace("NetStreamContainer :: onNetConnectionStatus :: Connection closed.");
 						break;
-                }
+				}
 		}
-		
+
 		protected function onMetaData(info:Object): void {
-            //trace("onMetaData: duration=" + info.duration + " framerate=" + info.framerate);
-     	}
+			//trace("onMetaData: duration=" + info.duration + " framerate=" + info.framerate);
+	 	}
 
 		protected function onPlayStatus(info:Object): void {
-            //trace("onPlayStatus: status=" + info.code);
-            if (info.code == "NetStream.Play.Complete") {
-            	// Completed
-            	dispatchEvent(new Event(EVENT_PLAYBACK_COMPLETE));
-            }
-     	}
+			//trace("onPlayStatus: status=" + info.code);
+			if (info.code == "NetStream.Play.Complete") {
+				// Completed
+				dispatchEvent(new Event(EVENT_PLAYBACK_COMPLETE));
+			}
+	 	}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
@@ -124,9 +124,9 @@ package com.zehfernando.display.containers {
 			if (!_isConnected) {
 				_streamName = __streamName;
 				netConnection = new NetConnection();
-                netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetConnectionStatus);
+				netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetConnectionStatus);
 				netConnection.connect(__url);
-				
+
 				_isConnected = true;
 			}
 		}
@@ -137,7 +137,7 @@ package com.zehfernando.display.containers {
 				netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetConnectionStatus);
 				netConnection.connect(null);
 				netConnection = null;
-				
+
 				_isConnected = false;
 			}
 		}
@@ -148,9 +148,9 @@ package com.zehfernando.display.containers {
 				netStream = new NetStream(netConnection);
 				//netStream.client = new Object();
 				netStream.client = {onMetaData:onMetaData, onPlayStatus:onPlayStatus};
-				
+
 				_video.attachNetStream(netStream);
-			
+
 				_isStreaming = true;
 			}
 		}
@@ -160,7 +160,7 @@ package com.zehfernando.display.containers {
 				trace ("NetStreamContainer :: stopStreaming()");
 				_video.attachNetStream(null);
 				netStream.close();
-				
+
 				_isStreaming = false;
 			}
 		}
@@ -194,7 +194,7 @@ package com.zehfernando.display.containers {
 			_smoothing = __value;
 			redrawSmoothing();
 		}
-		
+
 		public function get isConnected(): Boolean {
 			return _isConnected;
 		}

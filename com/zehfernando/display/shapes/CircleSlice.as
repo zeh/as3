@@ -15,22 +15,22 @@ package com.zehfernando.display.shapes {
 
 		// Properties
 		protected var _color:Number;
-		protected var _radius:Number; 
-		protected var _innerRadius:Number; 
-		protected var _startAngle:Number; 
-		protected var _endAngle:Number; 
+		protected var _radius:Number;
+		protected var _innerRadius:Number;
+		protected var _startAngle:Number;
+		protected var _endAngle:Number;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function CircleSlice(__radius:Number = 100, __color:int = 0xff0000, __innerRadius:Number = 0, __startAngle:Number = 0, __endAngle:Number = 360) {
-			
+
 			_color = __color & 0xffffff;
 			_radius = __radius;
 			_innerRadius = __innerRadius;
 			_startAngle = __startAngle;
 			_endAngle = __endAngle;
-			
+
 			checkProperties();
 			paint();
 		}
@@ -41,17 +41,17 @@ package com.zehfernando.display.shapes {
 
 		protected function paint(): void {
 			graphics.clear();
-			
+
 			var i:Number;
 			var a:Number;							// Temp angle
-			
+
 			graphics.lineStyle();
 			graphics.beginFill(_color, 1);
-			
+
 			// Outer arc
 			a = (_startAngle + BASE_ANGLE) * A_TO_R;
 			graphics.moveTo(Math.cos(a) * _radius, Math.sin(a) * _radius);
-			
+
 			for (i = _startAngle + STEP_SIZE; i < _endAngle; i += STEP_SIZE) {
 				a = (i + BASE_ANGLE) * A_TO_R;
 				graphics.lineTo(Math.cos(a) * _radius, Math.sin(a) * _radius);
@@ -59,14 +59,14 @@ package com.zehfernando.display.shapes {
 
 			a = (_endAngle + BASE_ANGLE) * A_TO_R;
 			graphics.lineTo(Math.cos(a) * _radius, Math.sin(a) * _radius);
-			
+
 			// Inner arc, inverse
 			if (_innerRadius > 0) {
 				for (i = _endAngle; i > _startAngle; i -= STEP_SIZE) {
 					a = (i + BASE_ANGLE) * A_TO_R;
 					graphics.lineTo(Math.cos(a) * _innerRadius, Math.sin(a) * _innerRadius);
 				}
-	
+
 				a = (_startAngle + BASE_ANGLE) * A_TO_R;
 				graphics.lineTo(Math.cos(a) * _innerRadius, Math.sin(a) * _innerRadius);
 			} else {
@@ -76,11 +76,11 @@ package com.zehfernando.display.shapes {
 			graphics.endFill();
 
 		}
-		
+
 		protected function checkProperties(): void {
 			if (isNaN(_startAngle)) _startAngle = 0;
 			_startAngle = MathUtils.clamp(_startAngle, -65535, 65535);
-			
+
 			if (isNaN(_endAngle)) _endAngle = 360;
 			_endAngle = MathUtils.clamp(_endAngle, -65535, 65535);
 		}
@@ -108,7 +108,7 @@ package com.zehfernando.display.shapes {
 				paint();
 			}
 		}
-		
+
 		public function get innerRadius(): Number {
 			return _innerRadius;
 		}
@@ -118,7 +118,7 @@ package com.zehfernando.display.shapes {
 				paint();
 			}
 		}
-		
+
 		public function get startAngle(): Number {
 			return _startAngle;
 		}

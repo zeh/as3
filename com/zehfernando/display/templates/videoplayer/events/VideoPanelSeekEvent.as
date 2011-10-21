@@ -8,10 +8,10 @@ package com.zehfernando.display.templates.videoplayer.events {
 
 		// Constants
 		public static const SEEK:String = "onSeek";
-		
+
 		// Properties
 		public var time:Number;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 

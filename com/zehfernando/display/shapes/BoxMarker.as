@@ -12,12 +12,12 @@ package com.zehfernando.display.shapes {
 	 * @author zeh
 	 */
 	public class BoxMarker extends Sprite {
-		
+
 		// Properties
 		protected var _lineColor:int;
 		protected var _width:Number;
 		protected var _height:Number;
-		
+
 		// Instances
 		protected var background:Box;
 		protected var foreground:Shape;
@@ -28,10 +28,10 @@ package com.zehfernando.display.shapes {
 		public function BoxMarker(__width:Number = 100, __height:Number = 100, __lineColor:int = 0x555555, __backgroundColor:int = 0xe3e3e3) {
 			_width = __width;
 			_height = __height;
-			
+
 			background = new Box(100, 100, __backgroundColor);
 			addChild(background);
-			
+
 			foreground = new Shape();
 			foreground.graphics.lineStyle(1.6, 0x000000, 1, false, LineScaleMode.NONE, CapsStyle.ROUND, JointStyle.MITER);
 			foreground.graphics.drawRect(0, 0, 100, 100);
@@ -42,22 +42,22 @@ package com.zehfernando.display.shapes {
 			foreground.graphics.endFill();
 			addChild(foreground);
 			lineColor = __lineColor;
-			
+
 			redraw();
 		}
 
-		
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
 		protected function redraw(): void {
 			background.width = _width;
 			background.height = _height;
-			
+
 			foreground.scaleX = _width/100;
 			foreground.scaleY = _height/100;
 		}
-		
+
 
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
@@ -68,17 +68,17 @@ package com.zehfernando.display.shapes {
 		public function set color(__value:int): void {
 			background.color = __value;
 		}
-		
+
 		public function get lineColor(): int {
 			return _lineColor;
 		}
 		public function set lineColor(__value:int): void {
 			if (_lineColor != __value) {
 				_lineColor = __value;
-				foreground.transform.colorTransform = Color.fromRRGGBB(_lineColor).toColorTransform(); 
+				foreground.transform.colorTransform = Color.fromRRGGBB(_lineColor).toColorTransform();
 			}
 		}
-		
+
 		// TODO: use invalidate
 
 		override public function get width(): Number { return _width; }

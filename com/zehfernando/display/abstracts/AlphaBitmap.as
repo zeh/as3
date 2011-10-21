@@ -10,7 +10,7 @@ package com.zehfernando.display.abstracts {
 	 * @author zeh at zehfernando.com
 	 */
 	public class AlphaBitmap extends ResizableSprite {
-		
+
 		// Instances
 		protected var bitmapData:BitmapData;
 		protected var bitmap:Bitmap;
@@ -22,15 +22,15 @@ package com.zehfernando.display.abstracts {
 
 		public function AlphaBitmap(__colorBitmap:BitmapData, __alphaBitmap:BitmapData = null, __canDisposeOf:Boolean = true) {
 			super();
-			
+
 			var w:int = Math.max(__colorBitmap.width, Boolean(__alphaBitmap) ? __alphaBitmap.width : 0);
 			var h:int = Math.max(__colorBitmap.height, Boolean(__alphaBitmap) ? __alphaBitmap.height : 0);
-			
+
 			var mtx:Matrix;
-			
+
 			// Create bitmap
 			bitmapData = new BitmapData(w, h, true, 0x00000000);
-			
+
 			// Create RGB channels
 			if (__colorBitmap.width == w && __colorBitmap.height == h) {
 				// Same size, quick copy
@@ -41,9 +41,9 @@ package com.zehfernando.display.abstracts {
 				mtx.scale(w / __colorBitmap.width, h / __colorBitmap.height);
 				bitmapData.draw(__colorBitmap, mtx, null, null, null, true);
 			}
-			
+
 			if (__canDisposeOf) __colorBitmap.dispose();
-			
+
 			if (Boolean(__alphaBitmap)) {
 				// Create alpha channel
 				if (__alphaBitmap.width == w && __alphaBitmap.height == h) {
@@ -52,21 +52,21 @@ package com.zehfernando.display.abstracts {
 				} else {
 					// Different size, resize befor copying -- also need to resize, ugh
 					var alphaTemp:BitmapData = new BitmapData(w, h, true, 0x00000000);
-	
+
 					mtx = new Matrix();
 					mtx.scale(w / __alphaBitmap.width, h / __alphaBitmap.height);
 					alphaTemp.draw(__alphaBitmap, mtx, null, null, null, true);
-					
+
 					// Finally, quick copy
 					bitmapData.copyChannel(alphaTemp,  alphaTemp.rect, new Point(0, 0), BitmapDataChannel.ALPHA, BitmapDataChannel.ALPHA);
-					
+
 					alphaTemp.dispose();
 					alphaTemp = null;
 				}
 
 				if (__canDisposeOf) __alphaBitmap.dispose();
 			}
-			
+
 			// Attach
 			bitmap = new Bitmap(bitmapData);
 			bitmap.smoothing = true;
@@ -75,15 +75,15 @@ package com.zehfernando.display.abstracts {
 
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public static function fromBitmaps(__colorBitmap:Bitmap, __alphaBitmap:Bitmap = null, __canDisposeOf:Boolean = true): AlphaBitmap {
 			var alphaBitmap:AlphaBitmap = new AlphaBitmap(__colorBitmap.bitmapData, Boolean(__alphaBitmap) ? __alphaBitmap.bitmapData : null, __canDisposeOf);
-			
+
 			if (__canDisposeOf) {
 				__colorBitmap.bitmapData = null;
 				if (Boolean(__alphaBitmap)) __alphaBitmap.bitmapData = null;
 			}
-			
+
 			return alphaBitmap;
 		}
 

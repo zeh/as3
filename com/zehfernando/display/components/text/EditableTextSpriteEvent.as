@@ -5,12 +5,12 @@ package com.zehfernando.display.components.text {
 	 * @author zeh
 	 */
 	public class EditableTextSpriteEvent extends Event {
-		
+
 		// Constants
 		public static const GOT_FOCUS:String = "onGotFocus";
 		public static const LOST_FOCUS:String = "onLostFocus";
 		public static const CHANGED:String = "onChanged";
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 

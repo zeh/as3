@@ -7,7 +7,7 @@ package com.zehfernando.net.apis.facebook.data {
 	 */
 	public class FacebookAuthor {
 
-		// Properties		
+		// Properties
 		public var id:String;
 		public var name:String;
 
@@ -21,12 +21,12 @@ package com.zehfernando.net.apis.facebook.data {
 
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public static function fromJSONObject(o:Object): FacebookAuthor {
 			if (!Boolean(o)) return null;
-			
+
 			var author:FacebookAuthor;
-			
+
 			if (Boolean(o["category"])) {
 				// It's a page
 				author = FacebookPage.fromJSONObject(o);
@@ -60,7 +60,7 @@ package com.zehfernando.net.apis.facebook.data {
 		// Ugh, error on people without profiles -- tries to load an image from http://static.ak.fbcdn.net/rsrc.php/yL/r/HsTZSDw4avx.gif?type=large
 		// TODO: auto-detect this, somehow?
 
-		
+
 		public function set picture(picture:String):void {
 			_picture = picture;
 		}

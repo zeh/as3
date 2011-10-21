@@ -5,10 +5,10 @@ package com.zehfernando.display.components.text {
 	 * @author zeh
 	 */
 	public class RichTextSpriteEvent extends Event {
-		
+
 		// Constants
 		public static const LINK:String = "onClickLink";
-		
+
 		// Properties
 		protected var _href:String;
 		protected var _hrefTarget:String;
@@ -36,7 +36,7 @@ package com.zehfernando.display.components.text {
 		public function get href():String {
 			return _href;
 		}
-		
+
 		public function get hrefTarget():String {
 			return _hrefTarget;
 		}

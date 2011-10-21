@@ -21,10 +21,10 @@ package com.zehfernando.audio {
 		protected var _volume:Number;					// 0 - 1
 		protected var _panning:Number;
 		protected var _globalControl:Boolean;
-		
+
 		// ================================================================================================================
 		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
-		
+
 		{
 			managers = new Vector.<VolumeManager>();
 		}
@@ -34,7 +34,7 @@ package com.zehfernando.audio {
 
 		public function VolumeManager(__name:String = null) {
 			super(null);
-			
+
 			_name = __name;
 			_mute = 0;
 			_volume = 1;
@@ -49,7 +49,7 @@ package com.zehfernando.audio {
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function dispatchVolumeChangeEvent(): void {
 			if (_globalControl) {
 				// This is global, so update the global SoundTransform
@@ -65,17 +65,17 @@ package com.zehfernando.audio {
 
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
-		
+
 		public static function addManager(__manager:VolumeManager): void {
 			managers.push(__manager);
 		}
-		
+
 		public static function getManager(__name:String = null, __autoCreate:Boolean = true): VolumeManager {
 			// Search on the list of existing sound instances
 			for (var i:int = 0; i < managers.length; i++) {
 				if (managers[i].name == __name) return managers[i];
 			}
-			
+
 			// Not found
 			// If allowed to create a single instance, just create and return it
 			if (__autoCreate) {

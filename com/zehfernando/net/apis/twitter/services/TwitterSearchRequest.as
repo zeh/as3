@@ -17,7 +17,7 @@ package com.zehfernando.net.apis.twitter.services {
 	 * @author zeh
 	 */
 	public class TwitterSearchRequest extends BasicServiceRequest {
-		
+
 		// http://apiwiki.twitter.com/Twitter-Search-API-Method%3A+search
 
 		// Properties
@@ -34,7 +34,7 @@ package com.zehfernando.net.apis.twitter.services {
 
 		// Results
 		protected var _tweets:Vector.<Tweet>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -46,34 +46,34 @@ package com.zehfernando.net.apis.twitter.services {
 			requestMethod = URLRequestMethod.GET;
 
 			_resultType = TwitterSearchResultType.RECENT;
-			
+
 			// TODO: add missing parameters: locale, geococde
 			// TODO: add simulated API points?
-			
+
 			// http://apiwiki.twitter.com/Things-Every-Developer-Should-Know
-			
-			
-			
+
+
+
 			// http://search.twitter.com/search.format
 			// GET
 			// # lang: Optional: Restricts tweets to the given language, given by an ISO 639-1 code.
 			//   * Example: http://search.twitter.com/search.atom?lang=en&q=devo
-			
+
 			// http://search.twitter.com/advanced
-			// http://search.twitter.com/search?q=twitter  would become 
+			// http://search.twitter.com/search?q=twitter  would become
 			// http://search.twitter.com/search.json?q=twitter
-			
+
 			// From a user:
 			// http://search.twitter.com/search.atom?q=from%3Aal3x
-			
+
 			// With a hashtag:
 			// http://search.twitter.com/search.atom?q=%23haiku
-			
-			
+
+
 			// http://search.twitter.com/search.json?q=twitter
-			
+
 			// result_type, popular/recent
-			
+
 			// 150 requests per hour
 			// 3,200 statuses (forever?)
 			// page: up to a max of roughly 1500 results
@@ -89,24 +89,24 @@ package com.zehfernando.net.apis.twitter.services {
 			  <updated>2010-07-27T22:50:14Z</updated>
 			  <openSearch:itemsPerPage>15</openSearch:itemsPerPage>
 			  <entry>
-			    <id>tag:search.twitter.com,2005:19692205228</id>
-			    <published>2010-07-27T22:50:14Z</published>
-			    <link type="text/html" href="http://twitter.com/RMS_Titanic_Inc/statuses/19692205228" rel="alternate"/>
-			    <title>@Technotoaster  Thx!  We have a dream team on board, cutting-edge technology, terrific supporters and a noble cause.</title>
-			    <content type="html">&lt;a href=&quot;http://twitter.com/Technotoaster&quot;&gt;@Technotoaster&lt;/a&gt;  Thx!  We have a dream team on board, cutting-edge technology, terrific supporters and a noble cause.</content>
-			    <updated>2010-07-27T22:50:14Z</updated>
-			    <link type="image/png" href="http://a3.twimg.com/profile_images/1087754811/titanic_avatar_normal.jpg" rel="image"/>
-			    <twitter:geo>
-			    </twitter:geo>
-			    <twitter:metadata>
-			      <twitter:result_type>recent</twitter:result_type>
-			    </twitter:metadata>
-			    <twitter:source>&lt;a href=&quot;http://www.tweetdeck.com&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;</twitter:source>
-			    <twitter:lang>en</twitter:lang>
-			    <author>
-			      <name>RMS_Titanic_Inc (RMS Titanic, Inc.)</name>
-			      <uri>http://twitter.com/RMS_Titanic_Inc</uri>
-			    </author>
+				<id>tag:search.twitter.com,2005:19692205228</id>
+				<published>2010-07-27T22:50:14Z</published>
+				<link type="text/html" href="http://twitter.com/RMS_Titanic_Inc/statuses/19692205228" rel="alternate"/>
+				<title>@Technotoaster  Thx!  We have a dream team on board, cutting-edge technology, terrific supporters and a noble cause.</title>
+				<content type="html">&lt;a href=&quot;http://twitter.com/Technotoaster&quot;&gt;@Technotoaster&lt;/a&gt;  Thx!  We have a dream team on board, cutting-edge technology, terrific supporters and a noble cause.</content>
+				<updated>2010-07-27T22:50:14Z</updated>
+				<link type="image/png" href="http://a3.twimg.com/profile_images/1087754811/titanic_avatar_normal.jpg" rel="image"/>
+				<twitter:geo>
+				</twitter:geo>
+				<twitter:metadata>
+				  <twitter:result_type>recent</twitter:result_type>
+				</twitter:metadata>
+				<twitter:source>&lt;a href=&quot;http://www.tweetdeck.com&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;</twitter:source>
+				<twitter:lang>en</twitter:lang>
+				<author>
+				  <name>RMS_Titanic_Inc (RMS Titanic, Inc.)</name>
+				  <uri>http://twitter.com/RMS_Titanic_Inc</uri>
+				</author>
 			  </entry>
 			*/
 		}
@@ -139,7 +139,7 @@ package com.zehfernando.net.apis.twitter.services {
 			super.onSecurityError(e);
 			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
-		
+
 		override protected function onIOError(e:IOErrorEvent): void {
 			//trace ("twitter --> onIOError");
 			super.onIOError(e);
@@ -150,29 +150,29 @@ package com.zehfernando.net.apis.twitter.services {
 			//trace ("twitter --> onComplete");
 
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_tweets = Tweet.fromSearchJSONObjectArray(response["results"]);
-			
+
 			// Example:
 			/*
 			{
 			   "results":[
-			      {
-			         "profile_image_url":"http://a0.twimg.com/profile_images/1092781896/avatar2_normal.jpg",
-			         "created_at":"Mon, 16 Aug 2010 20:15:18 +0000",
-			         "from_user":"OneLag",
-			         "metadata":{
-			            "result_type":"recent"
-			         },
-			         "to_user_id":12872148,
-			         "text":"@todearaujo nao rapaz, nao to falando do meu BG, to falando de como eu uso o meu twitter mesmo",
-			         "id":21341803331,
-			         "from_user_id":201065,
-			         "to_user":"todearaujo",
-			         "geo":null,
-			         "iso_language_code":"pt",
-			         "source":"&lt;a href=&quot;http://www.tweetdeck.com&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;"
-			      },
+				  {
+					 "profile_image_url":"http://a0.twimg.com/profile_images/1092781896/avatar2_normal.jpg",
+					 "created_at":"Mon, 16 Aug 2010 20:15:18 +0000",
+					 "from_user":"OneLag",
+					 "metadata":{
+						"result_type":"recent"
+					 },
+					 "to_user_id":12872148,
+					 "text":"@todearaujo nao rapaz, nao to falando do meu BG, to falando de como eu uso o meu twitter mesmo",
+					 "id":21341803331,
+					 "from_user_id":201065,
+					 "to_user":"todearaujo",
+					 "geo":null,
+					 "iso_language_code":"pt",
+					 "source":"&lt;a href=&quot;http://www.tweetdeck.com&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;"
+				  },
 			   ],
 			   "max_id":21341803331,
 			   "since_id":0,
@@ -200,73 +200,73 @@ package com.zehfernando.net.apis.twitter.services {
 		public function set q(__value:String):void {
 			_q = __value;
 		}
-		
+
 		public function get from():String {
 			return _from;
 		}
 		public function set from(__value:String):void {
 			_from = __value;
 		}
-		
+
 		public function get resultType():String {
 			return _resultType;
 		}
 		public function set resultType(__value:String):void {
 			_resultType = __value;
 		}
-		
+
 		public function get lang():String {
 			return _lang;
 		}
 		public function set lang(__value:String):void {
 			_lang = __value;
 		}
-		
+
 		public function get maxId():String {
 			return _maxId;
 		}
 		public function set maxId(__value:String):void {
 			_maxId = __value;
 		}
-		
+
 		public function get resultsPerPage():int {
 			return _resultsPerPage;
 		}
 		public function set resultsPerPage(__value:int):void {
 			_resultsPerPage = __value;
 		}
-		
+
 		public function get page():int {
 			return _page;
 		}
 		public function set page(__value:int):void {
 			_page = __value;
 		}
-		
+
 		public function get since():Date {
 			return _since;
 		}
 		public function set since(__value:Date):void {
 			_since = __value;
 		}
-		
+
 		public function get until():Date {
 			return _until;
 		}
 		public function set until(__value:Date):void {
 			_until = __value;
 		}
-		
+
 		public function get sinceId():String {
 			return _sinceId;
 		}
-		
+
 		public function set sinceId(__value:String):void {
 			_sinceId = __value;
 		}
 
 		// Results
-		
+
 		public function get tweets(): Vector.<Tweet> {
 			return _tweets.concat();
 		}

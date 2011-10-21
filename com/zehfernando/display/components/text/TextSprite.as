@@ -23,13 +23,13 @@ package com.zehfernando.display.components.text {
 		protected var _blockAlignVertical:String;
 		protected var _blockAlignHorizontal:String;
 		protected var _align:String;
-		
+
 		protected var _width:Number;
 		protected var _height:Number;
 		protected var _maxHeight:Number;
 		protected var _autoSize:Boolean;
 		protected var _text:String;
-		
+
 		protected var _lastTextLine:TextLine;
 		protected var _previousTextLine:TextLine;
 
@@ -37,23 +37,23 @@ package com.zehfernando.display.components.text {
 		protected var _tracking:Number;
 
 		protected var _border:Boolean;
-		
+
 		protected var _ascent:Number;
 		protected var _descent:Number;
 		protected var _baseline:Number;
 		protected var _trimFirstLineIfBlank:Boolean;
-		
+
 		// Instances
 		protected var textBlock:TextBlock;
 		protected var fontDescription:FontDescription;
 		protected var elementFormat:ElementFormat;
 		protected var textContainer:Sprite;
 		protected var textLines:Vector.<TextLine>;
-		
+
 		/*
 		Changelog
 		2010 02 06 -- Changed to use the new Text Engine, be aligned to the top left
-		
+
 		// http://www.insideria.com/2009/03/flash-text-engine.html
 		*/
 
@@ -67,54 +67,54 @@ package com.zehfernando.display.components.text {
 			_blockAlignVertical = TextSpriteAlign.TOP;
 			_blockAlignHorizontal = TextSpriteAlign.LEFT;
 			_align = TextSpriteAlign.LEFT;
-			
+
 			_width = 0;
 			_height = 0;
 			_autoSize = true;
 			_text = "";
 			_border = false;
-			
+
 			_trimFirstLineIfBlank = false;
-			
+
 			_maxHeight = NaN;
 			_lastTextLine = null;
 			_previousTextLine = null;
-			
+
 			_leading = 0;
 			_tracking = 0;
-			
+
 			// Create visual assets
 			textContainer = new Sprite();
 			addChild(textContainer);
-			
+
 			// Create text block properties
 			fontDescription = new FontDescription();
 			fontDescription.fontName = __font;
 			fontDescription.fontLookup = FontLookup.EMBEDDED_CFF; // TODO: set this as .embedded:Boolean ?
-			fontDescription.renderingMode = RenderingMode.CFF; // TODO: set this as .highQuality:Boolean ? (if normal, there's no hinting) 
+			fontDescription.renderingMode = RenderingMode.CFF; // TODO: set this as .highQuality:Boolean ? (if normal, there's no hinting)
 			fontDescription.cffHinting = CFFHinting.HORIZONTAL_STEM; // TODO: set this as .optimizedForAnimation:Boolean or hinting:Boolean? (if normal, apparently there's no change?)
-			
+
 			//fontDescription.renderingMode = RenderingMode.NORMAL;
 			//fontDescription.cffHinting = CFFHinting.NONE;
-			
+
 			elementFormat = new ElementFormat();
-            //elementFormat.fontDescription = fontDescription;
-            elementFormat.fontSize = __size;
-            elementFormat.color = __color;
-            elementFormat.alpha = __alpha;
-            
-            applyElementFormatTracking();
-            
-            textBlock = new TextBlock();
-			textBlock.baselineZero = TextBaseline.IDEOGRAPHIC_TOP;
+			//elementFormat.fontDescription = fontDescription;
+			elementFormat.fontSize = __size;
+			elementFormat.color = __color;
+			elementFormat.alpha = __alpha;
 			
-			// Finally, redraws everything 
+			applyElementFormatTracking();
+			
+			textBlock = new TextBlock();
+			textBlock.baselineZero = TextBaseline.IDEOGRAPHIC_TOP;
+
+			// Finally, redraws everything
 			redraw();
 		}
 
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
-		
+
 		protected function applyElementFormatTracking(): void {
 			// Based on tracking (letter spacing), applies that to the elementFormat instance
 			elementFormat.trackingLeft = _tracking/2;
@@ -133,7 +133,7 @@ package com.zehfernando.display.components.text {
 			if (!Boolean(stage)) return -1;
 			return getCharAtPosition(stage.mouseX, stage.mouseY);
 		}
-		
+
 		protected function getCharAtPosition(__stageX:Number, __stageY:Number): int {
 			var p:Point = new Point(__stageX, __stageY);
 			var lastLine:TextLine = textBlock.firstLine;
@@ -160,10 +160,10 @@ package com.zehfernando.display.components.text {
 			} else {
 				return __element;
 			}
-			
+
 			return null;
 		}
-	
+
 		protected function redraw(): void {
 			// Redraw the whole text block
 
@@ -177,7 +177,7 @@ package com.zehfernando.display.components.text {
 
 			// Create new lines
 			textLines = new Vector.<TextLine>();
-			
+
 			textBlock.content = getTextElement(_text);
 
 			var i:int;
@@ -187,11 +187,11 @@ package com.zehfernando.display.components.text {
 			var posY:Number = 0;
 			var maxWidth:Number = 0;
 			var lineCount:int = 0;
-			
+
 			_ascent = NaN;
 			_descent = NaN;
 			_baseline = NaN;
-			
+
 			while (true) {
 				// In FP 10.1, this sometimes gives "Exception fault: ArgumentError: Error #2004: One of the parameters is invalid." even if it works on 10.0
 				// The error is triggered when you try a .createTextLine on a textBlock using a previousLine from another textBlock
@@ -199,7 +199,7 @@ package com.zehfernando.display.components.text {
 				if (Boolean(previousLine)) {
 					//trace ("----> ", previousLine, previousLine.textBlockBeginIndex, lineWidth);
 					textLine = previousLine.textBlock.createTextLine(previousLine, lineWidth, 0, true);
-					
+
 					// Trims the first line if it's blank
 					// TODO: make this cleaner...
 					while (Boolean(textLine) && textLine.atomCount == 1 && lineCount == 0 && _trimFirstLineIfBlank) {
@@ -212,7 +212,7 @@ package com.zehfernando.display.components.text {
 				if (Boolean(textLine) && (posY <= _maxHeight || isNaN(_maxHeight))) {
 					//textLine.x = 0; // Overridden later
 					textLine.y = posY;
-					
+
 					posY += textLine.height;
 
 					posY += _leading;
@@ -221,34 +221,34 @@ package com.zehfernando.display.components.text {
 						maxWidth = Math.max(maxWidth, textLine.width);
 
 						_lastTextLine = textLine;
-					
+
 						textLines.push(textLine);
 						textContainer.addChild(textLine);
 						previousLine = textLine;
-						
+
 						//trace ("-- " + textLine.ascent, textLine.descent);
 						//trace (textLine.getBaselinePosition(TextBaseline.ROMAN));
-						
-						if (isNaN(_baseline)) _baseline = textLine.getBaselinePosition(TextBaseline.ROMAN); 
-						if (isNaN(_ascent)) _ascent = textLine.ascent; 
+
+						if (isNaN(_baseline)) _baseline = textLine.getBaselinePosition(TextBaseline.ROMAN);
+						if (isNaN(_ascent)) _ascent = textLine.ascent;
 						_descent = textLine.descent;
 					} else {
 						textLine = null;
 						break;
 					}
-					
+
 					// TODO: is this the correct naming?
-					
+
 				} else {
 					break;
 				}
-				
+
 				lineCount++;
 			}
-			
+
 			if (Boolean(textLine)) posY -= _leading;
 			// TODO: ERROR! this takes the wrong size as consideration.. _height becomes negative if leading is too low!!
-			
+
 			if (_autoSize) _width = maxWidth;
 			_height = posY;
 			for (i = 0; i < textLines.length; i++) {
@@ -264,10 +264,10 @@ package com.zehfernando.display.components.text {
 					textLines[i].x = 0;
 				}
 			}
-			
+
 			// Adjust horizontal position of line texts for align
-			
-			
+
+
 //			var widthOffset:Number = textField.width - textField.textWidth;
 //			textField.width = _width + widthOffset;
 //			resetTextPosition();
@@ -312,7 +312,7 @@ package com.zehfernando.display.components.text {
 				// Center
 				textContainer.x = -_width/2;
 			}
-			
+
 			graphics.clear();
 			if (_border) {
 				graphics.lineStyle(1, 0x000000, 0.5);
@@ -327,37 +327,37 @@ package com.zehfernando.display.components.text {
 //				var ty:Number, tx:Number, tw:Number, th:Number;
 //				var tmpP:Number;
 //				var mts:TextLineMetrics;
-//				
+//
 //				th = 0;
-//				
+//
 //				// Accounts for variable X - not sure if this ever happens, test with right/center alignment
 //				for (var i:int = 0; i < textField.numLines; i++) {
 //					mts = textField.getLineMetrics(i);
-//					
+//
 //					// Left
 //					tmpP = mts.x;
 //					if (isNaN(tx) || tmpP < tx) tx = tmpP;
-//	
+//
 //					// Width
 //					tmpP = mts.width + mts.x;
 //					if (isNaN(tw) || tmpP > tw) tw = tmpP;
-//					
+//
 //					// Height
 //					th += mts.height;
 //				}
 //
 //				// Descent
 //				descentOffset = textField.getLineMetrics(textField.numLines - 1).descent;
-//				
+//
 //				var firstChar:Rectangle = textField.getCharBoundaries(0);
 //				if (Boolean(firstChar)) {
 //					ty = firstChar.y;
 //				} else {
 //					ty = 0;
 //				}
-//				
+//
 //				th = textField.textHeight; // UGH // TODO: fix this?
-//				
+//
 //				actualBoundaries.x = tx;
 //				actualBoundaries.y = ty;
 //				actualBoundaries.width = tw - tx;
@@ -392,22 +392,22 @@ package com.zehfernando.display.components.text {
 //				// Center
 //				textField.x = -actualBoundaries.x - actualBoundaries.width/2;
 //			}
-//			
+//
 //			_width = actualBoundaries.width;
 //			_height = actualBoundaries.height;
-			
+
 			//if (_height != textField.textHeight && !_autoSize && textField.textHeight > textField.height) {
-				// Temporary workaround for when a textfield with auto size fails to take the actual height of the text 
+				// Temporary workaround for when a textfield with auto size fails to take the actual height of the text
 				//textField.height = _height + 20;
 				//trace ("RESET!");
 			//}
-			
+
 			//trace ("h = " + _height + ",  tf.h = " + textField.height + ", tf.th = " + textField.textHeight);
 		}
-		
-		
+
+
 //		protected function setTextFormatProperties(__props:Object): void {
-//			// Set properties of the textfield's text format 
+//			// Set properties of the textfield's text format
 //			// TODO: set selectively, so it won't overwrite anything?
 //			var fmt:TextFormat = textField.getTextFormat();
 //			for (var i:String in __props) {
@@ -483,7 +483,7 @@ package com.zehfernando.display.components.text {
 				redraw();
 			}
 		}
-		
+
 		override public function get height(): Number {
 			return _height * scaleY;
 		}
@@ -539,7 +539,7 @@ package com.zehfernando.display.components.text {
 				redraw();
 			}
 		}
-		
+
 		public function get ascent(): Number {
 			return _ascent;
 		}
@@ -567,7 +567,7 @@ package com.zehfernando.display.components.text {
 //			textField.embedFonts = __value;
 //			resetTextPosition();
 //		}
-//		
+//
 //		public function get styleSheet(): StyleSheet {
 //			return textField.styleSheet;
 //		}
@@ -575,7 +575,7 @@ package com.zehfernando.display.components.text {
 //			textField.styleSheet = __value;
 //			resetTextPosition();
 //		}
-//		
+//
 //		public function get multiline(): Boolean {
 //			return textField.wordWrap;
 //		}
@@ -584,7 +584,7 @@ package com.zehfernando.display.components.text {
 //			resetTextPosition();
 //		}
 
-		
+
 		// Textfield format extensions
 //		public function get font(): String {
 //			return textField.getTextFormat().font;
@@ -640,7 +640,7 @@ package com.zehfernando.display.components.text {
 				redraw();
 			}
 		}
-		
+
 		public function get previousTextLine(): TextLine {
 			return _previousTextLine;
 		}
@@ -656,7 +656,7 @@ package com.zehfernando.display.components.text {
 		}
 
 		// FontDescription extensions
-		
+
 		public function get renderingMode(): String {
 			return fontDescription.renderingMode;
 		}
@@ -686,7 +686,7 @@ package com.zehfernando.display.components.text {
 				redraw();
 			}
 		}
-		
+
 		// ElementFormat extensions
 
 		// This doesn't work, or maybe depends on specific font features
@@ -699,7 +699,7 @@ package com.zehfernando.display.components.text {
 				redraw();
 			}
 		}
-		
+
 		public function get color(): uint {
 			return elementFormat.color;
 		}
@@ -752,12 +752,12 @@ package com.zehfernando.display.components.text {
 			// TODO: make it re-apply when font size is changed! otherwise the value is wrong
 			leading = __value - elementFormat.fontSize;
 		}
-		
-		
+
+
 		public function get textLineCreationResult(): String {
 			return (Boolean(_previousTextLine) ? _previousTextLine.textBlock : textBlock).textLineCreationResult;
 		}
-		
+
 		public function get trimFirstLineIfBlank(): Boolean {
 			return _trimFirstLineIfBlank;
 		}

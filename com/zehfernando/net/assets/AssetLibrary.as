@@ -19,11 +19,11 @@ package com.zehfernando.net.assets {
 
 		// Static properties
 		protected static var libraries:Vector.<AssetLibrary>;
-		
+
 		// Properties
 		protected var _name:String;
 		protected var _maxRetries:Number;
-		
+
 		protected var assets:Vector.<AssetItemInfo>;
 		protected var queue:LoadingQueue;
 
@@ -32,10 +32,10 @@ package com.zehfernando.net.assets {
 
 		public function AssetLibrary(__name:String = "", __dynamicLoadingSpots:Number = 2) {
 			super(null);
-			
+
 			_name = __name;
 			_maxRetries = 2;
-			
+
 			queue = new LoadingQueue();
 			queue.addEventListener(ProgressEvent.PROGRESS, onQueueProgress, false, 0, true);
 			queue.addEventListener(Event.COMPLETE, onQueueComplete, false, 0, true);
@@ -49,10 +49,10 @@ package com.zehfernando.net.assets {
 
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
-		
+
 		protected static function addLibrary(__library:AssetLibrary): void {
 			if (!Boolean(libraries)) libraries = new Vector.<AssetLibrary>();
-			
+
 			if (libraries.indexOf(__library) == -1) {
 				libraries.push(__library);
 			}
@@ -60,12 +60,12 @@ package com.zehfernando.net.assets {
 
 		protected static function removeLibrary(__library:AssetLibrary): void {
 			if (!Boolean(libraries)) libraries = new Vector.<AssetLibrary>();
-			
+
 			if (libraries.indexOf(__library) != -1) {
 				libraries.splice(libraries.indexOf(__library), 1);
 			}
 		}
-		
+
 		public static function getLibrary(__name:String = ""): AssetLibrary {
 			var i:int;
 			for (i = 0; i < libraries.length; i++) {
@@ -113,7 +113,7 @@ package com.zehfernando.net.assets {
 				ai.loadingPhase = e.bytesLoaded / e.bytesTotal;
 			}
 		}
-		
+
 		protected function onURLLoaderComplete(e:Event): void {
 			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
 			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
@@ -165,7 +165,7 @@ package com.zehfernando.net.assets {
 			}
 		}
 
-		
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -177,12 +177,12 @@ package com.zehfernando.net.assets {
 			if (!Boolean(__type)) __type = AssetType.getFromURL(__url);
 			var ai:AssetItemInfo = new AssetItemInfo(__name, __type, __avoidCache);
 			ai.url = __url;
-			
+
 			// TODO: add option to allow an asset to be loaded/monitored without being fully loaded? VideoLoaders can be used even if not available yet...
 
 			assets.push(ai);
 		}
-		
+
 		public function getAssetItemInfoByName(__name:String): AssetItemInfo {
 			// Use object list instead?
 			if (!Boolean(assets)) return null;
@@ -192,7 +192,7 @@ package com.zehfernando.net.assets {
 			}
 			return null;
 		}
-		
+
 		public function getAssetItemInfoByIndex(__index:int): AssetItemInfo {
 			// Use object list instead?
 			if (!Boolean(assets) || __index > assets.length) return null;
@@ -230,18 +230,18 @@ package com.zehfernando.net.assets {
 			}
 			return null;
 		}
-		
+
 		public function startLoadings(): void {
 			// Start all loads that didn't start yet
-			
+
 			//trace("AssetLibrary.startLoadings()");
-			
+
 			var i:int;
 			var url:String;
 			var urlSuffix:String;
 			for (i = 0; i < assets.length; i++) {
 				if (!assets[i].isLoading && !assets[i].isLoaded) {
-					
+
 					switch (assets[i].type) {
 						case AssetType.XML:
 						case AssetType.CSS:
@@ -276,7 +276,7 @@ package com.zehfernando.net.assets {
 					assets[i].isLoading = true;
 				}
 			}
-			
+
 			if (queue.paused) queue.resume();
 		}
 
@@ -328,7 +328,7 @@ package com.zehfernando.net.assets {
 		public function getStyleSheet(__name:String): StyleSheet {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (Boolean(ai)) return ai.getAsStyleSheet();
-			return null; 
+			return null;
 		}
 
 		public function dispose(): void {
@@ -348,7 +348,7 @@ package com.zehfernando.net.assets {
 		public function get name(): String {
 			return _name;
 		}
-		
+
 		public function get numAssets(): int {
 			return Boolean(assets) ? assets.length : 0;
 		}
@@ -370,9 +370,9 @@ class AssetItemInfo {
 	// Properties
 	public var name:String;
 	public var type:String;							// Type, from AssetType
-	
+
 	public var loadingObject:*;						// Object that gets the data when loaded
-	
+
 	public var isLoading:Boolean;						// Whether it's already loading or not
 	public var isLoaded:Boolean;						// Whether it's already loaded or not
 	public var url:String;
@@ -396,7 +396,7 @@ class AssetItemInfo {
 		bytesTotal = 0;
 		loadingPhase = 0;
 	}
-	
+
 	// ================================================================================================================
 	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -428,19 +428,19 @@ class AssetItemInfo {
 		}
 		return null;
 	}
-	
+
 	public function getAsDisplayObject(): DisplayObject {
 		if (isLoaded) return (loadingObject as Loader).content;
 		return null;
 	}
-	
+
 	public function getAsVideoLoader(): VideoLoader {
 		return loadingObject as VideoLoader;
 		// TODO: allow download to check whether the request needs a fully loaded file or not?
 		//if (isLoaded) return loadingObject as VideoLoader;
 		//return null;
 	}
-	
+
 	public function dispose(): void {
 		switch (type) {
 			case AssetType.XML:
@@ -457,13 +457,13 @@ class AssetItemInfo {
 		}
 		loadingObject = null;
 	}
-	
+
 	/*
 	public function get data(): * {
 		if (loadingObject is URLLoader) {
 			return (loadingObject as URLLoader).data;
 		}
-		
+
 		trace ("AssetLibrary :: get data() :: Attempt to read data of unknown type!");
 		return null;
 	}

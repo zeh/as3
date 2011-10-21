@@ -8,22 +8,22 @@ package com.zehfernando.localization {
 	 * @author zeh at zehfernando.com
 	 */
 	public class StringList extends EventDispatcher {
-		
+
 /*
 		<string name="myString" language="en,en-us">aaaa</string>
 		<color>#ffffff</color> <!-- Or any CSS-like value -->
 		<number>110.2</number>
 		<boolean>true</boolean>
 		<datetime>1980-01-01T00:00:00-06:00</datetime>
-		
+
 		<string-array><item>...</item></string-array>
 		<color-array>
 		<number-array>
 		<boolean-array>
 		<datetime-array>
-		
+
 		<group>...</group>
-		
+
 		<data><someXML/></data>
 */
 
@@ -33,11 +33,11 @@ package com.zehfernando.localization {
 
 		// Static properties
 		protected static var lists:Vector.<StringList>;
-		
+
 		// Value enums
 		protected static const VALUE_BOOLEAN_TRUE:String = "true";
 		protected static const VALUE_BOOLEAN_FALSE:String = "false";
-		
+
 		// Default values - in string, to be interpreted by using the same parser
 		protected static const VALUE_STRING_DEFAULT:String = "";
 		protected static const VALUE_NUMBER_DEFAULT:String = "0";
@@ -72,17 +72,17 @@ package com.zehfernando.localization {
 			_name = __name;
 
 			values = new ValueGroup();
-			
+
 			StringList.addList(this);
 		}
 
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
-		
+
 		{
 			lists = new Vector.<StringList>();
 		}
-		
+
 		protected static function addList(__list:StringList): void {
 			if (lists.indexOf(__list) == -1) {
 				lists.push(__list);
@@ -94,7 +94,7 @@ package com.zehfernando.localization {
 				lists.splice(lists.indexOf(__list), 1);
 			}
 		}
-		
+
 		public static function getList(__name:String = "", __canCreate:Boolean = true): StringList {
 			var i:int;
 			for (i = 0; i < lists.length; i++) {
@@ -106,7 +106,7 @@ package com.zehfernando.localization {
 				// Create a new, empty list
 				return new StringList();
 			}
-			
+
 			// Error
 			return null;
 		}
@@ -116,7 +116,7 @@ package com.zehfernando.localization {
 			var newItem:ValueNode;
 			var i:int;
 			var nodeName:String = __item.name();
-			
+
 			// Set the value's content
 			switch (nodeName) {
 				case TYPE_STRING:
@@ -155,10 +155,10 @@ package com.zehfernando.localization {
 					trace ("StringList :: Error parsing string node of type ["+String(__item.name())+"]");
 					return null;
 			}
-			
+
 			// Sets the value's name
 			newItem.name = __item.attribute("name");
-			
+
 			// Sets the value's languages
 			var itemLang:String = __item.attribute("language");
 			if (Boolean(itemLang)> 0) {
@@ -167,10 +167,10 @@ package com.zehfernando.localization {
 					newItem.languages.push(langs[i]);
 				}
 			}
-			
+
 			return newItem;
 		}
-		
+
 		protected static function getXMLListAsGroup(__items:XMLList): ValueGroup {
 			// Converts XML data to a value group
 			var newGroup:ValueGroup = new ValueGroup();
@@ -243,7 +243,7 @@ package com.zehfernando.localization {
 			for (i = 0; i < __strings.length; i++) {
 				lst["push"](convertStringToType(__strings[i], itemType));
 			}
-			
+
 			return lst;
 		}
 
@@ -253,20 +253,20 @@ package com.zehfernando.localization {
 		protected function getProcessedStringInternal(__string:String, __languages:Vector.<String>): String {
 			// Returns a string with processed codes
 			// For example "this is an ${examples/example}!" returns "this is an EXAMPLE!" (where the value of examples/example in strings.xml is "EXAMPLE")
-			
+
 			// Should be recursive
 
 			var newString:String = "";
 
 			var codes:RegExp = /\$\{(.+?)\}/ig;
 			var result:Object = codes.exec(__string);
-			
+
 			var lastIndex:Number = 0;
 			var newIndex:Number;
 
 			while (Boolean(result)) {
 				newIndex = result["index"];
-				
+
 				// What came before the tag
 				newString += __string.substring(lastIndex, newIndex);
 
@@ -277,7 +277,7 @@ package com.zehfernando.localization {
 
 				result = codes.exec(__string);
 			}
-			
+
 			// End text after last tag
 			newString += __string.substring(lastIndex, __string.length);
 
@@ -287,17 +287,17 @@ package com.zehfernando.localization {
 		protected function getProcessedStringArrayInternal(__strings:Vector.<String>, __languages:Vector.<String>): Vector.<String> {
 			var i:int;
 			var newStrings:Vector.<String> = new Vector.<String>();
-			
+
 			for (i = 0; i < __strings.length; i++) {
 				newStrings.push(getProcessedStringInternal(__strings[i], __languages));
 			}
-			
+
 			return newStrings;
 		}
 
 		protected function getValue(__id:String, __languages:Array): * {
 			var i:int;
-			
+
 			// Get the full path to the value name
 			var ids:Array = __id.split(ID_HYERARCHY_SEPARATOR);
 			var names:Vector.<String> = new Vector.<String>();
@@ -306,15 +306,15 @@ package com.zehfernando.localization {
 			var langsToUse:Vector.<String>;
 			if (Boolean(__languages) && __languages.length > 0) {
 				langsToUse = new Vector.<String>();
-				for (i = 0; i < __languages.length; i++) langsToUse.push(__languages[i]); 
+				for (i = 0; i < __languages.length; i++) langsToUse.push(__languages[i]);
 			} else {
 				langsToUse = getCurrentLanguages();
 			}
 
 			var node:ValueNode = values.getValueNodeByNames(names, langsToUse);
-			
+
 			// Sets data depending on type
-			
+
 			if (node is ValueString) {
 				// Any standard string node
 				return convertStringToType(getProcessedStringInternal((node as ValueString).value, langsToUse), node.type);
@@ -329,7 +329,7 @@ package com.zehfernando.localization {
 				return null;
 			}
 
-			trace ("StringList :: Error trying to read node [" + node + "] of type ["+node.type+"]");			
+			trace ("StringList :: Error trying to read node [" + node + "] of type ["+node.type+"]");
 			return null;
 		}
 
@@ -346,14 +346,14 @@ package com.zehfernando.localization {
 			for (var i:int = 0; i < __languages.length; i++) {
 				currentLanguages.push(__languages[i]);
 			}
-			
+
 			dispatchEvent(new StringListEvent(StringListEvent.CHANGED_LANGUAGE));
 		}
 
 		public function getCurrentLanguages(): Vector.<String> {
 			return currentLanguages.concat();
 		}
-		
+
 //		public function setString(__id:String, __value:String): void {
 //			var vs:ValueString = new ValueString();
 //			vs.name = __id;
@@ -365,7 +365,7 @@ package com.zehfernando.localization {
 //
 //			values.add(vg);
 //		}
-		
+
 		public function getString(__id:String, ... __languages): String {
 			return getValue(__id, __languages);
 		}
@@ -391,7 +391,7 @@ package com.zehfernando.localization {
 			var i:int;
 			if (Boolean(__languages) && __languages.length > 0) {
 				langsToUse = new Vector.<String>();
-				for (i = 0; i < __languages.length; i++) langsToUse.push(__languages[i]); 
+				for (i = 0; i < __languages.length; i++) langsToUse.push(__languages[i]);
 			} else {
 				langsToUse = getCurrentLanguages();
 			}
@@ -451,7 +451,7 @@ class ValueString extends ValueNode {
 	// Constructor
 	public function ValueString() {
 		super();
-		
+
 		value = "";
 	}
 }
@@ -464,7 +464,7 @@ class ValueXML extends ValueNode {
 	// Constructor
 	public function ValueXML() {
 		super();
-		
+
 		value = null;
 	}
 }
@@ -477,16 +477,16 @@ class ValueArray extends ValueNode {
 	// Constructor
 	public function ValueArray() {
 		super();
-		
+
 		items = new Vector.<String>();
 	}
 }
 
 class ValueGroup extends ValueNode {
-	
+
 	// Properties
 	public var items:Vector.<ValueNode>;
-	
+
 	// Constructor
 	public function ValueGroup() {
 		super();
@@ -510,7 +510,7 @@ class ValueGroup extends ValueNode {
 			items.push(__strings.items[i]);
 			//if (__strings.items[i] is ValueString) trace(">>>>>>>>>>>>> " + items.length);
 		}
-		
+
 		//Log.echo("Strings has " + items.length + "items!");
 	}
 
@@ -520,7 +520,7 @@ class ValueGroup extends ValueNode {
 		// Same as StringList.getValue(), but with pre-processed parameters (split)
 
 		var i:int, j:int;
-		
+
 		// Looks for the string in all languages, one at a time
 		for (i = 0; i < __languages.length; i++) {
 			// Looks for all items

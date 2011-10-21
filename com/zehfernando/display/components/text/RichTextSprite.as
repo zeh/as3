@@ -11,13 +11,13 @@ package com.zehfernando.display.components.text {
 	 * @author zeh
 	 */
 	public class RichTextSprite extends TextSprite {
-		
+
 		// Styles
 		protected var styles:Vector.<TextStyle>;
 		protected var _currentLinkHref:String;
 		protected var _currentLinkTarget:String;
 
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -25,7 +25,7 @@ package com.zehfernando.display.components.text {
 			styles = new Vector.<TextStyle>();
 
 			super(__font, __size, __color, __alpha);
-			
+
 			addEventListener(MouseEvent.ROLL_OVER, onMouseOver, false, 0, true);
 			addEventListener(MouseEvent.ROLL_OUT, onMouseOut, false, 0, true);
 		}
@@ -44,10 +44,10 @@ package com.zehfernando.display.components.text {
 		protected function getTextElementOld(__text:String): ContentElement {
 			var texts:Vector.<String> = new Vector.<String>();
 			var tStyles:Vector.<String> = new Vector.<String>();
-			
+
 			texts.push(__text);
 			tStyles.push("");
-			
+
 			// Looks for all style tags inside __text
 			// TODO: Very manual for proper nesting = use regexp instead?
 			// NESTING DOESN'T WORK!
@@ -57,7 +57,7 @@ package com.zehfernando.display.components.text {
 			var tagOpenPos:Number, tagClosePos:Number;
 			var tempText:String;
 			var tempStyle:String;
-						
+
 			for (i = 0; i < styles.length; i++) {
 				tagOpen = "<"+styles[i].name+">";
 				tagClose = "</"+styles[i].name+">";
@@ -68,12 +68,12 @@ package com.zehfernando.display.components.text {
 						// Found; breaks down
 						tempText = texts[j];
 						tempStyle = tStyles[j];
-						
+
 						texts.splice(j, 1);
 						tStyles.splice(j, 1);
-						
+
 						texts.splice(j, 0, tempText.substr(0, tagOpenPos), tempText.substr(tagOpenPos + tagOpen.length, tagClosePos - tagOpenPos - tagOpen.length), tempText.substr(tagClosePos + tagClose.length));
-						tStyles.splice(j, 0, tempStyle, styles[i].name, tempStyle); 
+						tStyles.splice(j, 0, tempStyle, styles[i].name, tempStyle);
 					}
 				}
 			}
@@ -106,17 +106,17 @@ package com.zehfernando.display.components.text {
 			var fd:FontDescription = fontDescription.clone();
 			var ef:ElementFormat = elementFormat.clone();
 			ef.fontDescription = fd;
-			
+
 			return getSubTextElement(__text, fd, ef);
 		}
-		
+
 		protected function getSubTextElement(__text:String, __fd:FontDescription, __ef:ElementFormat): ContentElement {
 			//var texts:Vector.<String> = new Vector.<String>();
 			//var tStyles:Vector.<String> = new Vector.<String>();
-			
+
 			//texts.push(__text);
 			//tStyles.push("");
-			
+
 			// Looks for all style tags inside __text
 			// TODO: Very manual for proper nesting = use regexp instead?
 			// NESTING DOESN'T WORK!
@@ -126,7 +126,7 @@ package com.zehfernando.display.components.text {
 //			var tagOpenPos:Number, tagClosePos:Number;
 //			var tempText:String;
 //			var tempStyle:String;
-			
+
 			//StringUtils.getQuerystringParameterValue(__url, __parameterName)
 			//var qsRegex:RegExp = new RegExp("[?&]" + __parameterName + "(?:=([^&]*))?","i");
 			//var match:Object = qsRegex.exec(__url);
@@ -134,7 +134,7 @@ package com.zehfernando.display.components.text {
 			var elements:Vector.<ContentElement> = new Vector.<ContentElement>();
 
 			XML.ignoreWhitespace = false;
-			
+
 			var contentAsXML:XML = new XML("<root>" + __text + "</root>");
 			var contentChildren:XMLList = contentAsXML.children();
 			var te:TextElement;
@@ -167,9 +167,9 @@ package com.zehfernando.display.components.text {
 //					elements.push(new TextElement(texts[i], __ef));
 //				}
 			}
-			
+
 			XML.ignoreWhitespace = true;
-			
+
 			/*
 			var __text:String = "this is a <i link='x'>test</i>...";
 			var contentAsXML:XML = new XML("<root link='y'>" + __text + "</root>");
@@ -179,8 +179,8 @@ package com.zehfernando.display.components.text {
 				trace (i, contentAsXML.children()[i].toString(), ".......", contentAsXML.children()[i].name());
 			}
 			*/
-			
-						
+
+
 //			for (i = 0; i < styles.length; i++) {
 //				tagOpen = "<"+styles[i].name+">";
 //				tagClose = "</"+styles[i].name+">";
@@ -191,12 +191,12 @@ package com.zehfernando.display.components.text {
 //						// Found; breaks down
 //						tempText = texts[j];
 //						tempStyle = tStyles[j];
-//						
+//
 //						texts.splice(j, 1);
 //						tStyles.splice(j, 1);
-//						
+//
 //						texts.splice(j, 0, tempText.substr(0, tagOpenPos), tempText.substr(tagOpenPos + tagOpen.length, tagClosePos - tagOpenPos - tagOpen.length), tempText.substr(tagClosePos + tagClose.length));
-//						tStyles.splice(j, 0, tempStyle, styles[i].name, tempStyle); 
+//						tStyles.splice(j, 0, tempStyle, styles[i].name, tempStyle);
 //					}
 //				}
 //			}
@@ -230,7 +230,7 @@ package com.zehfernando.display.components.text {
 				onMouseMove(null);
 			}
 		}
-		
+
 		protected function onMouseClick(e:MouseEvent): void {
 			if (Boolean(_currentLinkHref)) {
 				dispatchEvent(new RichTextSpriteEvent(RichTextSpriteEvent.LINK, _currentLinkHref, _currentLinkTarget));
@@ -252,7 +252,7 @@ package com.zehfernando.display.components.text {
 //			}
 
 			var pos:int = getCharAtMousePosition();
-			
+
 			if (pos > -1) {
 				var elementUnderMouse:ContentElement = getElementAtPos(textBlock.content, pos);
 				//trace ("el under mouse ["+pos+"] = " + elementUnderMouse, " / " + elementUnderMouse.rawText + " / ");
@@ -278,14 +278,14 @@ package com.zehfernando.display.components.text {
 				}
 //				var groupElement:GroupElement = textBlock.content as GroupElement;
 //				if (Boolean(groupElement)) {
-//					
+//
 //					groupElement.elementCount
 //					trace (pos + ", el = " + groupElement.getElementAtCharIndex(pos) + " -- " + groupElement.rawText);
 //				}
 			}
 
 		}
-		
+
 		protected function onMouseOut(e:MouseEvent): void {
 			removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			removeEventListener(MouseEvent.CLICK, onMouseClick);
@@ -299,17 +299,17 @@ package com.zehfernando.display.components.text {
 
 			var style:TextStyle = new TextStyle();
 			style.name = __name;
-			
+
 			style.fontName = __fontName;
 			style.fontSize = __fontSize;
 			style.color = __color;
 			style.alpha = __alpha;
-			
+
 			styles.push(style);
-			
+
 			redraw();
 		}
-		
+
 		public function removeStyle(__name:String): void {
 			for (var i:int = 0; i < styles.length; i++) {
 				if (styles[i].name == __name) {
@@ -317,7 +317,7 @@ package com.zehfernando.display.components.text {
 					i--;
 				}
 			}
-			
+
 			redraw();
 		}
 
@@ -335,7 +335,7 @@ package com.zehfernando.display.components.text {
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 class TextStyle {
-	
+
 	// Properties
 	public var name:String;
 
@@ -343,7 +343,7 @@ class TextStyle {
 	public var color:Number;
 	public var fontSize:Number;
 	public var alpha:Number;
-	
+
 	// Element format
 	//public var tracking:Number;
 
@@ -351,7 +351,7 @@ class TextStyle {
 
 	public function TextStyle() {
 	}
-	
+
 	public function getAsElementFormat(__baseElementFormat:ElementFormat, __baseFontDescription:FontDescription): ElementFormat {
 		var fd:FontDescription = __baseFontDescription.clone();
 		if (Boolean(fontName)) fd.fontName = fontName;

@@ -10,7 +10,7 @@ package com.zehfernando.display.templates.application.events {
 		// Constants
 		public static const INIT_PROGRESS:String = "onInitProgress";
 		public static const INIT_COMPLETE:String = "onInitComplete";
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 

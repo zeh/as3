@@ -18,7 +18,7 @@ package com.zehfernando.display.containers {
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class VideoContainer extends DynamicDisplayAssetContainer implements IVideoContainer {
-		
+
 		// Events
 		// Common
 		public static const EVENT_PLAY_START:String = "onVideoPlayStart";						// Test! Only at the first play?
@@ -50,7 +50,7 @@ package com.zehfernando.display.containers {
 		protected var _bufferTime:Number;					// In seconds
 		protected var _volume:Number;						// Volume for this video
 		protected var _maximumTime:Number;
-		
+
 		protected var videoLoader:VideoLoader;
 		protected var isMonitoringLoading:Boolean;
 
@@ -79,11 +79,11 @@ package com.zehfernando.display.containers {
 		override protected function applySmoothing(): void {
 			if (_hasVideo) videoLoader.smoothing = _smoothing;
 		}
-		
+
 		protected function applyBufferTime(): void {
 			if (_hasVideo) videoLoader.bufferTime = _bufferTime;
 		}
-		
+
 		protected function applyVolume(): void {
 			if (_hasVideo) {
 				var st:SoundTransform = videoLoader.soundTransform;
@@ -109,10 +109,10 @@ package com.zehfernando.display.containers {
 				videoLoader.height = _contentHeight;
 			}
 		}
-		
+
 		protected function updateMaximumTime(): void {
 			_maximumTime = Math.max(time, _maximumTime);
-		}		
+		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
@@ -120,34 +120,34 @@ package com.zehfernando.display.containers {
 		protected function onXMPData(e:Event):void {
 			//trace ("VideoContainer :: onXMPData :: " + info);
 			// TODO: do something with this data
-		} 
-	
-	    protected function onMetaData(e:VideoLoaderEvent):void {
+		}
+
+		protected function onMetaData(e:VideoLoaderEvent):void {
 			//trace("metadata: duration=" + info.duration + " width=" + info.width + " height=" + info.height + " framerate=" + info.framerate);
 			_contentWidth = videoLoader.metaData["width"];
 			_contentHeight = videoLoader.metaData["height"];
-			
+
 			redraw();
 
 			dispatchEvent(new Event(EVENT_RECEIVED_METADATA));
-	    }
-	
-	    protected function onCuePoint(e:VideoLoaderCuePointEvent):void {
+		}
+
+		protected function onCuePoint(e:VideoLoaderCuePointEvent):void {
 			//log("CUE POINT -- time=" + e.cuePointTime + " name=" + e.cuePointName + " type=" + e.cuePointType);
 			//log("===" + time);
-	    	lastCuePoint = {time:e.cuePointTime, name:e.cuePointName, type:e.cuePointType, parameters:e.cuePointParameters};
-	    	dispatchEvent(new Event(EVENT_CUE_POINT));
+			lastCuePoint = {time:e.cuePointTime, name:e.cuePointName, type:e.cuePointType, parameters:e.cuePointParameters};
+			dispatchEvent(new Event(EVENT_CUE_POINT));
 		}
 
 		protected function onSecurityError(e:SecurityError): void {
 			log("securityErrorHandler: " + e);
 			dispatchEvent(new Event(EVENT_LOADING_ERROR));
 		}
-		
+
 		protected function onStreamNotFound(e:VideoLoaderEvent): void {
 			dispatchEvent(new Event(EVENT_LOADING_ERROR));
 		}
-		
+
 		protected function onLoadingStart(e:Event): void {
 			updateStartedLoadingStats();
 			dispatchEvent(new Event(EVENT_LOADING_START));
@@ -164,7 +164,7 @@ package com.zehfernando.display.containers {
 			updateCompletedLoadingStats();
 			dispatchEvent(new Event(EVENT_LOADING_COMPLETE));
 		}
-		
+
 		protected function onSeekNotify(e:VideoLoaderEvent): void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_SEEK_NOTIFY));
@@ -211,25 +211,25 @@ package com.zehfernando.display.containers {
 
 		protected function onPlayFinish(e:VideoLoaderEvent): void {
 
-       		if (_loop) {
-        		// Finished; loop
-        		if (_isPlaying) {
-        			time = 0;
-        			//playVideo();
-        			//Console.log("loop");
-        			dispatchEvent(new Event(EVENT_LOOP));
-        		}
-        	} else {
-        		// Finished; dispatch event
-        		_isPlaying = false;
+	   		if (_loop) {
+				// Finished; loop
+				if (_isPlaying) {
+					time = 0;
+					//playVideo();
+					//Console.log("loop");
+					dispatchEvent(new Event(EVENT_LOOP));
+				}
+			} else {
+				// Finished; dispatch event
+				_isPlaying = false;
 				updateMaximumTime();
 				dispatchEvent(new Event(EVENT_PLAY_FINISH));
 			}
 		}
-        
-        protected function setVideoLoaderInternal(__videoLoader:VideoLoader): void {
-        	videoLoader = __videoLoader;
-        	
+		
+		protected function setVideoLoaderInternal(__videoLoader:VideoLoader): void {
+			videoLoader = __videoLoader;
+		
 			videoLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 
 			videoLoader.addEventListener(Event.OPEN, onLoadingStart);
@@ -250,11 +250,11 @@ package com.zehfernando.display.containers {
 			videoLoader.addEventListener(VideoLoaderEvent.RECEIVED_XMP_DATA, onXMPData);
 			videoLoader.addEventListener(VideoLoaderEvent.TIME_CHANGE, onTimeChange);
 			videoLoader.addEventListener(VideoLoaderCuePointEvent.CUE_POINT, onCuePoint);
-			
+
 			setAsset(videoLoader);
-        }
-        
-        protected function removeVideoLoaderInternal(__disposeVideoLoader:Boolean = true): void {
+		}
+		
+		protected function removeVideoLoaderInternal(__disposeVideoLoader:Boolean = true): void {
 			if (Boolean(videoLoader)) {
 				videoLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 
@@ -282,16 +282,16 @@ package com.zehfernando.display.containers {
 				if (__disposeVideoLoader) videoLoader.dispose();
 				videoLoader = null;
 			}
-        }
-        
-        protected function loadVideoLoader(__videoLoader:VideoLoader): void {
-        	// Dangerously duplicated from load()!!!
-        	// TODO: get rid of load() altogether and only use this one?
-        	super.load(__videoLoader.url);
-			
+		}
+		
+		protected function loadVideoLoader(__videoLoader:VideoLoader): void {
+			// Dangerously duplicated from load()!!!
+			// TODO: get rid of load() altogether and only use this one?
+			super.load(__videoLoader.url);
+
 			_isLoaded = false;
 			_hasVideo = true;
-			
+
 			setVideoLoaderInternal(__videoLoader);
 
 			applyBufferTime();
@@ -305,28 +305,28 @@ package com.zehfernando.display.containers {
 				_contentWidth = _width;
 				_contentHeight = _height;
 			}
-			
+
 			_isLoading = true;
 
 			redraw();
-			
+
 			if (_autoPlay) {
 				playVideo();
 			} else {
 				pauseVideo();
 			}
-        }
+		}
 
 
 		// ================================================================================================================
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
 
 		// Instance
-		
+
 		public function getFrame(): BitmapData {
 			// Captures the current frame as a BitmapData
 			var bmp:BitmapData = new BitmapData(_contentWidth, _contentHeight, false, 0x000000);
-			
+
 			var mtx:Matrix = new Matrix();
 			mtx.scale(_contentWidth/100, _contentHeight/100);
 			//mtx.scale(video.width/_contentWidth, video.height/_contentHeight);
@@ -336,10 +336,10 @@ package com.zehfernando.display.containers {
 
 		override public function load(__url:String): void {
 			super.load(__url);
-			
+
 			_isLoaded = false;
 			_hasVideo = true;
-			
+
 			setVideoLoaderInternal(new VideoLoader());
 
 			videoLoader.load(new URLRequest(_contentURL));
@@ -349,14 +349,14 @@ package com.zehfernando.display.containers {
 			applyVolume();
 
 			setAsset(videoLoader);
-			
+
 			_contentWidth = _width;
 			_contentHeight = _height;
 
 			_isLoading = true;
 
 			redraw();
-			
+
 			if (_autoPlay) {
 				playVideo();
 			} else {
@@ -375,13 +375,13 @@ package com.zehfernando.display.containers {
 		public function detachVideoLoader():void {
 			// Removes the video loader without disposing -- temp!
 			// TODO: make this better
-			
+
 			pauseVideo();
 
 			_hasVideo = false;
 			_isLoaded = false;
 			_isLoading = false;
-			
+
 			removeVideoLoaderInternal(false);
 
 			super.unload();
@@ -416,7 +416,7 @@ package com.zehfernando.display.containers {
 			pauseVideo();
 			time = 0;
 		}
-		
+
 		public function playPauseVideo():void {
 			if (_isPlaying) {
 				pauseVideo();
@@ -430,17 +430,17 @@ package com.zehfernando.display.containers {
 			//return super.getLoadingSpeed();
 			return videoLoader.getLoadingSpeed();
 		}
-		
+
 		public function getFullBufferingLevel(): Number {
 			updateByteCount();
 			return videoLoader.getFullBufferingLevel();
 		}
-		
+
 		public function getMaximumPositionPlayed(): Number {
 			updateMaximumTime();
 			return _maximumTime / duration;
 		}
-		
+
 
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
@@ -489,7 +489,7 @@ package com.zehfernando.display.containers {
 			if (!_hasVideo) return 0;
 			return videoLoader.bufferLength;
 		}
-		
+
 		public function get autoPlay(): Boolean {
 			return _autoPlay;
 		}
@@ -504,7 +504,7 @@ package com.zehfernando.display.containers {
 			_bufferTime = __value;
 			applyBufferTime();
 		}
-		
+
 		public function get volume():Number {
 			return _volume;
 		}
@@ -521,16 +521,16 @@ package com.zehfernando.display.containers {
 		public function set loop(__value:Boolean): void {
 			_loop = __value;
 		}
-		
+
 		override public function get loadedPercent(): Number {
 			if (!_isLoaded) updateByteCount();
 			return super.loadedPercent;
 		}
-		
+
 		public function get hasVideo():Boolean {
 			return _hasVideo;
 		}
-		
+
 		public function get hasMetaData():Boolean {
 			return videoLoader.hasMetaData;
 		}
@@ -545,7 +545,7 @@ package com.zehfernando.display.containers {
 		public function get decodedFrames(): int {
 			return _hasVideo ? videoLoader.decodedFrames : 0;
 		}
-		
+
 		public function get currentFPS(): int {
 			return _hasVideo ? videoLoader.currentFPS : 0;
 		}
@@ -554,13 +554,13 @@ package com.zehfernando.display.containers {
 
 /*
 class VideoData {
-	
+
 	public var duration:Number;
 	public var width:Number;
 	public var height:Number;
 	public var framerate:Number;
 	public var videoContainer:Object;
-	
+
 	public function VideoData(__videoContainer:Object) {
 		duration = NaN;
 		width = NaN;
@@ -568,23 +568,23 @@ class VideoData {
 		framerate = NaN;
 		videoContainer = __videoContainer;
 	}
-	
+
 	public function onXMPData(info:Object): void {
 		//trace ("VideoContainer :: VideoData :: onXMPData :: " + info);
 		// TODO: do something with this data
-	} 
+	}
 
-    public function onMetaData(info:Object):void {
-        //trace("metadata: duration=" + info.duration + " width=" + info.width + " height=" + info.height + " framerate=" + info.framerate);
-        duration = info["duration"];
-        width = info["width"];
-        height = info["height"];
-        framerate = info["framerate"];
-        videoContainer["postMetaData"]();
-    }
+	public function onMetaData(info:Object):void {
+		//trace("metadata: duration=" + info.duration + " width=" + info.width + " height=" + info.height + " framerate=" + info.framerate);
+		duration = info["duration"];
+		width = info["width"];
+		height = info["height"];
+		framerate = info["framerate"];
+		videoContainer["postMetaData"]();
+	}
 
-    public function onCuePoint(info:Object):void {
-        trace("VideoContainer :: VideoData :: cuepoint: time=" + info["time"] + " name=" + info["name"] + " type=" + info["type"]);
+	public function onCuePoint(info:Object):void {
+		trace("VideoContainer :: VideoData :: cuepoint: time=" + info["time"] + " name=" + info["name"] + " type=" + info["type"]);
 	}
 }
 */

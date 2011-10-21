@@ -19,25 +19,25 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh at zehfernando.com
 	 */
 	public class FacebookPhotoCreateRequest extends BasicFacebookRequest {
-		
+
 		// https://developers.facebook.com/docs/reference/api/album/
 		// Requires publish_stream
 		// Posts a photo to either an album or a user automatically
-		
+
 		// Properties
 		protected var _targetId:String;
 		protected var _source:ByteArray;				// multipart/form-data; Required
 		protected var _message:String;
-		
+
 		// Results
 		protected var _photoId:String;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function FacebookPhotoCreateRequest() {
 			super();
-			
+
 			// Basic service configuration
 			requestURL = FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_PHOTO_CREATE;
 			requestMethod = URLRequestMethod.POST;
@@ -69,26 +69,26 @@ package com.zehfernando.net.apis.facebook.services {
 			//headers.push(new URLRequestHeader("enctype", "multipart/form-data"));
 			return headers;
 		}
-		
+
 		protected function getPostData(): ByteArray {
 			var postData:ByteArray = new ByteArray();
 			postData.endian = Endian.BIG_ENDIAN;
-			
+
 			// Writes vars
 			var vars:URLVariables = getURLVariables();
 			for (var n:String in vars) {
 				writePostData(postData, n, vars[n]);
 			}
-			
+
 			// Writes file
 			writeBoundary(postData);
 			writeLineBreak(postData);
-			
+
 			var bytes:String;
 			var l:int;
 			var i:uint;
 			var filename:String = "photo.png";
-			
+
 			bytes = 'Content-Disposition: form-data; name="'+filename+'"; filename="'+filename+'";';
 			l = bytes.length;
 
@@ -100,7 +100,7 @@ package com.zehfernando.net.apis.facebook.services {
 			//writeLineBreak(postData);
 			//writeLineBreak(postData);
 			//postData.writeUTFBytes("Content-Type: image/png");
-			
+
 			postData.writeUTFBytes("\"");
 			//writeQuotationMark(postData);
 //			writeLineBreak(postData);
@@ -120,21 +120,21 @@ package com.zehfernando.net.apis.facebook.services {
 			postData.writeBytes(source, 0, source.length);
 
 			writeLineBreak(postData);
-			
+
 			writeBoundary(postData);
 			writeDoubleDash(postData);
 
 			postData.position = 0;
-			
+
 			//log("final data size is " + postData.length);
 			//log(postData);
-			
+
 			return postData;
 		}
-		
+
 		protected function writePostData(__data:ByteArray, name:String, value:String):void {
 			var bytes:String;
-			
+
 			//log("writing var: " + name + " as " + value);
 
 			writeBoundary(__data);
@@ -158,18 +158,18 @@ package com.zehfernando.net.apis.facebook.services {
 		protected function writeDoubleDash(__data:ByteArray):void {
 			__data.writeShort(0x2d2d);
 		}
-		
+
 		protected function writeQuotationMark(__data:ByteArray):void {
 			__data.writeShort(0x22);
 		}
-		
+
 		protected function writeLineBreak(__data:ByteArray):void {
 			__data.writeShort(0x0d0a);
 		}
 
 		protected function writeBoundary(__data:ByteArray):void  {
 			writeDoubleDash(__data);
-			
+
 			var boundary:String = "-----";
 
 			var l:uint = boundary.length;
@@ -177,10 +177,10 @@ package com.zehfernando.net.apis.facebook.services {
 				__data.writeByte(boundary.charCodeAt(i));
 			}
 		}
-		
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-		
+
 		override protected function onIOError(e:IOErrorEvent):void {
 			log("contentType ===> " + urlRequest.contentType);
 			super.onIOError(e);
@@ -188,36 +188,36 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_photoId = response["id"];
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_TARGET_ID, _targetId);
 			//super.execute();
-			
+
 			if (_isLoading) stopLoading();
 			if (_isLoaded) clearData();
-			
+
 			//var vars:URLVariables = getURLVariables();
-			
+
 			urlRequest = new URLRequest();
 
 			urlRequest.contentType = 'multipart/form-data; boundary=' + "-----";
-			
+
 			urlRequest.url = requestURL;
 			urlRequest.method = requestMethod;
 			//urlRequest.data = vars;
 			urlRequest.data = getPostData();
 			urlRequest.requestHeaders = getRequestHeaders();
 			//urlRequest.contentType = requestContentType;
-			
+
 			//log("data size is " + urlRequest.data["length"]);
-			
+
 			loader = new URLLoader();
 			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
@@ -226,7 +226,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// Event.OPEN, ProgressEvent.PROGRESS
 			loader.load(urlRequest);
 		}
-		
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
@@ -254,7 +254,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Results
-		
+
 		public function get photoId(): String {
 			return _photoId;
 		}

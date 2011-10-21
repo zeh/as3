@@ -16,7 +16,7 @@ package com.zehfernando.net.apis.facebook.data {
 		public var isCommunityPage:Boolean;
 		public var description:String;
 		public var fanCount:int;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ package com.zehfernando.net.apis.facebook.data {
 			if (!Boolean(o)) return null;
 
 			var location:FacebookLocation = new FacebookLocation();
-			
+
 			location.id =								o["id"];
 			location.name =								o["name"];
 			location.link =								o["link"];

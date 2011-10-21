@@ -23,38 +23,38 @@ package com.zehfernando.display.debug {
 		protected static const DEFAULT_TIME_INTERVAL:Number = 250;
 		protected static const DEFAULT_WIDTH:Number = 210;
 		protected static const DEFAULT_HEIGHT:Number = 60;
-		
+
 		protected static const COLOR_FPS:Number = 0xff2200;
 		protected static const COLOR_MS:Number = 0x44cc00;
 		protected static const COLOR_MEMORY:Number = 0x0066ff;
-		
+
 		protected static const NUM_INFO_STAGES:Number = 7;
-		
+
 		// Properties
 		protected var isRunning:Boolean;
-		
+
 		protected var _width:Number;
 		protected var _height:Number;
 		protected var _timeInterval:Number;
-		
+
 		protected var lastUpdateTime:Number;
-		
+
 		protected var framesExecuted:Number;
 		protected var memoryTotal:Number;
 		protected var memoryTotalEntries:Number;
 
 		protected var infoStage:int;
-		
+
 		// Instances
 		protected var graphBitmapData:BitmapData;
 		protected var graphBitmap:Bitmap;
-		
+
 		protected var fpsField:TextField;
 		protected var msField:TextField;
 		protected var memoryField:TextField;
-		
+
 		protected var infoField:TextField;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -65,29 +65,29 @@ package com.zehfernando.display.debug {
 			_timeInterval = DEFAULT_TIME_INTERVAL;
 
 			isRunning = false;
-			
+
 			mouseChildren = false;
-			
+
 			// Setup events
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
-			
+
 			alpha = 0.75;
 			infoStage = 0;
 		}
 
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
-		
+
 		protected function start(): void {
 			if (!isRunning) {
 				isRunning = true;
-				
+
 				graphBitmapData = new BitmapData(Math.round(_width), Math.round(_height), false, 0x000000);
-				
+
 				graphBitmap = new Bitmap(graphBitmapData);
 				addChild(graphBitmap);
-				
+
 				var fmt:TextFormat = new TextFormat("_sans", 10, 0xffffff);
 
 				fpsField = new TextField();
@@ -107,13 +107,13 @@ package com.zehfernando.display.debug {
 				memoryField.selectable = false;
 				memoryField.autoSize = TextFieldAutoSize.LEFT;
 				addChild(memoryField);
-				
+
 				infoField = new TextField();
 				infoField.defaultTextFormat = fmt;
 				infoField.selectable = false;
 				infoField.autoSize = TextFieldAutoSize.NONE;
 				addChild(infoField);
-				
+
 				//Capabilities.cpuArchitecture;
 				infoField.x = 50;
 				infoField.y = 1;
@@ -122,7 +122,7 @@ package com.zehfernando.display.debug {
 				infoField.alpha = 0.5;
 				infoField.visible = false;
 				setInfoFieldText();
-				
+
 				resetData();
 				update(true);
 
@@ -130,14 +130,14 @@ package com.zehfernando.display.debug {
 				addEventListener(MouseEvent.CLICK, onClick, false, 0, true);
 				addEventListener(MouseEvent.ROLL_OVER, onRollOver, false, 0, true);
 				addEventListener(MouseEvent.ROLL_OUT, onRollOut, false, 0, true);
-				
+
 			}
 		}
-		
+
 		protected function setInfoFieldText(): void {
 
 			var txt:String = "";
-			
+
 			switch (infoStage) {
 				case 0:
 					txt += "PLAYER INFO\n";
@@ -154,7 +154,7 @@ package com.zehfernando.display.debug {
 					txt += "Manufacturer:" + Capabilities.manufacturer + "\n";
 					txt += "32bits processes: " + Capabilities.supports32BitProcesses + ", 64bits: " + Capabilities.supports64BitProcesses + "\n";
 					break;
-					
+
 				case 3:
 					txt += "INTERFACES\n";
 					txt += "ExternalInterface.available: " + ExternalInterface.available +  "\n";
@@ -176,24 +176,24 @@ package com.zehfernando.display.debug {
 					txt += "hasStreamingVideo: " + Capabilities.hasStreamingVideo + "\n";
 					break;
 			}
-			
+
 			txt += "Click for more + GC [" + (infoStage+1) + "/"+NUM_INFO_STAGES+"] ";
 
 			infoField.text = txt;
 		}
-		
+
 		protected function update(__forceRender:Boolean = false): void {
 			var now:Number = getTimer();
-			
+
 			// Add values to totals
 			framesExecuted++;
-			
+
 			//msTotal += now - lastUpdateTime;
 			//msTotalEntries++;
-			
+
 			memoryTotal += System.totalMemory;
 			memoryTotalEntries++;
-			
+
 			var timeSpent:Number = now - lastUpdateTime;
 			if (timeSpent >= _timeInterval || __forceRender) {
 				// Final, can update
@@ -202,9 +202,9 @@ package com.zehfernando.display.debug {
 
 			// Reset if starting anew or if just updated
 			if (timeSpent >= _timeInterval) resetData();
-			
+
 		}
-		
+
 		protected function resetData(): void {
 			framesExecuted = 0;
 			memoryTotal = 0;
@@ -212,19 +212,19 @@ package com.zehfernando.display.debug {
 
 			lastUpdateTime = getTimer();
 		}
-		
+
 		protected function stop(): void {
 			if (isRunning) {
 				isRunning = false;
-				
+
 				removeChild(graphBitmap);
 				graphBitmap = null;
-				
+
 				graphBitmapData.dispose();
 				graphBitmapData = null;
-				
+
 				lastUpdateTime = NaN;
-				
+
 				removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 				removeEventListener(MouseEvent.CLICK, onClick);
 				removeEventListener(MouseEvent.ROLL_OVER, onRollOver);
@@ -243,11 +243,11 @@ package com.zehfernando.display.debug {
 
 		protected function updateGraphic(__timeSpent:Number): void {
 			graphBitmapData.lock();
-			
+
 			// Scroll bitmap to the side
 			graphBitmapData.copyPixels(graphBitmapData, new Rectangle(1, 0, graphBitmapData.width - 1, graphBitmapData.height), new Point(0, 0));
 			graphBitmapData.fillRect(new Rectangle(graphBitmapData.width-1, 0, 1, graphBitmapData.height), 0x000000); // TODO: set some background color?
-			
+
 			var numGraphs:int = 3;
 			var pyMax:Number;
 			var pyMin:Number;
@@ -257,11 +257,11 @@ package com.zehfernando.display.debug {
 			pyMax = 0;
 			pyMin = Math.round(1 * (_height / numGraphs)) - 1;
 			addGraphicLine(numFPS / stage.frameRate, pyMin, pyMax, COLOR_FPS);
-			
+
 			fpsField.text = Math.round(numFPS)+"FPS";
 			fpsField.x = 2;
 			fpsField.y = pyMin - fpsField.height;
-			
+
 			// Frame time line
 			var numMS:Number = __timeSpent/framesExecuted;
 			pyMax = Math.round(1 * (_height / numGraphs));
@@ -271,7 +271,7 @@ package com.zehfernando.display.debug {
 			msField.text = Math.round(numMS)+"MS/F";
 			msField.x = 2;
 			msField.y = pyMin - fpsField.height;
-			
+
 			// Memory use line
 			var numMemory:Number = (memoryTotal/memoryTotalEntries);
 			pyMax = Math.round(2 * (_height / numGraphs));
@@ -281,7 +281,7 @@ package com.zehfernando.display.debug {
 			memoryField.text = (Math.round((numMemory/1024/1024)*10)/10)+"MB";
 			memoryField.x = 2;
 			memoryField.y = pyMin - fpsField.height;
-			
+
 			graphBitmapData.unlock();
 		}
 
@@ -290,7 +290,7 @@ package com.zehfernando.display.debug {
 			graphBitmapData.fillRect(new Rectangle(_width-1, __maxY, 1, __minY-__maxY+1), colorAsBackground(__color));
 			graphBitmapData.fillRect(new Rectangle(_width-1, py, 1, 1), __color);
 		}
-		
+
 		protected function colorAsBackground(__color:Number): Number {
 			var a:Number = 0.1;
 			var r:Number = __color >> 16 & 0xff * a;
@@ -298,13 +298,13 @@ package com.zehfernando.display.debug {
 			var b:Number = __color & 0xff * a;
 			return r << 16 | g << 8 | b;
 		}
-		
+
 		protected function nextInfoStage(): void {
 			infoStage = (infoStage + 1) % NUM_INFO_STAGES;
 			setInfoFieldText();
 		}
 
-		
+
 		// ================================================================================================================
 		// EVENT functions ------------------------------------------------------------------------------------------------
 
@@ -315,11 +315,11 @@ package com.zehfernando.display.debug {
 		protected function onRemovedFromStage(e:Event): void {
 			 stop();
 		}
-		
+
 		protected function onEnterFrame(e:Event): void {
 			update();
 		}
-		
+
 		protected function onClick(e:MouseEvent): void {
 			nextInfoStage();
 			System.gc();

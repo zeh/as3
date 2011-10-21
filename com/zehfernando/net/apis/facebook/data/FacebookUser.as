@@ -8,7 +8,7 @@ package com.zehfernando.net.apis.facebook.data {
 	public class FacebookUser extends FacebookAuthor {
 
 		// http://developers.facebook.com/docs/reference/api/user
-		
+
 		// http://graph.facebook.com/me
 
 		// Properties
@@ -34,7 +34,7 @@ package com.zehfernando.net.apis.facebook.data {
 		public var locale:String;
 		public var verified:Boolean;
 		public var updated:Date;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -47,12 +47,12 @@ package com.zehfernando.net.apis.facebook.data {
 
 		public static function fromJSONObject(o:Object): FacebookUser {
 			if (!Boolean(o)) return null;
-			
+
 			var user:FacebookUser = new FacebookUser();
 
 			user.id =										o["id"];
 			user.name =										o["name"];
-			
+
 			user.bio =										o["bio"];
 			user.link =										o["link"];
 			user.about =									o["about"];

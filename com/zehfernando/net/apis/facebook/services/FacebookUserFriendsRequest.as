@@ -12,20 +12,20 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh
 	 */
 	public class FacebookUserFriendsRequest extends BasicFacebookRequest {
-		
+
 		// http://developers.facebook.com/docs/reference/api/user
 		// https://graph.facebook.com/711322444
-		
+
 		// Properties
 		protected var _userId:String;
 		protected var _fields:Vector.<String>;
-		
+
 		// Parameters
 		protected var _limit:int;
-		
+
 		// Results
 		protected var _friends:Vector.<FacebookUser>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ package com.zehfernando.net.apis.facebook.services {
 
 			_userId = "";
 			_fields = new Vector.<String>();
-			
+
 		}
 
 		// ================================================================================================================
@@ -61,14 +61,14 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_friends = FacebookUser.fromJSONObjectArray(response["data"]);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 
 			// TODO: using the query parameter "ids" here instead of the normal url userId, one can get data for several users at the same time - redo this?
@@ -76,7 +76,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// TODO: test whether one can get data for several different users for /friends too
 
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_USER_ID, _userId);
-			
+
 			super.execute();
 		}
 
@@ -100,7 +100,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Results
-		
+
 		public function get friends(): Vector.<FacebookUser> {
 			return _friends.concat();
 		}

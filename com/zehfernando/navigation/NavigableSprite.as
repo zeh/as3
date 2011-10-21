@@ -10,9 +10,9 @@ package com.zehfernando.navigation {
 	 * @author zeh
 	 */
 	public class NavigableSprite extends Sprite {
-		
+
 		// A movie that can be navigated to -- to be used with the SpriteNavigator class
-		
+
 		// Properties
 		protected var _title:String;									// Title for the HTML
 		protected var _stub:String;										// stub for the address
@@ -25,7 +25,7 @@ package com.zehfernando.navigation {
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-		
+
 		public function NavigableSprite() {
 			_title = "Default Area";
 			_stub = "default-area";
@@ -34,15 +34,15 @@ package com.zehfernando.navigation {
 			_createChildrenDynamically = true;
 			_destroyChildrenAfterClosing = true;
 			createdChildren = new Vector.<NavigableSprite>();
-			
+
 			//_canSwitchChildren = false;
-			
+
 			addEventListener(NavigableSpriteEvent.OPENING, onOpeningInternal, false, 0, true);
 		}
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		private function onOpeningInternal(e:NavigableSpriteEvent): void {
 			// This NavigableSprite os opening, therefore, set its currenrt location
 			if (_myLocation == "/" || _stub == "default-area") _myLocation = "";
@@ -119,11 +119,11 @@ package com.zehfernando.navigation {
 				ns = _childrenContainer.getChildAt(i);
 				if (ns is NavigableSprite) allChildren.push(ns as NavigableSprite);
 			}
-			
+
 			return allChildren;
 
 		}
-		
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
@@ -143,10 +143,10 @@ package com.zehfernando.navigation {
 			if (_destroyChildrenAfterClosing) destroyChild(e.target as NavigableSprite);
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.CLOSED_CHILD));
 		}
-		
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public function open(__immediate:Boolean = false, __isLast:Boolean = false): void {
 			if (__immediate) {
 				dispatchOpeningEvent();
@@ -190,33 +190,33 @@ package com.zehfernando.navigation {
 			// child, it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_OPEN_CHILD));
 		}
-		
+
 		public function requestPermissionToCloseChild(__child:NavigableSprite, __furtherChildren:int, __immediate:Boolean = false): void {
 			// Requests permission to CLOSE a child sprite (meaning call close() on it)
 			// This usually should be immediate, but if a parent needs to close or hide something prior to closing a
 			// child, it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD));
 		}
-		
+
 		public function requestPermissionToOpen(__furtherChildren:int, __immediate:Boolean = false): void {
 			// Requests permission to open THIS sprite (meaning call open() on it)
 			// This usually should be immediate, but if a sprite needs to close or hide something prior to showing itself,
 			// it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_OPEN));
 		}
-				
+
 		public function requestPermissionToClose(__furtherChildren:int, __immediate:Boolean = false): void {
 			// Requests permission to close THIS sprite (meaning call close() on it)
 			// This usually should be immediate, but if a sprite needs to close or hide something prior to showing itself,
 			// it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_CLOSE));
 		}
-				
+
 		public function getChildByStubs(__stubList:Vector.<String>): NavigableSprite {
 			// Based on an array of locations (example: ["file", "2000"], returns the specific NavigableContainer ("2000" in this case)
-			
+
 			//trace ("NavigableSprite [" + _stub + "] :: getChildByStubs ENTER :: [" + __stubList + "] (" + __stubList.length + ")");
-			
+
 			var cn:NavigableSprite;
 
 			if (__stubList.length == 0) {
@@ -224,10 +224,10 @@ package com.zehfernando.navigation {
 				cn = this;
 			} else {
 				// Needs to go deeper
-				
+
 				var __name:String = __stubList[0];
 				cn = getChildByStub(__name);
-				
+
 				if (Boolean(cn)) {
 					cn = cn.getChildByStubs(__stubList.slice(1));
 				} else {
@@ -236,19 +236,19 @@ package com.zehfernando.navigation {
 					//throw new Error("Error: there is no children with the name \""+__name+"\"!");
 				}
 			}
-			
+
 			//trace ("NavigableSprite [" + _stub + "] :: getChildByStubs EXIT :: [" + __stubList + "] (" + __stubList.length + ")");
-			
+
 			return cn;
 		}
-		
+
 		public function getChildByStub(__stub:String, __allowDynamicCreation:Boolean = true): NavigableSprite {
-			
+
 			//log("Getting child [" + __stub + "] at [" + _stub + "], _childrenContainer has " + _childrenContainer.numChildren + " children");
-			
+
 			var ds:DisplayObject;
 			var i:int;
-			
+
 			// Looks for static ones
 			// TODO: remove? this is not needed anymore because it won't shouldn't be there
 			for (i = 0; i < _childrenContainer.numChildren; i++) {
@@ -256,22 +256,22 @@ package com.zehfernando.navigation {
 				//log("    Testing ["+ds+"]... " + (ds is NavigableSprite ? "[" + (ds as NavigableSprite).stub + "]" : ""));
 				if (ds is NavigableSprite && (ds as NavigableSprite).stub == __stub) return ds as NavigableSprite;
 			}
-			
+
 			// Looks for dynamically created ones that are NOT on the children container (otherwise the above code would find it)
 			for (i = 0; i < createdChildren.length; i++) {
 				if (createdChildren[i].stub == __stub) return createdChildren[i];
 			}
-			
+
 			//log("Children not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-			
-			//trace ("NavigableSprite :: getChildByStub :: Stub [" + __stub + "] not found at ["+_stub+"], creating it"); 
+
+			//trace ("NavigableSprite :: getChildByStub :: Stub [" + __stub + "] not found at ["+_stub+"], creating it");
 			if (_createChildrenDynamically && __allowDynamicCreation) return createChild(__stub);
-			
+
 			return null;
 		}
-		
+
 		public function requestOpenChildArea(__stub:String): void {
-			SpriteNavigator.setLocation(_myLocation + "/" + __stub); 
+			SpriteNavigator.setLocation(_myLocation + "/" + __stub);
 		}
 
 
@@ -282,15 +282,15 @@ package com.zehfernando.navigation {
 			// Returns the title of this sprite
 			return _title;
 		}
-		
+
 		public function get stub(): String {
 			return _stub;
 		}
-		
+
 		public function get location():String {
 			return _myLocation;
 		}
-		
+
 		public function set location(__value:String): void {
 			_myLocation = __value;
 		}
@@ -324,7 +324,7 @@ class NavigableMovie extends MovieClip {
 		_myLocation = null;
 		_visible = false;
 		_alpha = 0;
-		
+
 		//onResize();
 	}
 

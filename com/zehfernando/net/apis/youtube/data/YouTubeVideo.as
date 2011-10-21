@@ -17,7 +17,7 @@ package com.zehfernando.net.apis.youtube.data {
 	public class YouTubeVideo {
 
 		// http://gdata.youtube.com/feeds/api/videos/jsvzVFL0Da8
-		
+
 		// Properties
 		public var id:String;
 		public var published:Date;
@@ -32,13 +32,13 @@ package com.zehfernando.net.apis.youtube.data {
 		public var duration:Number;
 		public var favoriteCount:int;
 		public var viewCount:int;
-		
+
 		// Example: http://gdata.youtube.com/feeds/api/videos/PjJnl8UUDzo
 		// TODO: add:
 		// <media:restriction type='country' relationship='deny'>DE</media:restriction>
 		// <media:content url='http://www.youtube.com/v/jsvzVFL0Da8?f=videos&amp;app=youtube_gdata' type='application/x-shockwave-flash' medium='video' isDefault='true' expression='full' duration='55' yt:format='5'/>
 		// responses
-		
+
 		// http://code.google.com/apis/youtube/2.0/developers_guide_protocol_api_query_parameters.html
 
 		// ================================================================================================================
@@ -54,14 +54,14 @@ package com.zehfernando.net.apis.youtube.data {
 			// Returns the URL of the biggest thumbnail
 			var url:String = "";
 			var maxWidth:int = 0;
-			
+
 			for (var i:int = 0; i < thumbnails.length; i++) {
 				if (thumbnails[i].width > maxWidth) {
 					maxWidth = thumbnails[i].width;
 					url = thumbnails[i].url;
 				}
 			}
-			
+
 			return url;
 		}
 
@@ -72,7 +72,7 @@ package com.zehfernando.net.apis.youtube.data {
 			var videos:Vector.<YouTubeVideo> = new Vector.<YouTubeVideo>();
 
 			if (!Boolean(__xmlList)) return videos;
-			
+
 			for (var i:int = 0; i < __xmlList.length(); i++) {
 				videos.push(YouTubeVideo.fromXML(__xmlList[i]));
 			}
@@ -82,7 +82,7 @@ package com.zehfernando.net.apis.youtube.data {
 
 		public static function fromXML(__xml:XML): YouTubeVideo {
 			// Creates a YouTubeVideo instance from XML parsed from the youtube response
-			
+
 			/*
 			<entry xmlns='http://www.w3.org/2005/Atom' xmlns:media='http://search.yahoo.com/mrss/' xmlns:gd='http://schemas.google.com/g/2005' xmlns:yt='http://gdata.youtube.com/schemas/2007'>
 				<id>http://gdata.youtube.com/feeds/api/videos/jsvzVFL0Da8</id>
@@ -126,31 +126,31 @@ package com.zehfernando.net.apis.youtube.data {
 				<yt:statistics favoriteCount='0' viewCount='12'/>
 			</entry>
 			*/
-			
+
 			var video:YouTubeVideo = new YouTubeVideo();
 
 			var i:int;
 			var tempArray:Array;
 			var tempList:XMLList;
-			var tempStr:String; 
-			
+			var tempStr:String;
+
 			// Default namespace data -------------------
 			var ns:Namespace = __xml.namespace();
 			default xml namespace = ns;
-			
+
 			tempArray = __xml.child("id").toString().split("/");
 			video.id = tempArray[tempArray.length - 1] as String;
 
 			video.keywords = new Vector.<String>();
 			video.categories = new Vector.<YouTubeCategory>();
 			video.thumbnails = new Vector.<YouTubeThumbnail>();
-			
+
 			video.published = DateUtils.xsdDateTimeToDate(__xml.child("published").toString());
 			video.updated = DateUtils.xsdDateTimeToDate(__xml.child("updated").toString());
 			video.title = __xml.child("title").toString();
 			video.content = __xml.child("content").toString();
 			video.author = __xml.child("author").child("name").toString();
-			
+
 			tempList = __xml.child("category");
 			for (i = 0; i < tempList.length(); i++) {
 				tempStr = tempList[i].@scheme;
@@ -162,8 +162,8 @@ package com.zehfernando.net.apis.youtube.data {
 					video.categories.push(new YouTubeCategory(tempList[i].@term, tempList[i].@label));
 				}
 			}
-			
-			
+
+
 			// GD namespace data -------------------
 			var gdns:Namespace = __xml.namespace(YouTubeConstants.NAMESPACE_GD);
 
@@ -171,7 +171,7 @@ package com.zehfernando.net.apis.youtube.data {
 
 			// YT namespace data -------------------
 			var ytns:Namespace = __xml.namespace(YouTubeConstants.NAMESPACE_YT);
-			
+
 			if (Boolean(__xml.ytns::statistics) && __xml.ytns::statistics.length() > 0) {
 				video.favoriteCount = parseInt(__xml.ytns::statistics[0].@favoriteCount, 10);
 				video.viewCount = parseInt(__xml.ytns::statistics[0].@viewCount, 10);
@@ -179,19 +179,19 @@ package com.zehfernando.net.apis.youtube.data {
 
 			// Media namespace data -------------------
 			var medians:Namespace = __xml.namespace(YouTubeConstants.NAMESPACE_MEDIA);
-			
+
 			tempList = __xml.medians::group.medians::thumbnail;
-			
+
 			for (i = 0; i < tempList.length(); i++) {
 				video.thumbnails.push(new YouTubeThumbnail(tempList[i].@url, parseInt(tempList[i].@height, 10), parseInt(tempList[i].@width), YouTubeDataUtils.fromStringToSeconds(tempList[i].@time)));
 			}
-			
+
 			// Mixed namespace data -------------------
-			
+
 			video.duration = parseInt(__xml.medians::group[0].ytns::duration.@seconds);
-			
+
 			default xml namespace = new Namespace(""); // WTF! one needs this otherwise the function below fails!
-			
+
 			return video;
 		}
 	}

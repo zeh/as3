@@ -5,12 +5,12 @@ package com.zehfernando.net.apis.twitter.events {
 	 * @author zeh
 	 */
 	public class TwitterServiceEvent extends Event {
-		
+
 		// Constants
 		public static const COMPLETE:String = "onRequestComplete";
 		public static const ERROR:String = "onRequestError";
 
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ package com.zehfernando.net.apis.twitter.events {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		override public function clone(): Event {
 			return new TwitterServiceEvent(type, bubbles, cancelable);
 		}

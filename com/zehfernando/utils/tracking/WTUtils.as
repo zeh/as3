@@ -13,7 +13,7 @@ package com.zehfernando.utils.tracking {
 		// Constants
 		protected static const WT_PARAMETER_URI:String = "DCS.dcsuri";
 		protected static const WT_PARAMETER_TITLE:String = "WT.ti";
-		
+
 		protected static const WT_PARAMETER_RIA_APPNAME:String = "WT.ria_a";		// Application name
 		//protected static const WT_PARAMETER_RIA_URI:String = "DCS.dcsuri";
 		protected static const WT_PARAMETER_RIA_CONTENT:String = "WT.ria_c";		// Content name
@@ -21,17 +21,17 @@ package com.zehfernando.utils.tracking {
 		protected static const WT_PARAMETER_RIA_EVENT:String = "WT.ria_ev";		// Event name
 		protected static const WT_PARAMETER_RIA_GROUP:String = "WT.cg_n";		// Group name
 		protected static const WT_PARAMETER_RIA_SUBGROUP:String = "WT.cg_s";		// Subgroup name
-		
+
 		public static const WT_PARAMETER_OPTIONAL_SCENARIO_NAME:String = "WT.si_n";	// Scenario name
 		public static const WT_PARAMETER_OPTIONAL_SCENARIO_STEP:String = "WT.si_x";	// Scenario step
-		
+
 		protected static const WT_ADDITIONAL_PARAMETERS:Array = ["WT.dl", "6"]; // From WebTrends_Technical_Solution_Design.doc: "WT.dl=6 – ALWAYS passed to indicate that this was a RIA server call (event). This is critical to insure differentiation between RIA type events and other events."
-		
+
 		public static const FOLDER_SEPARATOR:String = "/";
 		public static const TITLE_SEPARATOR:String = " - ";
 		public static const SUBGROUP_SEPARATOR:String = ";";
 		public static const SCENARIO_SEPARATOR:String = ";";
-		
+
 		// Properties
 		protected static var inited:Boolean;
 		protected static var testMode:Boolean;
@@ -49,7 +49,7 @@ package com.zehfernando.utils.tracking {
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
 		public static function init(__appName:String, __testMode:Boolean = false): void {
-			
+
 			appName = __appName;
 
 			if (!inited) {
@@ -64,13 +64,13 @@ package com.zehfernando.utils.tracking {
 				keysToReset = [];
 			}
 		}
-		
+
 		public static function trackPageView(__uri:String, __title:String, __feature:String, __event:String, __group:String, __subGroup:String, __extraParameters:Array = null): void {
 			if (!inited) return;
-			
+
 			if (__title == null) __title = __uri;
 			if (!Boolean(__extraParameters)) __extraParameters = [];
-			
+
 			var params:Array = ["dcsMultiTrack"];
 			params = params.concat(WT_PARAMETER_URI, __uri, WT_PARAMETER_TITLE, __title);
 			params = params.concat(WT_PARAMETER_RIA_APPNAME, appName);
@@ -83,7 +83,7 @@ package com.zehfernando.utils.tracking {
 
 			if (__group.length > 0)		__extraParameters = __extraParameters.concat(WT_PARAMETER_RIA_GROUP, __group);
 			if (__subGroup.length > 0)	__extraParameters = __extraParameters.concat(WT_PARAMETER_RIA_SUBGROUP, __subGroup);
-			
+
 			// Add keys that need to be reset to __extraParameters if they're not there already
 			// This is not very elegant
 			var i:Number;
@@ -113,7 +113,7 @@ package com.zehfernando.utils.tracking {
 
 			ExternalInterface.call.apply(undefined, params);
 			//ExternalInterface.call("dcsMultiTrack",  WT_PARAMETER_URI, __uri, WT_PARAMETER_TITLE, __title);
-			
+
 			// Safe length for contents inside parenthesis = 1813
 			// example: "dcsMultiTrack('DCS.dcsuri','test')" = 19chars
 

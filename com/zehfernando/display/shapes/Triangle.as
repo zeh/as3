@@ -5,7 +5,7 @@ package com.zehfernando.display.shapes {
 	 * @author zeh
 	 */
 	public class Triangle extends Sprite {
-		
+
 		// Properties
 		protected var _color:Number;
 		protected var _length:Number;
@@ -15,17 +15,17 @@ package com.zehfernando.display.shapes {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function Triangle(__length:Number = 100, __weight:Number = 100, __color:int = 0xff0000, __rotation:Number = 0) {
-			
+
 			_color = __color & 0xffffff;
 			_length = __length;
 			_weight = __weight;
-			
+
 			rotation = __rotation;
 
 			paint();
 		}
 
-		
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
@@ -56,7 +56,7 @@ package com.zehfernando.display.shapes {
 		public function get length(): Number {
 			return _length;
 		}
-		
+
 		public function set length(__value:Number): void {
 			if (_length != __value) {
 				_length = __value;
@@ -67,13 +67,13 @@ package com.zehfernando.display.shapes {
 		public function get weight(): Number {
 			return _weight;
 		}
-		
+
 		public function set weight(__value:Number): void {
 			if (_weight != __value) {
 				_weight = __value;
 				paint();
 			}
 		}
-				
+
 	}
 }

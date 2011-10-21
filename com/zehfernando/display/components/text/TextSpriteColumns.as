@@ -12,7 +12,7 @@ package com.zehfernando.display.components.text {
 		protected var _width:Number;
 		protected var _height:Number;
 		protected var _text:String;
-		
+
 		protected var _columnWidth:Number;
 		protected var _margins:Number;
 		protected var _maxHeight:Number;
@@ -20,11 +20,11 @@ package com.zehfernando.display.components.text {
 
 		protected var _leading:Number;
 		protected var _tracking:Number;
-		
+
 		protected var _font:String;
 		protected var _size:Number;
 		protected var _color:Number;
-		
+
 		protected var _columns:int;
 
 		protected var textSprites:Vector.<RichTextSprite>;
@@ -36,7 +36,7 @@ package com.zehfernando.display.components.text {
 		/*
 		Changelog
 		2010 02 06 -- Changed to use the new Text Engine, be aligned to the top left
-		
+
 		// http://www.insideria.com/2009/03/flash-text-engine.html
 		*/
 
@@ -52,58 +52,58 @@ package com.zehfernando.display.components.text {
 			_columnWidth = __columnWidth;
 			_margins = __margins;
 			_maxColumns = __maxColumns;
-			
+
 			_maxHeight = __maxHeight;
-			
+
 			_leading = 0;
 			_tracking = 0;
-			
+
 			_columns = 0;
-			
+
 			_font = __font;
 			_size = __size;
 			_color = __color;
-			
+
 			baseTextSprite = new RichTextSprite();
 			textSprites = new Vector.<RichTextSprite>();
-			
+
 			// Create visual assets
 			textContainer = new Sprite();
 			addChild(textContainer);
-			
-			// Finally, redraws everything 
+
+			// Finally, redraws everything
 			redraw();
 		}
 
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
-		
+
 		protected function redraw(): void {
 			// Redraws everything
 			removeAllColumns();
-			
+
 			// Create all columns
 			var ts:RichTextSprite;
 			var lastLine:TextLine = null;
 			var posX:Number = 0;
-			
+
 			_columns = 0;
-			
+
 			//trace ("---creating");
-			
+
 			while((_columns == 0 || Boolean(lastLine)) && _columns <= _maxColumns && !(Boolean(ts) && ts.textLineCreationResult == TextLineCreationResult.COMPLETE)) {
 
 				//trace ("  -- column " + _columns);
-				
+
 				// Breaks text if it's already past the maximum
 				// TODO: test this better or find some other way to detect it
 				//if (Boolean(lastLine) && lastLine.textBlockBeginIndex + lastLine.atomCount >= getTagLessText().length) break; // This sucks -- use a better method to detect whether there's additional lines
 				//if (Boolean(lastLine) && lastLine.textBlockBeginIndex + lastLine.atomCount >= _text.length) break;
-				
+
 				//trace ("col " + _numColumns, lastLine, getTagLessText().length, Boolean(lastLine) ? lastLine.textBlockBeginIndex + lastLine.atomCount : "");
-				
+
 				//if (Boolean(lastLine)) trace ("  --> ",lastLine, lastLine.textBlockBeginIndex, lastLine.atomCount, getTagLessText().length);
-				//if (Boolean(ts)) trace("  ---> " + ts.textLineCreationResult); 
+				//if (Boolean(ts)) trace("  ---> " + ts.textLineCreationResult);
 
 				ts = new RichTextSprite(_font, _size, _color);
 				ts.trimFirstLineIfBlank = _columns > 0;
@@ -112,7 +112,7 @@ package com.zehfernando.display.components.text {
 				ts.maxHeight = _maxHeight;
 				ts.width = _columnWidth;
 				ts.leading = _leading;
-				
+
 				if (_columns == 0) {
 					ts.tracking = _tracking;
 					ts.text = _text;
@@ -121,20 +121,20 @@ package com.zehfernando.display.components.text {
 				ts.previousTextLine = lastLine;
 				lastLine = ts.lastTextLine;
 				textContainer.addChild(ts);
-				
+
 				textSprites.push(ts);
-				
+
 				posX += _columnWidth;
 				posX += _margins;
 
 				_columns++;
 			}
-			
+
 			//trace ("numColumns =================== " + _numColumns);
-			
+
 			_width = _columns > 0 ? posX - _margins : 0;
 		}
-		
+
 //		protected function getTagLessText(): String {
 //			// This sucks
 //			var txt:String = _text;
@@ -144,7 +144,7 @@ package com.zehfernando.display.components.text {
 //				txt = txt.split("<"+tag+">").join("");
 //				txt = txt.split("<"+tag+"/>").join("");
 //			}
-//			
+//
 //			return txt;
 //		}
 
@@ -186,7 +186,7 @@ package com.zehfernando.display.components.text {
 			if (_text != __value) {
 				_text = __value;
 				redraw();
-				//if (textSprites.length > 0) textSprites[0].text = _text; 
+				//if (textSprites.length > 0) textSprites[0].text = _text;
 			}
 		}
 
@@ -202,7 +202,7 @@ package com.zehfernando.display.components.text {
 
 
 //		// FontDescription extensions
-//		
+//
 //		public function get renderingMode(): String {
 //			return fontDescription.renderingMode;
 //		}
@@ -222,7 +222,7 @@ package com.zehfernando.display.components.text {
 //				redraw();
 //			}
 //		}
-		
+
 		// This doesn't work, or maybe depends on specific font features
 		public function get tracking(): Number {
 			return _tracking;
@@ -248,7 +248,7 @@ package com.zehfernando.display.components.text {
 		public function set leadingAsPhotoshop(__value:Number): void {
 			leading = __value - _size;
 		}
-		
+
 		public function get columnWidth(): Number {
 			return _columnWidth;
 		}
@@ -267,11 +267,11 @@ package com.zehfernando.display.components.text {
 				_margins = __value;
 			}
 		}
-		
+
 		public function get columns(): Number {
 			return _columns;
 		}
-		
+
 		public function get maxHeight(): Number {
 			return _maxHeight;
 		}

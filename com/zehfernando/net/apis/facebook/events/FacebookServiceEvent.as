@@ -5,12 +5,12 @@ package com.zehfernando.net.apis.facebook.events {
 	 * @author zeh
 	 */
 	public class FacebookServiceEvent extends Event {
-		
+
 		// Constants
 		public static const COMPLETE:String = "onComplete";
 		public static const ERROR:String = "onError";
 
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ package com.zehfernando.net.apis.facebook.events {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		override public function clone(): Event {
 			return new FacebookServiceEvent(type, bubbles, cancelable);
 		}

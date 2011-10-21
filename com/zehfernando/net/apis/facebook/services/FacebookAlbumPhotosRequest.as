@@ -13,21 +13,21 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh
 	 */
 	public class FacebookAlbumPhotosRequest extends BasicFacebookRequest {
-		
+
 		// http://developers.facebook.com/docs/reference/api/photo
 		// http://developers.facebook.com/docs/reference/api/album
-		
+
 		// https://graph.facebook.com/143423629024057/photos
 
 		// Properties
 		protected var _albumId:String;
-		
+
 		// Parameters
 		protected var _limit:int;
-		
+
 		// Results
 		protected var _photos:Vector.<FacebookPhoto>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// http://developers.facebook.com/docs/reference/api/page
 
 			_albumId = "";
-			
+
 		}
 
 		// ================================================================================================================
@@ -61,14 +61,14 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_photos = FacebookPhoto.fromJSONObjectArray(response["data"]);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_ALBUM_ID, _albumId);
 			super.execute();
@@ -85,9 +85,9 @@ package com.zehfernando.net.apis.facebook.services {
 		public function set albumId(__value:String):void {
 			_albumId = __value;
 		}
-		
+
 		// Hard parameters
-		
+
 		public function get limit(): int {
 			return _limit;
 		}
@@ -96,9 +96,9 @@ package com.zehfernando.net.apis.facebook.services {
 				_limit = __value;
 			}
 		}
-		
+
 		// Results
-		
+
 		public function get photos(): Vector.<FacebookPhoto> {
 			return _photos.concat();
 		}

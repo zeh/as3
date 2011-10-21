@@ -11,25 +11,25 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh at zehfernando.com
 	 */
 	public class FacebookAlbumCreateRequest extends BasicFacebookRequest {
-		
+
 		// https://developers.facebook.com/docs/reference/api/album/
-		
+
 		// Properties
 		protected var _name:String;					// Album name (required)
 		protected var _description:String;			// Album description
 		protected var _location:String;				// Album location
 		protected var _privacy:String;				// Album privacy: everyone (default) (FacebookPrivacyType)
 		protected var _type:String;					// Album type: profile, mobile, wall, normal (default) or album (FacebookAlbumType)
-		
+
 		// Results
 		protected var _albumId:String;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function FacebookAlbumCreateRequest() {
 			super();
-			
+
 			// Basic service configuration
 			requestURL = FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_ALBUMS;
 			requestMethod = URLRequestMethod.POST;
@@ -64,14 +64,14 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_albumId = response["id"];
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_AUTHOR_ID, FacebookConstants.ID_USER_OWN);
 			super.execute();
@@ -116,9 +116,9 @@ package com.zehfernando.net.apis.facebook.services {
 		public function set type(__value:String): void {
 			_type = __value;
 		}
-		
+
 		// Results
-		
+
 		public function get albumId(): String {
 			return _albumId;
 		}

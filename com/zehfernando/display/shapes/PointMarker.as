@@ -8,8 +8,8 @@ package com.zehfernando.display.shapes {
 
 		// Properties
 		protected var _color:Number;
-		protected var _circleRadius:Number; 
-		protected var _lineRadius:Number; 
+		protected var _circleRadius:Number;
+		protected var _lineRadius:Number;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -18,11 +18,11 @@ package com.zehfernando.display.shapes {
 			_color = __color & 0xffffff;
 			_circleRadius = 20;
 			_lineRadius = 30;
-			
+
 			paint();
 		}
 
-		
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 

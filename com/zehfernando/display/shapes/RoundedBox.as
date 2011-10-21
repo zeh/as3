@@ -25,10 +25,10 @@ package com.zehfernando.display.shapes {
 			_color = __color;
 			_width = __width;
 			_height = __height;
-			
+
 			_radius = _topLeftRadius = _topRightRadius = _bottomLeftRadius = _bottomRightRadius = __radius;
 			_outlineWidth = __outlineWidth;
-			
+
 			paint();
 		}
 
@@ -41,7 +41,7 @@ package com.zehfernando.display.shapes {
 			graphics.lineStyle();
 			graphics.beginFill(_color, 1);
 			graphics.drawRoundRectComplex(0, 0, _width, _height, _topLeftRadius, _topRightRadius, _bottomLeftRadius, _bottomRightRadius);
-			
+
 			if (_outlineWidth != 0) graphics.drawRoundRectComplex(_outlineWidth, _outlineWidth, _width - _outlineWidth * 2, _height - _outlineWidth * 2, _topLeftRadius - _outlineWidth, _topRightRadius - _outlineWidth, _bottomLeftRadius - _outlineWidth, _bottomRightRadius - _outlineWidth);
 
 			graphics.endFill();
@@ -50,7 +50,7 @@ package com.zehfernando.display.shapes {
 
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
-		
+
 		// TODO: use invalidate
 		// The repetitive redraws don't look good but impact in rendering is virtually none
 

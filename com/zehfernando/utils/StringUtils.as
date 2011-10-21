@@ -4,11 +4,11 @@ package com.zehfernando.utils {
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class StringUtils {
-		
+
 		public static const VALIDATION_EMAIL:RegExp = /^[a-z][\w.-]+@\w[\w.-]+\.[\w.-]*[a-z][a-z]$/i;
-		
+
 		protected static var uniqueSerialNumber:int = 0;
-		
+
 		public static function stripDoubleCRLF(__text:String): String {
 			if (__text == null) return null;
 			return __text.split("\r\n").join("\n");
@@ -17,21 +17,21 @@ package com.zehfernando.utils {
 		public static function wrapSpanStyle(__text:String, __style:String = null): String {
 			return (Boolean(__style) ? "<span class='" + __style + "'>" : "<span>")  + __text + "</span>";
 		}
-		
+
 		public static function wrapCDATA(__text:String):String {
 			return "<![CDATA[" + __text + "]]>";
 		}
-		
+
 		public static function stripInvalidFileCharacters(__text:String): String {
 			__text = __text.split(":").join("");
 			return __text;
 		}
-		
+
 		public static function makeStub(__text:String): String {
 			// Transforms a title into a stub
 			return __text.toLowerCase().replace(" ", "-").replace(/[^a-z0-9\-]/gi, "");
 		}
-		
+
 		public static function slugify(__text:String):String {
 			// Source: http://active.tutsplus.com/articles/roundups/15-useful-as3-snippets-on-snipplr-com/
 			const pattern1:RegExp = /[^\w- ]/g; // Matches anything except word characters, space and -
@@ -43,48 +43,48 @@ package com.zehfernando.utils {
 		public static function parseBBCodeToHTML(__text:String): String {
 
 			var rx:RegExp; // For when /gi does not work
-		
+
 			// \r\n
 			__text = __text.replace(/\r\n/gi, "\n");
-	
+
 			// [size="n"]...[/size]
 			// <font size="n">...</font>
 			rx = /\[size=\u0022([0-9]*?)\u0022\]((.|\n|\r)*?)\[\/size\]?/i;
 			while (rx.test(__text)) __text = __text.replace(rx, "<font size=\"$1\">$2</font>");
-	
+
 			// [color="c"]...[/color]
 			// <font color="c">...</font>
 			rx = /\[color=\u0022(#[0-9a-f]*?)\u0022\]((.|\n|\r)*?)\[\/color\]?/i;
 			while (rx.test(__text)) __text = __text.replace(rx, "<font color=\"$1\">$2</font>");
-	
+
 			// [url="u"]...[/url]
 			// <a href="u">...</a>
 			rx = /\[url=\u0022(.*?)\u0022\]((.|\n|\r)*?)\[\/url\]?/i;
 			while (rx.test(__text)) __text = __text.replace(rx, "<a href=\"$1\">$2</a>");
-	
+
 			// [b]...[/b]
 			// <b>...</b>
 			rx = /\[b\]((.|\n|\r)*?)\[\/b\]?/i;
 			while (rx.test(__text)) __text = __text.replace(rx, "<b>$1</b>");
-	
+
 			// [i]...[/i]
 			// <i>...</i>
 			rx = /\[i\]((.|\n|\r)*?)\[\/i\]?/i;
 			while (rx.test(__text)) __text = __text.replace(rx, "<i>$1</i>");
-	
+
 			return (__text);
 		}
-		
+
 		public static function cropText(__text:String, __maximumLength:Number, __breakAnywhere:Boolean = false, __postText:String = ""):String {
-			
+
 			if (__text.length <= __maximumLength) return __text;
-			
+
 			// Crops a long text, to get excerpts
 			if (__breakAnywhere) {
 				// Break anywhere
 				return __text.substr(0, Math.min(__maximumLength, __text.length)) + __postText;
 			}
-			
+
 			// Break on words only
 			var lastIndex:Number = 0;
 			var prevIndex:Number = -1;
@@ -105,19 +105,19 @@ package com.zehfernando.utils {
 			// Finds the value of a parameter given a querystring/url and the parameter name
 			var qsRegex:RegExp = new RegExp("[?&]" + __parameterName + "(?:=([^&]*))?","i");
 			var match:Object = qsRegex.exec(__url);
-			
+
 			if (Boolean(match)) return match[1];
 			return null;
 		}
-		
+
 		public static function replaceHTMLLinksInsideHTML(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"): String {
 			// Replaces links like replaceHTMLLinks(), but preserving existing HTML code (avoid creating double links)
-			
+
 			var __txt:String = "";
 			var i:int;
-			
+
 			var xml:XML = new XML(__text);
-			
+
 			// Tag open begin
 			__txt += "<"+xml.name();
 
@@ -125,10 +125,10 @@ package com.zehfernando.utils {
 			for (i = 0; i < xml.attributes().length(); i++) {
 				__txt += " " + (xml.attributes()[i] as XML).name() + "=\"" + (xml.attributes()[i] as XML).toString() + "\"";
 			}
-			
+
 			// Tag open end
 			__txt += ">";
-			
+
 			// Add children
 			for (i = 0; i < xml.children().length(); i++) {
 				if ((xml.children()[i] as XML).nodeKind() == "element") {
@@ -144,33 +144,33 @@ package com.zehfernando.utils {
 
 			// Tag close
 			__txt += "</"+xml.name()+">";
-			
-			return __txt; 
-			
+
+			return __txt;
+
 		}
-		
+
 		public static function getHTMLWithStrippedTags(__text:String, __tagsToKeep:Array = null): String {
 			if (__tagsToKeep == null) __tagsToKeep = [];
 
 			var xml:XML = new XML(__text);
 			var __txt:String = "";
 			var i:int;
-			
+
 			if (__tagsToKeep.indexOf(String(xml.name())) > -1) {
 				// Keep tag
 
 				// Tag open begin
 				__txt += "<"+xml.name();
-	
+
 				// Add attributes
 				for (i = 0; i < xml.attributes().length(); i++) {
 					__txt += " " + (xml.attributes()[i] as XML).name() + "=\"" + (xml.attributes()[i] as XML).toString() + "\"";
 				}
-				
+
 				// Tag open end
 				__txt += ">";
 			}
-			
+
 			// Add children
 			for (i = 0; i < xml.children().length(); i++) {
 				if ((xml.children()[i] as XML).nodeKind() == "element") {
@@ -184,24 +184,24 @@ package com.zehfernando.utils {
 				// Tag close
 				__txt += "</"+xml.name()+">";
 			}
-			
+
 			return __txt;
 
 		}
-		
+
 		public static function replaceHTMLLinks(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"): String {
-			
+
 			// Create links for urls, hashtags and whatnot on the text
 			var regexSearch:RegExp;
 			var regexResult:Object;
 			var str:String;
-			
+
 			var linkStart:Vector.<int> = new Vector.<int>();
 			var linkLength:Vector.<int> = new Vector.<int>();
 			var linkURL:Vector.<String> = new Vector.<String>();
-			
+
 			var i:int;
-			
+
 			// Links for hashtags
 			//regexSearch = /\s#+\w*(\s|,|!|\.|\n)*?/gi;
 			regexSearch = /\B#+\w*(\s|,|!|\.|\n)*?/gi;
@@ -272,7 +272,7 @@ package com.zehfernando.utils {
 				regexResult = regexSearch.exec(__text);
 				//trace ("URL --> [" + str + "]");
 			}
-			
+
 			// Finally, add the links as HTML links
 			var newText:String = "";
 			var lastPos:int = 0;
@@ -282,16 +282,16 @@ package com.zehfernando.utils {
 				newText += "<a href=\"" + linkURL[i] + "\" target=\""+__target+"\">";
 				newText += __text.substr(linkStart[i], linkLength[i]);
 				newText += "</a>";
-				
+
 				lastPos = linkStart[i] + linkLength[i];
-				
+
 				i++;
 			}
-			
-			
+
+
 			newText += __text.substr(lastPos);
 			//trace ("--> " + newDescription);
-			
+
 			return newText;
 		}
 
@@ -306,18 +306,18 @@ package com.zehfernando.utils {
 		public static function generatePropertyName(): String {
 			return "f" + getRandomAlphanumericString(16) + ("00000000" + getUniqueSerialNumber().toString(16)).substr(-8,8);
 		}
-		
+
 		public static function getRandomAlphanumericString(__chars:int = 1): String {
 			// Returns a random alphanumeric string with the specific number of chars
 			var chars:String = "0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
 			var i:int;
-			
+
 			var str:String = "";
-			
+
 			for (i = 0; i < __chars; i++) {
 				str += chars.substr(Math.floor(Math.random() * chars.length), 1);
 			}
-			
+
 			return str;
 		}
 
@@ -325,14 +325,14 @@ package com.zehfernando.utils {
 			// http://en.wikipedia.org/wiki/Globally_unique_identifier
 			// This one is actually more unorthodox
 			var i:int;
-			
+
 			var nums:Vector.<int> = new Vector.<int>();
 			nums.push(getUniqueSerialNumber());
 			nums.push(getUniqueSerialNumber());
 			for (i = 0; i < 10; i++) {
 				nums.push(Math.round(Math.random() * 255));
 			}
-			
+
 			var strs:Vector.<String> = new Vector.<String>();
 			for (i = 0; i < nums.length; i++) {
 				strs.push(("00" + nums[i].toString(16)).substr(-2,2));
@@ -340,7 +340,7 @@ package com.zehfernando.utils {
 			var now:Date = new Date();
 
 			var secs:String = ("0000" + now.getMilliseconds().toString(16)).substr(-4, 4);
-			
+
 			// 4-2-2-6
 			return strs[0]+strs[1]+strs[2]+strs[3]+"-"+secs+"-"+strs[4]+strs[5]+"-"+strs[6]+strs[7]+strs[8]+strs[9]+strs[10]+strs[11];
 		}

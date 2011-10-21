@@ -8,7 +8,7 @@ package com.zehfernando.localization {
 
 		// Constants
 		public static const CHANGED_LANGUAGE:String = "onChangedLanguage";
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 

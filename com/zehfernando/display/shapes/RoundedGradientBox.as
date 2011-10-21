@@ -20,9 +20,9 @@ package com.zehfernando.display.shapes {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function RoundedGradientBox(__width:Number = 100, __height:Number = 100, __angle:Number = 0, __colors:Array = null, __radius:Number = 0, __alphas:Array = null, __ratios:Array = null, __type:String = null) {
-			
+
 			var i:int;
-			
+
 			_angle = __angle;
 
 			if (__colors == null) __colors = [0xff0000, 0x00ff00];

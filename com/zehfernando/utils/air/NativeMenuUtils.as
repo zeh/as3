@@ -4,7 +4,7 @@ package com.zehfernando.utils.air {
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class NativeMenuUtils {
-		
+
 		protected static var isInited:Boolean;
 		protected static var menuInstance:NativeMenuAgent;
 
@@ -27,7 +27,7 @@ package com.zehfernando.utils.air {
 		public static function setMenu(__menuInstance:NativeMenuAgent): void {
 			menuInstance = __menuInstance;
 		}
-		
+
 		public static function getMenu(): NativeMenuAgent {
 			return menuInstance;
 		}
@@ -52,12 +52,12 @@ class NativeMenuAgent extends EventDispatcher {
 	protected var _enabled:Boolean;
 
 	protected var menuData:MenuItemInfo;
-	
+
 	protected var _shortcutsEnabled:Boolean;
 
 	// ================================================================================================================
 	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-	
+
 	public function NativeMenuAgent() {
 		if (NativeApplication.supportsMenu) {
 			// Mac
@@ -65,9 +65,9 @@ class NativeMenuAgent extends EventDispatcher {
 		} else {
 			// PC & etc
 			nativeMenu = new NativeMenu();
-			AppUtils.getStage()["nativeWindow"].menu = nativeMenu; 
+			AppUtils.getStage()["nativeWindow"].menu = nativeMenu;
 		}
-		
+
 		_shortcutsEnabled = false;
 		menuData = new MenuItemInfo();
 		enabled = true;
@@ -81,7 +81,7 @@ class NativeMenuAgent extends EventDispatcher {
 
 	public function addItem(__itemInfo:MenuItemInfo): void {
 		menuData.addItem(__itemInfo);
-		
+
 		if (__itemInfo.visible) {
 			var item:NativeMenuItem = createItem(__itemInfo);
 			nativeMenu.addItem(item);
@@ -91,7 +91,7 @@ class NativeMenuAgent extends EventDispatcher {
 	protected function createItem(__itemInfo:MenuItemInfo): NativeMenuItem {
 
 		var __item:NativeMenuItem;
-		
+
 		if (__itemInfo.caption == "") {
 			// Separator
 			__item = new NativeMenuItem("", true);
@@ -108,10 +108,10 @@ class NativeMenuAgent extends EventDispatcher {
 			if (!isNaN(__itemInfo.mnemonicIndex)) __item.mnemonicIndex = __itemInfo.mnemonicIndex;
 			//__item.mnemonicIndex = 0;
 		}
-		
+
 		if (__itemInfo.items.length > 0) {
 			__item.submenu = new NativeMenu();
-			
+
 			for (var i:Number = 0; i < __itemInfo.items.length; i++) {
 				if (__itemInfo.items[i].visible) __item.submenu.addItem(createItem(__itemInfo.items[i]));
 			}
@@ -126,21 +126,21 @@ class NativeMenuAgent extends EventDispatcher {
 
 	/*
 	public function createFileMenu():NativeMenu {
-            var fileMenu:NativeMenu = new NativeMenu();
-            fileMenu.addEventListener(Event.SELECT, onMenuSelectNative);
-            
-            var newCommand:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("New"));
-            newCommand.addEventListener(Event.SELECT, onMenuSelectNative);
-            var saveCommand:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("Save"));
-            saveCommand.addEventListener(Event.SELECT, onMenuSelectNative);
-            var openRecentMenu:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("Open Recent")); 
-            openRecentMenu.submenu = new NativeMenu();
-            //openRecentMenu.submenu.addEventListener(Event.DISPLAYING, updateRecentDocumentMenu);
-            openRecentMenu.submenu.addEventListener(Event.SELECT, onMenuSelectNative);
-            
-            return fileMenu;
-        }
-        */
+			var fileMenu:NativeMenu = new NativeMenu();
+			fileMenu.addEventListener(Event.SELECT, onMenuSelectNative);
+			
+			var newCommand:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("New"));
+			newCommand.addEventListener(Event.SELECT, onMenuSelectNative);
+			var saveCommand:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("Save"));
+			saveCommand.addEventListener(Event.SELECT, onMenuSelectNative);
+			var openRecentMenu:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("Open Recent"));
+			openRecentMenu.submenu = new NativeMenu();
+			//openRecentMenu.submenu.addEventListener(Event.DISPLAYING, updateRecentDocumentMenu);
+			openRecentMenu.submenu.addEventListener(Event.SELECT, onMenuSelectNative);
+			
+			return fileMenu;
+		}
+		*/
 	public function getMenuItemInfo(__id:String): MenuItemInfo {
 		return menuData.getById(__id);
 	}
@@ -176,7 +176,7 @@ class NativeMenuAgent extends EventDispatcher {
 		var ii:MenuItemInfo = MenuItemInfo(mi.data);
 		mi.enabled = ii.enabled;
 		mi.checked = ii.checked || ii.selected; // TODO: support selected?
-		//mi.selected = 
+		//mi.selected =
 		//mi.visible
 	}
 
@@ -195,7 +195,7 @@ class NativeMenuAgent extends EventDispatcher {
 			}
 		}
 	}
-	
+
 	public function get enabled():Boolean {
 		return _enabled;
 	}

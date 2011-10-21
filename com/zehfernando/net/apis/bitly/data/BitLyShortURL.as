@@ -4,7 +4,7 @@ package com.zehfernando.net.apis.bitly.data {
 	 * @author zeh
 	 */
 	public class BitLyShortURL {
-		
+
 		// Properties
 		public var url:String;
 		public var hash:String;
@@ -14,7 +14,7 @@ package com.zehfernando.net.apis.bitly.data {
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-		
+
 		public function BitLyShortURL() {
 		}
 	}

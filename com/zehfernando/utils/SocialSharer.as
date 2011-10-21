@@ -4,7 +4,7 @@ package com.zehfernando.utils {
 	 * @author zeh
 	 */
 	public class SocialSharer {
-		
+
 //		// Constants
 //		public static const TYPE_TWITTER:String = "twitter";
 //		public static const TYPE_FACEBOOK:String = "facebook";
@@ -13,7 +13,7 @@ package com.zehfernando.utils {
 //		public static var twitterShareURL:String;		// Normally http://twitter.com/share?text=text_here&url=[[url]] --- REMEMBER TO URLENCODE PARAMETERS
 //		public static var facebookShareURL:String;		// Normally http://www.facebook.com/share.php?u=[[url]]&t=some_title --- REMEMBER TO URLENCODE PARAMETERS
 //		public static var shareWindowTarget:String;		// Normally _blank
-		
+
 //		public static var parameterURL:String;			// Example:  "http://coachella.5gum"
 
 

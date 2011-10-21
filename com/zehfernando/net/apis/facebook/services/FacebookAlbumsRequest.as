@@ -13,20 +13,20 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh
 	 */
 	public class FacebookAlbumsRequest extends BasicFacebookRequest {
-		
+
 		// http://developers.facebook.com/docs/reference/api/photo
 		// http://developers.facebook.com/docs/reference/api/album
 		// https://graph.facebook.com/rmstitanicinc/albums
 
 		// Properties
 		protected var _authorId:String;
-		
+
 		// Parameters
 		protected var _limit:int;
-		
+
 		// Results
 		protected var _albums:Vector.<FacebookAlbum>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// http://developers.facebook.com/docs/reference/api/page
 
 			_authorId = "";
-			
+
 		}
 
 		// ================================================================================================================
@@ -60,14 +60,14 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_albums = FacebookAlbum.fromJSONObjectArray(response["data"]);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_AUTHOR_ID, _authorId);
 			super.execute();
@@ -84,9 +84,9 @@ package com.zehfernando.net.apis.facebook.services {
 		public function set authorId(__value:String):void {
 			_authorId = __value;
 		}
-		
+
 		// Hard parameters
-		
+
 		public function get limit(): int {
 			return _limit;
 		}
@@ -95,9 +95,9 @@ package com.zehfernando.net.apis.facebook.services {
 				_limit = __value;
 			}
 		}
-		
+
 		// Results
-		
+
 		public function get albums(): Vector.<FacebookAlbum> {
 			return _albums.concat();
 		}

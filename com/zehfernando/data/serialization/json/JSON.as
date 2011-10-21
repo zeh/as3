@@ -3,17 +3,17 @@ package com.zehfernando.data.serialization.json {
 	 * @author zeh
 	 */
 	public class JSON {
-		
+
 		// Constants
 		protected static const VALUE_BOOLEAN_TRUE:String = "true";
 		protected static const VALUE_BOOLEAN_FALSE:String = "false";
-		
+
 		protected static const VALUE_STRING_START:String = "\"";
 		protected static const VALUE_STRING_END:String = "\"";
 
 		protected static const KEY_START:String = "\"";
 		protected static const KEY_END:String = "\"";
-		
+
 		protected static const VALUE_ARRAY_START:String = "[";
 		protected static const VALUE_ARRAY_END:String = "]";
 		protected static const VALUE_ARRAY_ITEM_SEPARATOR:String = ",";
@@ -21,11 +21,11 @@ package com.zehfernando.data.serialization.json {
 		protected static const VALUE_OBJECT_START:String = "{";
 		protected static const VALUE_OBJECT_END:String = "}";
 		protected static const VALUE_OBJECT_ITEM_SEPARATOR:String = ",";
-		
+
 		protected static const SEPARATOR_KEY_VALUE:String = " : ";
-		
+
 		protected static const VALUE_NULL:String = "null";
-		
+
 		protected static const SEPARATOR_INLINE:String = " ";
 		protected static const SEPARATOR_NEWLINE:String = "\n";
 
@@ -42,13 +42,13 @@ package com.zehfernando.data.serialization.json {
 		protected static const PARSING_TYPE_VALUE_NUMBER:String = "number";
 		protected static const PARSING_TYPE_KEY_NAME:String = "keyName";
 		protected static const PARSING_TYPE_POST_KEY_NAME:String = "postKeyName";
-	
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
 		protected static function encodeObject(__input:Object, __allowCarriageReturn:Boolean = true, __indentLevel:Number = 0): String {
 			// Depending on type, does a different thing
-			
+
 			var txt:String = "";
 			var i:int;
 			var iis:String;
@@ -74,14 +74,14 @@ package com.zehfernando.data.serialization.json {
 					if (hasItemsInList) {
 						txt += VALUE_ARRAY_ITEM_SEPARATOR;
 					}
-					
+
 					txt += __allowCarriageReturn ? SEPARATOR_NEWLINE + getIndents(__indentLevel+1) : SEPARATOR_INLINE;
 
 					txt += encodeObject(__input[i], __allowCarriageReturn, __indentLevel + 1);
-					
+
 					hasItemsInList = true;
 				}
-				
+
 				txt += __allowCarriageReturn ? SEPARATOR_NEWLINE + getIndents(__indentLevel) : SEPARATOR_INLINE;
 				txt += VALUE_ARRAY_END;
 			} else {
@@ -98,33 +98,33 @@ package com.zehfernando.data.serialization.json {
 
 					hasItemsInList = true;
 				}
-				
+
 				txt += __allowCarriageReturn ? SEPARATOR_NEWLINE + getIndents(__indentLevel) : SEPARATOR_INLINE;
 				txt += VALUE_OBJECT_END;
 			}
-			
+
 			return txt;
 		}
-		
+
 		protected static function decodeObject(__input:String): ParsedJSONValue {
 			var i:int;
 			var c:String;
-			
+
 			var returnObject:ParsedJSONValue = new ParsedJSONValue();
-			
+
 			var parsingType:String = PARSING_TYPE_UNKNOWN;
 			var parsingObject:Object = null;
 			var parsingName:String;
-			
+
 			var parsedObject:ParsedJSONValue;
-			
+
 			i = 0;
-			
+
 			var mustEnd:Boolean = false;
 
 			while (i < __input.length && !mustEnd) {
 				c = __input.charAt(i);
-				
+
 				switch (parsingType) {
 					case PARSING_TYPE_UNKNOWN:
 						switch (c) {
@@ -166,7 +166,7 @@ package com.zehfernando.data.serialization.json {
 							case VALUE_NULL.charAt(0):
 								// Starting "null"
 //								trace ("-> starting null @ ",__input.length-i);
-								
+
 								if (compareStringValue(VALUE_NULL, __input.substr(i))) {
 //									trace ("-> ending null @ ",__input.length-i);
 									mustEnd = true;
@@ -178,7 +178,7 @@ package com.zehfernando.data.serialization.json {
 							case VALUE_BOOLEAN_TRUE.charAt(0):
 								// Starting "true"
 //								trace ("-> starting boolean [true] @ ",__input.length-i);
-								
+
 								if (compareStringValue(VALUE_BOOLEAN_TRUE, __input.substr(i))) {
 //									trace ("-> ending boolean [true] @ ",__input.length-i);
 									mustEnd = true;
@@ -207,10 +207,10 @@ package com.zehfernando.data.serialization.json {
 								// Ended string
 //								trace ("-> ending string ["+parsingObject+"] @ ",__input.length-i);
 								mustEnd = true;
-								
+
 								returnObject.object = parsingObject as String;
 								returnObject.length = i+1;
-								
+
 								break;
 							case "\\":
 								// Some special character
@@ -289,7 +289,7 @@ package com.zehfernando.data.serialization.json {
 								// Ended number
 //								trace ("-> ending number ["+parsingObject+"] @ ",__input.length-i);
 								mustEnd = true;
-								
+
 								returnObject.object = parseFloat(parsingObject as String);
 								returnObject.length = i;
 
@@ -323,7 +323,7 @@ package com.zehfernando.data.serialization.json {
 //								trace ("-> ending object @ ",__input.length-i);
 
 								mustEnd = true;
-								
+
 								returnObject.object = parsingObject;
 								returnObject.length = i+1;
 
@@ -349,10 +349,10 @@ package com.zehfernando.data.serialization.json {
 							default:
 								// Everything that comes after is a new value that must be added to this object
 								parsedObject = decodeObject(__input.substr(i));
-								
+
 								i += parsedObject.length-1;
 								(parsingObject as Array).push(parsedObject.object);
-								
+
 								parsingType = PARSING_TYPE_VALUE_ARRAY_POST_ITEM;
 						}
 						break;
@@ -367,7 +367,7 @@ package com.zehfernando.data.serialization.json {
 								// Ending array
 								//trace ("-> ending array @ " + i);
 								mustEnd = true;
-								
+
 								returnObject.object = parsingObject;
 								returnObject.length = i+1;
 
@@ -391,13 +391,13 @@ package com.zehfernando.data.serialization.json {
 						switch(c) {
 							case ":":
 //								trace ("  --> found colon @ ",__input.length-i);
-								
+
 								// Everything that comes after is a new value that must be added to this object
 								parsedObject = decodeObject(__input.substr(i));
-								
+
 								i += parsedObject.length-1;
 								parsingObject[parsingName] = parsedObject.object;
-								
+
 								parsingType = PARSING_TYPE_VALUE_OBJECT_POST_ITEM;
 								parsingName = null;
 
@@ -407,27 +407,27 @@ package com.zehfernando.data.serialization.json {
 						}
 						break;
 				}
-				
-				
+
+
 				i++;
 			}
-			
+
 			return returnObject;
 		}
-		
+
 		protected static function compareStringValue(__value:String, __text:String): Boolean {
 			return __value.length <= __text.length && __text.substr(0, __value.length) == __value;
 		}
-		
+
 		/*
 		protected static function decodeObjectOld(__input:String): Object {
 			var i:int;
 			var c:String;
-			
+
 			var parsingTypes:Vector.<String> = new Vector.<String>();
 			var parsingObjects:Vector.<Object> = new Vector.<Object>();
 			var parsingNames:Vector.<String> = new Vector.<String>();
-			
+
 			const TYPE_UNKNOWN:String = "";
 			const TYPE_VALUE_OBJECT:String = "object";
 			const TYPE_VALUE_ARRAY:String = "array";
@@ -435,21 +435,21 @@ package com.zehfernando.data.serialization.json {
 			const TYPE_VALUE_NUMBER:String = "number";
 			const TYPE_KEY_NAME:String = "keyName";
 			const TYPE_POST_KEY_NAME:String = "postKeyName";
-			
+
 			var finalStringValue:String;
 			var finalNumberValue:Number;
 			var finalObject:Object;
 			var finalArray:Array;
-			
+
 			parsingTypes.push(TYPE_UNKNOWN);
 			parsingObjects.push(null);
-			
+
 			// This may be slow?
-			
+
 			i = 0;
 			while (i < __input.length) {
 				c = __input.charAt(i);
-				
+
 				switch (parsingTypes[parsingTypes.length-1]) {
 					case TYPE_UNKNOWN:
 						switch (c) {
@@ -504,11 +504,11 @@ package com.zehfernando.data.serialization.json {
 							case '"':
 								// Ended string
 								parsingTypes.pop();
-								
+
 								finalStringValue = parsingObjects.pop();
 								trace ("-> ending string ["+finalStringValue+"] @ ",i);
 								trace ("==========> new = " + parsingTypes);
-								
+
 								switch (parsingTypes[parsingTypes.length-1]) {
 									case TYPE_VALUE_OBJECT:
 										trace ("  + adding to object");
@@ -519,7 +519,7 @@ package com.zehfernando.data.serialization.json {
 										(parsingObjects[parsingObjects.length-1] as Array).push(finalStringValue);
 										break;
 								}
-								
+
 								break;
 							default:
 								// Continued string
@@ -547,11 +547,11 @@ package com.zehfernando.data.serialization.json {
 							default:
 								// Ended number
 								parsingTypes.pop();
-								
+
 								finalNumberValue = parseFloat((parsingObjects.pop() as String));
 								trace ("-> ending number ["+finalNumberValue+"] @ ",i);
 								trace ("==========> new = " + parsingTypes);
-								
+
 								switch (parsingTypes[parsingTypes.length-1]) {
 									case TYPE_VALUE_OBJECT:
 										trace ("  + adding to object");
@@ -562,7 +562,7 @@ package com.zehfernando.data.serialization.json {
 										(parsingObjects[parsingObjects.length-1] as Array).push(finalNumberValue);
 										break;
 								}
-								
+
 								break;
 						}
 						break;
@@ -583,7 +583,7 @@ package com.zehfernando.data.serialization.json {
 								trace ("-> ending object @ ",i);
 								trace ("==========> new = " + parsingTypes);
 								trace ("==========> new = " + parsingObjects);
-								
+
 								if (parsingTypes.length == 0) {
 									// Ended everything
 									return finalObject;
@@ -671,21 +671,21 @@ package com.zehfernando.data.serialization.json {
 //						}
 //						break;
 				}
-				
-				
+
+
 				i++;
 			}
-			
+
 			return null;
 		}
 		*/
-		
+
 		protected static function getIndents(__indentLevel:int): String {
 			var txt:String = "";
 			while (__indentLevel-- > 0) txt += JSON.INDENT_ONE;
 			return txt;
 		}
-		
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -696,13 +696,13 @@ package com.zehfernando.data.serialization.json {
 		public static function encode(__input:Object, __allowCarriageReturn:Boolean = true): String {
 			return encodeObject(__input, __allowCarriageReturn);
 		}
-		
+
 		public static function encodeString(__string:String): String {
 			var t:String = "";
 			var i:int;
 			var c:String;
 			var charCode:int;
-			
+
 			for (i = 0; i < __string.length; i++) {
 				c = __string.charAt(i);
 				switch (c) {
@@ -711,26 +711,26 @@ package com.zehfernando.data.serialization.json {
 						break;
 					case "\\":
 						t += "\\\\";
-						break; 
+						break;
 					case "\\/":
 						t += "/";
-						break; 
+						break;
 					case "\b":
 						t += "\\b";
-						break; 
+						break;
 					case "\f":
 						t += "\\f";
-						break; 
+						break;
 					case "\n":
 						t += "\\n";
-						break; 
+						break;
 					case "\r":
 						t += "\\r";
-						break; 
+						break;
 					case "\t":
 						t += "\\t";
 						break;
-					default: 
+					default:
 						charCode = c.charCodeAt(0);
 						//if (charCode < 32) {
 						if (charCode > 127 || charCode < 32) {
@@ -742,14 +742,14 @@ package com.zehfernando.data.serialization.json {
 						}
 				}
 			}
-			
+
 			return t;
 		}
 	}
 }
 
 class ParsedJSONValue {
-	
+
 	public var object:Object;
 	public var length:int;
 
@@ -757,7 +757,7 @@ class ParsedJSONValue {
 		object = {};
 		length = 0;
 	}
-	
+
 //	public function getObjectAsString(): String {
 //		return object as String;
 //	}

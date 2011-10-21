@@ -12,10 +12,10 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh
 	 */
 	public class FacebookFeedPostRequest extends BasicFacebookRequest {
-		
+
 		// http://developers.facebook.com/docs/reference/api/post/
-		// Requires publish_stream 
-		
+		// Requires publish_stream
+
 		// Properties
 		protected var _targetId:String;
 		protected var _message:String;				// The message
@@ -31,7 +31,7 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Results
 		protected var _postId:String;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// http://developers.facebook.com/docs/reference/api/post/
 
 			_targetId = "";
-			
+
 			_message = "";
 			_picture = "";
 			_link = "";
@@ -91,14 +91,14 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_postId = response["id"];
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_TARGET_ID, _targetId);
 			super.execute();
@@ -122,42 +122,42 @@ package com.zehfernando.net.apis.facebook.services {
 		public function set message(__value:String): void {
 			_message = __value;
 		}
-		
+
 		public function get picture(): String {
 			return _picture;
 		}
 		public function set picture(__value:String): void {
 			_picture = __value;
 		}
-		
+
 		public function get link(): String {
 			return _link;
 		}
 		public function set link(__value:String): void {
 			_link = __value;
 		}
-		
+
 		public function get name(): String {
 			return _name;
 		}
 		public function set name(__value:String): void {
 			_name = __value;
 		}
-		
+
 		public function get caption(): String {
 			return _caption;
 		}
 		public function set caption(__value:String): void {
 			_caption = __value;
 		}
-		
+
 		public function get description(): String {
 			return _description;
 		}
 		public function set description(__value:String): void {
 			_description = __value;
 		}
-		
+
 		public function get source(): String {
 			return _source;
 		}
@@ -173,7 +173,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Results
-		
+
 		public function get postId(): String {
 			return _postId;
 		}

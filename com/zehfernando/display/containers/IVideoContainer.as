@@ -13,10 +13,10 @@ package com.zehfernando.display.containers {
 		function pauseVideo():void;
 		function stopVideo():void;
 		function playPauseVideo():void;
-		
+
 		function load(__urlOrId:String): void;
 		function unload(): void;
-		
+
 		function dispose(): void;
 
 		function getMaximumPositionPlayed():Number;
@@ -44,11 +44,11 @@ package com.zehfernando.display.containers {
 
 		function get loop(): Boolean;
 		function set loop(__value:Boolean):void;
-		
+
 		function get loadedPercent(): Number;
 
 		//
-		
+
 		function get smoothing(): Boolean;
 		function set smoothing(__value:Boolean):void;
 

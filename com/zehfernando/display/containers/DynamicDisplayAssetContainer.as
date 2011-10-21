@@ -66,7 +66,7 @@ package com.zehfernando.display.containers {
 			if (_isLoading || _isLoaded) unload();
 			_contentURL = __url;
 		}
-		
+
 		public function unload(): void {
 			_contentURL = null;
 			_isLoaded = false;
@@ -108,11 +108,11 @@ package com.zehfernando.display.containers {
 		public function get bytesTotal(): Number {
 			return _bytesTotal;
 		}
-		
+
 		public function get contentURL(): String {
 			return _contentURL;
 		}
-		
+
 
 		// State information ----------------------------------
 
@@ -122,7 +122,7 @@ package com.zehfernando.display.containers {
 		public function get isLoading(): Boolean {
 			return _isLoading;
 		}
-		
+
 		public function get smoothing(): Boolean {
 			return _smoothing;
 		}

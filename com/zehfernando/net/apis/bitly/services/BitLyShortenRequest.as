@@ -18,16 +18,16 @@ package com.zehfernando.net.apis.bitly.services {
 	 * @author zeh
 	 */
 	public class BitLyShortenRequest extends EventDispatcher {
-		
+
 		// Properties
-		public var login:String; 
+		public var login:String;
 		public var apiKey:String;
 		public var longURL:String;
-		
+
 		protected var loader:URLLoader;
-		
+
 		protected var _isLoading:Boolean;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -39,24 +39,24 @@ package com.zehfernando.net.apis.bitly.services {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public function execute(): void {
-			
+
 			var req:URLRequest = new URLRequest();
-			
+
 			req.url = BitLyConstants.DOMAIN + BitLyConstants.SERVICE_SHORTEN;
 			req.method = URLRequestMethod.GET;
 
 			var vars:URLVariables = new URLVariables();
-			
+
 			vars["login"] = login;
 			vars["apiKey"] = apiKey;
 			vars["longUrl"] = longURL;
 			vars["format"] = "xml";
-			
+
 			// http://code.google.com/p/bitly-api/wiki/ApiDocumentation
 			// Missing: .domain, .x_login, .x_apiKey
-			
+
 			req.data = vars;
-			
+
 			loader = new URLLoader();
 			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
@@ -86,13 +86,13 @@ package com.zehfernando.net.apis.bitly.services {
 //			trace ("--> bit.ly -> onHTTPStatus");
 //			trace ("--> " + e.status);
 		}
-		
+
 		protected function onSecurityError(e:SecurityErrorEvent): void {
 //			trace ("--> bit.ly -> onSecurityError");
 			dispatchEvent(new BitLyEvent(BitLyEvent.ERROR));
 			clearLoader();
 		}
-		
+
 		protected function onIOError(e:IOErrorEvent): void {
 //			trace ("--> bit.ly -> onIOError");
 			dispatchEvent(new BitLyEvent(BitLyEvent.ERROR));
@@ -101,14 +101,14 @@ package com.zehfernando.net.apis.bitly.services {
 
 		protected function onComplete(e:Event): void {
 //			trace ("--> bit.ly -> onComplete");
-			
+
 			var response:XML = new XML(loader.data);
-			
+
 			var statusTxt:String = XMLUtils.getNodeAsString(response, "status_txt", "");
 			var statusCode:int = XMLUtils.getNodeAsInteger(response, "status_code", 0);
-			
+
 			var ble:BitLyEvent;
-			
+
 			if (statusCode == BitLyConstants.STATUS_CODE_SUCCESS) {
 				var dataXML:XML = response.child("data")[0];
 				var shortURL:BitLyShortURL = new BitLyShortURL();
@@ -122,7 +122,7 @@ package com.zehfernando.net.apis.bitly.services {
 			} else {
 				ble = new BitLyEvent(BitLyEvent.ERROR, false, false, null, statusCode, statusTxt);
 			}
-			
+
 			dispatchEvent(ble);
 
 			clearLoader();

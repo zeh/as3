@@ -1,11 +1,11 @@
 package com.zehfernando.utils {
-	
+
 	// use atan2 instead?
-	
+
 	public function getAngle(x:Number, y:Number): Number {
 		// Returns the angle (in radians) of a point
 		// 0 = right side (3 o' clock)
-		
+
 		if (x == 0 && y == 0) return 0;
 		var ang:Number = Math.atan(Math.abs(y) / Math.abs(x));
 		/*
@@ -26,7 +26,7 @@ package com.zehfernando.utils {
 		} else if (x < 0 && y < 0) {
 			ang += Math.PI;
 		}
-		
+
 		return (ang);
 	}
 

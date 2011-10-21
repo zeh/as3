@@ -12,11 +12,11 @@ package com.zehfernando.display.containers {
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class ImageContainer extends DynamicDisplayAssetContainer {
-		
+
 		// Constants
 		// Exception fault: SecurityError: Error #2123: Security sandbox violation: BitmapData.draw: http://fakehost.com/5GUM_COACHELLA2912/deploy/site/index.swf cannot access http://static.ak.fbcdn.net/rsrc.php/v1/yL/r/HsTZSDw4avx.gif?type=large. No policy files granted access.
 		public static const EVENT_SECURITY_SANDBOX_VIOLATION:String = "onSecuritySandboxViolation";
-		
+
 		// Properties
 		protected var _isConnectionOpened:Boolean;
 
@@ -40,22 +40,22 @@ package com.zehfernando.display.containers {
 			} else if (_isLoaded) {
 				loader.unload();
 			}
-			
+
 			if (Boolean(loader)) {
 				removeLoaderEvents();
 				contentHolder.removeChild(loader);
 				loader = null;
 			}
-			
+
 			super.dispose();
 		}
-		
+
 		protected function removeLoaderEvents(): void {
 			loader.contentLoaderInfo.removeEventListener(Event.OPEN, onLoadOpen);
 			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoadComplete);
 			loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onLoadProgress);
 			loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
-		}		
+		}
 
 		override protected function applySmoothing(): void {
 			if (_isLoaded) {
@@ -136,7 +136,7 @@ package com.zehfernando.display.containers {
 			_isLoading = true;
 			_isConnectionOpened = false;
 			_isLoaded = false;
-			
+
 			loader = new Loader();
 			setAsset(loader);
 
@@ -147,7 +147,7 @@ package com.zehfernando.display.containers {
 
 			var context:LoaderContext = new LoaderContext();
 			context.checkPolicyFile = true;
-			
+
 			loader.load(new URLRequest(_contentURL), context);
 		}
 	}

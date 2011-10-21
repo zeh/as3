@@ -5,7 +5,7 @@ package com.zehfernando.data.types {
 	 * @author zeh
 	 */
 	public class MedianNumber extends EventDispatcher {
-		
+
 		// Like AttenuatedNumber, but using a median
 
 		// Properties
@@ -18,22 +18,22 @@ package com.zehfernando.data.types {
 
 		public function MedianNumber(__maxLength:int = 3, __startingValue:Number = NaN) {
 			_maxLength = __maxLength;
-			
+
 			_values = new Vector.<Number>();
-			
+
 			if (!isNaN(__startingValue)) _values.push(__startingValue);
 		}
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function checkLength(): void {
 			// Check the length of the list
 			if (_values.length > _maxLength) {
 				_values.splice(0, _values.length - _maxLength);
 			}
 		}
-		
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ package com.zehfernando.data.types {
 			_values.push(__value);
 			checkLength();
 		}
-		
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 

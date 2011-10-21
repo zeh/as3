@@ -15,13 +15,13 @@ package com.zehfernando.net.apis.youtube.services {
 	 * @author zeh
 	 */
 	public class YouTubeVideoInfoRequest extends BasicServiceRequest {
-		
+
 		// Properties
 		protected var _videoId:String;
-		
+
 		// Results
 		protected var _video:YouTubeVideo;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -44,7 +44,7 @@ package com.zehfernando.net.apis.youtube.services {
 			super.onSecurityError(e);
 			dispatchEvent(new YouTubeServiceEvent(YouTubeServiceEvent.ERROR));
 		}
-		
+
 		override protected function onIOError(e:IOErrorEvent): void {
 			super.onIOError(e);
 			dispatchEvent(new YouTubeServiceEvent(YouTubeServiceEvent.ERROR));
@@ -52,12 +52,12 @@ package com.zehfernando.net.apis.youtube.services {
 
 		override protected function onComplete(e:Event): void {
 			_video = YouTubeVideo.fromXML(new XML(loader.data));
-			
+
 			super.onComplete(e);
 			dispatchEvent(new YouTubeServiceEvent(YouTubeServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(YouTubeConstants.PARAMETER_VIDEO_ID, _videoId);
 			super.execute();
@@ -74,9 +74,9 @@ package com.zehfernando.net.apis.youtube.services {
 		public function set videoId(__value:String):void {
 			_videoId = __value;
 		}
-		
+
 		// Results
-		
+
 		public function get video(): YouTubeVideo {
 			// TODO: clone?
 			return _video;

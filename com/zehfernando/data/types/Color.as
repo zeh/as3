@@ -9,12 +9,12 @@ package com.zehfernando.data.types {
 	 */
 	public class Color {
 
-		// Properties		
+		// Properties
 		protected var _r:Number;
 		protected var _g:Number;
 		protected var _b:Number;
 		protected var _a:Number;
-		
+
 		protected var _h:Number = 0;		// for hue preservation when desaturated
 
 		// ================================================================================================================
@@ -75,7 +75,7 @@ package com.zehfernando.data.types {
 			cf.alphaMultiplier = _a;
 			return cf;
 		}
-		
+
 		/**
 		 * Converts this color to a readable string.
 		 * @return	A string describing this color.
@@ -91,10 +91,10 @@ package com.zehfernando.data.types {
 			txt += ",";
 			txt += "a="+_a.toString(10);
 			txt += "]";
-			
+
 			return txt;
 		}
-		
+
 		public function clone(): Color {
 			var cc:Color = new Color();
 			cc.r = _r;
@@ -104,7 +104,7 @@ package com.zehfernando.data.types {
 			return cc;
 		}
 
-		
+
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
@@ -125,7 +125,7 @@ package com.zehfernando.data.types {
 		}
 
 		/**
-		 * Creates a new Color object from a number in the RRGGBB format (for example: 0x000000 for black, or 0xffffff for white). The color's alpha property is set to 1 (totally opaque). 
+		 * Creates a new Color object from a number in the RRGGBB format (for example: 0x000000 for black, or 0xffffff for white). The color's alpha property is set to 1 (totally opaque).
 		 * @return	The new color object.
 		 */
 		public static function fromRRGGBB(__value:Number): Color {
@@ -134,7 +134,7 @@ package com.zehfernando.data.types {
 			newColor.g = getGFromNumber(__value, 1);
 			newColor.b = getBFromNumber(__value, 1);
 			newColor.a = 1;
-			
+
 			return newColor;
 		}
 
@@ -247,7 +247,7 @@ package com.zehfernando.data.types {
 
 			return newColor;
 		}
-		
+
 		public static function interpolate(__c1:Color, __c2:Color, f:Number): Color {
 			// Linear RGB interpolation between two colors
 			var newColor:Color = new Color();
@@ -316,7 +316,7 @@ package com.zehfernando.data.types {
 			// 200 -> 200 - 0.7843...
 			// 100% -> 255 -> 1
 			// 256 -> 255 -> 1
-			// 156.7 -> 0.614... 
+			// 156.7 -> 0.614...
 
 			var finalValue:Number;
 
@@ -331,13 +331,13 @@ package com.zehfernando.data.types {
 
 			return MathUtils.clamp(finalValue) * __max;
 		}
-		
+
 		protected function setHSV(__h:Number, __s:Number, __v:Number): void {
 			//var hi:Number = Math.floor(__h/60) % 6;
 			var hi:Number = MathUtils.rangeMod(Math.floor(__h/60), 0, 6);
 			var f:Number = __h/60 - Math.floor(__h/60);
 			var p:Number = __v * (1 - __s);
-			var q:Number = __v * (1 - f * __s);   
+			var q:Number = __v * (1 - f * __s);
 			var t:Number = __v * (1 - (1 - f) * __s);
 			switch (hi) {
 				case 0:
@@ -385,10 +385,10 @@ package com.zehfernando.data.types {
 			var tr:Number = hk + 1/3;
 			var tg:Number = hk;
 			var tb:Number = hk - 1/3;
-			
+
 			_r = calculateHSLComponent(tr, p, q) * 255;
 			_g = calculateHSLComponent(tg, p, q) * 255;
-			_b = calculateHSLComponent(tb, p, q) * 255;  
+			_b = calculateHSLComponent(tb, p, q) * 255;
 		}
 
 		protected function calculateHSLComponent(c:Number, p:Number, q:Number): Number {
@@ -404,7 +404,7 @@ package com.zehfernando.data.types {
 			}
 		}
 		*/
-		
+
 
 		// ================================================================================================================
 		// GETTER and SETTER functions ------------------------------------------------------------------------------------
@@ -449,14 +449,14 @@ package com.zehfernando.data.types {
 			if (max == min) {
 				return 0;
 			} else {
-				return 1 - (min/max); 
+				return 1 - (min/max);
 			}
 		}
 		public function set s(__value:Number): void {
 			// Set HSV-style saturation (0-1)
 			setHSV(h, MathUtils.clamp(__value), v);
 		}
-		
+
 		public function get v(): Number {
 			// Return Value (0-1)
 			var max:Number = Math.max(_r, _g, _b);
@@ -467,9 +467,9 @@ package com.zehfernando.data.types {
 			// Set lightness (0-1)
 			setHSV(h, s, MathUtils.clamp(__value));
 		}
-		
+
 		/*
-		HSL:		
+		HSL:
 		public function get h(): Number {
 			// Return Hue (0-360)
 			var __r:Number = MathUtils.map(_r, 0, 255);
@@ -513,7 +513,7 @@ package com.zehfernando.data.types {
 			// Set HSL-style saturation (0-1)
 			setHSL(h, MathUtils.clamp(__value), l);
 		}
-		
+
 		public function get l(): Number {
 			// Return Lightness (0-1)
 			var __r:Number = MathUtils.map(_r, 0, 255);
@@ -529,6 +529,6 @@ package com.zehfernando.data.types {
 			setHSL(h, s, MathUtils.clamp(__value));
 		}
 		*/
-		
+
 	}
 }

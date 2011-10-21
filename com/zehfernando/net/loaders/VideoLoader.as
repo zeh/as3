@@ -27,11 +27,11 @@ package com.zehfernando.net.loaders {
 		/* Dispatches:
 
 		SecurityErrorEvent.SECURITY_ERROR
-		
+
 		Event.OPEN
 		ProgressEvent.PROGRESS
 		Event.COMPLETE
-		
+
 		VideoLoaderEvent.*
 
 		VideoLoaderCuePointEvent.CUE_POINT
@@ -47,21 +47,21 @@ package com.zehfernando.net.loaders {
 		protected var isMonitoringTime:Boolean;
 
 		protected var _metaData:Object;
-		
+
 		protected var _hasStartedLoading:Boolean;
 
 		protected var _hasMetaData:Boolean;
 		protected var _isLoading:Boolean;
 		protected var _isLoaded:Boolean;
-		
+
 		protected var _timeStartedLoading:int;
 		protected var _timeCompletedLoading:int;
-		
+
 		protected var _hasVideo:Boolean;
 
 		protected var lastCuePoint:Object;
 		protected var _request:URLRequest;
-		
+
 		protected var resumeAfterMetaDataLoad:Boolean;
 		protected var pauseAfterMetaDataLoad:Boolean;
 		protected var isPlayingToForceMetaDataLoad:Boolean;
@@ -80,12 +80,12 @@ package com.zehfernando.net.loaders {
 			_hasMetaData = false;
 			_isLoading = false;
 			_isLoaded = false;
-			
+
 			timeStartedWaitingForMetaData = 0;
-			
+
 			_netConnection = new NetConnection();
 			_netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-    		_netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onNetError);
+			_netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onNetError);
 			_netConnection.connect(null);
 
 			_netStream = new NetStream(_netConnection);
@@ -99,11 +99,11 @@ package com.zehfernando.net.loaders {
 
 			_hasVideo = true;
 		}
-			
+
 
 		// ================================================================================================================
 		// INSTANCE functions ---------------------------------------------------------------------------------------------
-		
+
 		protected function startMonitoringLoading(): void {
 			if (!isMonitoringLoading) {
 				isMonitoringLoading = true;
@@ -118,7 +118,7 @@ package com.zehfernando.net.loaders {
 				removeEventListener(Event.ENTER_FRAME, onEnterFrameMonitorLoading);
 			}
 		}
-		
+
 		protected function startMonitoringTime(): void {
 			if (!isMonitoringTime) {
 				isMonitoringTime = true;
@@ -170,24 +170,24 @@ package com.zehfernando.net.loaders {
 //	    		Log.echo(" --> " + iis + " = " + __newData[iis]);
 //	    	}
 			dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.RECEIVED_XMP_DATA));
-		} 
-	
-	    public function onTextData(__newData:Object):void {
+		}
+
+		public function onTextData(__newData:Object):void {
 			log ("##### TEXT DATA : " + JSON.encode(__newData));
 		}
 
-	    public function onImageData(__newData:Object):void {
+		public function onImageData(__newData:Object):void {
 			log ("##### IMAGE DATA : " + JSON.encode(__newData));
 		}
 
-	    public function onMetaData(__newData:Object):void {
-	    	for (var iis:String in __newData) {
-	    		//Log.echo(" --> " + iis + " = " + __newData[iis]);
-	    		_metaData[iis] = __newData[iis];
-	    	}
+		public function onMetaData(__newData:Object):void {
+			for (var iis:String in __newData) {
+				//Log.echo(" --> " + iis + " = " + __newData[iis]);
+				_metaData[iis] = __newData[iis];
+			}
 
 			//log(_request.url + " METADATA ==============> " + JSON.encode(_metaData));
-			
+
 			//log (">>> meta data received");
 
 			_hasMetaData = true;
@@ -199,7 +199,7 @@ package com.zehfernando.net.loaders {
 			//log(">>>>> " + _isLoading, _netStream.bytesLoaded, _netStream.bytesTotal);
 			//onEnterFrameMonitorLoading(null);
 			onEnterFrameMonitorTime(null);
-			
+
 			/* Examples of metadata (received from a f4v video encoded in after effects):
 			aacaot = 2
 			audiochannels = 2
@@ -223,213 +223,213 @@ package com.zehfernando.net.loaders {
 			videodatarate = 1000
 			videoframerate = 24
 			width = 1280
-			
+
 			Another (SAME f4v, twice!!):
 {
-    "videocodecid" : "avc1",
-    "seekpoints" : [
-        {
-            "time" : 0,
-            "offset" : 18781
-        },
-        {
-            "time" : 0.542,
-            "offset" : 192561
-        },
-        {
-            "time" : 1.917,
-            "offset" : 649419
-        },
-        {
-            "time" : 2.208,
-            "offset" : 738741
-        },
-        {
-            "time" : 3.583,
-            "offset" : 1024958
-        },
-        {
-            "time" : 4.958,
-            "offset" : 1327587
-        },
-        {
-            "time" : 5.417,
-            "offset" : 1455272
-        },
-        {
-            "time" : 6.792,
-            "offset" : 1599767
-        },
-        {
-            "time" : 8.167,
-            "offset" : 1844573
-        },
-        {
-            "time" : 9.542,
-            "offset" : 2184481
-        },
-        {
-            "time" : 10.917,
-            "offset" : 2536579
-        },
-        {
-            "time" : 12.292,
-            "offset" : 2787705
-        }
-    ],
-    "width" : 1280,
-    "avcprofile" : 100,
-    "height" : 720,
-    "aacaot" : 2,
-    "avclevel" : 51,
-    "audiocodecid" : "mp4a",
-    "moovposition" : 36,
-    "audiosamplerate" : 44100,
-    "videoframerate" : 24,
-    "trackinfo" : [
-        {
-            "sampledescription" : [
-                {
-                    "sampletype" : "avc1"
-                }
-            ],
-            "language" : "eng",
-            "timescale" : 90000,
-            "length" : 1188750
-        },
-        {
-            "sampledescription" : [
-                {
-                    "sampletype" : "mp4a"
-                }
-            ],
-            "language" : "eng",
-            "timescale" : 44100,
-            "length" : 584704
-        },
-        {
-            "sampledescription" : [
-                {
-                    "sampletype" : "amf0"
-                }
-            ],
-            "language" : "eng",
-            "timescale" : 90000,
-            "length" : 1188750
-        }
-    ],
-    "duration" : 13.25859410430839,
-    "audiochannels" : 2
+	"videocodecid" : "avc1",
+	"seekpoints" : [
+		{
+			"time" : 0,
+			"offset" : 18781
+		},
+		{
+			"time" : 0.542,
+			"offset" : 192561
+		},
+		{
+			"time" : 1.917,
+			"offset" : 649419
+		},
+		{
+			"time" : 2.208,
+			"offset" : 738741
+		},
+		{
+			"time" : 3.583,
+			"offset" : 1024958
+		},
+		{
+			"time" : 4.958,
+			"offset" : 1327587
+		},
+		{
+			"time" : 5.417,
+			"offset" : 1455272
+		},
+		{
+			"time" : 6.792,
+			"offset" : 1599767
+		},
+		{
+			"time" : 8.167,
+			"offset" : 1844573
+		},
+		{
+			"time" : 9.542,
+			"offset" : 2184481
+		},
+		{
+			"time" : 10.917,
+			"offset" : 2536579
+		},
+		{
+			"time" : 12.292,
+			"offset" : 2787705
+		}
+	],
+	"width" : 1280,
+	"avcprofile" : 100,
+	"height" : 720,
+	"aacaot" : 2,
+	"avclevel" : 51,
+	"audiocodecid" : "mp4a",
+	"moovposition" : 36,
+	"audiosamplerate" : 44100,
+	"videoframerate" : 24,
+	"trackinfo" : [
+		{
+			"sampledescription" : [
+				{
+					"sampletype" : "avc1"
+				}
+			],
+			"language" : "eng",
+			"timescale" : 90000,
+			"length" : 1188750
+		},
+		{
+			"sampledescription" : [
+				{
+					"sampletype" : "mp4a"
+				}
+			],
+			"language" : "eng",
+			"timescale" : 44100,
+			"length" : 584704
+		},
+		{
+			"sampledescription" : [
+				{
+					"sampletype" : "amf0"
+				}
+			],
+			"language" : "eng",
+			"timescale" : 90000,
+			"length" : 1188750
+		}
+	],
+	"duration" : 13.25859410430839,
+	"audiochannels" : 2
 }
 {
-    "videocodecid" : 7,
-    "videodatarate" : 1799.998,
-    "framerate" : 24,
-    "seekpoints" : [
-        {
-            "time" : 0,
-            "offset" : 18781
-        },
-        {
-            "time" : 0.542,
-            "offset" : 192561
-        },
-        {
-            "time" : 1.917,
-            "offset" : 649419
-        },
-        {
-            "time" : 2.208,
-            "offset" : 738741
-        },
-        {
-            "time" : 3.583,
-            "offset" : 1024958
-        },
-        {
-            "time" : 4.958,
-            "offset" : 1327587
-        },
-        {
-            "time" : 5.417,
-            "offset" : 1455272
-        },
-        {
-            "time" : 6.792,
-            "offset" : 1599767
-        },
-        {
-            "time" : 8.167,
-            "offset" : 1844573
-        },
-        {
-            "time" : 9.542,
-            "offset" : 2184481
-        },
-        {
-            "time" : 10.917,
-            "offset" : 2536579
-        },
-        {
-            "time" : 12.292,
-            "offset" : 2787705
-        }
-    ],
-    "width" : 1280,
-    "avcprofile" : 100,
-    "audiodelay" : 0.036,
-    "height" : 720,
-    "aacaot" : 2,
-    "avclevel" : 51,
-    "audiodatarate" : 112,
-    "audiocodecid" : 10,
-    "canSeekToEnd" : true,
-    "moovposition" : 36,
-    "audiosamplerate" : 44100,
-    "videoframerate" : 24,
-    "trackinfo" : [
-        {
-            "sampledescription" : [
-                {
-                    "sampletype" : "avc1"
-                }
-            ],
-            "language" : "eng",
-            "timescale" : 90000,
-            "length" : 1188750
-        },
-        {
-            "sampledescription" : [
-                {
-                    "sampletype" : "mp4a"
-                }
-            ],
-            "language" : "eng",
-            "timescale" : 44100,
-            "length" : 584704
-        },
-        {
-            "sampledescription" : [
-                {
-                    "sampletype" : "amf0"
-                }
-            ],
-            "language" : "eng",
-            "timescale" : 90000,
-            "length" : 1188750
-        }
-    ],
-    "duration" : 13.208,
-    "audiochannels" : 2
+	"videocodecid" : 7,
+	"videodatarate" : 1799.998,
+	"framerate" : 24,
+	"seekpoints" : [
+		{
+			"time" : 0,
+			"offset" : 18781
+		},
+		{
+			"time" : 0.542,
+			"offset" : 192561
+		},
+		{
+			"time" : 1.917,
+			"offset" : 649419
+		},
+		{
+			"time" : 2.208,
+			"offset" : 738741
+		},
+		{
+			"time" : 3.583,
+			"offset" : 1024958
+		},
+		{
+			"time" : 4.958,
+			"offset" : 1327587
+		},
+		{
+			"time" : 5.417,
+			"offset" : 1455272
+		},
+		{
+			"time" : 6.792,
+			"offset" : 1599767
+		},
+		{
+			"time" : 8.167,
+			"offset" : 1844573
+		},
+		{
+			"time" : 9.542,
+			"offset" : 2184481
+		},
+		{
+			"time" : 10.917,
+			"offset" : 2536579
+		},
+		{
+			"time" : 12.292,
+			"offset" : 2787705
+		}
+	],
+	"width" : 1280,
+	"avcprofile" : 100,
+	"audiodelay" : 0.036,
+	"height" : 720,
+	"aacaot" : 2,
+	"avclevel" : 51,
+	"audiodatarate" : 112,
+	"audiocodecid" : 10,
+	"canSeekToEnd" : true,
+	"moovposition" : 36,
+	"audiosamplerate" : 44100,
+	"videoframerate" : 24,
+	"trackinfo" : [
+		{
+			"sampledescription" : [
+				{
+					"sampletype" : "avc1"
+				}
+			],
+			"language" : "eng",
+			"timescale" : 90000,
+			"length" : 1188750
+		},
+		{
+			"sampledescription" : [
+				{
+					"sampletype" : "mp4a"
+				}
+			],
+			"language" : "eng",
+			"timescale" : 44100,
+			"length" : 584704
+		},
+		{
+			"sampledescription" : [
+				{
+					"sampletype" : "amf0"
+				}
+			],
+			"language" : "eng",
+			"timescale" : 90000,
+			"length" : 1188750
+		}
+	],
+	"duration" : 13.208,
+	"audiochannels" : 2
 }
 			*/
-	    }
-	
-	    public function onCuePoint(__cueInfo:Object):void {
+		}
+
+		public function onCuePoint(__cueInfo:Object):void {
 			//log(" --> time=" + __cueInfo["time"] + " name=" + __cueInfo["name"] + " type=" + __cueInfo["type"]);
-	    	//lastCuePoint = info;
-	    	dispatchEvent(new VideoLoaderCuePointEvent(VideoLoaderCuePointEvent.CUE_POINT, false, false, __cueInfo["time"], __cueInfo["name"], __cueInfo["type"], __cueInfo["parameters"]));
-	    	//log ("--> " + typeof __cueInfo.parameters);
+			//lastCuePoint = info;
+			dispatchEvent(new VideoLoaderCuePointEvent(VideoLoaderCuePointEvent.CUE_POINT, false, false, __cueInfo["time"], __cueInfo["name"], __cueInfo["type"], __cueInfo["parameters"]));
+			//log ("--> " + typeof __cueInfo.parameters);
  		    //for (var iis:String in __cueInfo.parameters) log(iis, __cueInfo.parameters[iis], typeof __cueInfo.parameters[iis]);
 		}
 
@@ -458,20 +458,20 @@ package com.zehfernando.net.loaders {
 
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
-		
+
 		protected function onEnterFrameMonitorLoading(e:Event): void {
 			// Some load progress has been made
-			
+
 			//log("HAS META = " + _hasMetaData);
-			
+
 			if (!_hasStartedLoading) {
 				// First loading event
 				onLoadStart();
 			}
-			
+
 			// Continue loading
 			onLoadProgress();
-			
+
 			if (bytesLoaded > 0) {
 				if (bytesTotal > 0 && bytesLoaded >= bytesTotal) {
 					if (_hasMetaData) {
@@ -499,13 +499,13 @@ package com.zehfernando.net.loaders {
 				}
 			}
 		}
-		
+
 		protected function onEnterFrameMonitorTime(e:Event): void {
 			if (!isPlayingToForceMetaDataLoad) {
 				dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.TIME_CHANGE));
 			}
 		}
-		
+
 		protected function onPlayStatus(event:NetStatusEvent):void {
 			log ("##### PLAY STATUS : " + event.info["code"]);
 			// NetStream.Play.Switch
@@ -515,69 +515,69 @@ package com.zehfernando.net.loaders {
 
 		protected function onNetStatus(event:NetStatusEvent):void {
 			//trace ("VideoContainer :: onNetStatus :: "+event.info.code);
-			
-			/* 
+
+			/*
 			event.info.code could be:
-			
+
 			NetConnection.Connect.Success -- // Fired *immediately* after nc.connect(null)
 			NetStream.Play.StreamNotFound
 			NetStream.Play.Start - stream starts loading?
 			NetStream.Buffer.Full
 			NetStream.Buffer.Flush
 			NetStream.Seek.Notify
-			
+
 			When it finishes:
 			NetStream.Buffer.Flush
 			NetStream.Buffer.Flush
 			NetStream.Play.Stop
 			NetStream.Buffer.Empty
 			*/
-			
-			//trace ("videocontainer onNetStatus :: " + event.info.code);
-            switch (event.info["code"]) {
-				case "NetStream.Play.StreamNotFound":
-                	log("Stream location [" + _request.url + "] not found!");
-                	dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.STREAM_NOT_FOUND));
-                	stopMonitoringLoading();
-                    break;
-                case "NetStream.Seek.Notify":
-                	dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.SEEK_NOTIFY));
-                	break;
-                case "NetStream.Play.Start":
-                	// Apparently this only works with streaming netstreams? 
-                	//trace ("netstream.play.start " + _contentURL);
-            		startMonitoringTime();
-            		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_START));
-                	break;
-            	case "NetStream.Buffer.Empty":
-            		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.BUFFER_EMPTY));
-            		break;
-            	case "NetStream.Buffer.Full":
-            		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.BUFFER_FULL));
-					break;
-            	case "NetStream.Buffer.Flush":
-            		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.BUFFER_FLUSH));
-					break;
-            	case "NetStream.Play.Stop":
-            		stopMonitoringTime();
-            		dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_STOP));
-            		if (time > duration - 0.1) dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_FINISH));
-            		break;
-            }
-        }
 
-        protected function onNetError(e:SecurityErrorEvent):void {
+			//trace ("videocontainer onNetStatus :: " + event.info.code);
+			switch (event.info["code"]) {
+				case "NetStream.Play.StreamNotFound":
+					log("Stream location [" + _request.url + "] not found!");
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.STREAM_NOT_FOUND));
+					stopMonitoringLoading();
+					break;
+				case "NetStream.Seek.Notify":
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.SEEK_NOTIFY));
+					break;
+				case "NetStream.Play.Start":
+					// Apparently this only works with streaming netstreams?
+					//trace ("netstream.play.start " + _contentURL);
+					startMonitoringTime();
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_START));
+					break;
+				case "NetStream.Buffer.Empty":
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.BUFFER_EMPTY));
+					break;
+				case "NetStream.Buffer.Full":
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.BUFFER_FULL));
+					break;
+				case "NetStream.Buffer.Flush":
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.BUFFER_FLUSH));
+					break;
+				case "NetStream.Play.Stop":
+					stopMonitoringTime();
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_STOP));
+					if (time > duration - 0.1) dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_FINISH));
+					break;
+			}
+		}
+
+		protected function onNetError(e:SecurityErrorEvent):void {
 			log("securityErrorHandler: " + e);
 			dispatchEvent(e);
-			
+
 			stopMonitoringLoading();
 		}
-		
+
 		// ================================================================================================================
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
-		
+
 		public function load(__request:URLRequest): void {
-			
+
 			_request = __request;
 			_isLoaded = false;
 			_isLoading = true;
@@ -596,7 +596,7 @@ package com.zehfernando.net.loaders {
 			_isLoaded = false;
 			_isLoading = false;
 			_hasMetaData = false;
-			
+
 			_metaData = {};
 
 			if (_hasVideo) {
@@ -615,7 +615,7 @@ package com.zehfernando.net.loaders {
 		}
 
 		// Functions that extend the existing objects
-		
+
 		public function resume(): void {
 			if (_hasVideo) {
 				//log(">>>>>>>>>>>>>>> resume");
@@ -648,7 +648,7 @@ package com.zehfernando.net.loaders {
 				}
 			}
 		}
-		
+
 		public function seek(__time:Number): void {
 			if (_hasVideo) {
 				_netStream.seek(__time);
@@ -668,20 +668,20 @@ package com.zehfernando.net.loaders {
 		public function get metaData(): Object {
 			return _metaData;
 		}
-		
+
 		// Properties that extend existing objects
-		
+
 		public function get bufferLength(): Number {
 			return _netStream.bufferLength;
 		}
-		
+
 		public function get bufferTime(): Number {
 			return _netStream.bufferTime;
 		}
 		public function set bufferTime(__value:Number): void {
 			_netStream.bufferTime = __value;
 		}
-		
+
 		public function get time(): Number {
 			return _hasVideo ? _netStream.time : 0;
 		}
@@ -708,30 +708,30 @@ package com.zehfernando.net.loaders {
 		public function get bytesTotal(): uint {
 			return _hasVideo && _netStream.bytesTotal < 0xffffffff ? _netStream.bytesTotal : 0;
 		}
-		
+
 		public function get decodedFrames(): uint {
 			return _hasVideo ? _netStream.decodedFrames : 0;
 		}
-		
+
 		public function get droppedFrames(): uint {
 			return _hasVideo ? _netStream.info.droppedFrames : 0;
 		}
-		
+
 		public function get currentFPS(): Number {
 			return _hasVideo ? _netStream.currentFPS : 0; // The number of frames per second being displayed. If you are exporting video files to be played back on a number of systems, you can check this value during testing to help you determine how much compression to apply when exporting the file
 		}
-		
+
 		override public function get soundTransform(): SoundTransform {
 			return _hasVideo ? _netStream.soundTransform : null;
 		}
 		override public function set soundTransform(__value:SoundTransform): void {
 			if (_hasVideo) _netStream.soundTransform = __value;
 		}
-		
+
 		public function get url(): String {
 			return Boolean(_request) ? _request.url : null;
 		}
-		
+
 		public function getLoadingSpeed(): Number {
 			// Returns the loading speed, in bytes per second
 			if (_isLoading) {

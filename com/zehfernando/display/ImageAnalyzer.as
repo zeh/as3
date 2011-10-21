@@ -8,10 +8,10 @@ package com.zehfernando.display {
 	 * @author zeh
 	 */
 	public class ImageAnalyzer {
-		
+
 		// Computes the light from a BitmapData image, based on histogram... max color, min color, average color
 		// TODO: Ugh, create a better API for this
-		
+
 		// Properties
 		protected var _min:Color;
 		protected var _max:Color;
@@ -28,9 +28,9 @@ package com.zehfernando.display {
 			var items:Number;		// Number of items
 			var cmin:Number;
 			var cmax:Number;
-			
+
 			var population:int;
-			
+
 			_min = new Color();
 			_max = new Color();
 			_average = new Color();
@@ -44,7 +44,7 @@ package com.zehfernando.display {
 					population = hstg[i][j];
 					items += population;
 					tot += population * j;
-					
+
 					if (population > 0 && j < cmin) cmin = j;
 
 					if (population > 0 && j > cmax) cmax = j;
@@ -73,7 +73,7 @@ package com.zehfernando.display {
 						break;
 				}
 			}
-			
+
 			// Luma values - http://www.faqs.org/faqs/graphics/colorspace-faq/
 			// var cavg:Number = avg[0] * 0.212671 + avg[1] * 0.71516 + avg[2] * 0.072169;
 		}

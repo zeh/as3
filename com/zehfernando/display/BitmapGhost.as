@@ -16,26 +16,26 @@ package com.zehfernando.display {
 	 * @author zeh
 	 */
 	public class BitmapGhost extends ResizableSprite {
-		
+
 		// A bitmap copy of something
-		
+
 		// Properties
 		protected var _transparent:Boolean;
-		
+
 		protected var _redrawFilter:BitmapFilter;								// TODO: use array of filters?
 		protected var _redrawColorTransform:ColorTransform;
 		protected var _isRunning:Boolean;
 		protected var _margins:Number;
 		protected var _smoothing:Boolean;
-		
+
 		// Instances
 		protected var bitmapData:BitmapData;
 		protected var bitmap:Bitmap;
-		
-		protected var bufferBitmapData:BitmapData;		
+
+		protected var bufferBitmapData:BitmapData;
 
 		protected var _target:IBitmapDrawable;
-		
+
 		// Buffer used when resizing
 
 		// ================================================================================================================
@@ -50,7 +50,7 @@ package com.zehfernando.display {
 			_transparent = __transparent;
 			_margins = __margins;
 			_smoothing = false;
-			
+
 			createBitmap();
 		}
 
@@ -66,7 +66,7 @@ package com.zehfernando.display {
 			createBufferBitmap();
 			createBitmap();
 		}
-		
+
 		protected function createBufferBitmap(): void {
 			destroyBufferBitmap();
 
@@ -80,7 +80,7 @@ package com.zehfernando.display {
 				bufferBitmapData = null;
 			}
 		}
-		
+
 		protected function createBitmap(): void {
 			destroyBitmap();
 
@@ -88,24 +88,24 @@ package com.zehfernando.display {
 			bitmap = new Bitmap(bitmapData, PixelSnapping.AUTO, _smoothing);
 			bitmap.x = bitmap.y = -_margins;
 			addChild(bitmap);
-			
+
 			if (Boolean(bufferBitmapData)) {
 				bitmapData.copyPixels(bufferBitmapData, bufferBitmapData.rect, new Point(0,0));
 				destroyBufferBitmap();
 			}
 		}
-		
+
 		protected function destroyBitmap(): void {
 			if (Boolean(bitmapData)) {
 				bitmapData.dispose();
 				bitmapData = null;
-				
+
 				bitmap.bitmapData = null;
 				removeChild(bitmap);
 				bitmap = null;
 			}
 		}
-		
+
 		protected function applySmoothing(): void {
 			if (Boolean(bitmap)) {
 				bitmap.smoothing = _smoothing;
@@ -141,15 +141,15 @@ package com.zehfernando.display {
 			//bitmapData.draw(_target, null, _redrawColorTransform);
 			//var bitmapDataTemp:BitmapData = new BitmapData(bitmapData.width, bitmapData.height, bitmapData.transparent, 0x000000);
 			var bitmapDataTemp:BitmapData = bitmapData.clone();
-			
+
 			var mtx:Matrix = new Matrix();
 			mtx.translate(_margins, _margins);
 			bitmapDataTemp.draw(_target, mtx);
 			if (Boolean(_redrawFilter)) bitmapDataTemp.applyFilter(bitmapDataTemp, bitmapData.rect, new Point(0,0), _redrawFilter);
-			
+
 			bitmapData.fillRect(bitmapData.rect, 0x000000);
 			bitmapData.draw(bitmapDataTemp, null, _redrawColorTransform);
-			
+
 			bitmapDataTemp.dispose();
 
 //			bitmapData.draw(_target);
@@ -157,7 +157,7 @@ package com.zehfernando.display {
 		}
 
 		public function dispose(): void {
-			destroyBufferBitmap();		
+			destroyBufferBitmap();
 			destroyBitmap();
 		}
 
@@ -168,19 +168,19 @@ package com.zehfernando.display {
 		public function get redrawColorTransform():ColorTransform {
 			return _redrawColorTransform;
 		}
-		
+
 		public function set redrawColorTransform(__value:ColorTransform):void {
 			_redrawColorTransform = __value;
 		}
-		
+
 		public function get redrawFilter():BitmapFilter {
 			return _redrawFilter;
 		}
-		
+
 		public function set redrawFilter(__value:BitmapFilter):void {
 			_redrawFilter = __value;
 		}
-		
+
 		public function get smoothing(): Boolean {
 			return _smoothing;
 		}

@@ -8,10 +8,10 @@ package com.zehfernando.display.templates.videoplayer.events {
 
 		// Constants
 		public static const VOLUME_CHANGE:String = "onVolumeChange";
-		
+
 		// Properties
 		public var volume:Number;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 

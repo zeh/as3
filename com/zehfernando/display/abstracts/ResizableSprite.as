@@ -17,7 +17,7 @@ package com.zehfernando.display.abstracts {
 		public function ResizableSprite() {
 			_width = 100;
 			_height = 100;
-			
+
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 		}
 
@@ -36,13 +36,13 @@ package com.zehfernando.display.abstracts {
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-		
+
 		protected function onAddedToStage(e:Event): void {
 			redrawWidth();
 			redrawHeight();
 		}
 
-		
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 

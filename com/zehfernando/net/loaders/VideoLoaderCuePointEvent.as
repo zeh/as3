@@ -5,10 +5,10 @@ package com.zehfernando.net.loaders {
 	 * @author zeh
 	 */
 	public class VideoLoaderCuePointEvent extends Event {
-		
+
 		// Constants
 		public static const CUE_POINT:String = "onCuePoint";
-		
+
 		// Properties
 		protected var _cuePointTime:Number;
 		protected var _cuePointName:String;
@@ -20,7 +20,7 @@ package com.zehfernando.net.loaders {
 
 		public function VideoLoaderCuePointEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false, __cuePointTime:Number = NaN, __cuePointName:String = "", __cuePointType:String = "", __cuePointParameters:Object = ""): void {
 			super(__type, __bubbles, __cancelable);
-			
+
 			_cuePointTime = __cuePointTime;
 			_cuePointName = __cuePointName;
 			_cuePointType = __cuePointType;
@@ -33,18 +33,18 @@ package com.zehfernando.net.loaders {
 		override public function clone():Event {
 			return new VideoLoaderCuePointEvent(type, bubbles, cancelable, _cuePointTime, _cuePointName, _cuePointType);
 		}
-		
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
 		public function get cuePointTime():Number {
 			return _cuePointTime;
 		}
-		
+
 		public function get cuePointName():String {
 			return _cuePointName;
 		}
-		
+
 		public function get cuePointType():String {
 			return _cuePointType;
 		}

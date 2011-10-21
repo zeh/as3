@@ -12,12 +12,12 @@ package com.zehfernando.display.templates.videoplayer {
 	 * @author zeh at zehfernando.com
 	 */
 	public class VideoPanel extends ResizableSprite {
-		
+
 		// Properties
 		protected var _contentHeight:Number;
 		protected var _visibility:Number;
 		protected var _canHide:Boolean;
-		
+
 		// Instances
 		protected var contentMask:Box;
 		protected var contentContainer:Sprite;
@@ -29,10 +29,10 @@ package com.zehfernando.display.templates.videoplayer {
 
 		public function VideoPanel() {
 			super();
-			
+
 			setDefaultProperties();
 			createAssets();
-			
+
 			redrawContentHeight();
 			redrawVisibility();
 			redrawFullScreenButtons();
@@ -40,7 +40,7 @@ package com.zehfernando.display.templates.videoplayer {
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function setDefaultProperties(): void {
 			_contentHeight = 50;
 			_visibility = 1;
@@ -50,12 +50,12 @@ package com.zehfernando.display.templates.videoplayer {
 		protected function createAssets(): void {
 			contentContainer = new Sprite();
 			addChild(contentContainer);
-			
+
 			contentMask = new Box();
 			addChild(contentMask);
-			
+
 			contentContainer.mask = contentMask;
-			
+
 			AppUtils.getStage().addEventListener(FullScreenEvent.FULL_SCREEN, onSwitchedFullScreen);
 		}
 
@@ -67,10 +67,10 @@ package com.zehfernando.display.templates.videoplayer {
 		override protected function redrawHeight(): void {
 			redrawVisibility();
 		}
-		
+
 		protected function redrawContentWidth(): void {
 		}
-		
+
 		protected function redrawContentHeight(): void {
 			redrawVisibility();
 		}
@@ -78,14 +78,14 @@ package com.zehfernando.display.templates.videoplayer {
 		protected function redrawFullScreenButtons(): void {
 			// Called when full screen state is changed and buttons must be redrawn
 		}
-		
+
 		protected function redrawVisibility(): void {
 			var h:Number = Math.round(_contentHeight * _visibility);
 			if (Boolean(contentMask)) {
 				contentMask.y = _height - h;
 				contentMask.height = h;
 			}
-			
+
 			if (Boolean(contentContainer)) {
 				contentContainer.y = _height - h;
 				contentContainer.visible = _visibility > 0;
@@ -124,7 +124,7 @@ package com.zehfernando.display.templates.videoplayer {
 			contentContainer.mask = null;
 			removeChild(contentContainer);
 			contentContainer = null;
-			
+
 			removeChild(contentMask);
 			contentMask = null;
 		}
@@ -141,7 +141,7 @@ package com.zehfernando.display.templates.videoplayer {
 				redrawContentHeight();
 			}
 		}
-		
+
 		public function get visibility(): Number {
 			return _visibility;
 		}

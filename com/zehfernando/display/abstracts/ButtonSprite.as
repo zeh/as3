@@ -12,7 +12,7 @@ package com.zehfernando.display.abstracts {
 		protected var _mouseFocus:Number;
 		protected var _enabled:Number;
 		protected var _visibility:Number;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -23,10 +23,10 @@ package com.zehfernando.display.abstracts {
 
 			mouseChildren = false;
 			buttonMode = true;
-			
+
 			addEventListener(MouseEvent.ROLL_OVER, onRollOver, false, 0, true);
 			addEventListener(MouseEvent.ROLL_OUT, onRollOut, false, 0, true);
-			
+
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 		}
 
@@ -37,11 +37,11 @@ package com.zehfernando.display.abstracts {
 		protected function redrawState(): void {
 			throw new Error("Error: the method redrawState() of ButtonSprite has to be overridden.");
 		}
-		
+
 		protected function redrawVisibility(): void {
 			alpha = _visibility;
 			visible = _visibility > 0;
-			
+
 			mouseEnabled = mouseChildren = _visibility == 1;
 		}
 
@@ -60,7 +60,7 @@ package com.zehfernando.display.abstracts {
 		protected function onRollOut(e:MouseEvent): void {
 			mouseFocus = 0;
 		}
-		
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
@@ -73,7 +73,7 @@ package com.zehfernando.display.abstracts {
 				redrawState();
 			}
 		}
-		
+
 		public function get enabled(): Number {
 			return _enabled;
 		}

@@ -13,7 +13,7 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh
 	 */
 	public class FacebookFeedRequest extends BasicFacebookRequest {
-		
+
 		// By default, this gets the last 25 posts
 
 		// Properties
@@ -24,7 +24,7 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Results
 		protected var _posts:Vector.<FacebookFeedPost>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// http://developers.facebook.com/docs/reference/api/page
 
 			_authorId = "";
-			
+
 		}
 
 		// ================================================================================================================
@@ -58,13 +58,13 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_posts = FacebookFeedPost.fromJSONObjectArray(response["data"]);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_AUTHOR_ID, _authorId);
 			super.execute();
@@ -83,7 +83,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Hard parameters
-		
+
 		public function get limit(): int {
 			return _limit;
 		}
@@ -94,7 +94,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Results
-		
+
 		public function get posts(): Vector.<FacebookFeedPost> {
 			return _posts.concat();
 		}

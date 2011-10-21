@@ -16,29 +16,29 @@ package com.zehfernando.utils.tracking {
 		// ComScore tracking
 		protected static var _verbose:Boolean;						// If true, trace statements
 		protected static var _simulated:Boolean;					// If true, doesn't actually make any post
-		
+
 		// Properties
 		protected static var loaders:Vector.<LoaderInfo>;
-		
+
 		public function ComscoreUtils() {
 			throw new Error("You cannot instantiate this class.");
 		}
-		
+
 		// ================================================================================================================
 		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
-		
+
 		{
 			_verbose = true;
 			_simulated = false;
-			
+
 			if (_verbose) log ("Initialized :: verbose set to ["+_verbose+"] and simulated set to ["+_simulated+"]");
-			
+
 			loaders = new Vector.<LoaderInfo>();
 		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-		
+
 		protected static function onLoaderComplete(e:Event): void {
 			// Loaded this loader, so remove from list
 			var loaderIndex:int = loaders.indexOf(e.target);

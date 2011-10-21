@@ -4,7 +4,7 @@ package com.zehfernando.net.loaders {
 	 * @author zeh
 	 */
 	public class VideoLoaderEvent extends Event {
-		
+
 		// Constants
 		public static const SEEK_NOTIFY:String = "onSeekNotify";
 		public static const STREAM_NOT_FOUND:String = "onStreamNotFound";

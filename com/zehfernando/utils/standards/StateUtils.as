@@ -6,7 +6,7 @@ package com.zehfernando.utils.standards {
 	public class StateUtils {
 
 		protected static var stateList:Vector.<StateInfo>;
-		
+
 		protected static var inited:Boolean;
 
 		// ================================================================================================================
@@ -15,7 +15,7 @@ package com.zehfernando.utils.standards {
 		protected static function lazyInit(): void {
 			if (!inited) {
 				stateList = new Vector.<StateInfo>();
-				
+
 				stateList.push(new StateInfo("AL", "Alabama", Vector.<uint>([35000, 36999])));
 				stateList.push(new StateInfo("AK", "Alaska", Vector.<uint>([99500, 99999])));
 				stateList.push(new StateInfo("AZ", "Arizona", Vector.<uint>([85000, 86999])));
@@ -65,7 +65,7 @@ package com.zehfernando.utils.standards {
 				stateList.push(new StateInfo("WV", "West Virginia", Vector.<uint>([24700, 26999])));
 				stateList.push(new StateInfo("WI", "Wisconsin", Vector.<uint>([53000, 54999])));
 				stateList.push(new StateInfo("WY", "Wyoming", Vector.<uint>([82000, 83199])));
-				
+
 				// Not real 'states' but used as such
 				stateList.push(new StateInfo("DC", "District of Columbia", Vector.<uint>([20000, 20099, 20200, 20599, 56900, 56999])));
 				stateList.push(new StateInfo("PR", "Puerto Rico", Vector.<uint>([  600,   799,  900,   999])));
@@ -75,7 +75,7 @@ package com.zehfernando.utils.standards {
 				inited = true;
 			}
 		}
-		
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ package com.zehfernando.utils.standards {
 }
 
 class StateInfo {
-	
+
 	// Properties
 	public var id:String;
 	public var name:String;

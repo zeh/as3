@@ -11,14 +11,14 @@ package com.zehfernando.utils {
 
 		// Static properties
 		protected static var calls:Vector.<DelayedCalls>;
-		
+
 		// Instances
 		protected var timer:Timer;
 		protected var callback:Function;
 		protected var params:Array;
 		protected var scope:Object;
 		protected var reference:Object;
-		
+
 		// ================================================================================================================
 		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
 
@@ -30,12 +30,12 @@ package com.zehfernando.utils {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function DelayedCalls(__time:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null) {
-			
+
 			callback = __callback;
 			params = Boolean(__params) ? __params : [];
 			scope = __scope;
 			reference = __reference;
-			
+
 			if (__time == 0) {
 				execute();
 				disposeData();
@@ -45,7 +45,7 @@ package com.zehfernando.utils {
 			timer = new Timer(__time, 1);
 			timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
 			timer.start();
-			
+
 			addToList(this);
 		}
 
@@ -55,7 +55,7 @@ package com.zehfernando.utils {
 		protected function execute(): void {
 			callback.apply(scope, params);
 		}
-		
+
 		protected function disposeTimer(): void {
 			if (Boolean(timer)) {
 				timer.stop();
@@ -72,7 +72,7 @@ package com.zehfernando.utils {
 
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		protected static function addToList(__call:DelayedCalls): void {
 			if (calls.indexOf(__call) == -1) {
 				calls.push(__call);
@@ -86,7 +86,7 @@ package com.zehfernando.utils {
 			}
 		}
 
-		
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
@@ -94,7 +94,7 @@ package com.zehfernando.utils {
 			execute();
 			dispose();
 		}
-		
+
 		public function dispose(): void {
 			removeFromList(this);
 			disposeTimer();
@@ -103,7 +103,7 @@ package com.zehfernando.utils {
 
 		// ================================================================================================================
 		// PUBLIC STATIC INTERFACE ----------------------------------------------------------------------------------------
-		
+
 		public static function add(__time:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null): DelayedCalls {
 			// __time is in miliseconds
 			return new DelayedCalls(__time, __callback, __params, __scope, __reference);

@@ -16,7 +16,7 @@ package com.zehfernando.display.components {
 
 		// Events
 		public static const EVENT_POSITION_CHANGED_BY_USER:String = "onPositionChangedByUser";
-		
+
 		// Properties
 		protected var _backgroundColor:int;
 		protected var _pickerColor:int;
@@ -27,12 +27,12 @@ package com.zehfernando.display.components {
 		protected var _pickerScale:Number;
 
 		protected var _hitMargin:Number;
-		
+
 		protected var _isDragging:Boolean;
 		protected var _enabled:Boolean;
 		protected var draggingOffset:Number;
 		protected var _wheelDeltaScale:Number;
-		
+
 		// Instances
 		protected var background:Box;
 		protected var picker:Box;
@@ -40,7 +40,7 @@ package com.zehfernando.display.components {
 		protected var pickerContainer:Sprite;
 		protected var wheelTarget:DisplayObject;
 
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -48,10 +48,10 @@ package com.zehfernando.display.components {
 			wheelTarget = __wheelTarget;
 
 			super();
-			
+
 			setDefaultData();
 			createAssets();
-			
+
 			// End
 			enabled = true;
 		}
@@ -59,7 +59,7 @@ package com.zehfernando.display.components {
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function setDefaultData(): void {
 			_width = 20;
 			_position = 0;
@@ -68,7 +68,7 @@ package com.zehfernando.display.components {
 			_pickerScale = 0.1;
 			_minimumPickerHeight = 10;
 			_maximumPickerHeight = 10000;
-			
+
 			_wheelDeltaScale = 0.01;
 
 			_pickerColor = 0xffffff;
@@ -78,20 +78,20 @@ package com.zehfernando.display.components {
 		protected function createAssets(): void {
 			background = new Box(100, 100, _backgroundColor);
 			addChild(background);
-			
+
 			picker = new Box(100, 100, _pickerColor);
 			addChild(picker);
-			
+
 			pickerContainer = new Sprite();
 			addChild(pickerContainer);
-			
+
 			hitter = new Box(100, 100, 0xff0000);
 			hitter.alpha = 0;
 			hitter.buttonMode = true;
 			hitter.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
-			
+
 			addChild(hitter);
-			
+
 			if (Boolean(wheelTarget)) AppUtils.getStage().addEventListener(MouseEvent.MOUSE_WHEEL, onStageMouseWheel, false, 0, true);
 		}
 
@@ -104,25 +104,25 @@ package com.zehfernando.display.components {
 
 		override protected function redrawHeight(): void {
 			background.height = _height;
-			
+
 			redrawPosition();
 		}
-		
+
 		protected function redrawPosition(): void {
 			var ph:Number = Math.min(MathUtils.clamp(_pickerScale * _height, _minimumPickerHeight, _maximumPickerHeight), _height);
 			picker.height = ph;
 			picker.y = MathUtils.map(_position, 0, 1, 0, _height - ph);
 			pickerContainer.y = picker.y;
-			
+
 			hitter.y = picker.y - _hitMargin;
 			hitter.height = ph + _hitMargin * 2;
 		}
-		
+
 		protected function startDragging(): void {
 			// Starts dragging the head
 			if (!_isDragging && enabled) {
 				draggingOffset = mouseY - picker.y;
-				
+
 				AppUtils.getStage().addEventListener(MouseEvent.MOUSE_MOVE, onDraggingMouseMove);
 				AppUtils.getStage().addEventListener(MouseEvent.MOUSE_UP, onDraggingMouseUp);
 
@@ -165,7 +165,7 @@ package com.zehfernando.display.components {
 		protected function onDraggingMouseUp(e:MouseEvent): void {
 			stopDragging();
 		}
-		
+
 		protected function onStageMouseWheel(e:MouseEvent): void {
 			if (_enabled) {
 				position -= _wheelDeltaScale * e.delta;
@@ -193,18 +193,18 @@ package com.zehfernando.display.components {
 				redrawPosition();
 			}
 		}
-		
+
 		public function get enabled(): Boolean {
 			return _enabled;
 		}
 		public function set enabled(__value:Boolean): void {
 			_enabled = hitter.mouseEnabled = __value;
 		}
-		
+
 		public function get isDragging(): Boolean {
 			return _isDragging;
 		}
-		
+
 		public function get wheelDeltaScale(): Number {
 			return _wheelDeltaScale;
 		}
@@ -213,7 +213,7 @@ package com.zehfernando.display.components {
 				_wheelDeltaScale = __value;
 			}
 		}
-		
+
 		public function get backgroundColor(): int {
 			return _backgroundColor;
 		}
@@ -223,7 +223,7 @@ package com.zehfernando.display.components {
 				background.color = _backgroundColor;
 			}
 		}
-		
+
 		public function get pickerColor(): int {
 			return _pickerColor;
 		}
@@ -233,7 +233,7 @@ package com.zehfernando.display.components {
 				picker.color = _pickerColor;
 			}
 		}
-		
+
 		public function get pickerScale(): Number {
 			return _pickerScale;
 		}

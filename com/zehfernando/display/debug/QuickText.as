@@ -27,7 +27,7 @@ package com.zehfernando.display.debug {
 			// Create assets
 			var fmt:TextFormat = new TextFormat("_sans", __size, __color);
 			fmt.align = TextFormatAlign.LEFT;
-			
+
 			textField = new TextField();
 			textField.selectable = false;
 			textField.embedFonts = false;
@@ -40,23 +40,23 @@ package com.zehfernando.display.debug {
 			addChild(textField);
 
 			textField.borderColor = 0x000000;
-			
+
 			x = __x;
 			y = __y;
 
 			autoSize = true;
-			
+
 			if (!isNaN(__width)) width = __width;
-			
+
 			text = __text;
 			editable = false;
-			
+
 			textField.x = 0;// This shouldn't be needed...
 		}
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		override public function get width(): Number {
 			return textField.width;
 		}
@@ -96,8 +96,8 @@ package com.zehfernando.display.debug {
 			textField.type = __value ? TextFieldType.INPUT : TextFieldType.DYNAMIC;
 			if (editable) textField.selectable = true;
 		}
-		
-		
+
+
 		public function get border(): Boolean {
 			return textField.border;
 
@@ -105,18 +105,18 @@ package com.zehfernando.display.debug {
 		public function set border(__value:Boolean): void {
 			textField.border = __value;
 		}
-		
+
 		public function get scrollV(): int {
 			return textField.scrollV;
 		}
 		public function set scrollV(__value:int): void {
 			textField.scrollV = __value;
 		}
-		
+
 		public function get maxScrollV(): int {
 			return textField.maxScrollV;
 		}
-		
+
 		public function get autoSize(): Boolean {
 			return _autoSize;
 		}

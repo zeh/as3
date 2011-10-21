@@ -5,7 +5,7 @@ package com.zehfernando.display.progressbars {
 	 * @author zeh
 	 */
 	public class RectangleProgressBar extends AbstractProgressBar {
-		
+
 		// Instances
 		protected var foreground:Box;
 		protected var background:Box;
@@ -15,7 +15,7 @@ package com.zehfernando.display.progressbars {
 
 		public function RectangleProgressBar(__foregroundColor:int = 0xffffff, __foregroundAlpha:Number = 1, __backgroundColor:int = 0xffffff, __backgroundAlpha:Number = 0.25) {
 			super();
-			
+
 			// Create all assets
 			background = new Box(100, 100, __backgroundColor);
 			background.alpha = __backgroundAlpha;
@@ -35,7 +35,7 @@ package com.zehfernando.display.progressbars {
 			// Redraws graphics to represent the correct amount
 			//trace ("====> " + _value.current, _value.target);
 			foreground.width = 100 * _value.current;
-			
+
 			background.x = foreground.width;
 			background.width = 100 - foreground.width;
 		}

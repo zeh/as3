@@ -5,7 +5,7 @@ package com.zehfernando.geom {
 	 * @author zeh
 	 */
 	public class GeomUtils {
-		
+
 		public static function fitRectangle(__insideRect:Rectangle, __outsideRect:Rectangle, __fitAllInside:Boolean = true): Number {
 			// Fits a rectangle inside another rectangle, and returns the scale the inner rectangle should have
 			// This is good for fitting things in screens, like videos
@@ -14,11 +14,11 @@ package com.zehfernando.geom {
 
 			// Screen/border dimensions
 			var outsideRatio:Number = __outsideRect.width / __outsideRect.height;
-			
+
 			// Content/inside dimensions
 			var insideRatio:Number = __insideRect.width / __insideRect.height;
 
-			// This could be shorter			
+			// This could be shorter
 			var baseScale:Number;
 			if (outsideRatio > insideRatio) {
 				// Content is taller than screen
@@ -48,10 +48,10 @@ package com.zehfernando.geom {
 //
 //			// Screen/border dimensions
 //			var outsideRatio:Number = __outsideRect.width / __outsideRect.height;
-//			
+//
 //			// Content/inside dimensions
 //			var insideRatio:Number = __insideRect.width / __insideRect.height;
-//			
+//
 //			var baseScale:Number;
 //			if (outsideRatio > insideRatio) {
 //				// Content is taller than screen, use width as base

@@ -13,13 +13,13 @@ package com.zehfernando.net.apis.youtube.services {
 	 * @author zeh
 	 */
 	public class YouTubeUserUploadsRequest extends BasicServiceRequest {
-		
+
 		// Properties
 		protected var _userId:String;
-		
+
 		// Results
 		protected var _videos:Vector.<YouTubeVideo>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -34,8 +34,8 @@ package com.zehfernando.net.apis.youtube.services {
 			// http://developers.facebook.com/docs/reference/api/page
 
 			_userId = "";
-			
-			
+
+
 		}
 
 		// ================================================================================================================
@@ -45,19 +45,19 @@ package com.zehfernando.net.apis.youtube.services {
 			super.onSecurityError(e);
 			dispatchEvent(new YouTubeServiceEvent(YouTubeServiceEvent.ERROR));
 		}
-		
+
 		override protected function onIOError(e:IOErrorEvent): void {
 			super.onIOError(e);
 			dispatchEvent(new YouTubeServiceEvent(YouTubeServiceEvent.ERROR));
 		}
 
 		override protected function onComplete(e:Event): void {
-			
+
 			var vidData:XML = (new XML(loader.data));
-			
+
 			var ns:Namespace = vidData.namespace();
 			default xml namespace = ns;
-			
+
 			_videos = YouTubeVideo.fromXMLList(vidData.child("entry"));
 
 			default xml namespace = new Namespace(""); // WTF! one needs this otherwise the function below fails!
@@ -66,7 +66,7 @@ package com.zehfernando.net.apis.youtube.services {
 			dispatchEvent(new YouTubeServiceEvent(YouTubeServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 			requestURL = requestURL.replace(YouTubeConstants.PARAMETER_USER_ID, _userId);
 			super.execute();
@@ -83,9 +83,9 @@ package com.zehfernando.net.apis.youtube.services {
 		public function set userId(__value:String):void {
 			_userId = __value;
 		}
-		
+
 		// Results
-		
+
 		public function get videos(): Vector.<YouTubeVideo> {
 			return _videos.concat();
 		}

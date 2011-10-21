@@ -5,10 +5,10 @@ package com.zehfernando.net.apis.facebook.data {
 	 * @author zeh
 	 */
 	public class FacebookComment {
-		
+
 		// https://graph.facebook.com/136208713078882_146368762058100/comments
 
-		// Properties		
+		// Properties
 		public var id:String;
 		public var from:FacebookAuthor;
 		public var message:String;
@@ -22,7 +22,7 @@ package com.zehfernando.net.apis.facebook.data {
 
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public static function fromJSONObject(o:Object): FacebookComment {
 			if (!Boolean(o)) return null;
 

@@ -13,7 +13,7 @@ package com.zehfernando.display.templates.videoplayer.events {
 //		public static const SCRUB_END:String = "onScrubEnd";
 		public static const SCREEN_FULL:String = "onScreenFull";
 		public static const SCREEN_NORMAL:String = "onScreenNormal";
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 

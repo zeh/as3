@@ -40,7 +40,7 @@ package com.zehfernando.net.apis.facebook.services {
 			super.onSecurityError(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
 		}
-		
+
 		override protected function onIOError(e:IOErrorEvent): void {
 			log("IO Error while loading " + requestURL + " - are you sure an access token is available?");
 			log(loader.data);

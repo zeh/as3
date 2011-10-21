@@ -4,10 +4,10 @@ package com.zehfernando.utils {
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class MathUtils {
-		
+
 		// Written from scratch, but Francis' ca.nectere.math.MathBase should be all one needs
 		// This is just to make a separate class for the distribution of com.zehfernando.data.Color
-		
+
 		/**
 		 * Clamps a number to a range, by restricting it to a minimum and maximum values: if the passed value is lower than the minimum value, it's replaced by the minimum; if it's higher than the maximum value, it's replaced by the maximum; if not, it's unchanged.
 		 * @param __value	The value to be clamped.
@@ -18,7 +18,7 @@ package com.zehfernando.utils {
 		public static function clamp(__value:Number, __min:Number = 0, __max:Number = 1): Number {
 			return __value < __min ? __min : __value > __max ? __max : __value;
 		}
-		
+
 		/**
 		 * Maps a value from a range, determined by old minimum and maximum values, to a new range, determined by new minimum and maximum values. These minimum and maximum values are referential; the new value is not clamped by them.
 		 * @param __value	The value to be re-mapped.
@@ -34,7 +34,7 @@ package com.zehfernando.utils {
 			if (__clamp) p = __newMin < __newMax ? clamp(p, __newMin, __newMax) : clamp(p, __newMax, __newMin);
 			return p;
 		}
-		
+
 		/**
 		 * Clamps a value to a range, by restricting it to a minimum and maximum values but folding the value to the range instead of simply resetting to the minimum and maximum. It works like a more powerful Modulo function.
 		 * @param __value	The value to be clamped.
@@ -45,16 +45,16 @@ package com.zehfernando.utils {
 		 * <listing version="3.0">
 		 * 	trace(MathUtils.roundClamp(14, 0, 10));
 		 * 	// Result: 4
-		 * 	
+		 *
 		 * 	trace(MathUtils.roundClamp(360, 0, 360));
 		 * 	// Result: 0
-		 * 	
+		 *
 		 * 	trace(MathUtils.roundClamp(360, -180, 180));
 		 * 	// Result: 0
-		 * 	
+		 *
 		 * 	trace(MathUtils.roundClamp(21, 0, 10));
 		 * 	// Result: 1
-		 * 	
+		 *
 		 * 	trace(MathUtils.roundClamp(-98, 0, 100));
 		 * 	// Result: 2
 		 * </listing>

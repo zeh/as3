@@ -9,7 +9,7 @@ package com.zehfernando.display.shapes {
 	 * @author zeh
 	 */
 	public class GradientBox extends Sprite {
-		
+
 		// Properties
 		protected var _width:Number;
 		protected var _height:Number;
@@ -27,14 +27,14 @@ package com.zehfernando.display.shapes {
 
 			_width = __width;
 			_height = __height;
-			
+
 			var i:int;
-			
+
 			_angle = __angle;
 
 			if (__colors == null) __colors = [0xff0000, 0x00ff00];
 			_colors = __colors;
-			
+
 			if (__alphas == null) {
 				__alphas = [];
 				for (i = 0; i < _colors.length; i++) __alphas.push(1 + (1 * (i/(_colors.length-1))));
@@ -53,14 +53,14 @@ package com.zehfernando.display.shapes {
 			paint();
 		}
 
-		
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
 		protected function paint(): void {
 			var mtx:Matrix = new Matrix();
 			mtx.createGradientBox(_width, _height, (_angle / 180) * Math.PI, 0, 0);
-			
+
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginGradientFill(_type, _colors, _alphas, _ratios, mtx, SpreadMethod.PAD, InterpolationMethod.RGB);

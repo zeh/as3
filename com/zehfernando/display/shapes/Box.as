@@ -1,12 +1,12 @@
 package com.zehfernando.display.shapes {
 
 	import flash.display.Sprite;
-	
+
 	/**
 	 * @author Zeh Fernando
 	 */
 	public class Box extends Sprite {
-		
+
 		// Properties
 		protected var _width:Number;
 		protected var _height:Number;
@@ -18,17 +18,17 @@ package com.zehfernando.display.shapes {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function Box(__width:Number = 100, __height:Number = 100, __color:int = -1, __outlineWidth:Number = 0) {
-			
+
 			_width = __width;
 			_height = __height;
 			_color = (__color < 0 ? Math.random() * 0xffffff : __color) & 0xffffff;
 
 			_outlineWidth = __outlineWidth;
-			
+
 			paint();
 		}
 
-		
+
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 

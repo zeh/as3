@@ -5,7 +5,7 @@ package com.zehfernando.utils {
 	 */
 	public class XMLUtils {
 
-		// Constants 
+		// Constants
 		protected static const VALUE_TRUE:String = "true";			// Array considered as explicit "true" when reading data from a XML
 		protected static const VALUE_FALSE:String = "false";		// Array considered as explicit "false" when reading data from a XML
 
@@ -30,17 +30,17 @@ package com.zehfernando.utils {
 		public static function getNodePathAsString(__xml:XML, __nodeNamePath:String, __default:String = ""): String {
 			if (!Boolean(__xml)) return __default;
 			if (!Boolean(__nodeNamePath)) return __default;
-			
+
 			var path:Array = __nodeNamePath.split("/");
-			
+
 			if (path.length == 1) return getNodeAsString(__xml, path[0]);
-			
+
 			var __subNodes:XMLList = __xml.child(path[0]);
 			if (__subNodes.length() > 0) return getNodePathAsString(__subNodes[0], path.slice(1).join("/"));
 
 			return __default;
 		}
-		
+
 		public static function stripXMLNamespaces(__xml:XML):XML {
 			// Source: http://active.tutsplus.com/articles/roundups/15-useful-as3-snippets-on-snipplr-com/
 			var s:String = __xml.toString();

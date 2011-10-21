@@ -13,7 +13,7 @@ package com.zehfernando.utils.tracking {
 		// Properties
 		protected static var inited:Boolean;
 		protected static var testMode:Boolean;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -36,13 +36,13 @@ package com.zehfernando.utils.tracking {
 				}
 			}
 		}
-		
+
 		public static function trackPageView(__tag:String): void {
 			if (!inited) return;
-			
+
 			if (__tag == "") return;
-		
-			// Below code comes from DART themselves (with small changes)			
+
+			// Below code comes from DART themselves (with small changes)
 			var ldr:Loader = new Loader();
 			var rnd:Number = Math.floor(Math.random() * 1000000000);
 			var url:String = __tag.replace("[rnd]", rnd.toString(10));
@@ -50,20 +50,20 @@ package com.zehfernando.utils.tracking {
 			var urlReq:URLRequest = new URLRequest(url);
 			ldr.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onError, false,0, true);
 			ldr.load(urlReq);
-		
+
 			//if (!testMode) {
 			//ExternalInterface.call("dcsMultiTrack",  WT_PARAMETER_URI, __uri, WT_PARAMETER_TITLE, __title);
 			//}
-		
+
 			if (testMode) {
 				trace ("DARTUtils :: trackPageView :: " + url);
 			}
-			
+
 		}
-		
+
 		protected static function onError(e:IOErrorEvent): void {
 			// To catch error message due to DART's loading of invalid content
-			trace ("GAUtils :: IOError :: ["+e+"]"); 
+			trace ("GAUtils :: IOError :: ["+e+"]");
 		}
 
 	}

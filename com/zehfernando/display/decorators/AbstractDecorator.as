@@ -5,13 +5,13 @@ package com.zehfernando.display.decorators {
 	 * @author zeh
 	 */
 	public class AbstractDecorator {
-		
+
 		// Properties
 		protected var _target:DisplayObject;
-		
+
 
 		// ================================================================================================================
-		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------		
+		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function AbstractDecorator(__target:DisplayObject) {
 			_target = __target;

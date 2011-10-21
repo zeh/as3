@@ -8,11 +8,11 @@ package com.zehfernando.display.templates.application {
 	 * @author Zeh
 	 */
 	public class ApplicationFrame2Abstract extends MovieClip {
-		
+
 		// Instances
 		protected var _width:Number;
 		protected var _height:Number;
-		
+
 		protected var inited:Boolean;
 		protected var _initPhase:Number;
 
@@ -22,32 +22,32 @@ package com.zehfernando.display.templates.application {
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-		
+
 		public function ApplicationFrame2Abstract() {
-			
+
 			_width = 100;
 			_height = 100;
-			
+
 			inited = false;
 			_initPhase = 0;
-			
+
 			requestRedraw();
 		}
 
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public function init(): void {
 			// Start loading stuff
 			inited = true;
 			requestRedraw();
-			
+
 			_initPhase = 1;
 			dispatchEvent(new ApplicationFrame2Event(ApplicationFrame2Event.INIT_PROGRESS));
 			dispatchEvent(new ApplicationFrame2Event(ApplicationFrame2Event.INIT_COMPLETE));
 		}
-		
+
 		public function show(): void {
 			// Finished, shows itself
 		}
@@ -55,7 +55,7 @@ package com.zehfernando.display.templates.application {
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function requestRedraw(): void {
 			RenderUtils.addFunction(redrawWidth);
 			RenderUtils.addFunction(redrawHeight);
@@ -72,7 +72,7 @@ package com.zehfernando.display.templates.application {
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		override public function get width(): Number {
 			return _width;
 		}

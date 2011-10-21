@@ -3,7 +3,7 @@ package com.zehfernando.net.apis.facebook.enums {
 	 * @author zeh at zehfernando.com
 	 */
 	public class FacebookPrivacyType {
-		
+
 		// https://developers.facebook.com/docs/reference/api/post/
 
 		public static const EVERYONE:String = "everyone";

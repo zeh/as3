@@ -11,19 +11,19 @@ package com.zehfernando.net.apis.facebook.services {
 	 * @author zeh
 	 */
 	public class FacebookUserRequest extends BasicFacebookRequest {
-		
+
 		// http://developers.facebook.com/docs/reference/api/user
 		// https://graph.facebook.com/711322444
-		
+
 		// Properties
 		protected var _userId:String;
-		
+
 		// Parameters
 		protected var _limit:int;
-		
+
 		// Results
 		protected var _user:FacebookUser;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ package com.zehfernando.net.apis.facebook.services {
 			// http://developers.facebook.com/docs/reference/api/page
 
 			_userId = "";
-			
+
 		}
 
 		// ================================================================================================================
@@ -57,21 +57,21 @@ package com.zehfernando.net.apis.facebook.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			_user = FacebookUser.fromJSONObject(response);
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 
-		
+
 		override public function execute():void {
 
 			// TODO: using the query parameter "ids" here instead of the normal url userId, one can get data for several users at the same time - redo this?
 			// 'ids' also accept links!
 
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_USER_ID, _userId);
-			
+
 			super.execute();
 		}
 
@@ -88,7 +88,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		// Results
-		
+
 		public function get user(): FacebookUser {
 			return _user;
 		}

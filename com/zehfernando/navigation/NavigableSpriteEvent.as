@@ -6,7 +6,7 @@ package com.zehfernando.navigation {
 	 */
 	public class NavigableSpriteEvent extends Event {
 
-		// Enums		
+		// Enums
 		public static const OPENING:String = "onOpening";				// A NavigableSprite is about to start opening
 		public static const OPENED:String = "onOpened";					// A NavigableSprite has finished opening
 		public static const CLOSING:String = "onClosing";				// A NavigableSprite is about to start closing
@@ -26,14 +26,14 @@ package com.zehfernando.navigation {
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-		
+
 		public function NavigableSpriteEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false) {
 			super(__type, __bubbles, __cancelable);
 		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		override public function clone(): Event {
 			return new NavigableSpriteEvent(type, bubbles, cancelable);
 		}

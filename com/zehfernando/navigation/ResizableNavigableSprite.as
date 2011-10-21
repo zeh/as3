@@ -10,7 +10,7 @@ package com.zehfernando.navigation {
 		// Properties
 		protected var _width:Number;
 		protected var _height:Number;
-		
+
 		// Ugh
 
 		// ================================================================================================================
@@ -21,7 +21,7 @@ package com.zehfernando.navigation {
 
 			_width = 100;
 			_height = 100;
-			
+
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 		}
 
@@ -51,13 +51,13 @@ package com.zehfernando.navigation {
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-		
+
 		protected function onAddedToStage(e:Event): void {
 			redrawWidth();
 			redrawHeight();
 		}
 
-		
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 

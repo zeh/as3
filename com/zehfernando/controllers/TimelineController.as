@@ -9,11 +9,11 @@ package com.zehfernando.controllers {
 	 * @author zeh
 	 */
 	public class TimelineController extends EventDispatcher {
-		
+
 		// Constants
 		public static var EVENT_LOOPED:String = "onLooped";
 		public static var EVENT_FINISHED:String = "onFinished";
-		
+
 		// Properties
 		protected var _isPlaying:Boolean;
 		protected var _loop:Boolean;
@@ -24,16 +24,16 @@ package com.zehfernando.controllers {
 		protected var _movieClip:MovieClip;
 		protected var _actualFrame:Number;
 
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function TimelineController(__movieClip:MovieClip, __fps:Number = 30) {
 			super(null);
-			
+
 			_movieClip = __movieClip;
 			_fps = __fps;
-			
+
 			_movieClip.gotoAndStop(1);
 		}
 
@@ -42,10 +42,10 @@ package com.zehfernando.controllers {
 
 		protected function onEnterFrame(e:Event): void {
 			// Move playhead
-			
+
 			var now:Number = getTimer();
 			var newFrame:Number = _actualFrame + ((now - lastFrameUpdateTime) / 1000) * _fps;
-			
+
 			if (Math.round(newFrame) > _movieClip.totalFrames) {
 				if (_loop) {
 					// Looping
@@ -58,7 +58,7 @@ package com.zehfernando.controllers {
 					dispatchEvent(new Event(EVENT_FINISHED));
 				}
 			}
-			
+
 			_actualFrame = newFrame;
 			_movieClip.gotoAndStop(Math.round(newFrame));
 			lastFrameUpdateTime = now;
@@ -74,7 +74,7 @@ package com.zehfernando.controllers {
 				if (Boolean(_movieClip)) {
 					_movieClip.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
 				}
-				
+
 				_actualFrame = _movieClip.currentFrame;
 				_movieClip.stop();
 
@@ -103,7 +103,7 @@ package com.zehfernando.controllers {
 				_fps = __value;
 			}
 		}
-		
+
 		public function get frame(): Number {
 			return _movieClip.currentFrame;
 		}
@@ -113,11 +113,11 @@ package com.zehfernando.controllers {
 				_actualFrame = __value;
 			}
 		}
-		
+
 		public function get totalFrames(): int {
 			return _movieClip.totalFrames;
 		}
-		
+
 		public function get isPlaying(): Boolean {
 			return _isPlaying;
 		}

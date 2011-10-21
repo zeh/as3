@@ -15,11 +15,11 @@ package com.zehfernando.display.containers {
 	 * @author zeh at zehfernando.com
 	 */
 	public class ImageWithAlphaContainer extends DynamicDisplayAssetContainer {
-		
+
 		// Constants
 		// Exception fault: SecurityError: Error #2123: Security sandbox violation: BitmapData.draw: http://fakehost.com/5GUM_COACHELLA2912/deploy/site/index.swf cannot access http://static.ak.fbcdn.net/rsrc.php/v1/yL/r/HsTZSDw4avx.gif?type=large. No policy files granted access.
 		public static const EVENT_SECURITY_SANDBOX_VIOLATION:String = "onSecuritySandboxViolation";
-		
+
 		// Properties
 		protected var _isConnectionOpened:Boolean;
 		protected var _isConnectionOpenedAlpha:Boolean;
@@ -27,9 +27,9 @@ package com.zehfernando.display.containers {
 		// Instances
 		protected var loader:Loader;
 		protected var loaderAlpha:Loader;
-		
+
 		protected var loaderContainer:Sprite;
-		
+
 		protected var _isLoadedImage:Boolean;
 		protected var _isLoadedAlpha:Boolean;
 
@@ -63,21 +63,21 @@ package com.zehfernando.display.containers {
 				loaderContainer.removeChild(loaderAlpha);
 				loaderAlpha = null;
 			}
-			
+
 			if (Boolean(loaderContainer)) {
 				contentHolder.removeChild(loaderContainer);
 				loaderContainer = null;
 			}
-			
+
 			super.dispose();
 		}
-		
+
 		protected function removeLoaderEvents(__loader:Loader): void {
 			__loader.contentLoaderInfo.removeEventListener(Event.OPEN, onLoadOpen);
 			__loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoadComplete);
 			__loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onLoadProgress);
 			__loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
-		}		
+		}
 
 		override protected function applySmoothing(): void {
 			if (_isLoaded) {
@@ -169,7 +169,7 @@ package com.zehfernando.display.containers {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public function loadWithAlpha(__imageURL:String, __alphaURL:String): void {
 			if (!Boolean(__imageURL) || !Boolean(__alphaURL)) {
 				trace ("ImageContainer :: ERROR: tried loading image from null url ["+__imageURL+"] with alpha ["+__alphaURL+"]");
@@ -184,7 +184,7 @@ package com.zehfernando.display.containers {
 			_isLoaded = false;
 			_isLoadedImage = false;
 			_isLoadedAlpha = false;
-			
+
 			loaderContainer = new Sprite();
 			loaderContainer.blendMode = BlendMode.LAYER;
 			setAsset(loaderContainer);
@@ -195,7 +195,7 @@ package com.zehfernando.display.containers {
 			loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onLoadComplete);
 			loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onLoadProgress);
 			loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
-			
+
 			loaderContainer.addChild(loader);
 
 			loaderAlpha = new Loader();
@@ -205,19 +205,19 @@ package com.zehfernando.display.containers {
 			loaderAlpha.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, onLoadProgress);
 			loaderAlpha.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR, onLoadError);
 			loaderAlpha.blendMode = BlendMode.ALPHA;
-			
+
 			loaderContainer.addChild(loaderAlpha);
 
 			var context:LoaderContext = new LoaderContext();
 			context.checkPolicyFile = true;
-			
+
 			loader.load(new URLRequest(__imageURL), context);
 			loaderAlpha.load(new URLRequest(__alphaURL), context);
 		}
 
 		override public function unload():void {
 			super.unload();
-			
+
 			loaderContainer = null;
 		}
 	}

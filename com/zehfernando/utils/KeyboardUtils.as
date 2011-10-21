@@ -1,27 +1,27 @@
 package com.zehfernando.utils {
 	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
-	import flash.ui.Keyboard;	
+	import flash.ui.Keyboard;
 
 	/**
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class KeyboardUtils {
-		
+
 		// Poperties
 		protected static var isInited:Boolean;
-		
+
 		protected static var controlDown:Boolean;
 		protected static var shiftDown:Boolean;
-		
-		protected static var stage:Stage; 
+
+		protected static var stage:Stage;
 
 		//protected static var downLCONTROL:Boolean;
 		//protected static var downRCONTROL:Boolean;
 		//protected static var downALTGR:Boolean; // 18
 		//protected static var downLSHIFT:Boolean;
 		//protected static var downRSHIFT:Boolean;
-		
+
 		// ================================================================================================================
 		// INITIALIZATION functions ---------------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ package com.zehfernando.utils {
 
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
-		
+
 		protected static function onKeyDown(e:KeyboardEvent): void {
 			//Logger.getInstance().addMessage("Key down: "+e.keyCode+" @ "+e.keyLocation);
 			//setKeyState(e.keyCode, e.keyLocation, true);
@@ -61,11 +61,11 @@ package com.zehfernando.utils {
 		public static function isControlDown(): Boolean {
 			return controlDown;
 		}
-		
+
 		// System-specific keys, as separate functions for easier modification if needed
-	
+
 		public static function isAdditionalSelectionModifierDown(): Boolean {
-			// Additional selection key 
+			// Additional selection key
 			return shiftDown;
 		}
 
@@ -78,7 +78,7 @@ package com.zehfernando.utils {
 			// SHIFT on all
 			return shiftDown;
 		}
-		
+
 		public static function getValidMenuKeys(): Vector.<String> {
 			// Keys that are used on menus
 			var keys:Vector.<String> = new Vector.<String>();
@@ -89,7 +89,7 @@ package com.zehfernando.utils {
 			keys.push("[","]");
 			return keys;
 		}
-		
+
 		public static function getKeyCode(__key:String):Number {
 			// Returns the char code of a key as determined by a getValidMenuKeys() string
 			var keyCode:Number;
@@ -156,7 +156,7 @@ package com.zehfernando.utils {
 			}
 			return keyCode;
 		}
-		
+
 		public static function getKeyEquivalent(__key:String):String {
 			return __key.length == 1 ? __key : "";
 		}

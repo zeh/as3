@@ -26,7 +26,7 @@ package com.zehfernando.display.templates.videoplayer {
 	 * @author zeh at zehfernando.com
 	 */
 	public class VideoPlayer extends ResizableSprite {
-		
+
 		// Constants
 		protected static const TIME_SHOW_PANEL:Number = 0.6;
 		protected static const TIME_HIDE_PANEL:Number = 0.6;
@@ -34,7 +34,7 @@ package com.zehfernando.display.templates.videoplayer {
 
 		// Properties
 		protected var wasVideoPausedBeforeScrub:Boolean;
-		
+
 		protected var originalX:Number;					// X before going fullscreen
 		protected var originalY:Number;					// Y before going fullscreen
 		protected var originalWidth:Number;					// Size before going fullscreen
@@ -43,17 +43,17 @@ package com.zehfernando.display.templates.videoplayer {
 
 		protected var _scaleMode:String;
 		protected var isPanelShown:Boolean;
-		
+
 		// Instances
 		protected var video:VideoContainer;
 		protected var panel:VideoPanel;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function VideoPlayer() {
 			super();
-			
+
 			setDefaultProperties();
 			createAssets();
 		}
@@ -61,7 +61,7 @@ package com.zehfernando.display.templates.videoplayer {
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-		
+
 		protected function setDefaultProperties(): void {
 			_scaleMode = StageScaleMode.SHOW_ALL;
 			isPanelShown = true;
@@ -92,25 +92,25 @@ package com.zehfernando.display.templates.videoplayer {
 			AppUtils.getStage().addEventListener(MouseEvent.MOUSE_MOVE, onMouseAction);
 			AppUtils.getStage().addEventListener(MouseEvent.MOUSE_DOWN, onMouseAction);
 			AppUtils.getStage().addEventListener(MouseEvent.MOUSE_UP, onMouseAction);
-			
+
 			updateVideoScaleMode();
-			
+
 			var p:VideoPanel = new VideoPanel();
 			setPanel(p);
 		}
 
 		override protected function redrawWidth(): void {
 			video.width = _width;
-			
+
 			if (Boolean(panel)) panel.width = _width;
 		}
 
 		override protected function redrawHeight(): void {
 			video.height = _height;
-			
+
 			if (Boolean(panel)) panel.height = _height;
 		}
-		
+
 		protected function requestRedraw(): void {
 			RenderUtils.addFunction(redraw);
 		}
@@ -119,7 +119,7 @@ package com.zehfernando.display.templates.videoplayer {
 			redrawWidth();
 			redrawHeight();
 		}
-		
+
 		protected function setPanel(__panel:VideoPanel): void {
 			removePanel();
 
@@ -133,19 +133,19 @@ package com.zehfernando.display.templates.videoplayer {
 			panel.addEventListener(VideoPanelEvent.SCRUB_END, onVideoPanelScrubEnd);
 			panel.addEventListener(VideoPanelVolumeEvent.VOLUME_CHANGE, onVideoPanelVolumeChange);
 			addChild(panel);
-			
+
 			updatePlayState();
 			updateVideoLoad();
 			updateVideoTime();
 			updateVideoVolume();
 
 			requestRedraw();
-			
+
 			panel.visibility = isPanelShown ? 1 : 0;
-			
+
 			waitToHidePanel();
 		}
-		
+
 		protected function removePanel(): void {
 			if (Boolean(panel)) {
 				panel.removeEventListener(VideoPanelEvent.PAUSE, onVideoPanelPause);
@@ -161,11 +161,11 @@ package com.zehfernando.display.templates.videoplayer {
 				panel = null;
 			}
 		}
-		
+
 		protected function updatePlayState(): void {
 			panel.setPlayState(video.isPlaying);
 		}
-		
+
 		protected function updateVideoScaleMode(): void {
 			if (isFullScreen()) {
 				video.scaleMode = StageScaleMode.SHOW_ALL;
@@ -173,7 +173,7 @@ package com.zehfernando.display.templates.videoplayer {
 				video.scaleMode = _scaleMode;
 			}
 		}
-		
+
 		protected function updateVideoLoad(): void {
 			panel.setVideoLoadProgress(video.bytesLoaded / video.bytesTotal);
 		}
@@ -189,7 +189,7 @@ package com.zehfernando.display.templates.videoplayer {
 		protected function isFullScreen(): Boolean {
 			return AppUtils.getStage().displayState == StageDisplayState.FULL_SCREEN;
 		}
-		
+
 		protected function waitToHidePanel(): void {
 			cancelWaitToHidePanel();
 			DelayedCalls.add(TIME_WAIT_TO_HIDE_PANEL * 1000, hidePanel);
@@ -198,7 +198,7 @@ package com.zehfernando.display.templates.videoplayer {
 		protected function cancelWaitToHidePanel(): void {
 			DelayedCalls.remove(hidePanel);
 		}
-		
+
 		protected function showPanel(__immediate:Boolean = false): void {
 			if (Boolean(panel) && !isPanelShown) {
 				cancelWaitToHidePanel();
@@ -226,7 +226,7 @@ package com.zehfernando.display.templates.videoplayer {
 			}
 		}
 
-		
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
@@ -249,18 +249,18 @@ package com.zehfernando.display.templates.videoplayer {
 
 				var sw:Number = AppUtils.getStage().fullScreenWidth;
 				var sh:Number = AppUtils.getStage().fullScreenHeight;
-				
+
 				var ns:Number = GeomUtils.fitRectangle(new Rectangle(0, 0, sw, sh), new Rectangle(0, 0, originalWidth, originalHeight), false);
 				width = Math.round(ns * sw);
 				height = Math.round(ns * sh);
 				redraw();
-				
+
 				var pp:Point = AppUtils.getStage().localToGlobal(new Point(0, 0));
 				AppUtils.getStage().addChild(this);
-				
+
 				x = pp.x;
 				y = pp.y;
-				
+
 				var p1:Point = video.parent.localToGlobal(new Point(video.x, video.y));
 				var p2:Point = video.parent.localToGlobal(new Point(video.x+video.width, video.y+video.height));
 				AppUtils.getStage().fullScreenSourceRect = new Rectangle(p1.x, p1.y, p2.x-p1.x, p2.y-p1.y);
@@ -274,11 +274,11 @@ package com.zehfernando.display.templates.videoplayer {
 				AppUtils.getStage().displayState = StageDisplayState.NORMAL;
 			}
 		}
-		
+
 		protected function onMouseAction(e:Event): void {
 			if (Boolean(panel)) {
 				if (!isPanelShown) showPanel();
-				
+
 				cancelWaitToHidePanel();
 
 				if (panel.canHide) waitToHidePanel();
@@ -293,15 +293,15 @@ package com.zehfernando.display.templates.videoplayer {
 				dispatchEvent(new VideoPlayerEvent(VideoPlayerEvent.SCREEN_FULL));
 			} else {
 				// Switched to normal screen
-				
+
 				x = originalX;
 				y = originalY;
 				width = originalWidth;
 				height = originalHeight;
 				originalParent.addChild(this);
-				
+
 				updateVideoScaleMode();
-				
+
 				dispatchEvent(new VideoPlayerEvent(VideoPlayerEvent.SCREEN_NORMAL));
 			}
 		}
@@ -326,7 +326,7 @@ package com.zehfernando.display.templates.videoplayer {
 			//video.volume =
 			video.volume = e.volume;
 		}
-		
+
 		protected function onVideoPlayFinish(e:Event): void {
 			// TODO!
 		}
@@ -369,7 +369,7 @@ package com.zehfernando.display.templates.videoplayer {
 		public function load(__url:String): void {
 			video.load(__url);
 		}
-		
+
 		public function play(): void {
 			video.playVideo();
 		}
@@ -380,7 +380,7 @@ package com.zehfernando.display.templates.videoplayer {
 
 		public function dispose():void {
 			removePanel();
-			
+
 			cancelWaitToHidePanel();
 
 			AppUtils.getStage().removeEventListener(FullScreenEvent.FULL_SCREEN, onSwitchedFullScreen);

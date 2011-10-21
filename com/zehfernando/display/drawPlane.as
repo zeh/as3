@@ -25,7 +25,7 @@ package com.zehfernando.display {
 
 		// Draws the triangle
 		graphics.beginBitmapFill(bitmap, null, false, true);
-		
+
 		var ty:Number = (0 + offsetY) / scaleY;
 		var by:Number = (1 + offsetY) / scaleY;
 
@@ -34,7 +34,7 @@ package com.zehfernando.display {
 			Vector.<int>([0,1,2, 1,3,2]),
 			Vector.<Number>([0,ty,(1/ll2)*f, 1,ty,(1/lr2), 0,by,(1/lr1), 1,by,(1/ll1)*f]) // Magic
 		);
-		
+
 	}
 }
 
