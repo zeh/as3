@@ -18,11 +18,16 @@ package com.zehfernando.net.apis {
 		// Properties
 		protected var loader:URLLoader;
 
+		protected var urlRequest:URLRequest;
+
 		protected var requestURL:String;
 		protected var requestMethod:String;
+		protected var requestContentType:String;
 
 		protected var _isLoading:Boolean;
 		protected var _isLoaded:Boolean;
+
+		protected var _rawResponse:String;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -31,6 +36,7 @@ package com.zehfernando.net.apis {
 
 			requestURL = "";
 			requestMethod = URLRequestMethod.GET;
+			requestContentType = "application/x-www-form-urlencoded"; // Default
 
 			_isLoading = false;
 			_isLoaded = false;
@@ -43,6 +49,14 @@ package com.zehfernando.net.apis {
 			// Returns the URLVariables needed by this request
 			var vars:URLVariables = new URLVariables();
 			return vars;
+		}
+
+		protected function getRequestHeaders(): Array {
+			// Returns the request headers needed by this request
+			var headers:Array = [];
+			//headers.push(new URLRequestHeader("Content-type", "application/x-www-form-urlencoded"));
+			//headers.push(new URLRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
+			return headers;
 		}
 
 		protected function clearData(): void {
@@ -76,16 +90,22 @@ package com.zehfernando.net.apis {
 		}
 
 		protected function onSecurityError(e:SecurityErrorEvent): void {
+			_rawResponse = loader.data;
+
 			_isLoading = false;
 			removeLoader();
 		}
 
 		protected function onIOError(e:IOErrorEvent): void {
+			_rawResponse = loader.data;
+
 			_isLoading = false;
 			removeLoader();
 		}
 
 		protected function onComplete(e:Event): void {
+			_rawResponse = loader.data;
+
 			_isLoading = false;
 			_isLoaded = true;
 			removeLoader();
@@ -101,28 +121,37 @@ package com.zehfernando.net.apis {
 
 			var vars:URLVariables = getURLVariables();
 
-			var req:URLRequest = new URLRequest();
+			urlRequest = new URLRequest();
 
-			req.url = requestURL;
-			req.method = requestMethod;
-			req.data = vars;
-
-			req.requestHeaders = new Array();
-			//req.requestHeaders.push(new URLRequestHeader("Content-type", "application/x-www-form-urlencoded"));
-			//req.requestHeaders.push(new URLRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
-
+			urlRequest.url = requestURL;
+			urlRequest.method = requestMethod;
+			urlRequest.data = vars;
+			urlRequest.requestHeaders = getRequestHeaders();
+			urlRequest.contentType = requestContentType;
+			
 			loader = new URLLoader();
 			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
 			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 			loader.addEventListener(Event.COMPLETE, onComplete);
 			// Event.OPEN, ProgressEvent.PROGRESS
-			loader.load(req);
+			loader.load(urlRequest);
 		}
 
 		public function dispose():void {
 			if (_isLoading) stopLoading();
 			if (_isLoaded) clearData();
+		}
+
+		// ================================================================================================================
+		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
+
+		public function get rawResponse():String {
+			return _rawResponse;
+		}
+
+		public function get rawRequest():Object {
+			return urlRequest.data;
 		}
 	}
 }
