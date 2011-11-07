@@ -497,18 +497,33 @@ class ValueGroup extends ValueNode {
 	public function add(__strings:ValueGroup):void {
 		// Adds items from another string list group, overwriting items if they have the same name
 		// Warning - only overwrites on a top level!
-		// TODO: proper overwrite of sub-elements only
+
 		var i:int, j:int;
+		var itemAdded:Boolean;
+
+		// Check every item first
 		for (i = 0; i < __strings.items.length; i++) {
+
+			itemAdded = false;
+
 			for (j = 0; j < items.length; j++) {
 				if (items[j].name == __strings.items[i].name) {
-					items.splice(j, 1);
-					j--;
+					// Item already exists
+					if (items[j] is ValueGroup && __strings.items[i] is ValueGroup) {
+						// It's a group, merge it
+						(items[j] as ValueGroup).add((__strings.items[i] as ValueGroup));
+					} else {
+						// It's a data item, overwrite it
+						items[j] = __strings.items[i];
+					}
+					itemAdded = true;
+					break;
 				}
 			}
-			//if (__strings.items[i] is ValueString) trace(">>>>>>>>>>>>> " + __strings.items[i].name, (__strings.items[i] as ValueString).value);
-			items.push(__strings.items[i]);
-			//if (__strings.items[i] is ValueString) trace(">>>>>>>>>>>>> " + items.length);
+			if (!itemAdded) {
+				// Item doesn't exist, add it
+				items.push(__strings.items[i]);
+			}
 		}
 
 		//Log.echo("Strings has " + items.length + "items!");
