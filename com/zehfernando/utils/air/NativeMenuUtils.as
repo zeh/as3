@@ -126,21 +126,22 @@ class NativeMenuAgent extends EventDispatcher {
 
 	/*
 	public function createFileMenu():NativeMenu {
-			var fileMenu:NativeMenu = new NativeMenu();
-			fileMenu.addEventListener(Event.SELECT, onMenuSelectNative);
-			
-			var newCommand:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("New"));
-			newCommand.addEventListener(Event.SELECT, onMenuSelectNative);
-			var saveCommand:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("Save"));
-			saveCommand.addEventListener(Event.SELECT, onMenuSelectNative);
-			var openRecentMenu:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("Open Recent"));
-			openRecentMenu.submenu = new NativeMenu();
-			//openRecentMenu.submenu.addEventListener(Event.DISPLAYING, updateRecentDocumentMenu);
-			openRecentMenu.submenu.addEventListener(Event.SELECT, onMenuSelectNative);
-			
-			return fileMenu;
-		}
-		*/
+		var fileMenu:NativeMenu = new NativeMenu();
+		fileMenu.addEventListener(Event.SELECT, onMenuSelectNative);
+
+		var newCommand:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("New"));
+		newCommand.addEventListener(Event.SELECT, onMenuSelectNative);
+		var saveCommand:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("Save"));
+		saveCommand.addEventListener(Event.SELECT, onMenuSelectNative);
+		var openRecentMenu:NativeMenuItem = fileMenu.addItem(new NativeMenuItem("Open Recent"));
+		openRecentMenu.submenu = new NativeMenu();
+		//openRecentMenu.submenu.addEventListener(Event.DISPLAYING, updateRecentDocumentMenu);
+		openRecentMenu.submenu.addEventListener(Event.SELECT, onMenuSelectNative);
+
+		return fileMenu;
+	}
+	*/
+
 	public function getMenuItemInfo(__id:String): MenuItemInfo {
 		return menuData.getById(__id);
 	}

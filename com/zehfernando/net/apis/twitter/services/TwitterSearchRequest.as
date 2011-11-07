@@ -156,32 +156,32 @@ package com.zehfernando.net.apis.twitter.services {
 			// Example:
 			/*
 			{
-			   "results":[
-				  {
-					 "profile_image_url":"http://a0.twimg.com/profile_images/1092781896/avatar2_normal.jpg",
-					 "created_at":"Mon, 16 Aug 2010 20:15:18 +0000",
-					 "from_user":"OneLag",
-					 "metadata":{
-						"result_type":"recent"
-					 },
-					 "to_user_id":12872148,
-					 "text":"@todearaujo nao rapaz, nao to falando do meu BG, to falando de como eu uso o meu twitter mesmo",
-					 "id":21341803331,
-					 "from_user_id":201065,
-					 "to_user":"todearaujo",
-					 "geo":null,
-					 "iso_language_code":"pt",
-					 "source":"&lt;a href=&quot;http://www.tweetdeck.com&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;"
-				  },
-			   ],
-			   "max_id":21341803331,
-			   "since_id":0,
-			   "refresh_url":"?since_id=21341803331&q=twitter",
-			   "next_page":"?page=2&max_id=21341803331&q=twitter",
-			   "results_per_page":15,
-			   "page":1,
-			   "completed_in":0.042722,
-			   "query":"twitter"
+				"results":[
+					{
+						"profile_image_url":"http://a0.twimg.com/profile_images/1092781896/avatar2_normal.jpg",
+						"created_at":"Mon, 16 Aug 2010 20:15:18 +0000",
+						"from_user":"OneLag",
+						"metadata":{
+							"result_type":"recent"
+						},
+						"to_user_id":12872148,
+						"text":"@todearaujo nao rapaz, nao to falando do meu BG, to falando de como eu uso o meu twitter mesmo",
+						"id":21341803331,
+						"from_user_id":201065,
+						"to_user":"todearaujo",
+						"geo":null,
+						"iso_language_code":"pt",
+						"source":"&lt;a href=&quot;http://www.tweetdeck.com&quot; rel=&quot;nofollow&quot;&gt;TweetDeck&lt;/a&gt;"
+					},
+				],
+				"max_id":21341803331,
+				"since_id":0,
+				"refresh_url":"?since_id=21341803331&q=twitter",
+				"next_page":"?page=2&max_id=21341803331&q=twitter",
+				"results_per_page":15,
+				"page":1,
+				"completed_in":0.042722,
+				"query":"twitter"
 			}
 			*/
 

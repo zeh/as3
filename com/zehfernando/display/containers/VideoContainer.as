@@ -226,10 +226,10 @@ package com.zehfernando.display.containers {
 				dispatchEvent(new Event(EVENT_PLAY_FINISH));
 			}
 		}
-		
+
 		protected function setVideoLoaderInternal(__videoLoader:VideoLoader): void {
 			videoLoader = __videoLoader;
-		
+
 			videoLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 
 			videoLoader.addEventListener(Event.OPEN, onLoadingStart);
@@ -253,7 +253,7 @@ package com.zehfernando.display.containers {
 
 			setAsset(videoLoader);
 		}
-		
+
 		protected function removeVideoLoaderInternal(__disposeVideoLoader:Boolean = true): void {
 			if (Boolean(videoLoader)) {
 				videoLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
@@ -283,7 +283,7 @@ package com.zehfernando.display.containers {
 				videoLoader = null;
 			}
 		}
-		
+
 		protected function loadVideoLoader(__videoLoader:VideoLoader): void {
 			// Dangerously duplicated from load()!!!
 			// TODO: get rid of load() altogether and only use this one?
