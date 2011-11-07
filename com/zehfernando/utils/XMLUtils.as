@@ -79,6 +79,14 @@ package com.zehfernando.utils {
 			return __default;
 		}
 
+		public static function getAttributeAsStringVector(__xml:XML, __attributeName:String, __separator:String, __default:Array = null):Vector.<String> {
+			if (!Boolean(__default)) __default = [];
+			if (!Boolean(__xml)) return VectorUtils.arrayToStringVector(__default);
+			var __attributeValue:String = __xml.attribute(__attributeName);
+			if (Boolean(__attributeValue)) return VectorUtils.arrayToStringVector(__attributeValue.split(__separator));
+			return VectorUtils.arrayToStringVector(__default);
+		}
+
 		public static function getAttributeAsInt(__xml:XML, __attributeName:String, __default:int = 0): Number {
 			return int(getAttributeAsFloat(__xml, __attributeName, __default));
 		}
