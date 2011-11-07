@@ -102,9 +102,9 @@ package com.zehfernando.display.components.text {
 			elementFormat.fontSize = __size;
 			elementFormat.color = __color;
 			elementFormat.alpha = __alpha;
-			
+
 			applyElementFormatTracking();
-			
+
 			textBlock = new TextBlock();
 			textBlock.baselineZero = TextBaseline.IDEOGRAPHIC_TOP;
 
@@ -430,6 +430,23 @@ package com.zehfernando.display.components.text {
 //			textField.setTextFormat(format, beginIndex, endIndex);
 //		}
 
+		public function setTrackingForWidth(__desiredWidth:Number, __offset:Number = 100, __reset:Boolean = true):void {
+			// Try to adjust the textfield until the desired width is achieved
+
+			if (__reset) tracking = 0;
+
+			//log ("Trying to achieve width of " + __desiredWidth + " with tracking " + __offset + ", current is " + width);
+			var subtracting:Boolean = __desiredWidth < width;
+
+			while (((subtracting && width > __desiredWidth) || (!subtracting && width < __desiredWidth)) && trackingAsPhotoshop >- 1000 && trackingAsPhotoshop < 3000) {
+				trackingAsPhotoshop += __offset * (subtracting ? -1 : 1);
+			}
+
+			if (Math.abs(__offset) > 1) {
+				setTrackingForWidth(__desiredWidth, __offset / 2, false);
+			}
+		}
+
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
@@ -675,6 +692,14 @@ package com.zehfernando.display.components.text {
 				fontDescription.fontName = __value;
 				redraw();
 			}
+		}
+
+		public function get embeddedFonts(): Boolean {
+			return fontDescription.fontLookup == FontLookup.EMBEDDED_CFF;
+		}
+		public function set embeddedFonts(__value:Boolean): void {
+			fontDescription.fontLookup = __value ? FontLookup.EMBEDDED_CFF : FontLookup.DEVICE;
+			redraw();
 		}
 
 		public function get cffHinting(): String {
