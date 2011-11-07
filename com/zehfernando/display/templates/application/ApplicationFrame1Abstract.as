@@ -1,6 +1,5 @@
 package com.zehfernando.display.templates.application {
 
-	import com.zehfernando.display.debug.StatGraph;
 	import com.zehfernando.display.templates.application.events.ApplicationFrame2Event;
 	import com.zehfernando.net.assets.AssetLibrary;
 	import com.zehfernando.utils.AppUtils;
