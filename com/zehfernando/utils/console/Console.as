@@ -61,7 +61,7 @@ package com.zehfernando.utils.console {
 		protected static const LOG_TYPE_WARNING:String = "warning";
 		protected static const LOG_TYPE_ERROR:String = "error";
 
-
+		// Static properties
 		protected static var _useTrace:Boolean;
 		protected static var _useScreen:Boolean;
 		protected static var _useJS:Boolean;
