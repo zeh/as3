@@ -1,5 +1,7 @@
 package com.zehfernando.utils {
 
+	import com.zehfernando.utils.console.error;
+
 	import flash.display.DisplayObjectContainer;
 	import flash.display.LoaderInfo;
 	import flash.display.Stage;
@@ -96,7 +98,8 @@ package com.zehfernando.utils {
 		public static function resetContextMenu(): void {
 			// Clears the menu
 			root.contextMenu = new ContextMenu();
-			root.contextMenu.hideBuiltInItems();
+//			root.contextMenu.hideBuiltInItems();
+			error("Trying to hide build in menu items!!!");
 
 			//var mi:ContextMenuItem = new ContextMenuItem("Toggle Fullscreen");
 			//mi.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, toggleFullScreen);
@@ -117,6 +120,12 @@ package com.zehfernando.utils {
 
 		public static function isFullScreen(): Boolean {
 			return stage.displayState == StageDisplayState.FULL_SCREEN;
+		}
+
+		public static function getScreenDensityScale():Number {
+			// Returns a density scale where 1 = 72dpi, 2 = 155dpi, etc
+			var s:Number = Capabilities.screenDPI / 72;
+			return 1 + ((s-1) * 0.25);
 		}
 
 		/*
