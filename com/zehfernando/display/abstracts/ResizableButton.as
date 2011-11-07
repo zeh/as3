@@ -11,6 +11,7 @@ package com.zehfernando.display.abstracts {
 		protected var _mouseFocus:Number;
 		protected var _enabled:Number;
 		protected var _visibility:Number;
+		protected var _pressed:Number;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -21,6 +22,7 @@ package com.zehfernando.display.abstracts {
 			_mouseFocus = 0;
 			_enabled = 1;
 			_visibility = 1;
+			_pressed = 0;
 
 			mouseChildren = false;
 			buttonMode = true;
@@ -91,6 +93,16 @@ package com.zehfernando.display.abstracts {
 			if (_visibility != __value) {
 				_visibility = __value;
 				redrawVisibility();
+			}
+		}
+
+		public function get pressed(): Number {
+			return _pressed;
+		}
+		public function set pressed(__value:Number): void {
+			if (_pressed != __value) {
+				_pressed = __value;
+				redrawState();
 			}
 		}
 
