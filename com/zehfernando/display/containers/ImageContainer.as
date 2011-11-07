@@ -1,6 +1,6 @@
 package com.zehfernando.display.containers {
-
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -124,6 +124,16 @@ package com.zehfernando.display.containers {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+		
+		public function getFrame(): BitmapData {
+			// Captures the current image as a BitmapData
+			var bmp:BitmapData = new BitmapData(_contentWidth, _contentHeight, false, 0x000000);
+
+			//var mtx:Matrix = new Matrix();
+			//mtx.scale(_contentWidth/100, _contentHeight/100);
+			bmp.draw(loader);
+			return bmp;
+		}
 
 		override public function load(__url:String): void {
 			if (!Boolean(__url)) {
