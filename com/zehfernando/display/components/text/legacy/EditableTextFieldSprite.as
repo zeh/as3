@@ -7,6 +7,7 @@ package com.zehfernando.display.components.text.legacy {
 	import flash.events.FocusEvent;
 	import flash.text.AntiAliasType;
 	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFieldType;
 	import flash.text.TextFormat;
 
@@ -31,9 +32,12 @@ package com.zehfernando.display.components.text.legacy {
 			super();
 
 			textField = new TextField();
+			textField.autoSize = TextFieldAutoSize.LEFT;
+			textField.text = "";
 			textField.type = TextFieldType.INPUT;
 			textField.embedFonts = true;
 			textField.antiAliasType = AntiAliasType.ADVANCED;
+			textField.height = textField.textHeight;
 			addChild(textField);
 
 			textField.addEventListener(FocusEvent.FOCUS_IN, onGotFocus, false, 0, true);
@@ -50,7 +54,11 @@ package com.zehfernando.display.components.text.legacy {
 			size = __size;
 			color = __color;
 
+			textField.autoSize = TextFieldAutoSize.NONE;
+			_height = textField.textHeight * 1.2;
+
 			text = "";
+
 		}
 
 		// ================================================================================================================
@@ -92,6 +100,10 @@ package com.zehfernando.display.components.text.legacy {
 			if (Boolean(__stage)) __stage.focus = textField;
 		}
 
+		public function setSelection(__beginIndex:int, __endIndex:int): void {
+			textField.setSelection(__beginIndex, __endIndex);
+		}
+
 //		public function unfocus():void {
 //			stage.focus = null;
 //		}
@@ -120,6 +132,14 @@ package com.zehfernando.display.components.text.legacy {
 		}
 		public function set color(__value:int): void {
 			textFormat.color = __value;
+			applyTextFormat();
+		}
+
+		public function get align(): String {
+			return textFormat.align;
+		}
+		public function set align(__value:String): void {
+			textFormat.align = __value;
 			applyTextFormat();
 		}
 
