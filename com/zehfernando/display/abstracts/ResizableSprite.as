@@ -1,4 +1,5 @@
 package com.zehfernando.display.abstracts {
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 
