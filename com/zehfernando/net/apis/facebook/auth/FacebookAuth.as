@@ -13,6 +13,7 @@ package com.zehfernando.net.apis.facebook.auth {
 	import flash.net.URLLoader;
 	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 
 	/**
 	 * @author zeh
@@ -144,7 +145,7 @@ package com.zehfernando.net.apis.facebook.auth {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function login(__permissions:Array = null): void {
+		public static function login(__permissions:Array = null, __useNormalLink:Boolean = false): void {
 			// Open the popup window asking for login permission
 
 			closeLocalConnection();
@@ -163,7 +164,11 @@ package com.zehfernando.net.apis.facebook.auth {
 
 			var url:String = FacebookConstants.AUTHORIZE_URL.split(FacebookConstants.PARAMETER_AUTH_APP_ID).join(appId).split(FacebookConstants.PARAMETER_AUTH_REDIRECT_URL).join(redirectURL).split(FacebookConstants.PARAMETER_AUTH_PERMISSIONS).join(permissions);
 
-			HTMLUtils.openPopup(url, 600, 400, "_blank", onLoginWindowClosedLC);
+			if (__useNormalLink) {
+				navigateToURL(new URLRequest(url), "_blank");
+			} else {
+				HTMLUtils.openPopup(url, 600, 400, "_blank", onLoginWindowClosedLC);
+			}
 
 			// https://graph.facebook.com/oauth/authorize?client_id=147149585329358&redirect_uri=http://www.facebook.com/connect/login_success.html&type=user_agent&display=popup
 			// Goes to
