@@ -30,8 +30,8 @@ package com.zehfernando.net.apis.facebook.data {
 		// Properties
 		public var id:String;
 		public var name:String;
-		public var x:int;
-		public var y:int;
+		public var x:int;			// From 0-100
+		public var y:int;			// From 0-100
 		public var created:Date;
 
 
