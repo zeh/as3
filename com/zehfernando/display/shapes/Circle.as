@@ -16,7 +16,7 @@ package com.zehfernando.display.shapes {
 
 		public function Circle(__radius:Number = 100, __color:int = -1, __innerRadius:Number = 0) {
 
-			_color = (__color == -1 ? Math.random() * 0xffffff : __color) & 0xffffff;
+			_color = (__color < 0 ? Math.random() * 0xffffff : __color) & 0xffffff;
 			_radius = __radius;
 			_innerRadius = __innerRadius;
 
