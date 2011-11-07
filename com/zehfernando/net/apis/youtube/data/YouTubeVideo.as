@@ -3,9 +3,6 @@ package com.zehfernando.net.apis.youtube.data {
 	import com.zehfernando.net.apis.youtube.YouTubeConstants;
 	import com.zehfernando.net.apis.youtube.YouTubeDataUtils;
 	import com.zehfernando.utils.DateUtils;
-	import com.zehfernando.utils.console.log;
-
-
 
 	/*FDT_IGNORE*/
 	import com.zehfernando.utils.DateUtils;

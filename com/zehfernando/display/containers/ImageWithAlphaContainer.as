@@ -1,7 +1,4 @@
 package com.zehfernando.display.containers {
-
-	import com.zehfernando.utils.console.log;
-
 	import flash.display.Bitmap;
 	import flash.display.BlendMode;
 	import flash.display.Loader;

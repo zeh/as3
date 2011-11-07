@@ -4,7 +4,6 @@ package com.zehfernando.net.apis.youtube.services {
 	import com.zehfernando.net.apis.youtube.YouTubeConstants;
 	import com.zehfernando.net.apis.youtube.data.YouTubeVideo;
 	import com.zehfernando.net.apis.youtube.events.YouTubeServiceEvent;
-	import com.zehfernando.utils.console.log;
 
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
