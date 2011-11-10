@@ -54,7 +54,13 @@ package com.zehfernando.net.apis.facebook {
 
 		// UGH. This is temporary. Hopefully.
 		// First is original, rest is replacements (random)
-		public static const IMAGE_DOMAIN_REPLACEMENTS:Array = [["https://fbcdn-sphotos-a.akamaihd.net/", "http://a1.sphotos.ak.fbcdn.net/", "http://a2.sphotos.ak.fbcdn.net/", "http://a3.sphotos.ak.fbcdn.net/", "http://a4.sphotos.ak.fbcdn.net/", "http://a5.sphotos.ak.fbcdn.net/", "http://a6.sphotos.ak.fbcdn.net/", "http://a7.sphotos.ak.fbcdn.net/", "http://a8.sphotos.ak.fbcdn.net/"]];
+		public static const IMAGE_DOMAIN_REPLACEMENTS:Array = [
+			["https://s-hphotos-sea1.fbcdn.net/", "http://s-hphotos-sea1.fbcdn.net/"],
+			["https://s-hphotos-sjc1.fbcdn.net/", "http://s-hphotos-sjc1.fbcdn.net/"]
+		];
+
+		// Not needed anymore? ["https://fbcdn-sphotos-a.akamaihd.net/", "http://a1.sphotos.ak.fbcdn.net/", "http://a2.sphotos.ak.fbcdn.net/", "http://a3.sphotos.ak.fbcdn.net/", "http://a4.sphotos.ak.fbcdn.net/", "http://a5.sphotos.ak.fbcdn.net/", "http://a6.sphotos.ak.fbcdn.net/", "http://a7.sphotos.ak.fbcdn.net/", "http://a8.sphotos.ak.fbcdn.net/"],
+
 		// Initializations
 
 		{
@@ -66,6 +72,11 @@ package com.zehfernando.net.apis.facebook {
 			Security.loadPolicyFile("https://profile.ak.fbcdn.net/crossdomain.xml");
 			Security.loadPolicyFile("http://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
 			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
+
+			Security.loadPolicyFile("http://s-hphotos-sea1.fbcdn.net/crossdomain.xml");
+			Security.loadPolicyFile("https://s-hphotos-sea1.fbcdn.net/crossdomain.xml"); // Not working?
+			Security.loadPolicyFile("http://s-hphotos-sjc1.fbcdn.net/crossdomain.xml");
+			Security.loadPolicyFile("https://s-hphotos-sjc1.fbcdn.net/crossdomain.xml"); // Not working?
 			//Security.loadPolicyFile("http://static.ak.fbcdn.net/crossdomain.xml"); // Doesn't allow
 
 			// TODO: monitor for redirects and do the automatic cross-domain requests... ugh? http://www.arpitonline.com/blog/2008/06/17/debugging-crossdomain-issues-following-http-302s/
