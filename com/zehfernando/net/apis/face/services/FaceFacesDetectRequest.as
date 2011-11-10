@@ -2,10 +2,8 @@ package com.zehfernando.net.apis.face.services {
 	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.face.FaceConstants;
 	import com.zehfernando.net.apis.face.data.FacePhoto;
-	import com.zehfernando.net.apis.face.events.FaceServiceEvent;
 
 	import flash.events.Event;
-	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	/**
 	 * @author zeh
@@ -27,7 +25,6 @@ package com.zehfernando.net.apis.face.services {
 
 			// Basic service configuration
 			requestURL = FaceConstants.DOMAIN + FaceConstants.SERVICE_FACES_DETECT;
-			requestMethod = URLRequestMethod.GET;
 
 			// Parameters
 			// http://developers.face.com/docs/api/faces-detect/
@@ -57,7 +54,6 @@ package com.zehfernando.net.apis.face.services {
 			_photos = FacePhoto.fromJSONObjectArray(response["photos"]);
 			
 			super.onComplete(e);
-			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.COMPLETE));
 		}
 
 		
