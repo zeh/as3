@@ -1,9 +1,7 @@
 package com.zehfernando.net.apis.facebook.services {
-
 	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.net.apis.facebook.data.FacebookFeedPost;
-	import com.zehfernando.net.apis.facebook.events.FacebookServiceEvent;
 	import com.zehfernando.utils.console.log;
 
 	import flash.events.Event;
@@ -48,8 +46,10 @@ package com.zehfernando.net.apis.facebook.services {
 			//_item = FacebookFeedPost.fromJSONObject(response["data"]);
 
 			super.onComplete(e);
-			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
+
+		// ================================================================================================================
+		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		override public function execute():void {
 			requestURL = requestURL.replace(FacebookConstants.PARAMETER_ITEM_ID, _itemId);

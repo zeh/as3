@@ -1,10 +1,10 @@
 package com.zehfernando.net.apis.facebook.services {
-
 	import com.zehfernando.net.apis.BasicServiceRequest;
 	import com.zehfernando.net.apis.facebook.auth.FacebookAuth;
 	import com.zehfernando.net.apis.facebook.events.FacebookServiceEvent;
 	import com.zehfernando.utils.console.log;
 
+	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLVariables;
@@ -46,6 +46,11 @@ package com.zehfernando.net.apis.facebook.services {
 			log(loader.data);
 			super.onIOError(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
+		}
+
+		override protected function onComplete(e:Event): void {
+			super.onComplete(e);
+			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}
 	}
 }
