@@ -1,10 +1,13 @@
 package com.zehfernando.net.apis.face.services {
+	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.BasicServiceRequest;
 	import com.zehfernando.net.apis.face.FaceConstants;
-	import com.zehfernando.net.apis.facebook.events.FacebookServiceEvent;
+	import com.zehfernando.net.apis.face.events.FaceServiceEvent;
 
+	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	/**
 	 * @author zeh
@@ -20,6 +23,8 @@ package com.zehfernando.net.apis.face.services {
 
 		public function BasicFaceRequest() {
 			super();
+			
+			requestMethod = URLRequestMethod.POST;
 		}
 
 		// ================================================================================================================
@@ -41,12 +46,25 @@ package com.zehfernando.net.apis.face.services {
 
 		override protected function onSecurityError(e:SecurityErrorEvent): void {
 			super.onSecurityError(e);
-			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
+			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.ERROR));
 		}
 		
 		override protected function onIOError(e:IOErrorEvent): void {
 			super.onIOError(e);
-			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
+			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.ERROR));
+		}
+
+		override protected function onComplete(e:Event): void {
+			var response:Object = JSON.decode(loader.data);
+			
+			if (response[FaceConstants.PARAMETER_NAME_STATUS] == FaceConstants.STATUS_FAILURE) {
+				// Response is successfull, but it was instead an error
+				onIOError(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, response[FaceConstants.PARAMETER_NAME_ERROR_MESSAGE]));
+				return;
+			}
+			
+			super.onComplete(e);
+			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.COMPLETE));
 		}
 
 		// ================================================================================================================
