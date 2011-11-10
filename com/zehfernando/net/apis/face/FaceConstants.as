@@ -22,6 +22,10 @@ package com.zehfernando.net.apis.face {
 
 		public static const PARAMETER_LIST_CONCATENATOR:String = ",";
 
+		public static const PARAMETER_NAME_STATUS:String = "status";
+		public static const STATUS_FAILURE:String = "failure";
+		public static const PARAMETER_NAME_ERROR_MESSAGE:String = "error_message";
+
 		// Initializations
 		{
 			Security.loadPolicyFile("http://api.face.com/crossdomain.xml");
