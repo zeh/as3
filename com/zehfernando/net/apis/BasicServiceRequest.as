@@ -76,10 +76,10 @@ package com.zehfernando.net.apis {
 		}
 
 		protected function removeLoader(): void {
-			loader.removeEventListener(Event.COMPLETE, onComplete);
+			loader.removeEventListener(Event.COMPLETE, innerOnComplete);
 			loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
-			loader.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
-			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
+			loader.removeEventListener(IOErrorEvent.IO_ERROR, innerOnIOError);
+			loader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, innerOnSecurityError);
 			loader = null;
 		}
 
@@ -96,11 +96,19 @@ package com.zehfernando.net.apis {
 			removeLoader();
 		}
 
+		protected function innerOnSecurityError(e:SecurityErrorEvent): void {
+			onSecurityError(e);
+		}
+
 		protected function onIOError(e:IOErrorEvent): void {
 			_rawResponse = loader.data;
 
 			_isLoading = false;
 			removeLoader();
+		}
+
+		protected function innerOnIOError(e:IOErrorEvent): void {
+			innerOnIOError(e);
 		}
 
 		protected function onComplete(e:Event): void {
@@ -109,6 +117,10 @@ package com.zehfernando.net.apis {
 			_isLoading = false;
 			_isLoaded = true;
 			removeLoader();
+		}
+		
+		protected function innerOnComplete(e:Event): void {
+			onComplete(e);
 		}
 
 		// ================================================================================================================
@@ -131,9 +143,9 @@ package com.zehfernando.net.apis {
 			
 			loader = new URLLoader();
 			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
-			loader.addEventListener(IOErrorEvent.IO_ERROR, onIOError);
-			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
-			loader.addEventListener(Event.COMPLETE, onComplete);
+			loader.addEventListener(IOErrorEvent.IO_ERROR, innerOnIOError);
+			loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, innerOnSecurityError);
+			loader.addEventListener(Event.COMPLETE, innerOnComplete);
 			// Event.OPEN, ProgressEvent.PROGRESS
 			loader.load(urlRequest);
 		}
