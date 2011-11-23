@@ -99,5 +99,9 @@ package com.zehfernando.controllers {
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
 		// TODO: add ability to call a minimum of X times per second too
+
+		public function get isRunning(): Boolean {
+			return _isRunning;
+		}
 	}
 }
