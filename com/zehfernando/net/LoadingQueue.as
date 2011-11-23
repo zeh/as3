@@ -1,5 +1,6 @@
 package com.zehfernando.net {
 
+	import com.zehfernando.net.loaders.ImageLoader;
 	import com.zehfernando.net.loaders.VideoLoader;
 	import com.zehfernando.net.loaders.VideoLoaderEvent;
 	import com.zehfernando.utils.console.log;
@@ -61,10 +62,10 @@ package com.zehfernando.net {
 			currentLoaders = new Vector.<LoadingQueueItemInfo>();
 		}
 
-		protected function checkUnusedSpots(): void {
-			// Check if there are remaining loading spots,
+		protected function checkUnusedSlots(): void {
+			// Check if there are remaining loading slots
 
-			//trace("LoadingQueue.checkUnusedSpots()");
+			//trace("LoadingQueue.checkUnusedSlots()");
 
 			if (!_paused) {
 				while (currentLoaders.length < _slots && queue.length > 0) {
@@ -72,9 +73,9 @@ package com.zehfernando.net {
 				}
 
 				if (queue.length == 0) {
-					//trace ("LoadingQueue.checkUnusedSpots() - All queued items have been fired already.");
+					//trace ("LoadingQueue.checkUnusedSlots() - All queued items have been fired already.");
 					if (currentLoaders.length == 0) {
-						//trace ("LoadingQueue.checkUnusedSpots() - All done!");
+						//trace ("LoadingQueue.checkUnusedSlots() - All done!");
 						dispatchCompleteEvent();
 					}
 				}
@@ -117,6 +118,19 @@ package com.zehfernando.net {
 
 				var lc:LoaderContext = new LoaderContext(true);
 				ld.load(q.request, lc);
+			} else if (q.targetObject is ImageLoader) {
+
+				var id:ImageLoader = q.targetObject as ImageLoader;
+
+				//ld.contentLoaderInfo.addEventListener(Event.OPEN, onLoaderOpen, false, 0, true);
+				id.addEventListener(Event.COMPLETE, onImageLoaderComplete, false, 0, true);
+				id.addEventListener(ProgressEvent.PROGRESS, onImageLoaderProgress, false, 0, true);
+				//ld.contentLoaderInfo.addEventListener(HTTPStatusEvent.HTTP_STATUS, onLoaderHTTPStatus, false, 0, true); // TODO: set the http status?
+				id.addEventListener(IOErrorEvent.IO_ERROR, onImageLoaderIOError, false, 0, true);
+				// Event.INIT
+				// Event.UNLOAD
+
+				id.load(q.request);
 			} else if (q.targetObject is VideoLoader) {
 
 				var vl:VideoLoader = q.targetObject as VideoLoader;
@@ -124,7 +138,7 @@ package com.zehfernando.net {
 				//vl.addEventListener(Event.OPEN, onLoaderOpen, false, 0, true);
 				vl.addEventListener(Event.COMPLETE, onVideoLoaderComplete, false, 0, true);
 				vl.addEventListener(ProgressEvent.PROGRESS, onVideoLoaderProgress, false, 0, true);
-				vl.addEventListener(VideoLoaderEvent.STREAM_NOT_FOUND, onVideoLoaderSeekNotFound, false, 0, true);
+				vl.addEventListener(VideoLoaderEvent.STREAM_NOT_FOUND, onVideoLoaderStreamNotFound, false, 0, true);
 
 				vl.load(q.request);
 
@@ -243,7 +257,7 @@ package com.zehfernando.net {
 
 			//dispatchCompleteItemEvent(q);
 
-			checkUnusedSpots();
+			checkUnusedSlots();
 		}
 
 		protected function onURLLoaderIOError(e:IOErrorEvent): void {
@@ -290,10 +304,10 @@ package com.zehfernando.net {
 
 			//dispatchCompleteItemEvent(q);
 
-			checkUnusedSpots();
+			checkUnusedSlots();
 		}
 
-		protected function onVideoLoaderSeekNotFound(e:VideoLoaderEvent): void {
+		protected function onVideoLoaderStreamNotFound(e:VideoLoaderEvent): void {
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
 			//trace ("LoadingQueue :: onURLLoaderIOError :: Object '" + q.targetObject + "' has thrown an IOErrorEvent of " + e.text);
 
@@ -306,6 +320,53 @@ package com.zehfernando.net {
 			} else {
 				// Maximum tries already
 				log("Can't load: reached maximum number of tries for VideoLoader [" +q.request.url + "] !");
+			}
+		}
+
+		// ImageLoader
+
+		protected function onImageLoaderProgress(e:ProgressEvent): void {
+			//Log.echo("current = " + currentLoaders.length + ", total = " + queue.length);
+
+			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
+			q.bytesLoaded = e.bytesLoaded;
+			q.bytesTotal = e.bytesTotal;
+
+			dispatchProgressEvent();
+		}
+
+		protected function onImageLoaderComplete(e:Event): void {
+			// Successfully loaded one item, remove it from the queue
+			//trace ("LoadingQueue.onURLLoaderComplete :: Object '" + e.target);
+
+			//Log.echo(currentLoaders.length);
+
+			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
+
+			//_cumulativeTimeSpent += (getTimer() - q.timeStarted);
+			_cumulativeBytesLoaded += (q.targetObject as ImageLoader).bytesTotal;
+			_cumulativeSimulatedBytesLoaded += q.simulatedBytesTotal;
+
+			removeItemFromCurrentLoaders(q);
+
+			//dispatchCompleteItemEvent(q);
+
+			checkUnusedSlots();
+		}
+
+		protected function onImageLoaderIOError(e:VideoLoaderEvent): void {
+			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
+			//trace ("LoadingQueue :: onURLLoaderIOError :: Object '" + q.targetObject + "' has thrown an IOErrorEvent of " + e.text);
+
+			removeItemFromCurrentLoaders(q);
+
+			if (q.retries < maximumRetries) {
+				// Try again
+				q.retries++;
+				queue.push(q);
+			} else {
+				// Maximum tries already
+				log("Can't load: reached maximum number of tries for ImageLoader [" +q.request.url + "] !");
 			}
 		}
 
@@ -333,7 +394,7 @@ package com.zehfernando.net {
 
 			//dispatchCompleteItemEvent(q);
 
-			checkUnusedSpots();
+			checkUnusedSlots();
 		}
 
 		protected function onLoaderIOError(e:IOErrorEvent): void {
@@ -361,7 +422,7 @@ package com.zehfernando.net {
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
 			q.simulatedBytesTotal = __simulatedBytesTotal;
 			queue.push(q);
-			checkUnusedSpots();
+			checkUnusedSlots();
 			// TODO: add priority!
 		}
 
@@ -370,7 +431,16 @@ package com.zehfernando.net {
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
 			q.simulatedBytesTotal = __simulatedBytesTotal;
 			queue.push(q);
-			checkUnusedSpots();
+			checkUnusedSlots();
+			// TODO: add priority!
+		}
+
+		public function addImageLoader(__targetObject:ImageLoader, __request:URLRequest, __simulatedBytesTotal:Number = 100000): void {
+			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
+			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
+			q.simulatedBytesTotal = __simulatedBytesTotal;
+			queue.push(q);
+			checkUnusedSlots();
 			// TODO: add priority!
 		}
 
@@ -379,7 +449,7 @@ package com.zehfernando.net {
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
 			q.simulatedBytesTotal = __simulatedBytesTotal;
 			queue.push(q);
-			checkUnusedSpots();
+			checkUnusedSlots();
 			// TODO: add priority!
 		}
 
@@ -393,7 +463,7 @@ package com.zehfernando.net {
 		public function set slots(__value:Number): void {
 			if (_slots != __value) {
 				_slots = __value;
-				checkUnusedSpots();
+				checkUnusedSlots();
 			}
 		}
 
@@ -410,7 +480,7 @@ package com.zehfernando.net {
 		public function resume(): void {
 			 if (_paused) {
 			 	_paused = false;
-			 	checkUnusedSpots();
+			 	checkUnusedSlots();
 			 }
 		}
 
