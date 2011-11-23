@@ -18,7 +18,6 @@ package com.zehfernando.net.loaders {
 	import flash.net.URLRequest;
 	import flash.utils.getTimer;
 
-
 	/**
 	 * @author zeh
 	 */
