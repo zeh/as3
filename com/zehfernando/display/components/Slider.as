@@ -21,12 +21,16 @@ package com.zehfernando.display.components {
 		protected var _backgroundColor:int;
 		protected var _pickerColor:int;
 
-		protected var _position:Number;
-		protected var _minimumPickerHeight:Number;
-		protected var _maximumPickerHeight:Number;
-		protected var _pickerScale:Number;
+		protected var _position:Number;						// 0-1
+		protected var _minPickerSize:Number;				// In pixels
+		protected var _maxPickerSize:Number;				// In pixels
+		protected var _pickerScale:Number;					// 0-1 of total
+		protected var _roundPickerPosition:Boolean;
 
-		protected var _hitMargin:Number;
+		protected var _hitMargin:Number;					// For picker
+
+		protected var _minValue:Number;
+		protected var _maxValue:Number;
 
 		protected var _isDragging:Boolean;
 		protected var _enabled:Boolean;
@@ -65,9 +69,13 @@ package com.zehfernando.display.components {
 			_position = 0;
 
 			_hitMargin = 2;
+			_minPickerSize = 10;
+			_maxPickerSize = 10000;
 			_pickerScale = 0.1;
-			_minimumPickerHeight = 10;
-			_maximumPickerHeight = 10000;
+			_roundPickerPosition = false;
+
+			_minValue = 0;
+			_maxValue = 100;
 
 			_wheelDeltaScale = 0.01;
 
@@ -97,31 +105,36 @@ package com.zehfernando.display.components {
 
 		override protected function redrawWidth(): void {
 			background.width = _width;
-			picker.width = _width;
-			hitter.x = -_hitMargin;
-			hitter.width = _width + _hitMargin * 2;
-		}
-
-		override protected function redrawHeight(): void {
-			background.height = _height;
 
 			redrawPosition();
 		}
 
-		protected function redrawPosition(): void {
-			var ph:Number = Math.min(MathUtils.clamp(_pickerScale * _height, _minimumPickerHeight, _maximumPickerHeight), _height);
-			picker.height = ph;
-			picker.y = MathUtils.map(_position, 0, 1, 0, _height - ph);
-			pickerContainer.y = picker.y;
+		override protected function redrawHeight(): void {
+			background.height = _height;
+			picker.height = _height;
+			hitter.y = -_hitMargin;
+			hitter.height = _height + _hitMargin * 2;
+		}
 
-			hitter.y = picker.y - _hitMargin;
-			hitter.height = ph + _hitMargin * 2;
+		protected function redrawPosition(): void {
+			var pw:Number = Math.min(MathUtils.clamp(_pickerScale * _width, _minPickerSize, _maxPickerSize), _width);
+			if (_roundPickerPosition) pw = Math.round(pw);
+
+			var px:Number = MathUtils.map(_position, 0, 1, 0, _width - pw);
+			if (_roundPickerPosition) px = Math.round(px);
+
+			picker.width = pw;
+			picker.x = px;
+			pickerContainer.x = picker.x;
+
+			hitter.x = picker.x - _hitMargin;
+			hitter.width = pw + _hitMargin * 2;
 		}
 
 		protected function startDragging(): void {
 			// Starts dragging the head
 			if (!_isDragging && enabled) {
-				draggingOffset = mouseY - picker.y;
+				draggingOffset = mouseX - picker.x;
 
 				AppUtils.getStage().addEventListener(MouseEvent.MOUSE_MOVE, onDraggingMouseMove);
 				AppUtils.getStage().addEventListener(MouseEvent.MOUSE_UP, onDraggingMouseUp);
@@ -132,7 +145,7 @@ package com.zehfernando.display.components {
 
 		protected function continueDragging(): void {
 			if (_isDragging) {
-				var newPos:Number = MathUtils.map(mouseY - draggingOffset, 0, _height - picker.height, 0, 1, true);
+				var newPos:Number = MathUtils.map(mouseX - draggingOffset, 0, _width - picker.width, 0, 1, true);
 				if(newPos != _position) {
 					position = newPos;
 					dispatchEvent(new Event(EVENT_POSITION_CHANGED_BY_USER));
@@ -172,7 +185,6 @@ package com.zehfernando.display.components {
 				dispatchEvent(new Event(EVENT_POSITION_CHANGED_BY_USER));
 			}
 		}
-
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
@@ -242,6 +254,47 @@ package com.zehfernando.display.components {
 				_pickerScale = __value;
 				redrawPosition();
 			}
+		}
+
+		public function get minPickerSize(): Number {
+			return _minPickerSize;
+		}
+		public function set minPickerSize(__value:Number): void {
+			if (_minPickerSize != __value) {
+				_minPickerSize = __value;
+				redrawPosition();
+			}
+		}
+
+		public function get maxPickerSize(): Number {
+			return _maxPickerSize;
+		}
+		public function set maxPickerSize(__value:Number): void {
+			if (_maxPickerSize != __value) {
+				_maxPickerSize = __value;
+				redrawPosition();
+			}
+		}
+
+		public function get minValue(): Number {
+			return _minValue;
+		}
+		public function set minValue(__value:Number): void {
+			_minValue = __value;
+		}
+
+		public function get maxValue(): Number {
+			return _maxValue;
+		}
+		public function set maxValue(__value:Number): void {
+			_maxValue = __value;
+		}
+
+		public function get value(): Number {
+			return MathUtils.map(_position, 0, 1, _minValue, _maxValue, true);
+		}
+		public function set value(__value:Number): void {
+			position = MathUtils.map(__value, _minValue, _maxValue, 0, 1, true);
 		}
 	}
 }
