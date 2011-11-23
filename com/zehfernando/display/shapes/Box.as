@@ -52,7 +52,7 @@ package com.zehfernando.display.shapes {
 		}
 		public function set color(__value:int): void {
 			if (_color != __value) {
-				_color = __value;
+				_color = __value & 0xffffff;
 				paint();
 			}
 		}
