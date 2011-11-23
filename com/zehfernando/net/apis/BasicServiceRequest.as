@@ -118,7 +118,7 @@ package com.zehfernando.net.apis {
 			_isLoaded = true;
 			removeLoader();
 		}
-		
+
 		protected function innerOnComplete(e:Event): void {
 			onComplete(e);
 		}
@@ -140,7 +140,7 @@ package com.zehfernando.net.apis {
 			urlRequest.data = vars;
 			urlRequest.requestHeaders = getRequestHeaders();
 			urlRequest.contentType = requestContentType;
-			
+
 			loader = new URLLoader();
 			loader.addEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 			loader.addEventListener(IOErrorEvent.IO_ERROR, innerOnIOError);
@@ -165,5 +165,14 @@ package com.zehfernando.net.apis {
 		public function get rawRequest():Object {
 			return urlRequest.data;
 		}
+
+		public function get isLoading():Boolean {
+			return _isLoading;
+		}
+
+		public function get isLoaded():Boolean {
+			return _isLoaded;
+		}
+
 	}
 }
