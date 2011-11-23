@@ -11,21 +11,21 @@ package com.zehfernando.image {
 	 * @author zeh at zehfernando.com
 	 */
 	public class Morpher {
-		
+
 		// Properties
 		protected var needsRedraw:Boolean;					// Something changed, need to re-render
 		protected var needsBitmap:Boolean;					// Something changed on the target bitmap, need to re-create
 
 		protected var _width:int;
 		protected var _height:int;
-		
+
 		protected var _phase:Number;
-		
+
 		// Instances
 		protected var imageA:MorphImageData;
 		protected var imageB:MorphImageData;
 		protected var triangles:Vector.<TrianglePoints>;
-		
+
 		protected var bitmap:BitmapData;					// Final image
 		protected var bitmapCompositeA:BitmapData;			// Composite: image A with dimensions of final bitmap, with vertices moved
 		protected var bitmapCompositeB:BitmapData;			// Composite: image B with dimensions of final bitmap, with vertices moved
@@ -36,12 +36,12 @@ package com.zehfernando.image {
 		public function Morpher(__width:Number = 100, __height:Number = 100) {
 			_width = __width;
 			_height = __height;
-			
+
 			_phase = 0.5;
 
 			imageA = new MorphImageData();
 			imageB = new MorphImageData();
-			
+
 			needsRedraw = true;
 			needsBitmap = true;
 		}
@@ -53,12 +53,12 @@ package com.zehfernando.image {
 			needsRedraw = true;
 			if (__needsNewBitmap) needsBitmap = true;
 		}
-		
+
 		protected function removeBitmap(): void {
 			if (Boolean(bitmap)) {
 				bitmap.dispose();
 				bitmap = null;
-				
+
 				bitmapCompositeA.dispose();
 				bitmapCompositeA = null;
 
@@ -68,13 +68,13 @@ package com.zehfernando.image {
 				needsBitmap = true;
 			}
 		}
-		
+
 		protected function createDistordtedImage(__target:BitmapData, __image:MorphImageData, __alternateImage:MorphImageData, __f:Number): void {
 			var i:int;
-			
+
 			// Create transformed image A
 			__target.fillRect(__target.rect, 0x000000);
-			
+
 			var vertices:Vector.<Number> = new Vector.<Number>();
 			var pw:Number = MathUtils.map(__f, 0, 1, __image.bitmap.width, __alternateImage.bitmap.width);
 			var ph:Number = MathUtils.map(__f, 0, 1, __image.bitmap.height, __alternateImage.bitmap.height);
@@ -100,7 +100,7 @@ package com.zehfernando.image {
 			spr.graphics.beginBitmapFill(__image.bitmap, null, false, true);
 			spr.graphics.drawTriangles(vertices, indices, uvtData);
 			spr.graphics.endFill();
-			
+
 //			for (i = 0; i < indices.length; i+= 3) {
 //				spr.graphics.beginFill(Math.random() * 0xffffff, 0.5);
 //				spr.graphics.moveTo(vertices[indices[i+0] * 2], vertices[indices[i+0] * 2 + 1]);
@@ -114,23 +114,23 @@ package com.zehfernando.image {
 //				spr.graphics.lineTo(vertices[indices[i+1] * 2], vertices[indices[i+1] * 2 + 1]);
 //				spr.graphics.lineTo(vertices[indices[i+2] * 2], vertices[indices[i+2] * 2 + 1]);
 //			}
-			
+
 			__target.draw(spr);
 		}
-		
+
 		protected function redrawMorphedImage(): void {
 			// Redraws the morphed image
 
-			// Creates updated distorted images for compositing			
+			// Creates updated distorted images for compositing
 			createDistordtedImage(bitmapCompositeA, imageA, imageB, _phase);
 			createDistordtedImage(bitmapCompositeB, imageB, imageA, 1-_phase);
-			
+
 			// Creates composite
 			var mtx:Matrix;
 
 			// All black
 			bitmap.fillRect(bitmap.rect, 0x000000);
-			
+
 			// First image
 			mtx = new Matrix();
 			mtx.scale(bitmap.width / bitmapCompositeA.width, bitmap.height / bitmapCompositeA.height);
@@ -148,7 +148,7 @@ package com.zehfernando.image {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public function setImageA(__image:BitmapData): void {
 			imageA.setBitmapData(__image);
 
@@ -160,32 +160,32 @@ package com.zehfernando.image {
 
 			requestRedraw(true);
 		}
-		
+
 		public function setPointsA(__points:Array): void {
 			// Parameters should be an array of points, using the image's coordinate system
 			imageA.setPointsFromArray(__points);
 
 			requestRedraw();
 		}
-		
+
 		public function setPointsB(__points:Array): void {
 			// Parameters should be an array of points
 			imageB.setPointsFromArray(__points);
 
 			requestRedraw();
 		}
-		
+
 		public function setTriangles(__triangles:Array): void {
 			// Parameters should be by vertices, like: [[0, 1, 2], [0, 1, 3]]
-			
+
 			triangles = new Vector.<TrianglePoints>();
 			for (var i:int = 0; i < __triangles.length; i++) {
 				triangles.push(new TrianglePoints(__triangles[i][0], __triangles[i][1], __triangles[i][2]));
 			}
-			
+
 			requestRedraw();
 		}
-		
+
 		public function getBitmap(): BitmapData {
 			if (needsBitmap) {
 				// TODO: allow transparency
@@ -199,7 +199,7 @@ package com.zehfernando.image {
 			if (needsRedraw) {
 				redrawMorphedImage();
 			}
-			
+
 			return bitmap;
 		}
 
@@ -211,7 +211,7 @@ package com.zehfernando.image {
 
 			imageB.dispose();
 			imageB = null;
-			
+
 			triangles = null;
 		}
 
@@ -237,7 +237,7 @@ package com.zehfernando.image {
 				requestRedraw(true);
 			}
 		}
-		
+
 		public function get phase(): Number {
 			return _phase;
 		}
@@ -253,7 +253,7 @@ package com.zehfernando.image {
 import flash.display.BitmapData;
 import flash.geom.Point;
 class TrianglePoints {
-	
+
 	// Instances
 	public var p1:int;
 	public var p2:int;
@@ -294,12 +294,12 @@ class MorphImageData {
 
 	// ================================================================================================================
 	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-	
+
 	public function setBitmapData(__bitmap:BitmapData): void {
 		removeBitmapData();
 		bitmap = __bitmap;
 	}
-	
+
 	public function setPointsFromArray(__points:Array): void {
 		var ps:Vector.<Point> = new Vector.<Point>();
 		for (var i:int = 0; i < __points.length; i++) {
@@ -308,7 +308,7 @@ class MorphImageData {
 		vertices = ps;
 		// TODO: create triangle cache
 	}
-	
+
 	public function dispose(): void {
 		removeBitmapData();
 		vertices = null;

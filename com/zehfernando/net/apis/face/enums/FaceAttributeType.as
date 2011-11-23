@@ -32,6 +32,6 @@ package com.zehfernando.net.apis.face.enums {
 
 		public static const FALSE:String = "false";
 		public static const TRUE:String = "true";
-		
+
 	}
 }

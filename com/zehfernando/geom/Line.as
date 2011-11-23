@@ -49,7 +49,7 @@ package com.zehfernando.geom {
 			var b1:Number = p1.x - p2.x;
 			var a2:Number = __line.p2.y - __line.p1.y;
 			var b2:Number = __line.p1.x - __line.p2.x;
-		
+
 			var denom:Number = a1 * b2 - a2 * b1;
 			if (denom == 0) return null;
 
@@ -57,7 +57,7 @@ package com.zehfernando.geom {
 			var c2:Number = __line.p2.x * __line.p1.y - __line.p1.x * __line.p2.y;
 
 			var p:Point = new Point((b1 * c2 - b2 * c1)/denom, (a2 * c1 - a1 * c2)/denom);
-		
+
 			//if(as_seg){
 			if (Point.distance(p, p2) > Point.distance(p1, p2)) return null;
 			if (Point.distance(p, p1) > Point.distance(p1, p2)) return null;

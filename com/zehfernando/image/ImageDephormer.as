@@ -11,18 +11,18 @@ package com.zehfernando.image {
 	 * @author zeh
 	 */
 	public class ImageDephormer {
-		
+
 		// Properties
 		protected var needsRedraw:Boolean;					// Something changed, need to re-render
 		protected var needsBitmap:Boolean;					// Something changed on the target bitmap, need to re-create
 
 		protected var _width:int;
 		protected var _height:int;
-		
+
 		// Instances
 		protected var triangles:Vector.<TrianglePoints>;
 		protected var vertices:Vector.<Point>;
-		
+
 		protected var bitmap:BitmapData;					// Final image
 
 		// ================================================================================================================
@@ -31,20 +31,20 @@ package com.zehfernando.image {
 		public function ImageDephormer(__width:Number, __height:Number, __vertices:Array, __triangles:Array) {
 			_width = __width;
 			_height = __height;
-			
+
 			var i:int;
-			
+
 			vertices = Vector.<Point>();
 			for (i = 0; i < __vertices.length; i++) {
 				vertices.push(__vertices[i]);
 			}
-			
+
 			// Triangles should be indexes of vertices, like: [[0, 1, 2], [0, 1, 3]]
 			triangles = new Vector.<TrianglePoints>();
 			for (i = 0; i < __triangles.length; i++) {
 				triangles.push(new TrianglePoints(__triangles[i][0], __triangles[i][1], __triangles[i][2]));
 			}
-			
+
 			needsRedraw = true;
 			needsBitmap = true;
 		}
@@ -56,12 +56,12 @@ package com.zehfernando.image {
 			needsRedraw = true;
 			if (__needsNewBitmap) needsBitmap = true;
 		}
-		
+
 		protected function removeBitmap(): void {
 			if (Boolean(bitmap)) {
 				bitmap.dispose();
 				bitmap = null;
-				
+
 				bitmapCompositeA.dispose();
 				bitmapCompositeA = null;
 
@@ -71,13 +71,13 @@ package com.zehfernando.image {
 				needsBitmap = true;
 			}
 		}
-		
+
 		protected function create(__target:BitmapData, __image:MorphImageData, __alternateImage:MorphImageData, __f:Number): void {
 			var i:int;
-			
+
 			// Create transformed image A
 			__target.fillRect(__target.rect, 0x000000);
-			
+
 			var vertices:Vector.<Number> = new Vector.<Number>();
 			var pw:Number = MathUtils.map(__f, 0, 1, __image.bitmap.width, __alternateImage.bitmap.width);
 			var ph:Number = MathUtils.map(__f, 0, 1, __image.bitmap.height, __alternateImage.bitmap.height);
@@ -103,7 +103,7 @@ package com.zehfernando.image {
 			spr.graphics.beginBitmapFill(__image.bitmap, null, false, true);
 			spr.graphics.drawTriangles(vertices, indices, uvtData);
 			spr.graphics.endFill();
-			
+
 //			for (i = 0; i < indices.length; i+= 3) {
 //				spr.graphics.beginFill(Math.random() * 0xffffff, 0.5);
 //				spr.graphics.moveTo(vertices[indices[i+0] * 2], vertices[indices[i+0] * 2 + 1]);
@@ -117,23 +117,23 @@ package com.zehfernando.image {
 //				spr.graphics.lineTo(vertices[indices[i+1] * 2], vertices[indices[i+1] * 2 + 1]);
 //				spr.graphics.lineTo(vertices[indices[i+2] * 2], vertices[indices[i+2] * 2 + 1]);
 //			}
-			
+
 			__target.draw(spr);
 		}
-		
+
 		protected function redrawMorphedImage(): void {
 			// Redraws the morphed image
 
-			// Creates updated distorted images for compositing			
+			// Creates updated distorted images for compositing
 			createDistordtedImage(bitmapCompositeA, imageA, imageB, _phase);
 			createDistordtedImage(bitmapCompositeB, imageB, imageA, 1-_phase);
-			
+
 			// Creates composite
 			var mtx:Matrix;
 
 			// All black
 			bitmap.fillRect(bitmap.rect, 0x000000);
-			
+
 			// First image
 			mtx = new Matrix();
 			mtx.scale(bitmap.width / bitmapCompositeA.width, bitmap.height / bitmapCompositeA.height);
@@ -151,7 +151,7 @@ package com.zehfernando.image {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public function setImageA(__image:BitmapData): void {
 			imageA.setBitmapData(__image);
 
@@ -163,32 +163,32 @@ package com.zehfernando.image {
 
 			requestRedraw(true);
 		}
-		
+
 		public function setPointsA(__points:Array): void {
 			// Parameters should be an array of points, using the image's coordinate system
 			imageA.setPointsFromArray(__points);
 
 			requestRedraw();
 		}
-		
+
 		public function setPointsB(__points:Array): void {
 			// Parameters should be an array of points
 			imageB.setPointsFromArray(__points);
 
 			requestRedraw();
 		}
-		
+
 		public function setTriangles(__triangles:Array): void {
 			// Parameters should be by vertices, like: [[0, 1, 2], [0, 1, 3]]
-			
+
 			triangles = new Vector.<TrianglePoints>();
 			for (var i:int = 0; i < __triangles.length; i++) {
 				triangles.push(new TrianglePoints(__triangles[i][0], __triangles[i][1], __triangles[i][2]));
 			}
-			
+
 			requestRedraw();
 		}
-		
+
 		public function getBitmap(): BitmapData {
 			if (needsBitmap) {
 				// TODO: allow transparency
@@ -202,7 +202,7 @@ package com.zehfernando.image {
 			if (needsRedraw) {
 				redrawMorphedImage();
 			}
-			
+
 			return bitmap;
 		}
 
@@ -214,7 +214,7 @@ package com.zehfernando.image {
 
 			imageB.dispose();
 			imageB = null;
-			
+
 			triangles = null;
 		}
 
@@ -244,7 +244,7 @@ package com.zehfernando.image {
 }
 
 class TrianglePoints {
-	
+
 	// Instances
 	public var p1:int;
 	public var p2:int;

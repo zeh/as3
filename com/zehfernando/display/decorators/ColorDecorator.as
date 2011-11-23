@@ -81,7 +81,7 @@ package com.zehfernando.display.decorators {
 		 	// Precalculate a single matrix from all matrices by multiplication
 		 	// The order the final matrix is calculated can change the way it looks
 		 	var matrices:Array = [saturationMatrix, contrastMatrix, brightnessMatrix, exposureMatrix, hueMatrix];
-		
+
 		 	var i:int, j:int, mat:Array;
 			var x:int, y:int;
 

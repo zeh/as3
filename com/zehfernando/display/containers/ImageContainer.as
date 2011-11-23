@@ -124,7 +124,7 @@ package com.zehfernando.display.containers {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public function getFrame(): BitmapData {
 			// Captures the current image as a BitmapData
 			var bmp:BitmapData = new BitmapData(_contentWidth, _contentHeight, false, 0x000000);

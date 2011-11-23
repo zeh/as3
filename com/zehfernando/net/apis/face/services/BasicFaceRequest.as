@@ -1,4 +1,5 @@
 package com.zehfernando.net.apis.face.services {
+
 	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.BasicServiceRequest;
 	import com.zehfernando.net.apis.face.FaceConstants;
@@ -9,11 +10,12 @@ package com.zehfernando.net.apis.face.services {
 	import flash.events.SecurityErrorEvent;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
+
 	/**
 	 * @author zeh
 	 */
 	public class BasicFaceRequest extends BasicServiceRequest {
-		
+
 		// Properties
 		protected var _apiKey:String;
 		protected var _apiSecret:String;
@@ -23,7 +25,7 @@ package com.zehfernando.net.apis.face.services {
 
 		public function BasicFaceRequest() {
 			super();
-			
+
 			requestMethod = URLRequestMethod.POST;
 		}
 
@@ -48,7 +50,7 @@ package com.zehfernando.net.apis.face.services {
 			super.onSecurityError(e);
 			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.ERROR));
 		}
-		
+
 		override protected function onIOError(e:IOErrorEvent): void {
 			super.onIOError(e);
 			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.ERROR));
@@ -56,13 +58,13 @@ package com.zehfernando.net.apis.face.services {
 
 		override protected function onComplete(e:Event): void {
 			var response:Object = JSON.decode(loader.data);
-			
+
 			if (response[FaceConstants.PARAMETER_NAME_STATUS] == FaceConstants.STATUS_FAILURE) {
 				// Response is successfull, but it was instead an error
 				onIOError(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, response[FaceConstants.PARAMETER_NAME_ERROR_MESSAGE]));
 				return;
 			}
-			
+
 			super.onComplete(e);
 			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.COMPLETE));
 		}
@@ -76,7 +78,7 @@ package com.zehfernando.net.apis.face.services {
 		public function set apiKey(__value:String): void {
 			_apiKey = __value;
 		}
-		
+
 		public function get apiSecret(): String {
 			return _apiSecret;
 		}

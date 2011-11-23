@@ -3,10 +3,10 @@ package com.zehfernando.net.apis.face.data {
 	 * @author zeh
 	 */
 	public class FacePhoto {
-		
+
 		// http://developers.face.com/docs/api/faces-detect/
-		
-		// Properties		
+
+		// Properties
 		public var url:String;
 		public var pid:String;
 		public var width:uint;
@@ -22,7 +22,7 @@ package com.zehfernando.net.apis.face.data {
 
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public static function fromJSONObject(o:Object): FacePhoto {
 			if (!Boolean(o)) return null;
 
@@ -33,7 +33,7 @@ package com.zehfernando.net.apis.face.data {
 			photo.width =									o["width"];
 			photo.height =									o["height"];
 			photo.tags =									Boolean(o["tags"]) ? FaceTag.fromJSONObjectArray(o["tags"]) : new Vector.<FaceTag>();
-			
+
 			return photo;
 		}
 

@@ -4,10 +4,10 @@ package com.zehfernando.net.apis.face.data {
 	 * @author zeh
 	 */
 	public class FaceTag {
-		
+
 		// http://developers.face.com/docs/api/faces-detect/
-		
-		// Properties		
+
+		// Properties
 		public var tid:String;
 		public var threshold:uint;
 		public var uids:Vector.<String>;
@@ -39,12 +39,12 @@ package com.zehfernando.net.apis.face.data {
 
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public static function fromJSONObject(o:Object): FaceTag {
 			if (!Boolean(o)) return null;
 
 			var tag:FaceTag = new FaceTag();
-			
+
 			tag.tid =			o["tid"];
 			tag.threshold =		o["threshold"];
 			//tag.uid =		o["threshold"];
@@ -62,11 +62,11 @@ package com.zehfernando.net.apis.face.data {
 			if (Boolean(o["ear_left"]))		tag.earLeft =		new Point(o["ear_left"]["x"],		o["ear_left"]["y"]);
 			if (Boolean(o["ear_right"]))	tag.earRight =		new Point(o["ear_right"]["x"],		o["ear_right"]["y"]);
 			if (Boolean(o["chin"]))			tag.chin =			new Point(o["chin"]["x"],			o["chin"]["y"]);
-			
+
 			tag.yaw =			o["yaw"];
 			tag.roll =			o["roll"];
 			tag.pitch =			o["pitch"];
-			
+
 			tag.attributes =	FaceTagAttributes.fromJSONObject(o["attributes"]);
 
 			return tag;

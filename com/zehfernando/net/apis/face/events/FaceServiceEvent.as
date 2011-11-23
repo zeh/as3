@@ -5,12 +5,12 @@ package com.zehfernando.net.apis.face.events {
 	 * @author zeh
 	 */
 	public class FaceServiceEvent extends Event {
-		
+
 		// Constants
 		public static const COMPLETE:String = "onComplete";
 		public static const ERROR:String = "onError";
 
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ package com.zehfernando.net.apis.face.events {
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		override public function clone(): Event {
 			return new FaceServiceEvent(type, bubbles, cancelable);
 		}
