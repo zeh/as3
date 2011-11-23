@@ -1,4 +1,5 @@
 package com.zehfernando.net.apis.facebook.data {
+
 	import com.zehfernando.net.apis.facebook.FacebookDataUtils;
 
 	/**
@@ -21,6 +22,9 @@ package com.zehfernando.net.apis.facebook.data {
 		public var updated:Date;
 		public var numComments:int;
 		public var comments:Vector.<FacebookComment>;
+		public var type:String;
+		public var canUpload:Boolean;
+		public var coverPhoto:String; // id
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -47,6 +51,9 @@ package com.zehfernando.net.apis.facebook.data {
 			album.numComments =						Boolean(o["comments"]) ? o["comments"]["count"] : 0;
 			album.comments =						Boolean(o["comments"]) ? FacebookComment.fromJSONObjectArray(o["comments"]["data"]) : new Vector.<FacebookComment>();
 			album.numPhotos =						o["count"];
+			album.type =							o["type"];
+			album.canUpload =						o["can_upload"];
+			album.coverPhoto =						o["cover_photo"];
 
 			return album;
 		}
