@@ -255,11 +255,11 @@ package com.zehfernando.utils.console {
 			timeTable[__name] = getTimer();
 		}
 
-		public static function timeEnd(__name:String): void {
+		public static function timeEnd(__name:String, __message:String = ""): void {
 			if (timeTable.hasOwnProperty(__name)) {
-				var timePassed:int = timeTable[__name] - getTimer();
+				var timePassed:int = getTimer() - timeTable[__name];
 				var output:String = timeFormat;
-				output = output.split(PARAM_TIME_NAME).join(__name);
+				output = output.split(PARAM_TIME_NAME).join(Boolean(__message) ? __message : __name);
 				output = output.split(PARAM_TIME_VALUE).join(timePassed);
 				echo(output);
 				delete timeTable[__name];
