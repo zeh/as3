@@ -68,15 +68,15 @@ package com.zehfernando.net.apis.facebook {
 			Security.loadPolicyFile("https://graph.facebook.com/crossdomain.xml");
 			//Security.loadPolicyFile("http://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");
 			//Security.loadPolicyFile("https://fbcdn-sphotos-a.akamaihd.net/crossdomain.xml");			// Not allowed (missing secure="false"), replaced by the fbcdn.net equivalent via IMAGE_DOMAIN_REPLACEMENTS
-			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
-			Security.loadPolicyFile("https://profile.ak.fbcdn.net/crossdomain.xml");
-			Security.loadPolicyFile("http://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
-			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
+//			Security.loadPolicyFile("http://profile.ak.fbcdn.net/crossdomain.xml");
+//			Security.loadPolicyFile("https://profile.ak.fbcdn.net/crossdomain.xml");
+//			Security.loadPolicyFile("http://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
+//			Security.loadPolicyFile("https://fbcdn-profile-a.akamaihd.net/crossdomain.xml");
 
-			Security.loadPolicyFile("http://s-hphotos-sea1.fbcdn.net/crossdomain.xml");
-			Security.loadPolicyFile("https://s-hphotos-sea1.fbcdn.net/crossdomain.xml"); // Not working?
-			Security.loadPolicyFile("http://s-hphotos-sjc1.fbcdn.net/crossdomain.xml");
-			Security.loadPolicyFile("https://s-hphotos-sjc1.fbcdn.net/crossdomain.xml"); // Not working?
+			// https for the below isn't working?
+//			Security.loadPolicyFile("http://s-hphotos-sea1.fbcdn.net/crossdomain.xml");
+//			Security.loadPolicyFile("http://s-hphotos-sjc1.fbcdn.net/crossdomain.xml");
+//			Security.loadPolicyFile("http://s-hphotos-iad1.fbcdn.net/crossdomain.xml");
 			//Security.loadPolicyFile("http://static.ak.fbcdn.net/crossdomain.xml"); // Doesn't allow
 
 			// TODO: monitor for redirects and do the automatic cross-domain requests... ugh? http://www.arpitonline.com/blog/2008/06/17/debugging-crossdomain-issues-following-http-302s/
