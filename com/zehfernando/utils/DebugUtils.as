@@ -1,5 +1,7 @@
 package com.zehfernando.utils {
+	import com.zehfernando.utils.console.error;
 
+	import flash.display.Bitmap;
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.MouseEvent;
@@ -86,7 +88,19 @@ package com.zehfernando.utils {
 			
 			if (Boolean(__onMouseMove)) dragMoveFunctions[__sprite] = __onMouseMove;
 			if (Boolean(__onMouseUp)) dragUpFunctions[__sprite] = __onMouseUp;
-			
+		}
+
+		public static function makeDraggableBitmap(__bitmap:Bitmap, __onMouseMove:Function = null, __onMouseUp:Function = null): void {
+
+			if (!Boolean(__bitmap.parent)) error("Tried to make a Bitmap draggable, but it's not included in the display list yet!");
+
+			var spr:Sprite = new Sprite();
+			__bitmap.parent.addChildAt(spr, __bitmap.parent.getChildIndex(__bitmap));
+
+			spr.addChild(__bitmap);
+
+			// Makes an object draggable
+			makeDraggable(spr, __onMouseMove, __onMouseUp);
 		}
 
 		public static function traceEveryMouseClick(__stage:Stage):void {
