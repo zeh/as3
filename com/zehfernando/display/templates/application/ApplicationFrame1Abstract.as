@@ -204,7 +204,7 @@ package com.zehfernando.display.templates.application {
 		}
 
 		protected function showFrame2(): void {
-//			log();
+			//log();
 			frame2.show();
 		}
 
