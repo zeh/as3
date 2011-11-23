@@ -20,7 +20,7 @@ package com.zehfernando.display.progressbars {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function AbstractProgressBar() {
-			_value = new AttenuatedNumber(4, 0, 0);
+			_value = new AttenuatedNumber(8, 0, 0);
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
