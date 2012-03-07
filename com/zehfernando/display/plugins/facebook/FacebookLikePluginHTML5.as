@@ -93,7 +93,10 @@ package com.zehfernando.display.plugins.facebook {
 					newDiv.setAttribute("allowTransparency", "true");
 					newDiv.innerHTML = __content;
 					document.body.appendChild(newDiv);
-
+					
+					// Fix for IE7 positioning
+					newDiv.style["position"] = "absolute";
+					
 					try {
 						FB.XFBML.parse();
 					} catch(e) {
