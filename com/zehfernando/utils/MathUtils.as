@@ -68,9 +68,9 @@ package com.zehfernando.utils {
 			return __value;
 		}
 
-		public static function random(__min:Number, __max:Number, __rounded:Boolean = false):Number {
-			var n:Number = __min + (Math.random() * (__max - __min));
-			return __rounded ? Math.round(n) : n;
+		public static function random(__min:Number, __maxExcluded:Number, __rounded:Boolean = false):Number {
+			var n:Number = __min + (Math.random() * (__maxExcluded - __min));
+			return __rounded ? Math.floor(n) : n;
 		}
 	}
 }
