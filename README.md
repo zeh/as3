@@ -22,7 +22,7 @@ Contents of notable importance:
 
 * `com.zehfernando.navigation.*` - Classes for internal navigation (SWFAddress). Very much work in progress and still with a few internal hacks.
 
-* `com.zehfernando.net.*` - Classes for queued loading, and limited APIs for common usage (Bit.Ly, Twitter, Facebook, YouTube).
+* `com.zehfernando.net.*` - Classes for queued loading, and limited APIs for common usage (Bit.Ly, Twitter, Facebook, YouTube, Face.com).
 
 * `com.zehfernando.utils.*` - Bunch of utils that don't really fit anywhere else now.
 
