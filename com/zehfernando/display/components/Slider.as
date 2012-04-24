@@ -19,7 +19,9 @@ package com.zehfernando.display.components {
 
 		// Properties
 		protected var _backgroundColor:int;
+		protected var _backgroundAlpha:Number;
 		protected var _pickerColor:int;
+		protected var _pickerAlpha:Number;
 
 		protected var _position:Number;						// 0-1
 		protected var _minPickerSize:Number;				// In pixels
@@ -80,7 +82,9 @@ package com.zehfernando.display.components {
 			_wheelDeltaScale = 0.01;
 
 			_pickerColor = 0xffffff;
+			_pickerAlpha = 1;
 			_backgroundColor = 0x333333;
+			_backgroundAlpha = 1;
 		}
 
 		protected function createAssets(): void {
@@ -236,6 +240,16 @@ package com.zehfernando.display.components {
 			}
 		}
 
+		public function get backgroundAlpha(): Number {
+			return _backgroundAlpha;
+		}
+		public function set backgroundAlpha(__value:Number): void {
+			if (_backgroundAlpha != __value) {
+				_backgroundAlpha = __value;
+				background.alpha = _backgroundAlpha;
+			}
+		}
+
 		public function get pickerColor(): int {
 			return _pickerColor;
 		}
@@ -243,6 +257,16 @@ package com.zehfernando.display.components {
 			if (_pickerColor != __value) {
 				_pickerColor = __value;
 				picker.color = _pickerColor;
+			}
+		}
+		
+		public function get pickerAlpha(): Number {
+			return _pickerAlpha;
+		}
+		public function set pickerAlpha(__value:Number): void {
+			if (_pickerAlpha != __value) {
+				_pickerAlpha = __value;
+				picker.alpha = _pickerAlpha;
 			}
 		}
 

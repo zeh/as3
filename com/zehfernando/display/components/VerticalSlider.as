@@ -56,11 +56,32 @@ package com.zehfernando.display.components {
 			slider.pickerColor = __value;
 		}
 
+		public function get pickerAlpha(): Number {
+			return slider.pickerAlpha;
+		}
+		public function set pickerAlpha(__value:Number): void {
+			slider.pickerAlpha = __value;
+		}
+
+		public function get pickerScale(): Number {
+			return slider.pickerScale;
+		}
+		public function set pickerScale(__value:Number): void {
+			slider.pickerScale = __value;
+		}
+
 		public function get backgroundColor(): int {
 			return slider.backgroundColor;
 		}
 		public function set backgroundColor(__value:int): void {
 			slider.backgroundColor = __value;
+		}
+
+		public function get backgroundAlpha(): Number {
+			return slider.backgroundAlpha;
+		}
+		public function set backgroundAlpha(__value:Number): void {
+			slider.backgroundAlpha = __value;
 		}
 
 		public function get minPickerHeight(): Number {
@@ -96,6 +117,14 @@ package com.zehfernando.display.components {
 		}
 		public function set maxValue(__value:Number): void {
 			slider.maxValue = __value;
+		}
+		
+		public function get position(): Number {
+			return slider.position;
+		}
+
+		public function set position(__value:Number): void {
+			slider.position = __value;
 		}
 	}
 }
