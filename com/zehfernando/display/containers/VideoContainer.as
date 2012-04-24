@@ -211,7 +211,7 @@ package com.zehfernando.display.containers {
 
 		protected function onPlayFinish(e:VideoLoaderEvent): void {
 
-	   		if (_loop) {
+			if (_loop) {
 				// Finished; loop
 				if (_isPlaying) {
 					time = 0;
