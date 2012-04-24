@@ -4,7 +4,7 @@ This has everything put together and a little bit of a cross-dependency between 
 
 Contents of notable importance:
 
-* `com.zehfernando.data.AssetLibrary` - Dynamic Asset library manager.
+* `com.zehfernando.net.assets.AssetLibrary` - Dynamic Asset library manager.
 
 * `com.zehfernando.data.Color` - Helpful color class.
 
