@@ -145,7 +145,7 @@ package com.zehfernando.utils {
 			// Tag close
 			__txt += "</"+xml.name()+">";
 
-			return __txt;
+			return __txt; 
 
 		}
 
@@ -351,6 +351,23 @@ package com.zehfernando.utils {
 
 		public static function validate(__text:String, __expression:RegExp):Boolean {
 			return __expression.test(__text);
+		}
+
+		public static function trim(__text:String):String {
+			// Removes whitespace at the beginning and end of a string
+			var whitespace:Array = [" ", "\r", "\n", "\t"];
+
+			// Beginning
+			while (__text.length > 0 && whitespace.indexOf(__text.charAt(0)) > -1) {
+				__text = __text.substr(1);
+			}
+
+			// End
+			while (__text.length > 0 && whitespace.indexOf(__text.charAt(__text.length - 1)) > -1) {
+				__text = __text.substr(0, __text.length - 1);
+			}
+
+			return __text;
 		}
 
 	}
