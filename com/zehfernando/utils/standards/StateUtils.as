@@ -46,6 +46,7 @@ package com.zehfernando.utils.standards {
 				stateList.push(new StateInfo("NJ", "New Jersey", Vector.<uint>([ 7000,  8999])));
 				stateList.push(new StateInfo("NH", "New Hampshire", Vector.<uint>([ 3000,  3899])));
 				stateList.push(new StateInfo("NM", "New Mexico", Vector.<uint>([87000, 88499])));
+				stateList.push(new StateInfo("NV", "Nevada", Vector.<uint>([89000, 89899])));
 				stateList.push(new StateInfo("NY", "New York", Vector.<uint>([10000, 14999,  544,   544,  501,   501, 6390,  6390])));
 				stateList.push(new StateInfo("NC", "North Carolina", Vector.<uint>([27000, 28999])));
 				stateList.push(new StateInfo("ND", "North Dakota", Vector.<uint>([58000, 58999])));
