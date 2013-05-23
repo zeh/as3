@@ -58,6 +58,7 @@ package com.zehfernando.utils {
 		}
 
 		public static function isLinux(): Boolean {
+			// Android: "Linux 3.1.10-g52027f9"
 			return Capabilities.os == "Linux";
 		}
 
@@ -68,11 +69,27 @@ package com.zehfernando.utils {
 		}
 
 		public static function isAndroid(): Boolean {
+			// Android: "Android Linux"
 			return Capabilities.manufacturer == "Android Linux";
 		}
 
-		public static function isStandalone(): Boolean {
+		public static function isIOS(): Boolean {
+			// iOS: "Adobe iOS"
+			return Capabilities.manufacturer == "Adobe iOS";
+		}
+
+		public static function isAirPlayer(): Boolean {
+			// This returns true even if it's on android!
 			return Capabilities.playerType == "Desktop";
+		}
+
+		public static function isWebPlayer(): Boolean {
+			return Capabilities.playerType == "ActiveX" || Capabilities.playerType == "PlugIn";
+		}
+
+		public static function isStandalone(): Boolean {
+			// Desktop standalone
+			return Capabilities.playerType == "StandAlone";
 		}
 
 		/**
@@ -122,10 +139,39 @@ package com.zehfernando.utils {
 			return stage.displayState == StageDisplayState.FULL_SCREEN;
 		}
 
+		public static function getCentimetersInPixels(__centimeters:Number):Number {
+			// Return a certain number of centimeters in pixels
+			return getInchesInPixels(__centimeters / 2.54); // * 0.393701
+		}
+
+		public static function getInchesInPixels(__inches:Number):Number {
+			// Return a certain number of inches in pixels
+			return __inches * Capabilities.screenDPI;
+		}
+
 		public static function getScreenDensityScale():Number {
-			// Returns a density scale where 1 = 72dpi, 2 = 155dpi, etc
-			var s:Number = Capabilities.screenDPI / 72;
-			return 1 + ((s-1) * 0.25);
+			// Returns a density scale where 1 = 72dpi, 2 = 154dpi, etc
+
+			// Old method
+			// var s:Number = Capabilities.screenDPI / 72;
+			// return 1 + ((s-1) * 0.25);
+
+			if ((isWebPlayer() || isAirPlayer()) && !isAndroid() && !isIOS()) {
+				// Normal player that always returns 96 as the dpi
+				// Otherwise it'd return 72
+				return 1;
+			}
+
+			// Everything else
+			return Capabilities.screenDPI / 96;
+
+			// http://renaun.com/blog/2011/01/air-capabilities-screendpi-on-devices/
+			// Nexus 7: 800x1250/800x1172, 213 dpi
+			// iPad (1 & 2nd): 132
+			// iPad (3): should be 264
+			// iPhone 3GS: 163
+			// Nexus One: 254
+			// iPhone 4: should be 326
 		}
 
 		/*
