@@ -145,7 +145,7 @@ package com.zehfernando.utils {
 			// Tag close
 			__txt += "</"+xml.name()+">";
 
-			return __txt; 
+			return __txt;
 
 		}
 

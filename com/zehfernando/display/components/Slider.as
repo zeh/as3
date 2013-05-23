@@ -259,7 +259,7 @@ package com.zehfernando.display.components {
 				picker.color = _pickerColor;
 			}
 		}
-		
+
 		public function get pickerAlpha(): Number {
 			return _pickerAlpha;
 		}
