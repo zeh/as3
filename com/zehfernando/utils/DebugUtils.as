@@ -6,6 +6,7 @@ package com.zehfernando.utils {
 	import flash.display.Stage;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
+	import flash.net.LocalConnection;
 	import flash.system.Capabilities;
 	import flash.utils.Dictionary;
 
@@ -100,6 +101,14 @@ package com.zehfernando.utils {
 
 			// Makes an object draggable
 			makeDraggable(spr, __onMouseMove, __onMouseUp);
+		}
+
+		public static function forceGarbageCollection():void {
+			// http://gskinner.com/blog/archives/2006/08/as3_resource_ma_2.html
+			try {
+				new LocalConnection().connect('foo');
+				new LocalConnection().connect('foo');
+			} catch (e:*) {}
 		}
 
 		public static function traceEveryMouseClick(__stage:Stage):void {
