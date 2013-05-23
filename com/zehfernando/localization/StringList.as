@@ -72,6 +72,7 @@ package com.zehfernando.localization {
 			_name = __name;
 
 			values = new ValueGroup();
+			setCurrentLanguages("en");
 
 			StringList.addList(this);
 		}
@@ -104,7 +105,7 @@ package com.zehfernando.localization {
 			// Not found
 			if (__canCreate) {
 				// Create a new, empty list
-				return new StringList();
+				return new StringList(__name);
 			}
 
 			// Error
