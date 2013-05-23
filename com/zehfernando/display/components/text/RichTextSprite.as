@@ -1,5 +1,4 @@
 package com.zehfernando.display.components.text {
-
 	import flash.events.MouseEvent;
 	import flash.text.engine.ContentElement;
 	import flash.text.engine.ElementFormat;
@@ -295,6 +294,8 @@ package com.zehfernando.display.components.text {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public function setStyle(__name:String, __fontName:String = "", __fontSize:Number = NaN, __color:Number = NaN, __alpha:Number = NaN):void {
+			__name = __name.toUpperCase(); // Why? this is being done because styles are being saved like that, but it shouldn't be like this
+
 			removeStyle(__name);
 
 			var style:TextStyle = new TextStyle();
