@@ -5,9 +5,6 @@ package com.zehfernando.utils {
 	 */
 	public class MathUtils {
 
-		// Written from scratch, but Francis' ca.nectere.math.MathBase should be all one needs
-		// This is just to make a separate class for the distribution of com.zehfernando.data.Color
-
 		/**
 		 * Clamps a number to a range, by restricting it to a minimum and maximum values: if the passed value is lower than the minimum value, it's replaced by the minimum; if it's higher than the maximum value, it's replaced by the maximum; if not, it's unchanged.
 		 * @param __value	The value to be clamped.
@@ -17,6 +14,15 @@ package com.zehfernando.utils {
 		 */
 		public static function clamp(__value:Number, __min:Number = 0, __max:Number = 1): Number {
 			return __value < __min ? __min : __value > __max ? __max : __value;
+		}
+
+		public static function clampAuto(__value:Number, __clamp1:Number = 0, __clamp2:Number = 1): Number {
+			if (__clamp2 < __clamp1) {
+				var v:Number = __clamp2;
+				__clamp2 = __clamp1;
+				__clamp1 = v;
+			}
+			return __value < __clamp1 ? __clamp1 : __value > __clamp2 ? __clamp2 : __value;
 		}
 
 		/**
@@ -68,9 +74,9 @@ package com.zehfernando.utils {
 			return __value;
 		}
 
-		public static function random(__min:Number, __maxExcluded:Number, __rounded:Boolean = false):Number {
-			var n:Number = __min + (Math.random() * (__maxExcluded - __min));
-			return __rounded ? Math.floor(n) : n;
-		}
+//		public static function random(__min:Number, __maxExcluded:Number, __rounded:Boolean = false):Number {
+//			var n:Number = __min + (Math.random() * (__maxExcluded - __min));
+//			return __rounded ? Math.floor(n) : n;
+//		}
 	}
 }
