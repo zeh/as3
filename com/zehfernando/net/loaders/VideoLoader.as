@@ -1,6 +1,5 @@
 package com.zehfernando.net.loaders {
 
-	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.utils.MathUtils;
 	import com.zehfernando.utils.console.debug;
 	import com.zehfernando.utils.console.log;
@@ -172,11 +171,11 @@ package com.zehfernando.net.loaders {
 		}
 
 		public function onTextData(__newData:Object):void {
-			log ("##### TEXT DATA : " + JSON.encode(__newData));
+			log ("##### TEXT DATA : " + JSON.stringify(__newData));
 		}
 
 		public function onImageData(__newData:Object):void {
-			log ("##### IMAGE DATA : " + JSON.encode(__newData));
+			log ("##### IMAGE DATA : " + JSON.stringify(__newData));
 		}
 
 		public function onMetaData(__newData:Object):void {
@@ -664,7 +663,8 @@ package com.zehfernando.net.loaders {
 			return _hasMetaData;
 		}
 
-		public function get metaData(): Object {
+		public function get customMetaData(): Object {
+			// TODO: rename this, since AS3 now includes a metadata object
 			return _metaData;
 		}
 
