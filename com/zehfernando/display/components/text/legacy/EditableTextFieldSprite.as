@@ -159,6 +159,14 @@ package com.zehfernando.display.components.text.legacy {
 			applyTextFormat();
 		}
 
+		public function get kerning(): Boolean {
+			return textFormat.kerning as Boolean;
+		}
+		public function set kerning(__value:Boolean): void {
+			textFormat.kerning = __value;
+			applyTextFormat();
+		}
+
 		public function get text(): String {
 			return textField.text;
 		}
@@ -229,6 +237,14 @@ package com.zehfernando.display.components.text.legacy {
 		}
 		public function set embedFonts(__value:Boolean): void {
 			textField.embedFonts = __value;
+		}
+
+		public function get internalTextField():TextField {
+			return textField;
+		}
+
+		public function get internalTextFormat():TextFormat {
+			return textFormat;
 		}
 	}
 }
