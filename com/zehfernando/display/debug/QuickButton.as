@@ -31,8 +31,7 @@ package com.zehfernando.display.debug {
 			_height = __height;
 			_text = __text;
 
-			//background = new RoundedBox(100, 100, 0x550033, 4);
-			background = new RoundedBox(100, 100, 0x885500, 4);
+			background = new RoundedBox(100, 100, 0x3b856e, 4);
 			addChild(background);
 
 			textField = new TextField();
