@@ -330,7 +330,7 @@ package com.zehfernando.display.components.text {
 			styles = __styles;
 		}
 	}
-	}
+}
 
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;

@@ -118,7 +118,7 @@ package com.zehfernando.display.components {
 		public function set maxValue(__value:Number): void {
 			slider.maxValue = __value;
 		}
-		
+
 		public function get position(): Number {
 			return slider.position;
 		}

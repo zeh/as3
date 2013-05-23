@@ -24,7 +24,7 @@ package com.zehfernando.audio {
 
 		// Todo: use instances instead?
 
-		protected static function init(): void {
+		protected static function init():void {
 			if (!Boolean(sounds)) sounds = new Vector.<SoundItemInfo>();
 		}
 
@@ -38,7 +38,7 @@ package com.zehfernando.audio {
 
 		// Public API -----------------------------------------------------------------------------------------------------
 
-		public static function playSound(__soundClass:Class, __loops:Number = 0, __volume:Number = 1, __pan:Number = 0, __startTime:Number = 0): void {
+		public static function playSound(__soundClass:Class, __loops:Number = 0, __volume:Number = 1, __pan:Number = 0, __startTime:Number = 0):void {
 			init();
 			var sii:SoundItemInfo = new SoundItemInfo(__soundClass);
 			sii.volume = __volume;
@@ -47,17 +47,17 @@ package com.zehfernando.audio {
 			sounds.push(sii);
 		}
 
-		public static function pauseSound(__class:Class): void {
+		public static function pauseSound(__class:Class):void {
 			var i:Number = getSoundIndex(__class);
 			if (!isNaN(i)) sounds[i].pause();
 		}
 
-		public static function resumeSound(__class:Class): void {
+		public static function resumeSound(__class:Class):void {
 			var i:Number = getSoundIndex(__class);
 			if (!isNaN(i)) sounds[i].resume();
 		}
 
-		public static function stopSound(__class:Class): void {
+		public static function stopSound(__class:Class):void {
 			var i:Number = getSoundIndex(__class);
 			if (!isNaN(i)) {
 				sounds[i].dispose();
@@ -65,12 +65,12 @@ package com.zehfernando.audio {
 			}
 		}
 
-		public static function setSoundVolume(__class:Class, __volume:Number): void {
+		public static function setSoundVolume(__class:Class, __volume:Number):void {
 			var i:Number = getSoundIndex(__class);
 			if (!isNaN(i)) sounds[i].volume = __volume;
 		}
 
-		public static function getSoundVolume(__class:Class): Number {
+		public static function getSoundVolume(__class:Class):Number {
 			var i:Number = getSoundIndex(__class);
 			if (!isNaN(i)) return sounds[i].volume;
 			return NaN;
@@ -117,17 +117,17 @@ class SoundItemInfo {
 	// ================================================================================================================
 	// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-	protected function updateSoundTransform(): void {
+	protected function updateSoundTransform():void {
 		_transform = new SoundTransform(_volume, _pan);
 	}
 
-	protected function updateVolume(): void {
+	protected function updateVolume():void {
 		if (_isPlaying && Boolean(_channel)) {
 			_channel.soundTransform = _transform;
 		}
 	}
 
-	protected function destroyChannel(): void {
+	protected function destroyChannel():void {
 		if (Boolean(_channel)) {
 			_channel.stop();
 			_channel = null;
@@ -138,7 +138,7 @@ class SoundItemInfo {
 	// ================================================================================================================
 	// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-	protected function onSoundCompleteRemove(e:Event): void {
+	protected function onSoundCompleteRemove(e:Event):void {
 		SoundPlayer.stopSound(_class);
 	}
 
@@ -150,7 +150,7 @@ class SoundItemInfo {
 		return _class == __soundClass;
 	}
 
-	public function play(__startTime:Number = 0, __loops:Number = 0): void {
+	public function play(__startTime:Number = 0, __loops:Number = 0):void {
 		if (!_isPlaying) {
 			_channel = _sound.play(__startTime, __loops, _transform);
 			_loops = __loops;
@@ -161,20 +161,20 @@ class SoundItemInfo {
 		}
 	}
 
-	public function pause(): void {
+	public function pause():void {
 		if (_isPlaying) {
 			_pauseTime = Boolean(_channel) ? _channel.position : 0;
 			stop();
 		}
 	}
 
-	public function resume(): void {
+	public function resume():void {
 		if (!_isPlaying) {
 			play(_pauseTime, _loops); // TODO: this is wrong because it restarts loops in case a sound is paused after the first loop
 		}
 	}
 
-	public function stop(): void {
+	public function stop():void {
 		if (_isPlaying) {
 			destroyChannel();
 			_isPlaying = false;
@@ -182,7 +182,7 @@ class SoundItemInfo {
 
 	}
 
-	public function dispose(): void {
+	public function dispose():void {
 		stop();
 	}
 
@@ -192,7 +192,7 @@ class SoundItemInfo {
 	public function get volume(): Number {
 		return _volume;
 	}
-	public function set volume(__value:Number): void {
+	public function set volume(__value:Number):void {
 		if (_volume != __value) {
 			_volume = __value;
 			updateSoundTransform();
@@ -203,7 +203,7 @@ class SoundItemInfo {
 	public function get pan(): Number {
 		return _pan;
 	}
-	public function set pan(__value:Number): void {
+	public function set pan(__value:Number):void {
 		if (_pan != __value) {
 			_pan = __value;
 			updateSoundTransform();

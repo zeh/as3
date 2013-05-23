@@ -26,11 +26,11 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function redrawWidth(): void {
+		protected function redrawWidth():void {
 			throw new Error("Error: the method redrawWidth() of ResizableSprite has to be overridden.");
 		}
 
-		protected function redrawHeight(): void {
+		protected function redrawHeight():void {
 			throw new Error("Error: the method redrawHeight() of ResizableSprite has to be overridden.");
 		}
 
@@ -38,7 +38,7 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onAddedToStage(e:Event): void {
+		protected function onAddedToStage(e:Event):void {
 			redrawWidth();
 			redrawHeight();
 		}
@@ -50,7 +50,7 @@ package com.zehfernando.display.abstracts {
 		override public function get width(): Number {
 			return _width;
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			if (_width != __value) {
 				_width = __value;
 				redrawWidth();
@@ -60,7 +60,7 @@ package com.zehfernando.display.abstracts {
 		override public function get height(): Number {
 			return _height;
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				redrawHeight();
