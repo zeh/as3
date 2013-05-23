@@ -1,5 +1,4 @@
 package com.zehfernando.display.components.text {
-
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.text.engine.CFFHinting;
@@ -29,6 +28,7 @@ package com.zehfernando.display.components.text {
 		protected var _maxHeight:Number;
 		protected var _autoSize:Boolean;
 		protected var _text:String;
+		protected var _textWidth:Number;
 
 		protected var _lastTextLine:TextLine;
 		protected var _previousTextLine:TextLine;
@@ -69,6 +69,7 @@ package com.zehfernando.display.components.text {
 			_align = TextSpriteAlign.LEFT;
 
 			_width = 0;
+			_textWidth = 0;
 			_height = 0;
 			_autoSize = true;
 			_text = "";
@@ -167,6 +168,8 @@ package com.zehfernando.display.components.text {
 		protected function redraw(): void {
 			// Redraw the whole text block
 
+			var i:int;
+
 			// Delete previous lines if needed
 			if (Boolean(textLines)) {
 				for (i = 0; i < textLines.length; i++) {
@@ -180,7 +183,6 @@ package com.zehfernando.display.components.text {
 
 			textBlock.content = getTextElement(_text);
 
-			var i:int;
 			var lineWidth:Number = _autoSize ? 1000000 : _width;
 			var textLine:TextLine;
 			var previousLine:TextLine = _previousTextLine;
@@ -250,6 +252,7 @@ package com.zehfernando.display.components.text {
 			// TODO: ERROR! this takes the wrong size as consideration.. _height becomes negative if leading is too low!!
 
 			if (_autoSize) _width = maxWidth;
+			_textWidth = maxWidth;
 			_height = posY;
 			for (i = 0; i < textLines.length; i++) {
 				if (_align == TextSpriteAlign.RIGHT) {
@@ -499,6 +502,10 @@ package com.zehfernando.display.components.text {
 				_autoSize = false;
 				redraw();
 			}
+		}
+
+		public function get textWidth(): Number {
+			return _textWidth * scaleX;
 		}
 
 		override public function get height(): Number {
