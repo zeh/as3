@@ -104,9 +104,8 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// PUBLIC STATIC INTERFACE ----------------------------------------------------------------------------------------
 
-		public static function add(__time:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null): DelayedCalls {
-			// __time is in miliseconds
-			return new DelayedCalls(__time, __callback, __params, __scope, __reference);
+		public static function add(__timeMS:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null): DelayedCalls {
+			return new DelayedCalls(__timeMS, __callback, __params, __scope, __reference);
 		}
 
 		public static function removeByReference(__reference:Object): void {
