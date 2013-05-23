@@ -1,8 +1,8 @@
 package com.zehfernando.utils {
-
 	import com.zehfernando.utils.console.error;
 
 	import flash.external.ExternalInterface;
+	import flash.system.System;
 	
 	/**
 	 * @author zeh
