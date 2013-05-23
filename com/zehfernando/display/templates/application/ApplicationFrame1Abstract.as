@@ -14,8 +14,6 @@ package com.zehfernando.display.templates.application {
 	import flash.utils.getDefinitionByName;
 	import flash.utils.getTimer;
 
-	[SWF(width="800", height="600", frameRate="45", backgroundColor="#000000")];
-
 	/**
 	 * @author Zeh
 	 */
@@ -69,8 +67,6 @@ package com.zehfernando.display.templates.application {
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
 		protected function setDefaultProperties(): void {
-			opaqueBackground = 0x000000;
-
 			swfLoaded = false;
 			swfLoadingPhase = 0;
 			swfLoadingWeight = 100;
@@ -97,16 +93,6 @@ package com.zehfernando.display.templates.application {
 
 		protected function createAssets(): void {
 			createLoadingInterface();
-
-			// Debug stuff
-			if (AppUtils.isDebugSWF()) {
-//				var sg:StatGraph = new StatGraph(210);
-//				sg.alpha = 0.8;
-//				stage.addChild(sg);
-
-				// stage.addChild(new QuickButton("BG INTERFACE: PAUSE", 10, 100, function():void { Main.getInstance().pauseBackgroundInterface(); }, 150, 26));
-				// stage.addChild(new QuickButton("BG INTERFACE: RESUME", 10, 130, function():void { Main.getInstance().resumeBackgroundInterface(); }, 150, 26));
-			}
 		}
 
 		protected function initialize(): void {
