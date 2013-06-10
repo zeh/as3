@@ -19,7 +19,13 @@ package com.zehfernando.utils {
 		protected static var hasDeterminedDebugStatus:Boolean;
 		protected static var _isDebuggingSWF:Boolean;
 
+		protected static var zoomScale:Number = (isAndroid() || isIOS()) ? 1 : 2;
+
+		// ================================================================================================================
+		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
+
 		public function AppUtils() {
+			// No constructor!
 		}
 
 		// ================================================================================================================
@@ -64,7 +70,6 @@ package com.zehfernando.utils {
 
 		public static function isWindows(): Boolean {
 			//return Capabilities.os == "Windows" || Capabilities.os == "Windows 7" || Capabilities.os == "Windows XP" || Capabilities.os == "Windows 2000" || Capabilities.os == "Windows 98/ME" || Capabilities.os == "Windows 95" || Capabilities.os == "Windows CE";
-			//return Capabilities.os == "Windows" || Capabilities.os == "Windows 7" || Capabilities.os == "Windows XP" || Capabilities.os == "Windows 2000" || Capabilities.os == "Windows 98/ME" || Capabilities.os == "Windows 95" || Capabilities.os == "Windows CE";
 			return Capabilities.manufacturer == "Adobe Windows";
 		}
 
@@ -96,7 +101,7 @@ package com.zehfernando.utils {
 		 * Tells whether this is being tested (ran on the IDE Flash player), or not.
 		 * @return	TRUE if this is a test execution, false if otherwise.
 		 */
-		public static function isTesting(): Boolean {
+		public static function isTestingFromFlashIDE(): Boolean {
 			return Capabilities.playerType == "External";
 		}
 
@@ -146,15 +151,12 @@ package com.zehfernando.utils {
 
 		public static function getInchesInPixels(__inches:Number):Number {
 			// Return a certain number of inches in pixels
-			return __inches * Capabilities.screenDPI;
+			//return __inches * Capabilities.screenDPI;
+			return (__inches * 96) * getScreenDensityScale();
 		}
 
 		public static function getScreenDensityScale():Number {
-			// Returns a density scale where 1 = 72dpi, 2 = 154dpi, etc
-
-			// Old method
-			// var s:Number = Capabilities.screenDPI / 72;
-			// return 1 + ((s-1) * 0.25);
+			// Returns a density scale where 1 = 96dpi, 2 = 192dpi, etc
 
 			if ((isWebPlayer() || isAirPlayer()) && !isAndroid() && !isIOS()) {
 				// Normal player that always returns 96 as the dpi
@@ -164,32 +166,11 @@ package com.zehfernando.utils {
 
 			// Everything else
 			return Capabilities.screenDPI / 96;
-
-			// http://renaun.com/blog/2011/01/air-capabilities-screendpi-on-devices/
-			// Nexus 7: 800x1250/800x1172, 213 dpi
-			// iPad (1 & 2nd): 132
-			// iPad (3): should be 264
-			// iPhone 3GS: 163
-			// Nexus One: 254
-			// iPhone 4: should be 326
 		}
 
-		/*
-		public static function addDebugBoxes(): void {
-			// Creates debug items
-			var di:DebugDisplayItem;
-			di = new DebugDisplayItemFPS();
-			stage.addChild(di);
-
-			di = new DebugDisplayItemMemory();
-			di.y = 29;
-			stage.addChild(di);
-
-			di = new DebugDisplayItemFPS();
-			di.setUpdateRate(1);
-			di.y = 59;
-			stage.addChild(di);
+		public static function getScreenDensityScaleZoomed():Number {
+			// Like getScreenDensityScale, but with a proper zoom
+			return getScreenDensityScale() * zoomScale;
 		}
-		*/
 	}
 }
