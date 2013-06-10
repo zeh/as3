@@ -1,6 +1,7 @@
 package com.zehfernando.net.assets {
 	import com.zehfernando.net.LoadingQueue;
 	import com.zehfernando.net.loaders.VideoLoader;
+	import com.zehfernando.utils.console.info;
 
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
@@ -274,6 +275,8 @@ package com.zehfernando.net.assets {
 							throw new Error ("AssetLibrary :: startLoads :: can't start loading of asset [" + assets[i].url + "] type '" + assets[i].type + "'!");
 					}
 					assets[i].isLoading = true;
+
+					info("Loading ["+url+"] ["+urlSuffix+"]");
 				}
 			}
 
