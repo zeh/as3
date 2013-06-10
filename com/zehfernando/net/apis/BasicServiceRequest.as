@@ -108,7 +108,7 @@ package com.zehfernando.net.apis {
 		}
 
 		protected function innerOnIOError(e:IOErrorEvent): void {
-			innerOnIOError(e);
+			onIOError(e);
 		}
 
 		protected function onComplete(e:Event): void {
