@@ -9,7 +9,6 @@ package com.zehfernando.data.types {
 		// Constants
 		private static const TWO_PI:Number = Math.PI * 2;
 
-
 		// Properties
 		private var octaves:int;
 		private var randoms:Vector.<Number>;
