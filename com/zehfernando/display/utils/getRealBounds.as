@@ -9,41 +9,37 @@ package com.zehfernando.display.utils {
 	 */
 	public function getRealBounds(__target:DisplayObject, __targetCoordinateSpace:DisplayObject, __safeMargin:Number = 20): Rectangle {
 		// This is like DisplayObject.getBounds(), but correct
+		// Safe margin does not expand the size, but should be as big as necessary - some items (like bottom of some fonts) fall outside the getBounds margin
 
 		var rect:Rectangle = __target.getBounds(__target);
 
-		var rx:Number = rect.x * __target.scaleX;
-		var ry:Number = rect.y * __target.scaleY;
+		var rx:Number = rect.x;
+		var ry:Number = rect.y;
 		var rw:Number = rect.width * __target.scaleX;
 		var rh:Number = rect.height * __target.scaleY;
 
-		var bmp:BitmapData = new BitmapData(Math.ceil(rw + __safeMargin * 2), Math.ceil(rh + __safeMargin * 2), true, 0x00000000);
+		if (rw <= 0) rw = 1;
+		if (rh <= 0) rh = 1;
+
+		var bmp:BitmapData = new BitmapData(Math.ceil(rw + __safeMargin * 2 * __target.scaleX), Math.ceil(rh + __safeMargin * 2 * __target.scaleY), true, 0x00000000);
 
 		var mtx:Matrix = new Matrix();
-		mtx.translate(rx, ry);
-		mtx.translate(__safeMargin, __safeMargin);
-
+		mtx.scale(__target.scaleX, __target.scaleY);
+		mtx.translate(__safeMargin * __target.scaleX, __safeMargin * __target.scaleY);
+		mtx.translate(-rx * __target.scaleX, -ry * __target.scaleY);
 		bmp.draw(__target, mtx);
-
-//		var bb:Bitmap = new Bitmap(bmp);
-//		bb.x = 100;
-//		bb.y = 100;
-//		__target.parent.addChild(bb);
 
 		// Remove contents
 		var rr:Rectangle = bmp.getColorBoundsRect(0xff000000, 0x00000000, false);
-		//trace ("-> ",rr.x, rr.y, bmp.width - rr.width - rr.x, bmp.height - rr.height - rr.y);
 
 		bmp.dispose();
 		bmp = null;
 
 		var fRect:Rectangle = __target.getBounds(__targetCoordinateSpace);
-		fRect.x += rr.x - __safeMargin;
-		fRect.y += rr.y - __safeMargin;
+		fRect.x += rr.x - __safeMargin * __target.scaleX;
+		fRect.y += rr.y - __safeMargin * __target.scaleY;
 		fRect.width = rr.width;
 		fRect.height = rr.height;
-
-		// TODO: scale must also be taken into consideration here!
 
 		return fRect;
 	}
