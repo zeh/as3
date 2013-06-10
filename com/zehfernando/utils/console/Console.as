@@ -1,10 +1,10 @@
 package com.zehfernando.utils.console {
-
 	import com.zehfernando.utils.AppUtils;
 	import com.zehfernando.utils.DebugUtils;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.external.ExternalInterface;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
@@ -14,11 +14,15 @@ package com.zehfernando.utils.console {
 	 */
 	public class Console {
 
+		// Event enums
+		public static const EVENT_LINE_WRITTEN:String = "onLineWritten";
+
 		// Constants
 		public static const PARAM_PACKAGE_NAME:String = "[[package]]";
 		public static const PARAM_CLASS_NAME:String = "[[class]]";
 		public static const PARAM_FUNCTION_NAME:String = "[[function]]";
 		public static const PARAM_OUTPUT:String = "[[output]]";
+		public static const PARAM_CURRENT_TIME:String = "[[current-time]]";
 		public static const PARAM_CURRENT_FRAME:String = "[[current-frame]]";
 		public static const PARAM_CURRENT_FRAME_FORMAT:String = "00000";
 		public static const PARAM_TIME_NAME:String = "[[time-name]]";
@@ -28,8 +32,8 @@ package com.zehfernando.utils.console {
 		public static const LOG_STATE_OFF:String = "off";
 		public static const LOG_STATE_ON:String = "on";
 
-		public static const ECHO_FORMAT_FULL:String = "[" + PARAM_CURRENT_FRAME + "] " + PARAM_PACKAGE_NAME + "." + PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
-		public static const ECHO_FORMAT_SHORT:String = "[" + PARAM_CURRENT_FRAME + "] " + PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
+		public static const ECHO_FORMAT_FULL:String = PARAM_CURRENT_TIME + " [" + PARAM_CURRENT_FRAME + "] " + PARAM_PACKAGE_NAME + "." + PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
+		public static const ECHO_FORMAT_SHORT:String = PARAM_CURRENT_TIME + " [" + PARAM_CURRENT_FRAME + "] " + PARAM_CLASS_NAME + "." + PARAM_FUNCTION_NAME + "() :: " + PARAM_OUTPUT;
 
 		public static const TIME_FORMAT:String = PARAM_TIME_NAME + ": " + PARAM_TIME_VALUE + "ms";
 
@@ -76,6 +80,11 @@ package com.zehfernando.utils.console {
 		protected static var currentFrame:int;
 		protected static var frameCounter:Sprite;
 
+		protected static var _lastLineWritten:String;				// Last line written, for events
+
+		// Instances
+		protected static var eventDispatcher:EventDispatcher;		// For event dispatching
+
 		// http://getfirebug.com/logging
 
 		// ================================================================================================================
@@ -95,13 +104,15 @@ package com.zehfernando.utils.console {
 
 			frameCounter = new Sprite();
 			frameCounter.addEventListener(Event.ENTER_FRAME, onEnterFrameCounter);
+
+			eventDispatcher = new EventDispatcher();
 		}
 
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected static function createTextField(): void {
+		protected static function createTextField():void {
 			textField = new TextField();
 			textField.mouseEnabled = false;
 			textField.embedFonts = false;
@@ -117,7 +128,7 @@ package com.zehfernando.utils.console {
 			onScreenResizeResizeTextField(null);
 		}
 
-		protected static function removeTextField(): void {
+		protected static function removeTextField():void {
 			textField = new TextField();
 
 			AppUtils.getStage().removeChild(textField);
@@ -126,21 +137,37 @@ package com.zehfernando.utils.console {
 			textField = null;
 		}
 
-		protected static function echo(__output:String, __type:String = null, __callStackOffset:int = 0): void {
+		protected static function getFormattedTime():String {
+			var ms:int = getTimer();
+
+			var secs:int = Math.floor(ms / 1000);
+			var mins:int = Math.floor(secs / 60);
+			var hours:int = Math.floor(mins / 60);
+
+			ms -= secs * 1000;
+			secs -= mins * 60;
+			mins -= hours * 60;
+
+			return ("00" + hours).substr(-2,2) + ":" + ("00" + mins).substr(-2,2) + ":" + ("00" + secs).substr(-2,2) + "." + ("000" + ms).substr(-3,3);
+		}
+
+		protected static function echo(__output:String, __type:String = null, __callStackOffset:int = 0):void {
 			// Raw writes something to the required outputs
 
 			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[3 + __callStackOffset]);
 
 			if (logStates[className] == LOG_STATE_OFF) return;
 
-			var currCall:Vector.<String> = DebugUtils.getCurrentCallStack()[3 + __callStackOffset]; // Package, class, function
+			var currCall:Vector.<String> = DebugUtils.getCurrentCallStack()[3 + __callStackOffset]; // Package, class, function; or ?, null, package::function
 			var currFrame:String = (PARAM_CURRENT_FRAME_FORMAT + currentFrame.toString(10)).substr(-PARAM_CURRENT_FRAME_FORMAT.length, PARAM_CURRENT_FRAME_FORMAT.length);
+			var currTime:String = getFormattedTime();
 
 			var output:String = echoFormat;
+			output = output.split(PARAM_CURRENT_TIME).join(currTime);
 			output = output.split(PARAM_CURRENT_FRAME).join(currFrame);
 			output = output.split(PARAM_PACKAGE_NAME).join(currCall[0]);
-			output = output.split(PARAM_CLASS_NAME).join(currCall[1]);
-			output = output.split(PARAM_FUNCTION_NAME).join(currCall[2]);
+			output = output.split(PARAM_CLASS_NAME).join(currCall[1] == null ? "<global>" : currCall[1]); // for functions, this is null
+			output = output.split(PARAM_FUNCTION_NAME).join(currCall[1] == null ? currCall[2].split("::")[1] : currCall[2]);
 			output = output.split(PARAM_OUTPUT).join(__output);
 
 			output = getGroupsPrefix() + output;
@@ -193,6 +220,9 @@ package com.zehfernando.utils.console {
 					trace ("Console.echo error: Tried calling console.log(), but ExternalInterface is not available!");
 				}
 			}
+
+			_lastLineWritten = output;
+			eventDispatcher.dispatchEvent(new Event(EVENT_LINE_WRITTEN));
 		}
 
 		protected static function getGroupsPrefix(): String {
@@ -209,14 +239,14 @@ package com.zehfernando.utils.console {
 			//return __callStack[0] + "::" + __callStack[1] + "::" + __callStack[2];
 			var packageName:String = __callStack[0];
 			var className:String = __callStack[1];
-			if (className.indexOf("$") > 0) className = className.split("$")[0];
-			return  packageName + "::" + className;
+			if (className != null && className.indexOf("$") > 0) className = className.split("$")[0];
+			return packageName + "::" + (className == null ? "<?>" : className);
 		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected static function onEnterFrameCounter(e:Event): void {
+		protected static function onEnterFrameCounter(e:Event):void {
 			currentFrame++;
 		}
 
@@ -226,36 +256,44 @@ package com.zehfernando.utils.console {
 
 		// console.debug, console.info [i], console.warn [!], console.error [!!!]
 
-		public static function log(__args:Array): void {
+		public static function addEventListener(__type:String, __listener:Function, __useCapture:Boolean = false, __priority:int = 0, __useWeakReference:Boolean = false):void {
+			eventDispatcher.addEventListener(__type, __listener, __useCapture, __priority, __useWeakReference);
+		}
+
+		public static function removeEventListener(__type:String, __listener:Function, __useCapture:Boolean = false):void {
+			eventDispatcher.removeEventListener(__type, __listener, __useCapture);
+		}
+
+		public static function log(__args:Array):void {
 			// Logs something
 			echo(__args.join(" "), LOG_TYPE_LOG);
 		}
 
-		public static function info(__args:Array): void {
+		public static function info(__args:Array):void {
 			// Logs something as an info
 			echo(__args.join(" "), LOG_TYPE_INFO);
 		}
 
-		public static function debug(__args:Array): void {
+		public static function debug(__args:Array):void {
 			// Logs something as debug
 			echo(__args.join(" "), LOG_TYPE_DEBUG);
 		}
 
-		public static function warn(__args:Array): void {
+		public static function warn(__args:Array):void {
 			// Logs something as warning
 			echo(__args.join(" "), LOG_TYPE_WARNING);
 		}
 
-		public static function error(__args:Array): void {
+		public static function error(__args:Array):void {
 			// Logs something as an error
 			echo(__args.join(" "), LOG_TYPE_ERROR);
 		}
 
-		public static function time(__name:String): void {
+		public static function time(__name:String):void {
 			timeTable[__name] = getTimer();
 		}
 
-		public static function timeEnd(__name:String, __message:String = ""): void {
+		public static function timeEnd(__name:String, __message:String = ""):void {
 			if (timeTable.hasOwnProperty(__name)) {
 				var timePassed:int = getTimer() - timeTable[__name];
 				var output:String = timeFormat;
@@ -266,7 +304,7 @@ package com.zehfernando.utils.console {
 			}
 		}
 
-		public static function group(__groupName:String = ""): void {
+		public static function group(__groupName:String = ""):void {
 			var output:String = groupStartFormat;
 			output = output.split(PARAM_GROUP_NAME).join(__groupName);
 
@@ -275,7 +313,7 @@ package com.zehfernando.utils.console {
 			groups.push(__groupName);
 		}
 
-		public static function groupEnd(): void {
+		public static function groupEnd():void {
 			if (groups.length > 0) {
 				var groupName:String = groups.pop();
 
@@ -286,21 +324,21 @@ package com.zehfernando.utils.console {
 			}
 		}
 
-		public static function logOn(): void {
+		public static function logOn():void {
 			// Turns off log for one class
 			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[2]);
 			logStates[className] = LOG_STATE_ON;
 			echo("Log is now set to ON", LOG_TYPE_INFO);
 		}
 
-		public static function logOff(): void {
+		public static function logOff():void {
 			// Turns off log for one class
 			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[2]);
 			echo("Log is now set to OFF", LOG_TYPE_INFO);
 			logStates[className] = LOG_STATE_OFF;
 		}
 
-		public static function logStackTrace(): void {
+		public static function logStackTrace():void {
 			var stack:Vector.<Vector.<String>> = DebugUtils.getCurrentCallStack();
 			echo("STACK TRACE :");
 			for (var i:int = 1; i < stack.length; i++) {
@@ -312,7 +350,7 @@ package com.zehfernando.utils.console {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected static function onScreenResizeResizeTextField(e:Event): void {
+		protected static function onScreenResizeResizeTextField(e:Event):void {
 			textField.x = AppUtils.getStage().stageWidth * 0.5;
 			textField.width = AppUtils.getStage().stageWidth * 0.5;
 			textField.height = AppUtils.getStage().stageHeight;
@@ -324,27 +362,32 @@ package com.zehfernando.utils.console {
 		public static function get useTrace(): Boolean {
 			return _useTrace;
 		}
-		public static function set useTrace(__value:Boolean): void {
+		public static function set useTrace(__value:Boolean):void {
 			_useTrace = __value;
 		}
 
 		public static function get useJS(): Boolean {
 			return _useJS;
 		}
-		public static function set useJS(__value:Boolean): void {
+		public static function set useJS(__value:Boolean):void {
 			_useJS = __value;
 		}
 
 		public static function get useScreen(): Boolean {
 			return _useScreen;
 		}
-		public static function set useScreen(__value:Boolean): void {
+		public static function set useScreen(__value:Boolean):void {
 			if (_useScreen != __value) {
 				_useScreen = __value;
 				if (_useScreen) createTextField();
 				if (!_useScreen) removeTextField();
 			}
 		}
+
+		public static function get lastLineWritten():String {
+			return _lastLineWritten;
+		}
+
 	}
 }
 
