@@ -42,7 +42,7 @@ package com.zehfernando.display.shapes {
 			graphics.beginFill(_color, 1);
 			graphics.drawRoundRectComplex(0, 0, _width, _height, _topLeftRadius, _topRightRadius, _bottomLeftRadius, _bottomRightRadius);
 
-			if (_outlineWidth != 0) graphics.drawRoundRectComplex(_outlineWidth, _outlineWidth, _width - _outlineWidth * 2, _height - _outlineWidth * 2, _topLeftRadius - _outlineWidth, _topRightRadius - _outlineWidth, _bottomLeftRadius - _outlineWidth, _bottomRightRadius - _outlineWidth);
+			if (_outlineWidth != 0) graphics.drawRoundRectComplex(_outlineWidth, _outlineWidth, _width - _outlineWidth * 2, _height - _outlineWidth * 2, Math.max(_topLeftRadius - _outlineWidth, 0), Math.max(_topRightRadius - _outlineWidth, 0), Math.max(_bottomLeftRadius - _outlineWidth, 0), Math.max(_bottomRightRadius - _outlineWidth, 0));
 
 			graphics.endFill();
 		}
