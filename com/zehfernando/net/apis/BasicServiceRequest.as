@@ -45,7 +45,7 @@ package com.zehfernando.net.apis {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function getURLVariables(): URLVariables {
+		protected function getData():Object {
 			// Returns the URLVariables needed by this request
 			var vars:URLVariables = new URLVariables();
 			return vars;
@@ -131,13 +131,11 @@ package com.zehfernando.net.apis {
 			if (_isLoading) stopLoading();
 			if (_isLoaded) clearData();
 
-			var vars:URLVariables = getURLVariables();
-
 			urlRequest = new URLRequest();
 
 			urlRequest.url = requestURL;
 			urlRequest.method = requestMethod;
-			urlRequest.data = vars;
+			urlRequest.data = getData();
 			urlRequest.requestHeaders = getRequestHeaders();
 			urlRequest.contentType = requestContentType;
 
