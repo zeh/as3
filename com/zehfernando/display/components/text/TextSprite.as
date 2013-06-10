@@ -183,7 +183,7 @@ package com.zehfernando.display.components.text {
 
 			textBlock.content = getTextElement(_text);
 
-			var lineWidth:Number = _autoSize ? 1000000 : _width;
+			var lineWidth:Number = _autoSize ? TextLine.MAX_LINE_WIDTH : _width;
 			var textLine:TextLine;
 			var previousLine:TextLine = _previousTextLine;
 			var posY:Number = 0;
