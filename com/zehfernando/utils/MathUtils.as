@@ -5,6 +5,9 @@ package com.zehfernando.utils {
 	 */
 	public class MathUtils {
 
+		// Inlining: http://www.bytearray.org/?p=4789
+		// Not working: returning a buffer underflow every time I try using it
+
 		/**
 		 * Clamps a number to a range, by restricting it to a minimum and maximum values: if the passed value is lower than the minimum value, it's replaced by the minimum; if it's higher than the maximum value, it's replaced by the maximum; if not, it's unchanged.
 		 * @param __value	The value to be clamped.
@@ -73,10 +76,5 @@ package com.zehfernando.utils {
 			__value += __min;
 			return __value;
 		}
-
-//		public static function random(__min:Number, __maxExcluded:Number, __rounded:Boolean = false):Number {
-//			var n:Number = __min + (Math.random() * (__maxExcluded - __min));
-//			return __rounded ? Math.floor(n) : n;
-//		}
 	}
 }
