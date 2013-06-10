@@ -20,6 +20,7 @@ package com.zehfernando.display.abstracts {
 			_height = 100;
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
+			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
 		}
 
 
@@ -38,9 +39,12 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onAddedToStage(e:Event):void {
+		protected function onAddedToStage(__e:Event):void {
 			redrawWidth();
 			redrawHeight();
+		}
+
+		protected function onRemovedFromStage(__e:Event):void {
 		}
 
 
