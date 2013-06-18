@@ -33,7 +33,7 @@ package com.zehfernando.display.shapes {
 			graphics.beginFill(_color);
 			graphics.drawCircle(0, 0, _radius);
 
-			if (_innerRadius != 0) graphics.drawCircle(0, 0, _innerRadius);
+			if (_innerRadius > 0) graphics.drawCircle(0, 0, _innerRadius);
 
 			graphics.endFill();
 
