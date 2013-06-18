@@ -49,30 +49,30 @@ package com.zehfernando.net.apis.facebook.auth {
 		// ================================================================================================================
 		// EVENT DISPATCHER INTERFACE -------------------------------------------------------------------------------------
 
-		public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false): void {
+		public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
 			eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
 
-		public static function dispatchEvent(event:Event): Boolean {
+		public static function dispatchEvent(event:Event):Boolean {
 			return eventDispatcher.dispatchEvent(event);
 		}
 
-		public static function hasEventListener(type:String): Boolean {
+		public static function hasEventListener(type:String):Boolean {
 			return eventDispatcher.hasEventListener(type);
 		}
 
-		public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false): void {
+		public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
 			eventDispatcher.removeEventListener(type, listener, useCapture);
 		}
 
-		public static function willTrigger(type:String): Boolean {
+		public static function willTrigger(type:String):Boolean {
 			return eventDispatcher.willTrigger(type);
 		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		public static function onLoginSuccessLC(__accessToken:String): void {
+		public static function onLoginSuccessLC(__accessToken:String):void {
 			log("Login success with access token " + __accessToken);
 			_accessToken = __accessToken;
 			_loggedIn = true;
@@ -80,14 +80,14 @@ package com.zehfernando.net.apis.facebook.auth {
 			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.LOG_IN_SUCCESS));
 		}
 
-		public static function onLoginErrorLC(__errorReason:String, __errorType:String, __errorDescription:String): void {
+		public static function onLoginErrorLC(__errorReason:String, __errorType:String, __errorDescription:String):void {
 			log("Login error with reason ["+__errorReason+"], type ["+__errorType+"], description ["+__errorDescription+"]");
 			_loggedIn = false;
 			closeLocalConnection();
 			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.LOG_IN_ERROR));
 		}
 
-		protected static function onLoginWindowClosedLC(): void {
+		protected static function onLoginWindowClosedLC():void {
 			if (Boolean(localConnection)) {
 				// Window closed, while a local connection still exists
 				log("Login error (window closed)");
@@ -99,24 +99,24 @@ package com.zehfernando.net.apis.facebook.auth {
 			}
 		}
 
-		protected static function onLogoutWindowClosedLC(): void {
+		protected static function onLogoutWindowClosedLC():void {
 			log("Logout window closed");
 		}
 
-		protected static function onGetAppAccessTokenSuccess(e:Event): void {
+		protected static function onGetAppAccessTokenSuccess(e:Event):void {
 			_accessToken = appAccessTokenLoader.data["access_token"];
 			_hasAppAccessToken = true;
 			destroyAppAccessTokenLoader();
 			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.GOT_APP_ACCESS_TOKEN_SUCCESS));
 		}
 
-		protected static function onGetAppAccessTokenIOError(e:Event): void {
+		protected static function onGetAppAccessTokenIOError(e:Event):void {
 			log("I/O error when getting app access token!");
 			destroyAppAccessTokenLoader();
 			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.GOT_APP_ACCESS_TOKEN_ERROR));
 		}
 
-		protected static function onGetAppAccessTokenSecurityError(e:Event): void {
+		protected static function onGetAppAccessTokenSecurityError(e:Event):void {
 			log("Security error when getting app access token!");
 			destroyAppAccessTokenLoader();
 			dispatchEvent(new FacebookAuthEvent(FacebookAuthEvent.GOT_APP_ACCESS_TOKEN_ERROR));
@@ -125,14 +125,14 @@ package com.zehfernando.net.apis.facebook.auth {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected static function closeLocalConnection(): void {
+		protected static function closeLocalConnection():void {
 			if (Boolean(localConnection)) {
 				localConnection.close();
 				localConnection = null;
 			}
 		}
 
-		protected static function destroyAppAccessTokenLoader(): void {
+		protected static function destroyAppAccessTokenLoader():void {
 			if (Boolean(appAccessTokenLoader)) {
 				//appAccessTokenLoader.close();
 				appAccessTokenLoader.removeEventListener(Event.COMPLETE, onGetAppAccessTokenSuccess);
@@ -145,7 +145,7 @@ package com.zehfernando.net.apis.facebook.auth {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function login(__permissions:Array = null, __useNormalLink:Boolean = false): void {
+		public static function login(__permissions:Array = null, __useNormalLink:Boolean = false):void {
 			// Open the popup window asking for login permission
 
 			closeLocalConnection();
@@ -206,7 +206,7 @@ package com.zehfernando.net.apis.facebook.auth {
 			}
 		}
 
-		public static function getAppAccessToken(): void {
+		public static function getAppAccessToken():void {
 			// Tries to get an access token for app access
 			destroyAppAccessTokenLoader();
 
@@ -224,15 +224,15 @@ package com.zehfernando.net.apis.facebook.auth {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public static function get accessToken(): String {
+		public static function get accessToken():String {
 			return _accessToken;
 		}
 
-		public static function get loggedIn(): Boolean {
+		public static function get loggedIn():Boolean {
 			return _loggedIn;
 		}
 
-		public static function get hasAppAccessToken(): Boolean {
+		public static function get hasAppAccessToken():Boolean {
 			return _hasAppAccessToken;
 		}
 

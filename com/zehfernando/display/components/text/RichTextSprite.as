@@ -222,7 +222,7 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onMouseOver(e:MouseEvent): void {
+		protected function onMouseOver(e:MouseEvent):void {
 			if (Boolean(textBlock)) {
 				addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove, false, 0, true);
 				addEventListener(MouseEvent.CLICK, onMouseClick, false, 0, true);
@@ -230,13 +230,13 @@ package com.zehfernando.display.components.text {
 			}
 		}
 
-		protected function onMouseClick(e:MouseEvent): void {
+		protected function onMouseClick(e:MouseEvent):void {
 			if (Boolean(_currentLinkHref)) {
 				dispatchEvent(new RichTextSpriteEvent(RichTextSpriteEvent.LINK, _currentLinkHref, _currentLinkTarget));
 			}
 		}
 
-		protected function onMouseMove(e:MouseEvent): void {
+		protected function onMouseMove(e:MouseEvent):void {
 			// Check to see if it's over a link
 //			var p:Point = new Point(stage.mouseX, stage.mouseY);
 //			var lastLine:TextLine = textBlock.firstLine;
@@ -285,7 +285,7 @@ package com.zehfernando.display.components.text {
 
 		}
 
-		protected function onMouseOut(e:MouseEvent): void {
+		protected function onMouseOut(e:MouseEvent):void {
 			removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 			removeEventListener(MouseEvent.CLICK, onMouseClick);
 		}
@@ -309,7 +309,7 @@ package com.zehfernando.display.components.text {
 			redraw();
 		}
 
-		public function removeStyle(__name:String): void {
+		public function removeStyle(__name:String):void {
 			for (var i:int = 0; i < styles.length; i++) {
 				if (styles[i].name == __name) {
 					styles.splice(i, 1);
@@ -324,7 +324,7 @@ package com.zehfernando.display.components.text {
 			return styles.concat();
 		}
 
-		public function setTextStyles(__styles:Vector.<TextStyle>): void {
+		public function setTextStyles(__styles:Vector.<TextStyle>):void {
 			// Dangerous thing to be done
 			styles = __styles;
 		}

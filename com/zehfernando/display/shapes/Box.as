@@ -32,7 +32,7 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function paint(): void {
+		protected function paint():void {
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginFill(_color);
@@ -47,10 +47,10 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get color(): int {
+		public function get color():int {
 			return _color;
 		}
-		public function set color(__value:int): void {
+		public function set color(__value:int):void {
 			if (_color != __value) {
 				_color = __value & 0xffffff;
 				paint();
@@ -60,8 +60,8 @@ package com.zehfernando.display.shapes {
 		// TODO: use invalidate
 		// The repetitive redraws don't look good but impact in rendering is virtually none
 
-		override public function get width(): Number { return _width; }
-		override public function set width(__value:Number): void {
+		override public function get width():Number { return _width; }
+		override public function set width(__value:Number):void {
 			if (isNaN(__value)) __value = 0;
 			if (_width != __value) {
 				_width = __value;
@@ -69,8 +69,8 @@ package com.zehfernando.display.shapes {
 			}
 		}
 
-		override public function get height(): Number { return _height; }
-		override public function set height(__value:Number): void {
+		override public function get height():Number { return _height; }
+		override public function set height(__value:Number):void {
 			if (isNaN(__value)) __value = 0;
 			if (_height != __value) {
 				_height = __value;
@@ -78,8 +78,8 @@ package com.zehfernando.display.shapes {
 			}
 		}
 
-		public function get outlineWidth(): Number { return _outlineWidth; }
-		public function set outlineWidth(__value:Number): void {
+		public function get outlineWidth():Number { return _outlineWidth; }
+		public function set outlineWidth(__value:Number):void {
 			if (isNaN(__value)) __value = 0;
 			if (_outlineWidth != __value) {
 				_outlineWidth = __value;

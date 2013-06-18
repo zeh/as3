@@ -35,20 +35,20 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onSecurityError(e:SecurityErrorEvent): void {
+		override protected function onSecurityError(e:SecurityErrorEvent):void {
 			log("Security error while loading " + requestURL);
 			super.onSecurityError(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
 		}
 
-		override protected function onIOError(e:IOErrorEvent): void {
+		override protected function onIOError(e:IOErrorEvent):void {
 			log("IO Error while loading " + requestURL + " - are you sure an access token is available?");
 			log(loader.data);
 			super.onIOError(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.ERROR));
 		}
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			super.onComplete(e);
 			dispatchEvent(new FacebookServiceEvent(FacebookServiceEvent.COMPLETE));
 		}

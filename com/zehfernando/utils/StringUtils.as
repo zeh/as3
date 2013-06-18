@@ -9,12 +9,12 @@ package com.zehfernando.utils {
 
 		protected static var uniqueSerialNumber:int = 0;
 
-		public static function stripDoubleCRLF(__text:String): String {
+		public static function stripDoubleCRLF(__text:String):String {
 			if (__text == null) return null;
 			return __text.split("\r\n").join("\n");
 		}
 
-		public static function wrapSpanStyle(__text:String, __style:String = null): String {
+		public static function wrapSpanStyle(__text:String, __style:String = null):String {
 			return (Boolean(__style) ? "<span class='" + __style + "'>" : "<span>")  + __text + "</span>";
 		}
 
@@ -22,12 +22,12 @@ package com.zehfernando.utils {
 			return "<![CDATA[" + __text + "]]>";
 		}
 
-		public static function stripInvalidFileCharacters(__text:String): String {
+		public static function stripInvalidFileCharacters(__text:String):String {
 			__text = __text.split(":").join("");
 			return __text;
 		}
 
-		public static function makeStub(__text:String): String {
+		public static function makeStub(__text:String):String {
 			// Transforms a title into a stub
 			return __text.toLowerCase().replace(" ", "-").replace(/[^a-z0-9\-]/gi, "");
 		}
@@ -40,7 +40,7 @@ package com.zehfernando.utils {
 			return s.replace(pattern1, "").replace(pattern2, "-").toLowerCase();
 		}
 
-		public static function parseBBCodeToHTML(__text:String): String {
+		public static function parseBBCodeToHTML(__text:String):String {
 
 			var rx:RegExp; // For when /gi does not work
 
@@ -101,7 +101,7 @@ package com.zehfernando.utils {
 			return __text.substr(0, Math.max(0, prevIndex)) + __postText;
 		}
 
-		public static function getQuerystringParameterValue(__url:String, __parameterName:String): String {
+		public static function getQuerystringParameterValue(__url:String, __parameterName:String):String {
 			// Finds the value of a parameter given a querystring/url and the parameter name
 			var qsRegex:RegExp = new RegExp("[?&]" + __parameterName + "(?:=([^&]*))?","i");
 			var match:Object = qsRegex.exec(__url);
@@ -110,7 +110,7 @@ package com.zehfernando.utils {
 			return null;
 		}
 
-		public static function replaceHTMLLinksInsideHTML(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"): String {
+		public static function replaceHTMLLinksInsideHTML(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"):String {
 			// Replaces links like replaceHTMLLinks(), but preserving existing HTML code (avoid creating double links)
 
 			var __txt:String = "";
@@ -149,7 +149,7 @@ package com.zehfernando.utils {
 
 		}
 
-		public static function getHTMLWithStrippedTags(__text:String, __tagsToKeep:Array = null): String {
+		public static function getHTMLWithStrippedTags(__text:String, __tagsToKeep:Array = null):String {
 			if (__tagsToKeep == null) __tagsToKeep = [];
 
 			var xml:XML = new XML(__text);
@@ -189,7 +189,7 @@ package com.zehfernando.utils {
 
 		}
 
-		public static function replaceHTMLLinks(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"): String {
+		public static function replaceHTMLLinks(__text:String, __target:String = "_blank", __twitterSearchTemplate:String = "http://twitter.com/search?q=[[string]]", __twitterUserTemplate:String = "http://twitter.com/[[user]]"):String {
 
 			// Create links for urls, hashtags and whatnot on the text
 			var regexSearch:RegExp;
@@ -295,7 +295,7 @@ package com.zehfernando.utils {
 			return newText;
 		}
 
-		public static function URLEncode(__text:String): String {
+		public static function URLEncode(__text:String):String {
 			__text = escape(__text);
 			__text = __text.split("@").join("%40");
 			__text = __text.split("+").join("%2B");
@@ -303,11 +303,11 @@ package com.zehfernando.utils {
 			return __text;
 		}
 
-		public static function generatePropertyName(): String {
+		public static function generatePropertyName():String {
 			return "f" + getRandomAlphanumericString(16) + ("00000000" + getUniqueSerialNumber().toString(16)).substr(-8,8);
 		}
 
-		public static function getRandomAlphanumericString(__chars:int = 1): String {
+		public static function getRandomAlphanumericString(__chars:int = 1):String {
 			// Returns a random alphanumeric string with the specific number of chars
 			var chars:String = "0123456789AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz";
 			var i:int;
@@ -321,7 +321,7 @@ package com.zehfernando.utils {
 			return str;
 		}
 
-		public static function generateGUID(): String {
+		public static function generateGUID():String {
 			// http://en.wikipedia.org/wiki/Globally_unique_identifier
 			// This one is actually more unorthodox
 			var i:int;
@@ -345,7 +345,7 @@ package com.zehfernando.utils {
 			return strs[0]+strs[1]+strs[2]+strs[3]+"-"+secs+"-"+strs[4]+strs[5]+"-"+strs[6]+strs[7]+strs[8]+strs[9]+strs[10]+strs[11];
 		}
 
-		public static function getUniqueSerialNumber(): int {
+		public static function getUniqueSerialNumber():int {
 			return uniqueSerialNumber++;
 		}
 

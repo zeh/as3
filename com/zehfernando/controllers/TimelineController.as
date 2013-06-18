@@ -40,7 +40,7 @@ package com.zehfernando.controllers {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onEnterFrame(e:Event): void {
+		protected function onEnterFrame(e:Event):void {
 			// Move playhead
 
 			var now:Number = getTimer();
@@ -67,7 +67,7 @@ package com.zehfernando.controllers {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function play(__loop:Boolean = true): void {
+		public function play(__loop:Boolean = true):void {
 			if (!_isPlaying) {
 				// Start playing
 				lastFrameUpdateTime = getTimer();
@@ -83,7 +83,7 @@ package com.zehfernando.controllers {
 			}
 		}
 
-		public function stop(): void {
+		public function stop():void {
 			if (_isPlaying) {
 				if (Boolean(_movieClip)) {
 					_movieClip.removeEventListener(Event.ENTER_FRAME, onEnterFrame);
@@ -95,30 +95,30 @@ package com.zehfernando.controllers {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get fps(): Number {
+		public function get fps():Number {
 			return _fps;
 		}
-		public function set fps(__value:Number): void {
+		public function set fps(__value:Number):void {
 			if (_fps != __value) {
 				_fps = __value;
 			}
 		}
 
-		public function get frame(): Number {
+		public function get frame():Number {
 			return _movieClip.currentFrame;
 		}
-		public function set frame(__value:Number): void {
+		public function set frame(__value:Number):void {
 			if (_movieClip.currentFrame != __value) {
 				_movieClip.gotoAndStop(Math.round(__value));
 				_actualFrame = __value;
 			}
 		}
 
-		public function get totalFrames(): int {
+		public function get totalFrames():int {
 			return _movieClip.totalFrames;
 		}
 
-		public function get isPlaying(): Boolean {
+		public function get isPlaying():Boolean {
 			return _isPlaying;
 		}
 	}

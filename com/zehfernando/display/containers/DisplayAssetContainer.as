@@ -63,7 +63,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		protected function setDefaultData(): void {
+		protected function setDefaultData():void {
 			_scaleMode = StageScaleMode.NO_SCALE;
 
 			_contentWidth = NaN;
@@ -78,17 +78,17 @@ package com.zehfernando.display.containers {
 			_maximumScale = NaN;
 		}
 
-		protected function createBackground(): void {
+		protected function createBackground():void {
 			boundingBox = new Sprite();
 			addChild(boundingBox);
 		}
 
-		protected function createContentHolder(): void {
+		protected function createContentHolder():void {
 			contentHolder = new Sprite();
 			addChild(contentHolder);
 		}
 
-		protected function redrawBackground(): void {
+		protected function redrawBackground():void {
 			boundingBox.graphics.clear();
 			boundingBox.graphics.lineStyle();
 			boundingBox.graphics.beginFill(_backgroundColor, 1);
@@ -96,11 +96,11 @@ package com.zehfernando.display.containers {
 			boundingBox.graphics.endFill();
 		}
 
-		protected function redrawScrollRect(): void {
+		protected function redrawScrollRect():void {
 			scrollRect = new Rectangle(0, 0, _width, _height);
 		}
 
-		protected function redrawContent(): void {
+		protected function redrawContent():void {
 
 			var baseScale:Point = getBaseScale();
 
@@ -180,7 +180,7 @@ package com.zehfernando.display.containers {
 			return new Point(baseScaleX, baseScaleY);
 		}
 
-		protected function redraw(): void {
+		protected function redraw():void {
 			if (!isNaN(_contentWidth) && !isNaN(_contentHeight)) redrawContent();
 
 			redrawBackground();
@@ -191,7 +191,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
 
-		public function dispose(): void {
+		public function dispose():void {
 			// Remove asset
 			removeAsset();
 
@@ -213,7 +213,7 @@ package com.zehfernando.display.containers {
 			//return 1;
 		}
 
-		public function setAsset(__displayObject:DisplayObject, __forcedWidth:Number = NaN, __forcedHeight:Number = NaN): void {
+		public function setAsset(__displayObject:DisplayObject, __forcedWidth:Number = NaN, __forcedHeight:Number = NaN):void {
 			removeAsset();
 
 			contentAsset = __displayObject;
@@ -225,7 +225,7 @@ package com.zehfernando.display.containers {
 			redraw();
 		}
 
-		public function removeAsset(): void {
+		public function removeAsset():void {
 			if (Boolean(contentAsset) && contentHolder.contains(contentAsset)) {
 				contentHolder.removeChild(contentAsset);
 				contentAsset = null;
@@ -242,7 +242,7 @@ package com.zehfernando.display.containers {
 			return p;
 		}
 
-		public function getTransformedContentScale(): Number {
+		public function getTransformedContentScale():Number {
 			return contentHolder.scaleX;
 		}
 
@@ -252,86 +252,86 @@ package com.zehfernando.display.containers {
 
 		// Container sizes ----------------------------------
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return _width;
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			_width = __value;
 			redraw();
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _height;
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			_height = __value;
 			redraw();
 		}
 
-		public function get margin(): Number {
+		public function get margin():Number {
 			return _margin;
 		}
-		public function set margin(__value:Number): void {
+		public function set margin(__value:Number):void {
 			_margin = __value;
 			redraw();
 		}
 
 		// Content scaling and display ----------------------------------
 
-		public function get scaleMode(): String {
+		public function get scaleMode():String {
 			return _scaleMode;
 		}
-		public function set scaleMode(__value:String): void {
+		public function set scaleMode(__value:String):void {
 			if (_scaleMode != __value) {
 				_scaleMode = __value;
 				redraw();
 			}
 		}
 
-		public function get minimumScale(): Number {
+		public function get minimumScale():Number {
 			return _minimumScale;
 		}
-		public function set minimumScale(__value:Number): void {
+		public function set minimumScale(__value:Number):void {
 			if (_minimumScale != __value) {
 				_minimumScale = __value;
 				redraw();
 			}
 		}
 
-		public function get maximumScale(): Number {
+		public function get maximumScale():Number {
 			return _maximumScale;
 		}
-		public function set maximumScale(__value:Number): void {
+		public function set maximumScale(__value:Number):void {
 			if (_maximumScale != __value) {
 				_maximumScale = __value;
 				redraw();
 			}
 		}
 
-		public function get scrollX(): Number {
+		public function get scrollX():Number {
 			return _scrollX;
 		}
-		public function set scrollX(__value:Number): void {
+		public function set scrollX(__value:Number):void {
 			if (_scrollX != __value) {
 				_scrollX = __value;
 				redraw();
 			}
 		}
 
-		public function get scrollY(): Number {
+		public function get scrollY():Number {
 			return _scrollY;
 		}
-		public function set scrollY(__value:Number): void {
+		public function set scrollY(__value:Number):void {
 			if (_scrollY != __value) {
 				_scrollY = __value;
 				redraw();
 			}
 		}
 
-		public function get contentScale(): Number {
+		public function get contentScale():Number {
 			return _contentScale;
 		}
-		public function set contentScale(__value:Number): void {
+		public function set contentScale(__value:Number):void {
 			if (_contentScale != __value) {
 				_contentScale = __value;
 				redraw();
@@ -340,20 +340,20 @@ package com.zehfernando.display.containers {
 
 		// Background stuff ----------------------------------
 
-		public function get backgroundAlpha(): Number {
+		public function get backgroundAlpha():Number {
 			return boundingBox.alpha;
 		}
-		public function set backgroundAlpha(__value:Number): void {
+		public function set backgroundAlpha(__value:Number):void {
 			if (__value != boundingBox.alpha) {
 				boundingBox.alpha = __value;
 				boundingBox.visible = __value > 0;
 			}
 		}
 
-		public function get backgroundColor(): int {
+		public function get backgroundColor():int {
 			return _backgroundColor;
 		}
-		public function set backgroundColor(__value:int): void {
+		public function set backgroundColor(__value:int):void {
 			if (_backgroundColor != __value) {
 				_backgroundColor = __value;
 				redrawBackground();
@@ -362,19 +362,19 @@ package com.zehfernando.display.containers {
 
 		// Content information ----------------------------------
 
-		public function get contentWidth(): Number {
+		public function get contentWidth():Number {
 			return _contentWidth;
 		}
-		public function get contentHeight(): Number {
+		public function get contentHeight():Number {
 			return _contentHeight;
 		}
 
 		// Round position
 
-		public function get roundPositions(): Boolean {
+		public function get roundPositions():Boolean {
 			return _roundPositions;
 		}
-		public function set roundPositions(__value:Boolean): void {
+		public function set roundPositions(__value:Boolean):void {
 			if (_roundPositions != __value) {
 				_roundPositions = __value;
 				redraw();

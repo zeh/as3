@@ -46,7 +46,7 @@ package com.zehfernando.data.serialization.json {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected static function encodeObject(__input:Object, __allowCarriageReturn:Boolean = true, __indentLevel:Number = 0): String {
+		protected static function encodeObject(__input:Object, __allowCarriageReturn:Boolean = true, __indentLevel:Number = 0):String {
 			// Depending on type, does a different thing
 
 			var txt:String = "";
@@ -415,7 +415,7 @@ package com.zehfernando.data.serialization.json {
 			return returnObject;
 		}
 
-		protected static function compareStringValue(__value:String, __text:String): Boolean {
+		protected static function compareStringValue(__value:String, __text:String):Boolean {
 			return __value.length <= __text.length && __text.substr(0, __value.length) == __value;
 		}
 
@@ -680,7 +680,7 @@ package com.zehfernando.data.serialization.json {
 		}
 		*/
 
-		protected static function getIndents(__indentLevel:int): String {
+		protected static function getIndents(__indentLevel:int):String {
 			var txt:String = "";
 			while (__indentLevel-- > 0) txt += JSON.INDENT_ONE;
 			return txt;
@@ -693,11 +693,11 @@ package com.zehfernando.data.serialization.json {
 			return decodeObject(__input).object;
 		}
 
-		public static function encode(__input:Object, __allowCarriageReturn:Boolean = true): String {
+		public static function encode(__input:Object, __allowCarriageReturn:Boolean = true):String {
 			return encodeObject(__input, __allowCarriageReturn);
 		}
 
-		public static function encodeString(__string:String): String {
+		public static function encodeString(__string:String):String {
 			var t:String = "";
 			var i:int;
 			var c:String;
@@ -753,16 +753,16 @@ class ParsedJSONValue {
 	public var object:Object;
 	public var length:int;
 
-	public function ParsedJSONValue(): void {
+	public function ParsedJSONValue():void {
 		object = {};
 		length = 0;
 	}
 
-//	public function getObjectAsString(): String {
+//	public function getObjectAsString():String {
 //		return object as String;
 //	}
 //
-//	public function getObjectAsNumber(): Number {
+//	public function getObjectAsNumber():Number {
 //		return parseFloat(getObjectAsString());
 //	}
 

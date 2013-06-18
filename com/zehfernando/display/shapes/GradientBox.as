@@ -57,7 +57,7 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function paint(): void {
+		protected function paint():void {
 			var mtx:Matrix = new Matrix();
 			mtx.createGradientBox(_width, _height, (_angle / 180) * Math.PI, 0, 0);
 
@@ -72,10 +72,10 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get angle(): Number {
+		public function get angle():Number {
 			return _angle;
 		}
-		public function set angle(__value:Number): void {
+		public function set angle(__value:Number):void {
 			if (_angle != __value) {
 				_angle = __value;
 				paint();
@@ -85,7 +85,7 @@ package com.zehfernando.display.shapes {
 		public function get colors(): Array {
 			return _colors;
 		}
-		public function set colors(__value:Array): void {
+		public function set colors(__value:Array):void {
 			_colors = __value;
 			paint();
 		}
@@ -93,7 +93,7 @@ package com.zehfernando.display.shapes {
 		public function get alphas(): Array {
 			return _alphas;
 		}
-		public function set alphas(__value:Array): void {
+		public function set alphas(__value:Array):void {
 			_alphas = __value;
 			paint();
 		}
@@ -101,21 +101,21 @@ package com.zehfernando.display.shapes {
 		public function get ratios(): Array {
 			return _ratios;
 		}
-		public function set ratios(__value:Array): void {
+		public function set ratios(__value:Array):void {
 			_ratios = __value;
 			paint();
 		}
 
-		override public function get width(): Number { return _width; }
-		override public function set width(__value:Number): void {
+		override public function get width():Number { return _width; }
+		override public function set width(__value:Number):void {
 			if (_width != __value) {
 				_width = __value;
 				paint();
 			}
 		}
 
-		override public function get height(): Number { return _height; }
-		override public function set height(__value:Number): void {
+		override public function get height():Number { return _height; }
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				paint();

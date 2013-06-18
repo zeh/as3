@@ -6,7 +6,7 @@ package com.zehfernando.display {
 	/**
 	 * @author zeh
 	 */
-	public function drawPlane(graphics:Graphics, bitmap:BitmapData, p1:Point, p2:Point, p3:Point, p4:Point, scaleY:Number = 1, offsetY:Number = 0): void {
+	public function drawPlane(graphics:Graphics, bitmap:BitmapData, p1:Point, p2:Point, p3:Point, p4:Point, scaleY:Number = 1, offsetY:Number = 0):void {
 		var pc:Point = getIntersection(p1, p4, p2, p3); // Central point
 
 		// If no intersection between two diagonals, doesn't draw anything

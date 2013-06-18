@@ -36,7 +36,7 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function paint(): void {
+		protected function paint():void {
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginFill(_color, 1);
@@ -54,73 +54,73 @@ package com.zehfernando.display.shapes {
 		// TODO: use invalidate
 		// The repetitive redraws don't look good but impact in rendering is virtually none
 
-		override public function get width(): Number { return _width; }
-		override public function set width(__value:Number): void {
+		override public function get width():Number { return _width; }
+		override public function set width(__value:Number):void {
 			if (_width != __value) {
 				_width = __value;
 				paint();
 			}
 		}
 
-		override public function get height(): Number { return _height; }
-		override public function set height(__value:Number): void {
+		override public function get height():Number { return _height; }
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				paint();
 			}
 		}
 
-		public function get color(): Number { return _color; }
-		public function set color(__value:Number): void {
+		public function get color():Number { return _color; }
+		public function set color(__value:Number):void {
 			if (_color != __value) {
 				_color = __value;
 				paint();
 			}
 		}
 
-		public function get radius(): Number {
+		public function get radius():Number {
 			return _radius;
 		}
-		public function set radius(__value:Number): void {
+		public function set radius(__value:Number):void {
 			_radius = _topLeftRadius = _topRightRadius = _bottomLeftRadius = _bottomRightRadius = __value;
 			paint();
 		}
 
-		public function get topLeftRadius(): Number { return _topLeftRadius; }
-		public function set topLeftRadius(__value:Number): void {
+		public function get topLeftRadius():Number { return _topLeftRadius; }
+		public function set topLeftRadius(__value:Number):void {
 			if (_topLeftRadius != __value) {
 				_topLeftRadius = __value;
 				paint();
 			}
 		}
 
-		public function get topRightRadius(): Number { return _topRightRadius; }
-		public function set topRightRadius(__value:Number): void {
+		public function get topRightRadius():Number { return _topRightRadius; }
+		public function set topRightRadius(__value:Number):void {
 			if (_topRightRadius != __value) {
 				_topRightRadius = __value;
 				paint();
 			}
 		}
 
-		public function get bottomLeftRadius(): Number { return _bottomLeftRadius; }
-		public function set bottomLeftRadius(__value:Number): void {
+		public function get bottomLeftRadius():Number { return _bottomLeftRadius; }
+		public function set bottomLeftRadius(__value:Number):void {
 			if (_bottomLeftRadius != __value) {
 				_bottomLeftRadius = __value;
 				paint();
 			}
 		}
 
-		public function get bottomRightRadius(): Number { return _bottomRightRadius; }
-		public function set bottomRightRadius(__value:Number): void {
+		public function get bottomRightRadius():Number { return _bottomRightRadius; }
+		public function set bottomRightRadius(__value:Number):void {
 			if (_bottomRightRadius != __value) {
 				_bottomRightRadius = __value;
 				paint();
 			}
 		}
 
-		public function get borderSize(): Number { return _outlineWidth; }
+		public function get borderSize():Number { return _outlineWidth; }
 
-		public function set borderSize(__value:Number): void {
+		public function set borderSize(__value:Number):void {
 			if (_outlineWidth != __value) {
 				_outlineWidth = __value;
 				paint();

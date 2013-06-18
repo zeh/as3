@@ -22,14 +22,14 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function DynamicDisplayAssetContainer(__width:Number = 100, __height:Number = 100, __color:Number = 0x000000) {
-			super(__width, __height, __color);
+		public function DynamicDisplayAssetContainer(__width:Number = 100, __height:Number = 100, __backgroundColor:Number = 0x000000) {
+			super(__width, __height, __backgroundColor);
 		}
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function setDefaultData(): void {
+		override protected function setDefaultData():void {
 			super.setDefaultData();
 
 			_smoothing = false;
@@ -42,19 +42,19 @@ package com.zehfernando.display.containers {
 			_bytesTotal = NaN;
 		}
 
-		protected function updateStartedLoadingStats(): void {
+		protected function updateStartedLoadingStats():void {
 			_timeStartedLoading = getTimer();
 		}
 
-		protected function updateCompletedLoadingStats(): void {
+		protected function updateCompletedLoadingStats():void {
 			_timeCompletedLoading = getTimer();
 		}
 
-		protected function applySmoothing(): void {
+		protected function applySmoothing():void {
 			// TODO! youtube doesn't allow it!
 		}
 
-		override protected function redraw(): void {
+		override protected function redraw():void {
 			super.redraw();
 			applySmoothing();
 		}
@@ -62,12 +62,12 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function load(__url:String): void {
+		public function load(__url:String):void {
 			if (_isLoading || _isLoaded) unload();
 			_contentURL = __url;
 		}
 
-		public function unload(): void {
+		public function unload():void {
 			_contentURL = null;
 			_isLoaded = false;
 			_isLoading = false;
@@ -77,7 +77,7 @@ package com.zehfernando.display.containers {
 			_bytesTotal = NaN;
 		}
 
-		public function getLoadingSpeed(): Number {
+		public function getLoadingSpeed():Number {
 			// Returns the loading speed, in bytes per second
 			if (isLoading) {
 				return _bytesLoaded / ((getTimer() - _timeStartedLoading) / 1000);
@@ -87,7 +87,7 @@ package com.zehfernando.display.containers {
 			return 0;
 		}
 
-		override public function dispose(): void {
+		override public function dispose():void {
 			unload();
 			super.dispose();
 		}
@@ -96,37 +96,37 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get loadedPercent(): Number {
+		public function get loadedPercent():Number {
 			//trace(_isLoaded, _bytesLoaded, _bytesTotal);
 			return _isLoaded ? 1 : ( (isNaN(_bytesLoaded) || isNaN(_bytesTotal) || _bytesTotal == 0) ? 0 : _bytesLoaded / _bytesTotal );
 		}
 
-		public function get bytesLoaded(): Number {
+		public function get bytesLoaded():Number {
 			return _bytesLoaded;
 		}
 
-		public function get bytesTotal(): Number {
+		public function get bytesTotal():Number {
 			return _bytesTotal;
 		}
 
-		public function get contentURL(): String {
+		public function get contentURL():String {
 			return _contentURL;
 		}
 
 
 		// State information ----------------------------------
 
-		public function get isLoaded(): Boolean {
+		public function get isLoaded():Boolean {
 			return _isLoaded;
 		}
-		public function get isLoading(): Boolean {
+		public function get isLoading():Boolean {
 			return _isLoading;
 		}
 
-		public function get smoothing(): Boolean {
+		public function get smoothing():Boolean {
 			return _smoothing;
 		}
-		public function set smoothing(__value:Boolean): void {
+		public function set smoothing(__value:Boolean):void {
 			_smoothing = __value;
 			applySmoothing();
 		}

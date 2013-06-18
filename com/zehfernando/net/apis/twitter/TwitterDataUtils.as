@@ -9,7 +9,7 @@ package com.zehfernando.net.apis.twitter {
 
 		public static const months:Array = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"]; // Redundant so it's locale-agnostic
 
-		public static function getDateAsParamString(__date:Date): String {
+		public static function getDateAsParamString(__date:Date):String {
 			return __date.fullYear + "-" + ("00" + (__date.month+1)).substr(-2,2) + "-" + ("00" + __date.date).substr(-2,2);
 		}
 
@@ -47,7 +47,7 @@ package com.zehfernando.net.apis.twitter {
 			return date;
 		}
 
-		public static function decodeHTML(__text:String): String {
+		public static function decodeHTML(__text:String):String {
 			if (__text == null) return null;
 			return __text.split("&quot;").join("\"").split("&amp;").join("&");
 		}

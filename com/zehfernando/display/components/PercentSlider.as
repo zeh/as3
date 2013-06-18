@@ -68,7 +68,7 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function setDefaultData(): void {
+		protected function setDefaultData():void {
 			_width = 20;
 			_position = 0;
 			_radius = 0;
@@ -81,7 +81,7 @@ package com.zehfernando.display.components {
 			_backgroundColor = 0x333333;
 		}
 
-		protected function createAssets(): void {
+		protected function createAssets():void {
 			barMask = new RoundedBox(100, 100, _backgroundColor);
 			addChild(barMask);
 
@@ -115,7 +115,7 @@ package com.zehfernando.display.components {
 //			if (Boolean(wheelTarget)) AppUtils.getStage().addEventListener(MouseEvent.MOUSE_WHEEL, onStageMouseWheel, false, 0, true);
 		}
 
-		override protected function redrawWidth(): void {
+		override protected function redrawWidth():void {
 			barMask.width = _width;
 			background.width = _width;
 			foreground.width = _width;
@@ -128,7 +128,7 @@ package com.zehfernando.display.components {
 			}
 		}
 
-		override protected function redrawHeight(): void {
+		override protected function redrawHeight():void {
 			barMask.height = _height;
 			background.height = _height;
 			foreground.height = _height;
@@ -136,7 +136,7 @@ package com.zehfernando.display.components {
 			redrawPosition();
 		}
 
-		protected function redrawPosition(): void {
+		protected function redrawPosition():void {
 			foreground.y = -MathUtils.map(_position, 0, 1, _height, 0);
 			//foreground.height = MathUtils.map(_position, 0, 1, 0, _height);
 
@@ -148,12 +148,12 @@ package com.zehfernando.display.components {
 			dispatchEvent(new Event(EVENT_POSITION_REDRAWN));
 		}
 
-		protected function redrawRadius(): void {
+		protected function redrawRadius():void {
 			foreground.radius = _radius;
 			barMask.radius = _radius;
 		}
 
-		protected function continueDragging(): void {
+		protected function continueDragging():void {
 			if (_isDragging) {
 				var newPos:Number = MathUtils.map(mouseY + mouseOffsetY, 0, _height, 0, 1, true);
 				if(newPos != _position) {
@@ -163,7 +163,7 @@ package com.zehfernando.display.components {
 			}
 		}
 
-		protected function stopDragging(): void {
+		protected function stopDragging():void {
 			if (_isDragging) {
 				continueDragging();
 
@@ -179,7 +179,7 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onMouseDown(e:MouseEvent): void {
+		protected function onMouseDown(e:MouseEvent):void {
 			startDragging();
 		}
 
@@ -187,15 +187,15 @@ package com.zehfernando.display.components {
 			startDragging(true);
 		}
 
-		protected function onDraggingMouseMove(e:MouseEvent): void {
+		protected function onDraggingMouseMove(e:MouseEvent):void {
 			continueDragging();
 		}
 
-		protected function onDraggingMouseUp(e:MouseEvent): void {
+		protected function onDraggingMouseUp(e:MouseEvent):void {
 			stopDragging();
 		}
 
-//		protected function onStageMouseWheel(e:MouseEvent): void {
+//		protected function onStageMouseWheel(e:MouseEvent):void {
 //			if (_enabled) {
 //				position -= _wheelDeltaScale * e.delta;
 //				dispatchEvent(new Event(EVENT_POSITION_CHANGED_BY_USER));
@@ -210,7 +210,7 @@ package com.zehfernando.display.components {
 //			return pickerContainer;
 //		}
 
-		public function startDragging(__relativePosition:Boolean = false): void {
+		public function startDragging(__relativePosition:Boolean = false):void {
 			// Starts dragging the head
 			if (!_isDragging && enabled) {
 
@@ -225,7 +225,7 @@ package com.zehfernando.display.components {
 			}
 		}
 
-		public function addSelector(__selector:Sprite, __alignment:Number = -1): void {
+		public function addSelector(__selector:Sprite, __alignment:Number = -1):void {
 			selectorContainer.addChild(__selector);
 			selectorAlignments.push(__alignment);
 		}
@@ -233,60 +233,60 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get position(): Number {
+		public function get position():Number {
 			return _position;
 		}
-		public function set position(__value:Number): void {
+		public function set position(__value:Number):void {
 			if (_position != __value) {
 				_position = MathUtils.clamp(__value);
 				redrawPosition();
 			}
 		}
 
-		public function get enabled(): Boolean {
+		public function get enabled():Boolean {
 			return _enabled;
 		}
-		public function set enabled(__value:Boolean): void {
+		public function set enabled(__value:Boolean):void {
 			_enabled = hitter.mouseEnabled = __value;
 		}
 
-		public function get isDragging(): Boolean {
+		public function get isDragging():Boolean {
 			return _isDragging;
 		}
 
-		public function get backgroundColor(): int {
+		public function get backgroundColor():int {
 			return _backgroundColor;
 		}
-		public function set backgroundColor(__value:int): void {
+		public function set backgroundColor(__value:int):void {
 			if (_backgroundColor != __value) {
 				_backgroundColor = __value;
 				background.color = _backgroundColor;
 			}
 		}
 
-		public function get foregroundColor(): int {
+		public function get foregroundColor():int {
 			return _foregroundColor;
 		}
-		public function set foregroundColor(__value:int): void {
+		public function set foregroundColor(__value:int):void {
 			if (_foregroundColor != __value) {
 				_foregroundColor = __value;
 				foreground.color = _foregroundColor;
 			}
 		}
 
-//		public function get wheelDeltaScale(): Number {
+//		public function get wheelDeltaScale():Number {
 //			return _wheelDeltaScale;
 //		}
-//		public function set wheelDeltaScale(__value:Number): void {
+//		public function set wheelDeltaScale(__value:Number):void {
 //			if (_wheelDeltaScale != __value) {
 //				_wheelDeltaScale = __value;
 //			}
 //		}
 
-		public function get hitMargin(): Number {
+		public function get hitMargin():Number {
 			return _hitMargin;
 		}
-		public function set hitMargin(__value:Number): void {
+		public function set hitMargin(__value:Number):void {
 			if (_hitMargin != __value) {
 				_hitMargin = __value;
 				redrawWidth();
@@ -294,10 +294,10 @@ package com.zehfernando.display.components {
 			}
 		}
 
-		public function get radius(): Number {
+		public function get radius():Number {
 			return _radius;
 		}
-		public function set radius(__value:Number): void {
+		public function set radius(__value:Number):void {
 			if (_radius != __value) {
 				_radius = __value;
 				redrawRadius();

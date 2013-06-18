@@ -54,7 +54,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			var response:Object = JSON.decode(loader.data);
 
 			_posts = FacebookFeedPost.fromJSONObjectArray(response["data"]);
@@ -84,10 +84,10 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Hard parameters
 
-		public function get limit(): int {
+		public function get limit():int {
 			return _limit;
 		}
-		public function set limit(__value:int): void {
+		public function set limit(__value:int):void {
 			if (_limit != __value) {
 				_limit = __value;
 			}

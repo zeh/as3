@@ -225,7 +225,7 @@ package com.zehfernando.utils.console {
 			eventDispatcher.dispatchEvent(new Event(EVENT_LINE_WRITTEN));
 		}
 
-		protected static function getGroupsPrefix(): String {
+		protected static function getGroupsPrefix():String {
 			var str:String = "";
 			var l:int = groups.length;
 			while (l > 0) {
@@ -235,7 +235,7 @@ package com.zehfernando.utils.console {
 			return str;
 		}
 
-		protected static function getClassNameFromCallStack(__callStack:Vector.<String>): String {
+		protected static function getClassNameFromCallStack(__callStack:Vector.<String>):String {
 			//return __callStack[0] + "::" + __callStack[1] + "::" + __callStack[2];
 			var packageName:String = __callStack[0];
 			var className:String = __callStack[1];
@@ -359,21 +359,21 @@ package com.zehfernando.utils.console {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public static function get useTrace(): Boolean {
+		public static function get useTrace():Boolean {
 			return _useTrace;
 		}
 		public static function set useTrace(__value:Boolean):void {
 			_useTrace = __value;
 		}
 
-		public static function get useJS(): Boolean {
+		public static function get useJS():Boolean {
 			return _useJS;
 		}
 		public static function set useJS(__value:Boolean):void {
 			_useJS = __value;
 		}
 
-		public static function get useScreen(): Boolean {
+		public static function get useScreen():Boolean {
 			return _useScreen;
 		}
 		public static function set useScreen(__value:Boolean):void {

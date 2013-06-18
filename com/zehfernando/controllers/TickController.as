@@ -41,7 +41,7 @@ package com.zehfernando.controllers {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function tick(): void {
+		protected function tick():void {
 			// Updates all values
 			dispatchEvent(new Event(EVENT_TICK));
 		}
@@ -49,7 +49,7 @@ package com.zehfernando.controllers {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onEnterFrameTick(e:Event): void {
+		protected function onEnterFrameTick(e:Event):void {
 
 			if (isNaN(_desiredFPS)) {
 				// Always update, ignore time
@@ -76,7 +76,7 @@ package com.zehfernando.controllers {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function start(): void {
+		public function start():void {
 			if (!_isRunning) {
 				container = new Sprite();
 				container.addEventListener(Event.ENTER_FRAME, onEnterFrameTick, false, 0, true);
@@ -86,7 +86,7 @@ package com.zehfernando.controllers {
 			}
 		}
 
-		public function stop(): void {
+		public function stop():void {
 			if (_isRunning) {
 				container.removeEventListener(Event.ENTER_FRAME, onEnterFrameTick);
 				container = null;
@@ -100,7 +100,7 @@ package com.zehfernando.controllers {
 
 		// TODO: add ability to call a minimum of X times per second too
 
-		public function get isRunning(): Boolean {
+		public function get isRunning():Boolean {
 			return _isRunning;
 		}
 	}

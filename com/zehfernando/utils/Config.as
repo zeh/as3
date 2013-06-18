@@ -28,7 +28,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		protected static function init(): void {
+		protected static function init():void {
 			if (!inited) {
 				defaultOptions = {};
 
@@ -63,7 +63,7 @@ package com.zehfernando.utils {
 			return getDefault(__option);
 		}
 
-		public static function set(__option:String, __value:Object): void {
+		public static function set(__option:String, __value:Object):void {
 			init();
 			var so:SharedObject = getSharedObject();
 			so.data[__option] = __value;
@@ -72,7 +72,7 @@ package com.zehfernando.utils {
 			// TODO: check when shared object data saving is disabled?
 		}
 
-		public static function hasOption(__option:String): Boolean {
+		public static function hasOption(__option:String):Boolean {
 			// Whether or not an option has been set already
 			init();
 			var so:SharedObject = getSharedObject();
@@ -104,11 +104,11 @@ package com.zehfernando.utils {
 			so.flush();
 		}
 
-		public static function addEventListener(__type:String, __listener:Function): void {
+		public static function addEventListener(__type:String, __listener:Function):void {
 			eventDispatcher.addEventListener(__type, __listener);
 		}
 
-		public static function removeEventListener(__type:String, __listener:Function): void {
+		public static function removeEventListener(__type:String, __listener:Function):void {
 			eventDispatcher.removeEventListener(__type, __listener);
 		}
 
@@ -130,15 +130,15 @@ class DefaultListOption extends Object {
 		type = __type;
 	}
 
-	public function getBoolean(): Boolean {
+	public function getBoolean():Boolean {
 		return data == "true";
 	}
 
-	public function getNumber(): Number {
+	public function getNumber():Number {
 		return parseFloat(data);
 	}
 
-	public function getString(): String {
+	public function getString():String {
 		var str:String = String(data);
 		if (str == "[system-language]") {
 			str = Capabilities.language;

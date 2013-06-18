@@ -50,7 +50,7 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function redraw(): void {
+		protected function redraw():void {
 			background.width = _width;
 			background.height = _height;
 
@@ -62,17 +62,17 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get color(): int {
+		public function get color():int {
 			return background.color;
 		}
-		public function set color(__value:int): void {
+		public function set color(__value:int):void {
 			background.color = __value;
 		}
 
-		public function get lineColor(): int {
+		public function get lineColor():int {
 			return _lineColor;
 		}
-		public function set lineColor(__value:int): void {
+		public function set lineColor(__value:int):void {
 			if (_lineColor != __value) {
 				_lineColor = __value;
 				foreground.transform.colorTransform = Color.fromRRGGBB(_lineColor).toColorTransform();
@@ -81,16 +81,16 @@ package com.zehfernando.display.shapes {
 
 		// TODO: use invalidate
 
-		override public function get width(): Number { return _width; }
-		override public function set width(__value:Number): void {
+		override public function get width():Number { return _width; }
+		override public function set width(__value:Number):void {
 			if (_width != __value) {
 				_width = __value;
 				redraw();
 			}
 		}
 
-		override public function get height(): Number { return _height; }
-		override public function set height(__value:Number): void {
+		override public function get height():Number { return _height; }
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				redraw();

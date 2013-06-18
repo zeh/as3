@@ -270,7 +270,7 @@ package com.zehfernando.display.debug.statgraph {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return _blockWidth;
 		}
 		override public function set width(__value:Number):void {
@@ -283,7 +283,7 @@ package com.zehfernando.display.debug.statgraph {
 			}
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _blockHeight * dataPoints.length;
 		}
 		override public function set height(__value:Number):void {

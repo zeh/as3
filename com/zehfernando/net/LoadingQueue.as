@@ -50,7 +50,7 @@ package com.zehfernando.net {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		protected function setDefaultProperties(): void {
+		protected function setDefaultProperties():void {
 			_slots = 1;
 			maximumRetries = 0;
 			_paused = true;
@@ -62,7 +62,7 @@ package com.zehfernando.net {
 			currentLoaders = new Vector.<LoadingQueueItemInfo>();
 		}
 
-		protected function checkUnusedSlots(): void {
+		protected function checkUnusedSlots():void {
 			// Check if there are remaining loading slots
 
 			//trace("LoadingQueue.checkUnusedSlots()");
@@ -82,7 +82,7 @@ package com.zehfernando.net {
 			}
 		}
 
-		protected function loadNextItem(): void {
+		protected function loadNextItem():void {
 			// Remove one item from the loading queue, and start loading it
 
 			//trace("LoadingQueue.loadNextItem()");
@@ -165,7 +165,7 @@ package com.zehfernando.net {
 			return null;
 		}
 
-		protected function removeItemFromCurrentLoaders(__q:LoadingQueueItemInfo): Boolean {
+		protected function removeItemFromCurrentLoaders(__q:LoadingQueueItemInfo):Boolean {
 			var iq:int = currentLoaders.indexOf(__q);
 
 			/*
@@ -193,7 +193,7 @@ package com.zehfernando.net {
 			return false;
 		}
 
-		protected function dispatchProgressEvent(): void {
+		protected function dispatchProgressEvent():void {
 			var bl:int = 0;
 			var bt:int = 0;
 			var i:int;
@@ -215,13 +215,13 @@ package com.zehfernando.net {
 			dispatchEvent(ne);
 		}
 
-		protected function dispatchCompleteEvent(): void {
+		protected function dispatchCompleteEvent():void {
 			var ne:Event = new Event(Event.COMPLETE);
 			dispatchEvent(ne);
 		}
 
 		/*
-		protected function dispatchCompleteItemEvent(__queueItem:LoadingQueueItemInfo): void {
+		protected function dispatchCompleteItemEvent(__queueItem:LoadingQueueItemInfo):void {
 			var ne:Event = new LoadingQueueEvent(LoadingQueueEvent.COMPLETE_ITEM, this, __queueItem.targetObject);
 			dispatchEvent(ne);
 		}
@@ -235,7 +235,7 @@ package com.zehfernando.net {
 
 		// URLLoader
 
-		protected function onURLLoaderProgress(e:ProgressEvent): void {
+		protected function onURLLoaderProgress(e:ProgressEvent):void {
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
 			q.bytesLoaded = e.bytesLoaded;
 			q.bytesTotal = e.bytesTotal;
@@ -243,7 +243,7 @@ package com.zehfernando.net {
 			dispatchProgressEvent();
 		}
 
-		protected function onURLLoaderComplete(e:Event): void {
+		protected function onURLLoaderComplete(e:Event):void {
 			// Successfully loaded one item, remove it from the queue
 			//trace ("LoadingQueue.onURLLoaderComplete :: Object '" + e.target);
 
@@ -260,7 +260,7 @@ package com.zehfernando.net {
 			checkUnusedSlots();
 		}
 
-		protected function onURLLoaderIOError(e:IOErrorEvent): void {
+		protected function onURLLoaderIOError(e:IOErrorEvent):void {
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
 			//trace ("LoadingQueue :: onURLLoaderIOError :: Object '" + q.targetObject + "' has thrown an IOErrorEvent of " + e.text);
 
@@ -278,7 +278,7 @@ package com.zehfernando.net {
 
 		// VideoLoader
 
-		protected function onVideoLoaderProgress(e:ProgressEvent): void {
+		protected function onVideoLoaderProgress(e:ProgressEvent):void {
 			//Log.echo("current = " + currentLoaders.length + ", total = " + queue.length);
 
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
@@ -288,7 +288,7 @@ package com.zehfernando.net {
 			dispatchProgressEvent();
 		}
 
-		protected function onVideoLoaderComplete(e:Event): void {
+		protected function onVideoLoaderComplete(e:Event):void {
 			// Successfully loaded one item, remove it from the queue
 			//trace ("LoadingQueue.onURLLoaderComplete :: Object '" + e.target);
 
@@ -307,7 +307,7 @@ package com.zehfernando.net {
 			checkUnusedSlots();
 		}
 
-		protected function onVideoLoaderStreamNotFound(e:VideoLoaderEvent): void {
+		protected function onVideoLoaderStreamNotFound(e:VideoLoaderEvent):void {
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
 			//trace ("LoadingQueue :: onURLLoaderIOError :: Object '" + q.targetObject + "' has thrown an IOErrorEvent of " + e.text);
 
@@ -325,7 +325,7 @@ package com.zehfernando.net {
 
 		// ImageLoader
 
-		protected function onImageLoaderProgress(e:ProgressEvent): void {
+		protected function onImageLoaderProgress(e:ProgressEvent):void {
 			//Log.echo("current = " + currentLoaders.length + ", total = " + queue.length);
 
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
@@ -335,7 +335,7 @@ package com.zehfernando.net {
 			dispatchProgressEvent();
 		}
 
-		protected function onImageLoaderComplete(e:Event): void {
+		protected function onImageLoaderComplete(e:Event):void {
 			// Successfully loaded one item, remove it from the queue
 			//trace ("LoadingQueue.onURLLoaderComplete :: Object '" + e.target);
 
@@ -354,7 +354,7 @@ package com.zehfernando.net {
 			checkUnusedSlots();
 		}
 
-		protected function onImageLoaderIOError(e:VideoLoaderEvent): void {
+		protected function onImageLoaderIOError(e:VideoLoaderEvent):void {
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObject(e.target);
 			//trace ("LoadingQueue :: onURLLoaderIOError :: Object '" + q.targetObject + "' has thrown an IOErrorEvent of " + e.text);
 
@@ -372,7 +372,7 @@ package com.zehfernando.net {
 
 		// Loader
 
-		protected function onLoaderProgress(e:ProgressEvent): void {
+		protected function onLoaderProgress(e:ProgressEvent):void {
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObjectLoaderInfo(e.target as LoaderInfo);
 			q.bytesLoaded = e.bytesLoaded;
 			q.bytesTotal = e.bytesTotal;
@@ -380,7 +380,7 @@ package com.zehfernando.net {
 			dispatchProgressEvent();
 		}
 
-		protected function onLoaderComplete(e:Event): void {
+		protected function onLoaderComplete(e:Event):void {
 			// Successfully loaded one item, remove it from the queue
 			//trace ("LoadingQueue.onURLLoaderComplete :: Object '" + e.target);
 
@@ -397,7 +397,7 @@ package com.zehfernando.net {
 			checkUnusedSlots();
 		}
 
-		protected function onLoaderIOError(e:IOErrorEvent): void {
+		protected function onLoaderIOError(e:IOErrorEvent):void {
 			var q:LoadingQueueItemInfo = getQueueItemInfoForObjectLoaderInfo(e.target as LoaderInfo);
 			//trace ("LoadingQueue :: onURLLoaderIOError :: Object '" + q.targetObject + "' has thrown an IOErrorEvent of " + e.text);
 
@@ -417,7 +417,7 @@ package com.zehfernando.net {
 		// ================================================================================================================
 		// PUBLIC functions -----------------------------------------------------------------------------------------------
 
-		public function addURLLoader(__targetObject:URLLoader, __request:URLRequest, __simulatedBytesTotal:Number = 10000): void {
+		public function addURLLoader(__targetObject:URLLoader, __request:URLRequest, __simulatedBytesTotal:Number = 10000):void {
 			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
 			q.simulatedBytesTotal = __simulatedBytesTotal;
@@ -426,7 +426,7 @@ package com.zehfernando.net {
 			// TODO: add priority!
 		}
 
-		public function addLoader(__targetObject:Loader, __request:URLRequest, __simulatedBytesTotal:Number = 100000): void {
+		public function addLoader(__targetObject:Loader, __request:URLRequest, __simulatedBytesTotal:Number = 100000):void {
 			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
 			q.simulatedBytesTotal = __simulatedBytesTotal;
@@ -435,7 +435,7 @@ package com.zehfernando.net {
 			// TODO: add priority!
 		}
 
-		public function addImageLoader(__targetObject:ImageLoader, __request:URLRequest, __simulatedBytesTotal:Number = 100000): void {
+		public function addImageLoader(__targetObject:ImageLoader, __request:URLRequest, __simulatedBytesTotal:Number = 100000):void {
 			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
 			q.simulatedBytesTotal = __simulatedBytesTotal;
@@ -444,7 +444,7 @@ package com.zehfernando.net {
 			// TODO: add priority!
 		}
 
-		public function addVideoLoader(__targetObject:VideoLoader, __request:URLRequest, __simulatedBytesTotal:Number = 1000000): void {
+		public function addVideoLoader(__targetObject:VideoLoader, __request:URLRequest, __simulatedBytesTotal:Number = 1000000):void {
 			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
 			q.simulatedBytesTotal = __simulatedBytesTotal;
@@ -457,34 +457,34 @@ package com.zehfernando.net {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get slots(): Number {
+		public function get slots():Number {
 			return _slots;
 		}
-		public function set slots(__value:Number): void {
+		public function set slots(__value:Number):void {
 			if (_slots != __value) {
 				_slots = __value;
 				checkUnusedSlots();
 			}
 		}
 
-		public function get paused(): Boolean {
+		public function get paused():Boolean {
 			return _paused;
 		}
 
-		public function pause(): void {
+		public function pause():void {
 			 if (!_paused) {
 			 	_paused = true;
 			 }
 		}
 
-		public function resume(): void {
+		public function resume():void {
 			 if (_paused) {
 			 	_paused = false;
 			 	checkUnusedSlots();
 			 }
 		}
 
-		public function dispose(): void {
+		public function dispose():void {
 			pause();
 			queue = new Vector.<LoadingQueueItemInfo>();
 			currentLoaders = new Vector.<LoadingQueueItemInfo>();
@@ -519,7 +519,7 @@ class LoadingQueueItemInfo {
 	// ================================================================================================================
 	// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-	public function get simulatedBytesLoaded(): Number {
+	public function get simulatedBytesLoaded():Number {
 		return bytesTotal == 0 ? 0 : Math.round((bytesLoaded/bytesTotal) * simulatedBytesTotal);
 	}
 }

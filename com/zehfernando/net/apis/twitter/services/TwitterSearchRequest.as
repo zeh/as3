@@ -134,19 +134,19 @@ package com.zehfernando.net.apis.twitter.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onSecurityError(e:SecurityErrorEvent): void {
+		override protected function onSecurityError(e:SecurityErrorEvent):void {
 			//trace ("twitter --> onSecurityError");
 			super.onSecurityError(e);
 			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
 
-		override protected function onIOError(e:IOErrorEvent): void {
+		override protected function onIOError(e:IOErrorEvent):void {
 			//trace ("twitter --> onIOError");
 			super.onIOError(e);
 			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			//trace ("twitter --> onComplete");
 
 			var response:Object = JSON.decode(loader.data);

@@ -56,7 +56,7 @@ package com.zehfernando.net.apis.face.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			var response:Object = JSON.decode(loader.data);
 
 			_photos = FacePhoto.fromJSONObjectArray(response["photos"]);

@@ -79,7 +79,7 @@ package com.zehfernando.display.plugins.facebook {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function createDiv(): void {
+		protected function createDiv():void {
 			destroyDiv();
 
 			var js:XML;
@@ -113,7 +113,7 @@ package com.zehfernando.display.plugins.facebook {
 			applyDivOpacity();
 		}
 
-		protected function getDivContent(): String {
+		protected function getDivContent():String {
 			var str:String = "";
 
 			//str += '<script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script>';
@@ -135,7 +135,7 @@ package com.zehfernando.display.plugins.facebook {
 			// data-action="recommend" data-colorscheme="dark" data-font="lucida grande"></div>
 		}
 
-		protected function destroyDiv(): void {
+		protected function destroyDiv():void {
 			if (hasDiv) {
 				var js:XML;
 				/*FDT_IGNORE*/
@@ -154,7 +154,7 @@ package com.zehfernando.display.plugins.facebook {
 			}
 		}
 
-		protected function applyDivDimensions(): void {
+		protected function applyDivDimensions():void {
 
 			var p1:Point = localToGlobal(new Point(0, 0));
 			var p2:Point = localToGlobal(new Point(getWidth(), getHeight()));
@@ -165,25 +165,25 @@ package com.zehfernando.display.plugins.facebook {
 			setDivStyleProperty("height",(Math.round(p2.y) - Math.round(p1.y)) + "px"); // Proper rounding to absolute value
 		}
 
-		protected function applyDivOpacity(): void {
+		protected function applyDivOpacity():void {
 			setDivStyleProperty("visibility", visible ? "visible" : "hidden");
 			setDivStyleProperty("opacity", alpha.toString(10));
 			setDivStyleProperty("filter", "alpha(opacity=" + Math.round(alpha * 100) + ")");
 		}
 
-		protected function requestCreateDiv(): void {
+		protected function requestCreateDiv():void {
 			RenderUtils.addFunction(createDiv);
 		}
 
-		protected function requestApplyDivDimensions(): void {
+		protected function requestApplyDivDimensions():void {
 			RenderUtils.addFunction(applyDivDimensions);
 		}
 
-//		protected function requestApplyDivOpacity(): void {
+//		protected function requestApplyDivOpacity():void {
 //			RenderUtils.addFunction(applyDivOpacity);
 //		}
 
-		protected function setDivStyleProperty(__property:String, __value:String): void {
+		protected function setDivStyleProperty(__property:String, __value:String):void {
 
 			if (HTMLUtils.isJavaScriptAvailable && hasDiv) {
 
@@ -200,7 +200,7 @@ package com.zehfernando.display.plugins.facebook {
 			}
 		}
 
-		protected function getWidth(): Number {
+		protected function getWidth():Number {
 			var minWidth:Number = 0;
 			var maxWidth:Number = 9999;
 
@@ -211,7 +211,7 @@ package com.zehfernando.display.plugins.facebook {
 			return MathUtils.clamp(_desiredWidth, minWidth, maxWidth);
 		}
 
-		protected function getHeight(): Number {
+		protected function getHeight():Number {
 			var minHeight:Number = 0;
 			var maxHeight:Number = 9999;
 
@@ -225,17 +225,17 @@ package com.zehfernando.display.plugins.facebook {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onAddedToStage(e:Event): void {
+		protected function onAddedToStage(e:Event):void {
 			createDiv();
 			_stage = stage;
 			_stage.addEventListener(Event.RESIZE, onStageResize);
 		}
 
-		protected function onStageResize(e:Event): void {
+		protected function onStageResize(e:Event):void {
 			requestApplyDivDimensions();
 		}
 
-		protected function onRemovedFromStage(e:Event): void {
+		protected function onRemovedFromStage(e:Event):void {
 			_stage.removeEventListener(Event.RESIZE, onStageResize);
 			destroyDiv();
 		}
@@ -243,24 +243,24 @@ package com.zehfernando.display.plugins.facebook {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		override public function set x(__value:Number): void {
+		override public function set x(__value:Number):void {
 			if (super.x != __value) {
 				super.x = __value;
 				applyDivDimensions();
 			}
 		}
 
-		override public function set y(__value:Number): void {
+		override public function set y(__value:Number):void {
 			if (super.y != __value) {
 				super.y = __value;
 				applyDivDimensions();
 			}
 		}
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return getWidth();
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			if (_desiredWidth != __value) {
 				_desiredWidth = __value;
 				requestCreateDiv();
@@ -268,10 +268,10 @@ package com.zehfernando.display.plugins.facebook {
 			}
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return getHeight();
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			if (_desiredHeight != __value) {
 				_desiredHeight = __value;
 				requestCreateDiv();
@@ -279,24 +279,24 @@ package com.zehfernando.display.plugins.facebook {
 			}
 		}
 
-		override public function set alpha(__value:Number): void {
+		override public function set alpha(__value:Number):void {
 			if (super.alpha != __value) {
 				super.alpha = __value;
 				applyDivOpacity();
 			}
 		}
 
-		override public function set visible(__value:Boolean): void {
+		override public function set visible(__value:Boolean):void {
 			if (super.visible != __value) {
 				super.visible = __value;
 				applyDivOpacity();
 			}
 		}
 
-		public function get layout(): String {
+		public function get layout():String {
 			return _layout;
 		}
-		public function set layout(__value:String): void {
+		public function set layout(__value:String):void {
 			if (_layout != __value) {
 				_layout = __value;
 				requestCreateDiv();

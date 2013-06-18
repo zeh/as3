@@ -33,7 +33,7 @@ package com.zehfernando.data.types {
 		/**
 		 * Converts this color to an integer number in the AARRGGBB format (for example: 0xff000000 for opaque black).
 		 */
-		public function toAARRGGBB(): Number {
+		public function toAARRGGBB():Number {
 			// Returns this color as a number in the 0xAARRGGBB format
 			return Math.round(_a * 255) << 24 | toRRGGBB();
 		}
@@ -41,7 +41,7 @@ package com.zehfernando.data.types {
 		/**
 		 * Converts this color to an integer number in the RRGGBB format, ignoring its alpha (for example: 0x000000 for black).
 		 */
-		public function toRRGGBB(): Number {
+		public function toRRGGBB():Number {
 			// Returns this color as a number in the 0xRRGGBB format
 			return Math.round(_r * 255) << 16 | Math.round(_g * 255) << 8 | Math.round(_b * 255);
 		}
@@ -80,7 +80,7 @@ package com.zehfernando.data.types {
 		 * Converts this color to a readable string.
 		 * @return	A string describing this color.
 		 */
-		public function toString() : String {
+		public function toString() :String {
 			var txt:String = "";
 			txt += "[";
 			txt += "r="+_r.toString(10);
@@ -108,19 +108,19 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		protected static function getRFromNumber(__color:Number, __max:Number): Number {
+		protected static function getRFromNumber(__color:Number, __max:Number):Number {
 			return ((__color >> 16 & 0xff) / 255) * __max;
 		}
 
-		protected static function getGFromNumber(__color:Number, __max:Number): Number {
+		protected static function getGFromNumber(__color:Number, __max:Number):Number {
 			return ((__color >> 8 & 0xff) / 255) * __max;
 		}
 
-		protected static function getBFromNumber(__color:Number, __max:Number): Number {
+		protected static function getBFromNumber(__color:Number, __max:Number):Number {
 			return ((__color & 0xff) / 255) * __max;
 		}
 
-		protected static function getAFromNumber(__color:Number, __max:Number): Number {
+		protected static function getAFromNumber(__color:Number, __max:Number):Number {
 			return ((__color >> 24 & 0xff) / 255) * __max;
 		}
 
@@ -259,7 +259,7 @@ package com.zehfernando.data.types {
 			return newColor;
 		}
 
-		public static function interpolateRRGGBB(__c1:int, __c2:int, f:Number): int {
+		public static function interpolateRRGGBB(__c1:int, __c2:int, f:Number):int {
 			return Color.interpolate(Color.fromRRGGBB(__c1), Color.fromRRGGBB(__c2), f).toRRGGBB();
 		}
 
@@ -309,7 +309,7 @@ package com.zehfernando.data.types {
 		}
 		*/
 
-		public static function getColorFunctionNumber(__value:String, __max:Number): Number {
+		public static function getColorFunctionNumber(__value:String, __max:Number):Number {
 			// Based on a HTML/CSS string value, returns the correct color number (0-255)
 			// Examples:
 			// 0 -> 0
@@ -332,7 +332,7 @@ package com.zehfernando.data.types {
 			return MathUtils.clamp(finalValue) * __max;
 		}
 
-		protected function setHSV(__h:Number, __s:Number, __v:Number): void {
+		protected function setHSV(__h:Number, __s:Number, __v:Number):void {
 			//var hi:Number = Math.floor(__h/60) % 6;
 			var hi:Number = MathUtils.rangeMod(Math.floor(__h/60), 0, 6);
 			var f:Number = __h/60 - Math.floor(__h/60);
@@ -376,7 +376,7 @@ package com.zehfernando.data.types {
 		}
 
 		/*
-		protected function setHSL(__h:Number, __s:Number, __l:Number): void {
+		protected function setHSL(__h:Number, __s:Number, __l:Number):void {
 
 			var q:Number = __l < 0.5 ? __l * (1+__s) : __l + __s - (__l * __s);
 			var p:Number = 2 * __l - q;
@@ -391,7 +391,7 @@ package com.zehfernando.data.types {
 			_b = calculateHSLComponent(tb, p, q) * 255;
 		}
 
-		protected function calculateHSLComponent(c:Number, p:Number, q:Number): Number {
+		protected function calculateHSLComponent(c:Number, p:Number, q:Number):Number {
 			c = c < 0 ? c+1 : c > 1 ? c - 1 : c;
 			if (c < 1/6) {
 				return p + ((q - p) * 6 * c);
@@ -422,7 +422,7 @@ package com.zehfernando.data.types {
 		public function get a(): Number				{ return _a; }
 		public function set a(__value:Number):void	{ _a = MathUtils.clamp(__value, 0, 255); }
 
-		public function get h(): Number {
+		public function get h():Number {
 			// Return Hue (0-360)
 			var max:Number = Math.max(_r, _g, _b);
 			var min:Number = Math.min(_r, _g, _b);
@@ -436,13 +436,13 @@ package com.zehfernando.data.types {
 				return 60 * ((_r - _g) / (max - min)) + 240;
 			}
 		}
-		public function set h(__value:Number): void {
+		public function set h(__value:Number):void {
 			// Set Hue (0-360)
 			_h = MathUtils.rangeMod(__value, 0, 360);
 			setHSV(_h, s, v);
 		}
 
-		public function get s(): Number {
+		public function get s():Number {
 			// Return HSV-compliant Saturation (0-1)
 			var max:Number = Math.max(_r, _g, _b);
 			var min:Number = Math.min(_r, _g, _b);
@@ -452,25 +452,25 @@ package com.zehfernando.data.types {
 				return 1 - (min/max);
 			}
 		}
-		public function set s(__value:Number): void {
+		public function set s(__value:Number):void {
 			// Set HSV-style saturation (0-1)
 			setHSV(h, MathUtils.clamp(__value), v);
 		}
 
-		public function get v(): Number {
+		public function get v():Number {
 			// Return Value (0-1)
 			var max:Number = Math.max(_r, _g, _b);
 			return max;
 		}
 
-		public function set v(__value:Number): void {
+		public function set v(__value:Number):void {
 			// Set lightness (0-1)
 			setHSV(h, s, MathUtils.clamp(__value));
 		}
 
 		/*
 		HSL:
-		public function get h(): Number {
+		public function get h():Number {
 			// Return Hue (0-360)
 			var __r:Number = MathUtils.map(_r, 0, 255);
 			var __g:Number = MathUtils.map(_g, 0, 255);
@@ -487,13 +487,13 @@ package com.zehfernando.data.types {
 				return 60 * ((__r - __g) / (max - min)) + 240;
 			}
 		}
-		public function set h(__value:Number): void {
+		public function set h(__value:Number):void {
 			// Set Hue (0-360)
 			_h = MathUtils.roundClamp(__value, 0, 360);
 			setHSL(_h, s, l);
 		}
 
-		public function get s(): Number {
+		public function get s():Number {
 			// Return HSL-style Saturation (0-1)
 			var __r:Number = MathUtils.map(_r, 0, 255);
 			var __g:Number = MathUtils.map(_g, 0, 255);
@@ -509,12 +509,12 @@ package com.zehfernando.data.types {
 				return (max-min) / (2 - (2 * l));
 			}
 		}
-		public function set s(__value:Number): void {
+		public function set s(__value:Number):void {
 			// Set HSL-style saturation (0-1)
 			setHSL(h, MathUtils.clamp(__value), l);
 		}
 
-		public function get l(): Number {
+		public function get l():Number {
 			// Return Lightness (0-1)
 			var __r:Number = MathUtils.map(_r, 0, 255);
 			var __g:Number = MathUtils.map(_g, 0, 255);
@@ -524,7 +524,7 @@ package com.zehfernando.data.types {
 			return (max+min) / 2;
 		}
 
-		public function set l(__value:Number): void {
+		public function set l(__value:Number):void {
 			// Set lightness (0-1)
 			setHSL(h, s, MathUtils.clamp(__value));
 		}

@@ -59,7 +59,7 @@ package com.zehfernando.display.debug {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function redraw(): void {
+		public function redraw():void {
 			background.width = _width;
 			background.height = _height;
 
@@ -77,24 +77,24 @@ package com.zehfernando.display.debug {
 		// TODO: use invalidate
 		// The repetitive redraws don't look good but impact in rendering is virtually none
 
-		override public function get width(): Number { return _width; }
-		override public function set width(__value:Number): void {
+		override public function get width():Number { return _width; }
+		override public function set width(__value:Number):void {
 			if (_width != __value) {
 				_width = __value;
 				redraw();
 			}
 		}
 
-		override public function get height(): Number { return _height; }
-		override public function set height(__value:Number): void {
+		override public function get height():Number { return _height; }
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				redraw();
 			}
 		}
 
-		public function get text(): String { return _text; }
-		public function set text(__value:String): void {
+		public function get text():String { return _text; }
+		public function set text(__value:String):void {
 			if (_text != __value) {
 				_text = __value;
 				redraw();

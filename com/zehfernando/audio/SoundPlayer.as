@@ -28,7 +28,7 @@ package com.zehfernando.audio {
 			if (!Boolean(sounds)) sounds = new Vector.<SoundItemInfo>();
 		}
 
-		protected static function getSoundIndex(__class:Class): Number {
+		protected static function getSoundIndex(__class:Class):Number {
 			init();
 			for (var i:Number = 0; i < sounds.length; i++) {
 				if (sounds[i].isOfType(__class)) return i;
@@ -145,7 +145,7 @@ class SoundItemInfo {
 	// ================================================================================================================
 	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-	public function isOfType(__soundClass:Class): Boolean {
+	public function isOfType(__soundClass:Class):Boolean {
 		//return _sound is __soundClass;
 		return _class == __soundClass;
 	}
@@ -189,7 +189,7 @@ class SoundItemInfo {
 	// ================================================================================================================
 	// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-	public function get volume(): Number {
+	public function get volume():Number {
 		return _volume;
 	}
 	public function set volume(__value:Number):void {
@@ -200,7 +200,7 @@ class SoundItemInfo {
 		}
 	}
 
-	public function get pan(): Number {
+	public function get pan():Number {
 		return _pan;
 	}
 	public function set pan(__value:Number):void {

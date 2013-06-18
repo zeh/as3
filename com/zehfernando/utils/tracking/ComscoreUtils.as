@@ -39,7 +39,7 @@ package com.zehfernando.utils.tracking {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected static function onLoaderComplete(e:Event): void {
+		protected static function onLoaderComplete(e:Event):void {
 			// Loaded this loader, so remove from list
 			var loaderIndex:int = loaders.indexOf(e.target);
 			loaders[loaderIndex].removeEventListener(Event.COMPLETE, onLoaderComplete);
@@ -49,7 +49,7 @@ package com.zehfernando.utils.tracking {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		public static function trackURL(__url:String): void {
+		public static function trackURL(__url:String):void {
 			if (_verbose) log ("[" + __url + "]");
 			if (!_simulated && Boolean(__url)) {
 				var loader:Loader = new Loader();
@@ -63,20 +63,20 @@ package com.zehfernando.utils.tracking {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public static function get simulated(): Boolean {
+		public static function get simulated():Boolean {
 			return _simulated;
 		}
-		public static function set simulated(__value:Boolean): void {
+		public static function set simulated(__value:Boolean):void {
 			if (_simulated != __value) {
 				_simulated = __value;
 				log("simulated is " + _simulated);
 			}
 		}
 
-		public static function get verbose(): Boolean {
+		public static function get verbose():Boolean {
 			return _verbose;
 		}
-		public static function set verbose(__value:Boolean): void {
+		public static function set verbose(__value:Boolean):void {
 			if (_verbose != __value) {
 				_verbose = __value;
 				log("verbose is " + _verbose);

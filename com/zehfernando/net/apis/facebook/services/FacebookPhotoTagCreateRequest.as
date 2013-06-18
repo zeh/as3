@@ -56,7 +56,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			//var response:Object = JSON.decode(loader.data);
 
 			super.onComplete(e);
@@ -75,31 +75,31 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Parameters
 
-		public function get userId(): String {
+		public function get userId():String {
 			return _userId;
 		}
-		public function set userId(__value:String): void {
+		public function set userId(__value:String):void {
 			_userId = __value;
 		}
 
-		public function get photoId(): String {
+		public function get photoId():String {
 			return _photoId;
 		}
-		public function set photoId(__value:String): void {
+		public function set photoId(__value:String):void {
 			_photoId = __value;
 		}
 
-		public function get x(): Number {
+		public function get x():Number {
 			return _x;
 		}
-		public function set x(__value:Number): void {
+		public function set x(__value:Number):void {
 			_x = __value;
 		}
 
-		public function get y(): Number {
+		public function get y():Number {
 			return _y;
 		}
-		public function set y(__value:Number): void {
+		public function set y(__value:Number):void {
 			_y = __value;
 		}
 	}

@@ -57,7 +57,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			var response:Object = JSON.decode(loader.data);
 
 			_friends = FacebookUser.fromJSONObjectArray(response["data"]);

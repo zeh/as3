@@ -77,7 +77,7 @@ package com.zehfernando.display.plugins.facebook {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function createIFrame(): void {
+		protected function createIFrame():void {
 			destroyIFrame();
 
 			var js:XML;
@@ -104,7 +104,7 @@ package com.zehfernando.display.plugins.facebook {
 			applyIFrameOpacity();
 		}
 
-		protected function getIFrameURL(): String {
+		protected function getIFrameURL():String {
 			// Creates the URL with the given options
 
 			var url:String = "";
@@ -158,7 +158,7 @@ package com.zehfernando.display.plugins.facebook {
 			return url;
 		}
 
-		protected function destroyIFrame(): void {
+		protected function destroyIFrame():void {
 			if (hasIFrame) {
 				var js:XML;
 				/*FDT_IGNORE*/
@@ -177,7 +177,7 @@ package com.zehfernando.display.plugins.facebook {
 			}
 		}
 
-		protected function applyIFrameDimensions(): void {
+		protected function applyIFrameDimensions():void {
 
 			var p1:Point = localToGlobal(new Point(0, 0));
 			var p2:Point = localToGlobal(new Point(getWidth(), getHeight()));
@@ -188,25 +188,25 @@ package com.zehfernando.display.plugins.facebook {
 			setIFrameStyleProperty("height",(Math.round(p2.y) - Math.round(p1.y)) + "px"); // Proper rounding to absolute value
 		}
 
-		protected function applyIFrameOpacity(): void {
+		protected function applyIFrameOpacity():void {
 			setIFrameStyleProperty("visibility", visible ? "visible" : "hidden");
 			setIFrameStyleProperty("opacity", alpha.toString(10));
 			setIFrameStyleProperty("filter", "alpha(opacity=" + Math.round(alpha * 100) + ")");
 		}
 
-		protected function requestCreateIFrame(): void {
+		protected function requestCreateIFrame():void {
 			RenderUtils.addFunction(createIFrame);
 		}
 
-		protected function requestApplyIFrameDimensions(): void {
+		protected function requestApplyIFrameDimensions():void {
 			RenderUtils.addFunction(applyIFrameDimensions);
 		}
 
-//		protected function requestApplyIFrameOpacity(): void {
+//		protected function requestApplyIFrameOpacity():void {
 //			RenderUtils.addFunction(applyIFrameOpacity);
 //		}
 
-		protected function setIFrameStyleProperty(__property:String, __value:String): void {
+		protected function setIFrameStyleProperty(__property:String, __value:String):void {
 
 			if (HTMLUtils.isJavaScriptAvailable && hasIFrame) {
 
@@ -223,7 +223,7 @@ package com.zehfernando.display.plugins.facebook {
 			}
 		}
 
-		protected function getWidth(): Number {
+		protected function getWidth():Number {
 			var minWidth:Number = 0;
 			var maxWidth:Number = 9999;
 
@@ -234,7 +234,7 @@ package com.zehfernando.display.plugins.facebook {
 			return MathUtils.clamp(_desiredWidth, minWidth, maxWidth);
 		}
 
-		protected function getHeight(): Number {
+		protected function getHeight():Number {
 			var minHeight:Number = 0;
 			var maxHeight:Number = 9999;
 
@@ -248,17 +248,17 @@ package com.zehfernando.display.plugins.facebook {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onAddedToStage(e:Event): void {
+		protected function onAddedToStage(e:Event):void {
 			createIFrame();
 			_stage = stage;
 			_stage.addEventListener(Event.RESIZE, onStageResize);
 		}
 
-		protected function onStageResize(e:Event): void {
+		protected function onStageResize(e:Event):void {
 			requestApplyIFrameDimensions();
 		}
 
-		protected function onRemovedFromStage(e:Event): void {
+		protected function onRemovedFromStage(e:Event):void {
 			_stage.removeEventListener(Event.RESIZE, onStageResize);
 			destroyIFrame();
 		}
@@ -266,24 +266,24 @@ package com.zehfernando.display.plugins.facebook {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		override public function set x(__value:Number): void {
+		override public function set x(__value:Number):void {
 			if (super.x != __value) {
 				super.x = __value;
 				applyIFrameDimensions();
 			}
 		}
 
-		override public function set y(__value:Number): void {
+		override public function set y(__value:Number):void {
 			if (super.y != __value) {
 				super.y = __value;
 				applyIFrameDimensions();
 			}
 		}
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return getWidth();
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			if (_desiredWidth != __value) {
 				_desiredWidth = __value;
 				requestCreateIFrame();
@@ -291,10 +291,10 @@ package com.zehfernando.display.plugins.facebook {
 			}
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return getHeight();
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			if (_desiredHeight != __value) {
 				_desiredHeight = __value;
 				requestCreateIFrame();
@@ -302,24 +302,24 @@ package com.zehfernando.display.plugins.facebook {
 			}
 		}
 
-		override public function set alpha(__value:Number): void {
+		override public function set alpha(__value:Number):void {
 			if (super.alpha != __value) {
 				super.alpha = __value;
 				applyIFrameOpacity();
 			}
 		}
 
-		override public function set visible(__value:Boolean): void {
+		override public function set visible(__value:Boolean):void {
 			if (super.visible != __value) {
 				super.visible = __value;
 				applyIFrameOpacity();
 			}
 		}
 
-		public function get layout(): String {
+		public function get layout():String {
 			return _layout;
 		}
-		public function set layout(__value:String): void {
+		public function set layout(__value:String):void {
 			if (_layout != __value) {
 				_layout = __value;
 				requestCreateIFrame();

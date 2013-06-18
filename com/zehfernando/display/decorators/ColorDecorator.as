@@ -64,11 +64,11 @@ package com.zehfernando.display.decorators {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function apply(): void {
+		override protected function apply():void {
 			RenderUtils.addFunction(doVisualUpdate);
 		}
 
-		protected function doVisualUpdate(): void {
+		protected function doVisualUpdate():void {
 		 	// Create empty maytix
 		 	var mtx:Array = [
 		 		1,0,0,0,0,
@@ -108,7 +108,7 @@ package com.zehfernando.display.decorators {
 			//super.filters = newFilters.concat(_filters);
 		}
 
-		protected function updateSaturationMatrix(): void {
+		protected function updateSaturationMatrix():void {
 			// Create the pre-calculated saturation matrix
 
 			var nc:Number = 1-_saturation;
@@ -126,7 +126,7 @@ package com.zehfernando.display.decorators {
 			apply();
 		}
 
-		protected function updateContrastMatrix(): void {
+		protected function updateContrastMatrix():void {
 			// Create the pre-calculated contrast matrix
 
 			var co:Number = 128 * (1-_contrast);
@@ -141,7 +141,7 @@ package com.zehfernando.display.decorators {
 			apply();
 		}
 
-		protected function updateBrightnessMatrix(): void {
+		protected function updateBrightnessMatrix():void {
 			// Create the pre-calculated brightness matrix
 
 			var co:Number = 255 * _brightness;
@@ -156,7 +156,7 @@ package com.zehfernando.display.decorators {
 			apply();
 		}
 
-		protected function updateExposureMatrix(): void {
+		protected function updateExposureMatrix():void {
 			// Create the pre-calculated exposture matrix
 
 			exposureMatrix = [
@@ -169,7 +169,7 @@ package com.zehfernando.display.decorators {
 			apply();
 		}
 
-		protected function updateHueMatrix(): void {
+		protected function updateHueMatrix():void {
 			// Create the pre-calculated hue matrix
 
 			var hAngle:Number = _hue / 180 * Math.PI;
@@ -190,42 +190,42 @@ package com.zehfernando.display.decorators {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get saturation(): Number {
+		public function get saturation():Number {
 			return _saturation;
 		}
-		public function set saturation(__value:Number): void {
+		public function set saturation(__value:Number):void {
 			_saturation = __value;
 			updateSaturationMatrix();
 		}
 
-		public function get contrast(): Number {
+		public function get contrast():Number {
 			return _contrast;
 		}
-		public function set contrast(__value:Number): void {
+		public function set contrast(__value:Number):void {
 			_contrast = __value;
 			updateContrastMatrix();
 		}
 
-		public function get brightness(): Number {
+		public function get brightness():Number {
 			return _brightness;
 		}
-		public function set brightness(__value:Number): void {
+		public function set brightness(__value:Number):void {
 			_brightness = __value;
 			updateBrightnessMatrix();
 		}
 
-		public function get exposure(): Number {
+		public function get exposure():Number {
 			return _exposure;
 		}
-		public function set exposure(__value:Number): void {
+		public function set exposure(__value:Number):void {
 			_exposure = __value;
 			updateExposureMatrix();
 		}
 
-		public function get hue(): Number {
+		public function get hue():Number {
 			return _hue;
 		}
-		public function set hue(__value:Number): void {
+		public function set hue(__value:Number):void {
 			_hue = __value;
 			updateHueMatrix();
 		}
@@ -233,7 +233,7 @@ package com.zehfernando.display.decorators {
 //		override public function get filters(): Array {
 //			return _filters;
 //		}
-//		override public function set filters(__value:Array): void {
+//		override public function set filters(__value:Array):void {
 //			_filters = __value;
 //			requestVisualUpdate();
 //		}

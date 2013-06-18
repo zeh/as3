@@ -39,17 +39,17 @@ package com.zehfernando.net.apis.youtube.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onSecurityError(e:SecurityErrorEvent): void {
+		override protected function onSecurityError(e:SecurityErrorEvent):void {
 			super.onSecurityError(e);
 			dispatchEvent(new YouTubeServiceEvent(YouTubeServiceEvent.ERROR));
 		}
 
-		override protected function onIOError(e:IOErrorEvent): void {
+		override protected function onIOError(e:IOErrorEvent):void {
 			super.onIOError(e);
 			dispatchEvent(new YouTubeServiceEvent(YouTubeServiceEvent.ERROR));
 		}
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			_video = YouTubeVideo.fromXML(new XML(loader.data));
 
 			super.onComplete(e);

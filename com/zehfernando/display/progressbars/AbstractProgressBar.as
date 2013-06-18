@@ -30,7 +30,7 @@ package com.zehfernando.display.progressbars {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function setAmount(__value:Number, __immediate:Boolean = false): void {
+		protected function setAmount(__value:Number, __immediate:Boolean = false):void {
 			if (isNaN(__value)) __value = 0;
 
 			if (__immediate) {
@@ -41,7 +41,7 @@ package com.zehfernando.display.progressbars {
 			}
 		}
 
-		protected function redrawAmount(): void {
+		protected function redrawAmount():void {
 			// Redraws graphics to represent the correct amount
 			throw new Error("AbstractLoader :: ERROR: redrawAmount() is not overridden!");
 		}
@@ -50,16 +50,16 @@ package com.zehfernando.display.progressbars {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onAddedToStage(e:Event): void {
+		protected function onAddedToStage(e:Event):void {
 			addEventListener(Event.ENTER_FRAME, onEnterFrameDraw, false, 0, true);
 			redrawAmount();
 		}
 
-		protected function onRemovedFromStage(e:Event): void {
+		protected function onRemovedFromStage(e:Event):void {
 			removeEventListener(Event.ENTER_FRAME, onEnterFrameDraw);
 		}
 
-		protected function onEnterFrameDraw(e:Event): void {
+		protected function onEnterFrameDraw(e:Event):void {
 			redrawAmount();
 		}
 
@@ -67,7 +67,7 @@ package com.zehfernando.display.progressbars {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function setAmountImmediately(__f:Number): void {
+		public function setAmountImmediately(__f:Number):void {
 			setAmount(__f, true);
 		}
 
@@ -75,17 +75,17 @@ package com.zehfernando.display.progressbars {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get amount(): Number {
+		public function get amount():Number {
 			return _value.target;
 		}
 
-		public function set amount(__value:Number): void {
+		public function set amount(__value:Number):void {
 			if (_value.target != __value) {
 				setAmount(__value);
 			}
 		}
 
-		public function get visibleAmount(): Number {
+		public function get visibleAmount():Number {
 			return _value.current;
 		}
 	}

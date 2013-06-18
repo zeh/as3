@@ -43,7 +43,7 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		private function onOpeningInternal(e:NavigableSpriteEvent): void {
+		private function onOpeningInternal(e:NavigableSpriteEvent):void {
 			// This NavigableSprite os opening, therefore, set its currenrt location
 			if (_myLocation == "/" || _stub == "default-area") _myLocation = "";
 		}
@@ -72,19 +72,19 @@ package com.zehfernando.navigation {
 			return null;
 		}
 
-		protected function dispatchOpeningEvent(): void {
+		protected function dispatchOpeningEvent():void {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.OPENING));
 		}
 
-		protected function dispatchOpenedEvent(): void {
+		protected function dispatchOpenedEvent():void {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.OPENED));
 		}
 
-		protected function dispatchClosingEvent(): void {
+		protected function dispatchClosingEvent():void {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.CLOSING));
 		}
 
-		protected function dispatchClosedEvent(): void {
+		protected function dispatchClosedEvent():void {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.CLOSED));
 		}
 
@@ -95,7 +95,7 @@ package com.zehfernando.navigation {
 			return null;
 		}
 
-		protected function destroyChild(__navigableSprite:NavigableSprite): void {
+		protected function destroyChild(__navigableSprite:NavigableSprite):void {
 			// Removes a navigable sub-area as it's not needed anymore
 			__navigableSprite.removeEventListener(NavigableSpriteEvent.OPENING, onOpeningChild);
 			__navigableSprite.removeEventListener(NavigableSpriteEvent.OPENED, onOpenedChild);
@@ -127,19 +127,19 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onOpeningChild(e:NavigableSpriteEvent): void {
+		protected function onOpeningChild(e:NavigableSpriteEvent):void {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.OPENING_CHILD));
 		}
 
-		protected function onOpenedChild(e:NavigableSpriteEvent): void {
+		protected function onOpenedChild(e:NavigableSpriteEvent):void {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.OPENED_CHILD));
 		}
 
-		protected function onClosingChild(e:NavigableSpriteEvent): void {
+		protected function onClosingChild(e:NavigableSpriteEvent):void {
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.CLOSING_CHILD));
 		}
 
-		protected function onClosedChild(e:NavigableSpriteEvent): void {
+		protected function onClosedChild(e:NavigableSpriteEvent):void {
 			if (_destroyChildrenAfterClosing) destroyChild(e.target as NavigableSprite);
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.CLOSED_CHILD));
 		}
@@ -147,7 +147,7 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function open(__immediate:Boolean = false, __isLast:Boolean = false): void {
+		public function open(__immediate:Boolean = false, __isLast:Boolean = false):void {
 			if (__immediate) {
 				dispatchOpeningEvent();
 				dispatchOpenedEvent();
@@ -158,7 +158,7 @@ package com.zehfernando.navigation {
 			}
 		}
 
-		public function finishedExecutionAsCurrentArea(__immediate:Boolean = false, __fake:Boolean = false): void {
+		public function finishedExecutionAsCurrentArea(__immediate:Boolean = false, __fake:Boolean = false):void {
 			// Navigation execution has finished, and this is the current area!
 		}
 
@@ -166,7 +166,7 @@ package com.zehfernando.navigation {
 			// Disposes of this (called when the parent's _destroyChildrenAfterClosing is set to true)
 		}
 
-		public function close(__immediate:Boolean = false, __isLast:Boolean = false): void {
+		public function close(__immediate:Boolean = false, __isLast:Boolean = false):void {
 			if (__immediate) {
 				dispatchClosingEvent();
 				dispatchClosedEvent();
@@ -177,35 +177,35 @@ package com.zehfernando.navigation {
 			}
 		}
 
-		public function requestPermissionToPreOpenChild(__stub:String, __furtherChildren:int, __immediate:Boolean = false): void {
+		public function requestPermissionToPreOpenChild(__stub:String, __furtherChildren:int, __immediate:Boolean = false):void {
 			// Requests permission to PRE-open a child sprite (meaning instantiate it if it doesn't exist)
 			// This usually should be immediate, but if a parent needs to close or hide something prior to showing a
 			// child, it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_PRE_OPEN_CHILD));
 		}
 
-		public function requestPermissionToOpenChild(__child:NavigableSprite, __furtherChildren:int, __immediate:Boolean = false): void {
+		public function requestPermissionToOpenChild(__child:NavigableSprite, __furtherChildren:int, __immediate:Boolean = false):void {
 			// Requests permission to OPEN a child sprite (meaning call open() on it)
 			// This usually should be immediate, but if a parent needs to close or hide something prior to showing a
 			// child, it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_OPEN_CHILD));
 		}
 
-		public function requestPermissionToCloseChild(__child:NavigableSprite, __furtherChildren:int, __immediate:Boolean = false): void {
+		public function requestPermissionToCloseChild(__child:NavigableSprite, __furtherChildren:int, __immediate:Boolean = false):void {
 			// Requests permission to CLOSE a child sprite (meaning call close() on it)
 			// This usually should be immediate, but if a parent needs to close or hide something prior to closing a
 			// child, it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD));
 		}
 
-		public function requestPermissionToOpen(__furtherChildren:int, __immediate:Boolean = false): void {
+		public function requestPermissionToOpen(__furtherChildren:int, __immediate:Boolean = false):void {
 			// Requests permission to open THIS sprite (meaning call open() on it)
 			// This usually should be immediate, but if a sprite needs to close or hide something prior to showing itself,
 			// it must do so and only then dispatch the permission
 			dispatchEvent(new NavigableSpriteEvent(NavigableSpriteEvent.ALLOWED_TO_OPEN));
 		}
 
-		public function requestPermissionToClose(__furtherChildren:int, __immediate:Boolean = false): void {
+		public function requestPermissionToClose(__furtherChildren:int, __immediate:Boolean = false):void {
 			// Requests permission to close THIS sprite (meaning call close() on it)
 			// This usually should be immediate, but if a sprite needs to close or hide something prior to showing itself,
 			// it must do so and only then dispatch the permission
@@ -270,7 +270,7 @@ package com.zehfernando.navigation {
 			return null;
 		}
 
-		public function requestOpenChildArea(__stub:String): void {
+		public function requestOpenChildArea(__stub:String):void {
 			SpriteNavigator.setLocation(_myLocation + "/" + __stub);
 		}
 
@@ -278,12 +278,12 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get title(): String {
+		public function get title():String {
 			// Returns the title of this sprite
 			return _title;
 		}
 
-		public function get stub(): String {
+		public function get stub():String {
 			return _stub;
 		}
 
@@ -291,11 +291,11 @@ package com.zehfernando.navigation {
 			return _myLocation;
 		}
 
-		public function set location(__value:String): void {
+		public function set location(__value:String):void {
 			_myLocation = __value;
 		}
 
-//		public function canSwitchChildren(): Boolean {
+//		public function canSwitchChildren():Boolean {
 //			return _canSwitchChildren;
 //		}
 	}
@@ -332,14 +332,14 @@ class NavigableMovie extends MovieClip {
 	// ================================================================================================================
 	// EVENT functions ------------------------------------------------------------------------------------------------
 
-	public function onResize(): Void {
+	public function onResize():void {
 	}
 
 
 	// ================================================================================================================
 	// INSTANCE functions ---------------------------------------------------------------------------------------------
 
-	public function getTitle(): String {
+	public function getTitle():String {
 		// Retorna um texto que corresponde a este movieclip specífico
 		return "Default NavigableMovie";
 	}
@@ -363,7 +363,7 @@ class NavigableMovie extends MovieClip {
 //		return this;
 //	}
 
-	public function hide(): Void {
+	public function hide():void {
 		// Esconde este movie
 //		trace ("["+this+"] hide");
 		Tweener.addTween(this, {_alpha:0, time:0.3, transition:"linear", onStart:onPreHide, onComplete:onPostHide});
@@ -371,7 +371,7 @@ class NavigableMovie extends MovieClip {
 //		MovieNavigator.executeNextCommand();
 	}
 
-	public function show(): Void {
+	public function show():void {
 		// Mostra este movie
 //		trace ("["+this+"] show");
 		Tweener.addTween(this, {_alpha:100, time:0.3, transition:"linear", onStart:onPreShow, onComplete:onPostShow});
@@ -382,24 +382,24 @@ class NavigableMovie extends MovieClip {
 	// ================================================================================================================
 	// EVENT functions ------------------------------------------------------------------------------------------------
 
-	private function onPreShow(): Void {
+	private function onPreShow():void {
 		// Função rodada antes de mostrar
 		_visible = true;
 		_myLocation = MovieNavigator.getLocation();
 		Stage.addListener(this);
 	}
 
-	private function onPostShow(): Void {
+	private function onPostShow():void {
 		// Função rodada depois de mostrar
 //		trace ("NavigableMovie :: SHOW MovieNavigator.executeNextCommand");
 		MovieNavigator.executeNextCommand();
 	}
 
-	private function onPreHide(): Void {
+	private function onPreHide():void {
 		// Função rodada antes de esconder
 	}
 
-	private function onPostHide(): Void {
+	private function onPostHide():void {
 		// Função rodada depois de esconder
 //		trace ("NavigableMovie :: HIDE MovieNavigator.executeNextCommand");
 		Stage.removeListener(this);

@@ -32,7 +32,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function cancelGetYouTubeInfo(): void {
+		protected function cancelGetYouTubeInfo():void {
 			if (_isGettingYouTubeInfo) {
 				videoInfoRequest.removeEventListener(YouTubeServiceEvent.COMPLETE, onLoadVideoInfoComplete);
 				videoInfoRequest.removeEventListener(YouTubeServiceEvent.ERROR, onLoadVideoInfoError);
@@ -44,7 +44,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onLoadVideoInfoComplete(e:YouTubeServiceEvent): void {
+		protected function onLoadVideoInfoComplete(e:YouTubeServiceEvent):void {
 			videoInfo = (e.target as YouTubeVideoInfoRequest).video;
 
 			cancelGetYouTubeInfo();
@@ -54,7 +54,7 @@ package com.zehfernando.display.containers {
 			//super.load(videoInfo.getHighestResolutionThumbnailURL());
 		}
 
-		protected function onLoadVideoInfoError(e:YouTubeServiceEvent): void {
+		protected function onLoadVideoInfoError(e:YouTubeServiceEvent):void {
 			cancelGetYouTubeInfo();
 
 			trace("YouTubeImageContainer :: Error when trying to load image info for " + _youTubeID);

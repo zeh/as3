@@ -57,31 +57,31 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function redrawWidth(): void {
+		override protected function redrawWidth():void {
 			createBufferBitmap();
 			createBitmap();
 		}
 
-		override protected function redrawHeight(): void {
+		override protected function redrawHeight():void {
 			createBufferBitmap();
 			createBitmap();
 		}
 
-		protected function createBufferBitmap(): void {
+		protected function createBufferBitmap():void {
 			destroyBufferBitmap();
 
 			bufferBitmapData = new BitmapData(bitmapData.width, bitmapData.height, bitmapData.transparent, 0x00000000);
 			bufferBitmapData.copyPixels(bitmapData, bitmapData.rect, new Point(0,0));
 		}
 
-		protected function destroyBufferBitmap(): void {
+		protected function destroyBufferBitmap():void {
 			if (Boolean(bufferBitmapData)) {
 				bufferBitmapData.dispose();
 				bufferBitmapData = null;
 			}
 		}
 
-		protected function createBitmap(): void {
+		protected function createBitmap():void {
 			destroyBitmap();
 
 			bitmapData = new BitmapData(_width + _margins * 2, _height + _margins * 2, _transparent, 0x00000000);
@@ -95,7 +95,7 @@ package com.zehfernando.display {
 			}
 		}
 
-		protected function destroyBitmap(): void {
+		protected function destroyBitmap():void {
 			if (Boolean(bitmapData)) {
 				bitmapData.dispose();
 				bitmapData = null;
@@ -106,7 +106,7 @@ package com.zehfernando.display {
 			}
 		}
 
-		protected function applySmoothing(): void {
+		protected function applySmoothing():void {
 			if (Boolean(bitmap)) {
 				bitmap.smoothing = _smoothing;
 			}
@@ -116,7 +116,7 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onEnterFrameDraw(e:Event): void {
+		protected function onEnterFrameDraw(e:Event):void {
 			draw();
 		}
 
@@ -137,7 +137,7 @@ package com.zehfernando.display {
 			}
 		}
 
-		public function draw(): void {
+		public function draw():void {
 			//bitmapData.draw(_target, null, _redrawColorTransform);
 			//var bitmapDataTemp:BitmapData = new BitmapData(bitmapData.width, bitmapData.height, bitmapData.transparent, 0x000000);
 			var bitmapDataTemp:BitmapData = bitmapData.clone();
@@ -156,7 +156,7 @@ package com.zehfernando.display {
 //			if (Boolean(_redrawFilter)) bitmapData.applyFilter(bitmapData, bitmapData.rect, new Point(0,0), _redrawFilter);
 		}
 
-		public function dispose(): void {
+		public function dispose():void {
 			destroyBufferBitmap();
 			destroyBitmap();
 		}
@@ -181,10 +181,10 @@ package com.zehfernando.display {
 			_redrawFilter = __value;
 		}
 
-		public function get smoothing(): Boolean {
+		public function get smoothing():Boolean {
 			return _smoothing;
 		}
-		public function set smoothing(__value:Boolean): void {
+		public function set smoothing(__value:Boolean):void {
 			if (_smoothing != __value) {
 				_smoothing = __value;
 				applySmoothing();

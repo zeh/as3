@@ -46,17 +46,17 @@ package com.zehfernando.net.apis.face.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onSecurityError(e:SecurityErrorEvent): void {
+		override protected function onSecurityError(e:SecurityErrorEvent):void {
 			super.onSecurityError(e);
 			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.ERROR));
 		}
 
-		override protected function onIOError(e:IOErrorEvent): void {
+		override protected function onIOError(e:IOErrorEvent):void {
 			super.onIOError(e);
 			dispatchEvent(new FaceServiceEvent(FaceServiceEvent.ERROR));
 		}
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			var response:Object = JSON.decode(loader.data);
 
 			if (response[FaceConstants.PARAMETER_NAME_STATUS] == FaceConstants.STATUS_FAILURE) {
@@ -72,17 +72,17 @@ package com.zehfernando.net.apis.face.services {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get apiKey(): String {
+		public function get apiKey():String {
 			return _apiKey;
 		}
-		public function set apiKey(__value:String): void {
+		public function set apiKey(__value:String):void {
 			_apiKey = __value;
 		}
 
-		public function get apiSecret(): String {
+		public function get apiSecret():String {
 			return _apiSecret;
 		}
-		public function set apiSecret(__value:String): void {
+		public function set apiSecret(__value:String):void {
 			_apiSecret = __value;
 		}
 	}

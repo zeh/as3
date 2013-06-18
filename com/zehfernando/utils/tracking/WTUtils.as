@@ -48,7 +48,7 @@ package com.zehfernando.utils.tracking {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		public static function init(__appName:String, __testMode:Boolean = false): void {
+		public static function init(__appName:String, __testMode:Boolean = false):void {
 
 			appName = __appName;
 
@@ -65,7 +65,7 @@ package com.zehfernando.utils.tracking {
 			}
 		}
 
-		public static function trackPageView(__uri:String, __title:String, __feature:String, __event:String, __group:String, __subGroup:String, __extraParameters:Array = null): void {
+		public static function trackPageView(__uri:String, __title:String, __feature:String, __event:String, __group:String, __subGroup:String, __extraParameters:Array = null):void {
 			if (!inited) return;
 
 			if (__title == null) __title = __uri;

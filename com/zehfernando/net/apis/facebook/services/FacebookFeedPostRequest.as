@@ -87,7 +87,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			var response:Object = JSON.decode(loader.data);
 
 			_postId = response["id"];
@@ -115,52 +115,52 @@ package com.zehfernando.net.apis.facebook.services {
 			_targetId = __value;
 		}
 
-		public function get message(): String {
+		public function get message():String {
 			return _message;
 		}
-		public function set message(__value:String): void {
+		public function set message(__value:String):void {
 			_message = __value;
 		}
 
-		public function get picture(): String {
+		public function get picture():String {
 			return _picture;
 		}
-		public function set picture(__value:String): void {
+		public function set picture(__value:String):void {
 			_picture = __value;
 		}
 
-		public function get link(): String {
+		public function get link():String {
 			return _link;
 		}
-		public function set link(__value:String): void {
+		public function set link(__value:String):void {
 			_link = __value;
 		}
 
-		public function get name(): String {
+		public function get name():String {
 			return _name;
 		}
-		public function set name(__value:String): void {
+		public function set name(__value:String):void {
 			_name = __value;
 		}
 
-		public function get caption(): String {
+		public function get caption():String {
 			return _caption;
 		}
-		public function set caption(__value:String): void {
+		public function set caption(__value:String):void {
 			_caption = __value;
 		}
 
-		public function get description(): String {
+		public function get description():String {
 			return _description;
 		}
-		public function set description(__value:String): void {
+		public function set description(__value:String):void {
 			_description = __value;
 		}
 
-		public function get source(): String {
+		public function get source():String {
 			return _source;
 		}
-		public function set source(__value:String): void {
+		public function set source(__value:String):void {
 			_source = __value;
 		}
 
@@ -173,7 +173,7 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Results
 
-		public function get postId(): String {
+		public function get postId():String {
 			return _postId;
 		}
 

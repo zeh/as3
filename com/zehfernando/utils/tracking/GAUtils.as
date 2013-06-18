@@ -50,12 +50,12 @@ package com.zehfernando.utils.tracking {
 
 		// TODO: test for presence of tracking object?
 
-		public static function trackPageView(__url:String): void {
+		public static function trackPageView(__url:String):void {
 			if (_verbose) debug ("[" + __url + "]");
 			if (!_simulated) ExternalInterface.call("function(__url){_gaq.push(['_trackPageview', __url]);}", __url);
 		}
 
-		public static function trackEvent(__category:String, __action:String, __label:String = null, __value:Number = 0): void {
+		public static function trackEvent(__category:String, __action:String, __label:String = null, __value:Number = 0):void {
 			if (_verbose) debug ("Category: ["+__category+"] Action:["+__action+"] Label:["+__label+"] Value:["+__value+"]");
 			if (!_simulated) ExternalInterface.call("function(__category, __action, __label, __value){_gaq.push(['_trackEvent', __category, __action, __label, __value]);}", __category, __action, __label, __value);
 			//("Videos", "Video Load Time", "Gone With the Wind", downloadTime);
@@ -90,20 +90,20 @@ package com.zehfernando.utils.tracking {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public static function get simulated(): Boolean {
+		public static function get simulated():Boolean {
 			return _simulated;
 		}
-		public static function set simulated(__value:Boolean): void {
+		public static function set simulated(__value:Boolean):void {
 			if (_simulated != __value) {
 				_simulated = __value;
 				debug("simulated is " + _simulated);
 			}
 		}
 
-		public static function get verbose(): Boolean {
+		public static function get verbose():Boolean {
 			return _verbose;
 		}
-		public static function set verbose(__value:Boolean): void {
+		public static function set verbose(__value:Boolean):void {
 			if (_verbose != __value) {
 				_verbose = __value;
 				debug("verbose is " + _verbose);

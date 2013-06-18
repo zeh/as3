@@ -19,7 +19,7 @@ package com.zehfernando.geom {
 		// ================================================================================================================
 		// INSTANCE functions ---------------------------------------------------------------------------------------------
 
-//		public function intersectsRect(__rect:Rectangle): Boolean {
+//		public function intersectsRect(__rect:Rectangle):Boolean {
 //			// Check if a rectangle intersects OR contains this line
 //
 //			if (__rect.containsPoint(p1) || __rect.containsPoint(p2)) return true;
@@ -32,7 +32,7 @@ package com.zehfernando.geom {
 //			return false;
 //		}
 //
-//		public function intersectsLine(__line:Line): Boolean {
+//		public function intersectsLine(__line:Line):Boolean {
 //			// Check whether two lines intersects each other
 //			return Boolean(intersection(__line));
 //		}

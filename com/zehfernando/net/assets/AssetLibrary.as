@@ -51,7 +51,7 @@ package com.zehfernando.net.assets {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		protected static function addLibrary(__library:AssetLibrary): void {
+		protected static function addLibrary(__library:AssetLibrary):void {
 			if (!Boolean(libraries)) libraries = new Vector.<AssetLibrary>();
 
 			if (libraries.indexOf(__library) == -1) {
@@ -59,7 +59,7 @@ package com.zehfernando.net.assets {
 			}
 		}
 
-		protected static function removeLibrary(__library:AssetLibrary): void {
+		protected static function removeLibrary(__library:AssetLibrary):void {
 			if (!Boolean(libraries)) libraries = new Vector.<AssetLibrary>();
 
 			if (libraries.indexOf(__library) != -1) {
@@ -79,26 +79,26 @@ package com.zehfernando.net.assets {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		protected function getRandomURLSuffix(__singleParameter:Boolean): String {
+		protected function getRandomURLSuffix(__singleParameter:Boolean):String {
 			return (__singleParameter ? "?" : "&") + "r="+Math.floor(Math.random() * 9999999);
 		}
 
 		// ================================================================================================================
 		// EVENT functions ------------------------------------------------------------------------------------------------
 
-		protected function onQueueProgress(e:ProgressEvent): void {
+		protected function onQueueProgress(e:ProgressEvent):void {
 			var ne:ProgressEvent = new ProgressEvent(ProgressEvent.PROGRESS, false, false, e.bytesLoaded, e.bytesTotal);
 			dispatchEvent(ne);
 		}
 
-		protected function onQueueComplete(e:Event): void {
+		protected function onQueueComplete(e:Event):void {
 			//trace ("QUEUE COMPLETE: "+e.target +", " + e.currentTarget);
 			var ne:Event = new Event(Event.COMPLETE);
 			dispatchEvent(ne);
 		}
 
 		/*
-		protected function onQueueItemComplete(e:LoadingQueueEvent): void {
+		protected function onQueueItemComplete(e:LoadingQueueEvent):void {
 			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
 			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
 			ai.isLoaded = true;
@@ -106,7 +106,7 @@ package com.zehfernando.net.assets {
 		}
 		*/
 
-		protected function onURLLoaderProgress(e:ProgressEvent): void {
+		protected function onURLLoaderProgress(e:ProgressEvent):void {
 			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
 			if (Boolean(ai)) {
 				ai.bytesLoaded = e.bytesLoaded;
@@ -115,7 +115,7 @@ package com.zehfernando.net.assets {
 			}
 		}
 
-		protected function onURLLoaderComplete(e:Event): void {
+		protected function onURLLoaderComplete(e:Event):void {
 			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
 			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
 			if (Boolean(ai)) {
@@ -126,7 +126,7 @@ package com.zehfernando.net.assets {
 			}
 		}
 
-		protected function onLoaderProgress(e:ProgressEvent): void {
+		protected function onLoaderProgress(e:ProgressEvent):void {
 			var ai:AssetItemInfo = getAssetItemInfoByContentLoaderInfo(e.target as LoaderInfo);
 			if (Boolean(ai)) {
 				ai.bytesLoaded = e.bytesLoaded;
@@ -135,7 +135,7 @@ package com.zehfernando.net.assets {
 			}
 		}
 
-		protected function onLoaderComplete(e:Event): void {
+		protected function onLoaderComplete(e:Event):void {
 			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
 			var ai:AssetItemInfo = getAssetItemInfoByContentLoaderInfo(e.target as LoaderInfo);
 			if (Boolean(ai)) {
@@ -146,7 +146,7 @@ package com.zehfernando.net.assets {
 			}
 		}
 
-		protected function onVideoLoaderProgress(e:ProgressEvent): void {
+		protected function onVideoLoaderProgress(e:ProgressEvent):void {
 			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
 			if (Boolean(ai)) {
 				ai.bytesLoaded = e.bytesLoaded;
@@ -155,7 +155,7 @@ package com.zehfernando.net.assets {
 			}
 		}
 
-		protected function onVideoLoaderComplete(e:Event): void {
+		protected function onVideoLoaderComplete(e:Event):void {
 			//trace ("ITEM COMPLETE: "+e.target +", " + e.currentTarget);
 			var ai:AssetItemInfo = getAssetItemInfoByObject(e.target);
 			if (Boolean(ai)) {
@@ -174,7 +174,7 @@ package com.zehfernando.net.assets {
 			assets.push(__assetItemInfo);
 		}
 
-		public function addDynamicAsset(__url:String, __name:String = "", __avoidCache:Boolean = false, __type:String = ""): void {
+		public function addDynamicAsset(__url:String, __name:String = "", __avoidCache:Boolean = false, __type:String = ""):void {
 			if (!Boolean(__type)) __type = AssetType.getFromURL(__url);
 			var ai:AssetItemInfo = new AssetItemInfo(__name, __type, __avoidCache);
 			ai.url = __url;
@@ -232,7 +232,7 @@ package com.zehfernando.net.assets {
 			return null;
 		}
 
-		public function startLoadings(): void {
+		public function startLoadings():void {
 			// Start all loads that didn't start yet
 
 			//trace("AssetLibrary.startLoadings()");
@@ -283,7 +283,7 @@ package com.zehfernando.net.assets {
 			if (queue.paused) queue.resume();
 		}
 
-		public function getAssetLoadedPhase(__name:String): Number {
+		public function getAssetLoadedPhase(__name:String):Number {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (!Boolean(ai)) return 0;
 			if (ai.isLoaded) return 1;
@@ -334,7 +334,7 @@ package com.zehfernando.net.assets {
 			return null;
 		}
 
-		public function dispose(): void {
+		public function dispose():void {
 			removeLibrary(this);
 
 			for (var i:int = 0; i < assets.length; i++) {
@@ -348,11 +348,11 @@ package com.zehfernando.net.assets {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get name(): String {
+		public function get name():String {
 			return _name;
 		}
 
-		public function get numAssets(): int {
+		public function get numAssets():int {
 			return Boolean(assets) ? assets.length : 0;
 		}
 	}
@@ -444,7 +444,7 @@ class AssetItemInfo {
 		//return null;
 	}
 
-	public function dispose(): void {
+	public function dispose():void {
 		switch (type) {
 			case AssetType.XML:
 			case AssetType.CSS:

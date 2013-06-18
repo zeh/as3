@@ -17,7 +17,7 @@ package com.zehfernando.utils {
 			return dateResult;
 		}
 
-		public static function stringSecondsToSeconds(__time:String): Number {
+		public static function stringSecondsToSeconds(__time:String):Number {
 			// Returns number of seconds based on a string
 			// Examples:
 			// 01:30 -> returns 90
@@ -128,7 +128,7 @@ package com.zehfernando.utils {
 			return tt;
 		}
 
-		public static function descriptiveDifference(__date:Date): String {
+		public static function descriptiveDifference(__date:Date):String {
 			// TODO: rename this, add parameters
 			// Returns a friendly description of a time difference ("2 hours", "1 day", "10 seconds", "1 year" etc)
 
@@ -166,7 +166,7 @@ package com.zehfernando.utils {
 			return "";
 		}
 
-//		protected function getDescriptiveDifference(__date:Date): String {
+//		protected function getDescriptiveDifference(__date:Date):String {
 //			// Returns a friendly description of a time difference ("2 hours", "1 day", "10 seconds", "1 year" etc)
 //
 //			// Full data

@@ -39,7 +39,7 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function paint(): void {
+		protected function paint():void {
 			graphics.clear();
 
 			var i:Number;
@@ -77,7 +77,7 @@ package com.zehfernando.display.shapes {
 
 		}
 
-		protected function checkProperties(): void {
+		protected function checkProperties():void {
 			if (isNaN(_startAngle)) _startAngle = 0;
 			_startAngle = MathUtils.clamp(_startAngle, -65535, 65535);
 
@@ -89,40 +89,40 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get color(): int {
+		public function get color():int {
 			return _color;
 		}
-		public function set color(__value:int): void {
+		public function set color(__value:int):void {
 			if (_color != __value) {
 				_color = __value;
 				paint();
 			}
 		}
 
-		public function get radius(): Number {
+		public function get radius():Number {
 			return _radius;
 		}
-		public function set radius(__value:Number): void {
+		public function set radius(__value:Number):void {
 			if (_radius != __value) {
 				_radius = __value;
 				paint();
 			}
 		}
 
-		public function get innerRadius(): Number {
+		public function get innerRadius():Number {
 			return _innerRadius;
 		}
-		public function set innerRadius(__value:Number): void {
+		public function set innerRadius(__value:Number):void {
 			if (_innerRadius != __value) {
 				_innerRadius = __value;
 				paint();
 			}
 		}
 
-		public function get startAngle(): Number {
+		public function get startAngle():Number {
 			return _startAngle;
 		}
-		public function set startAngle(__value:Number): void {
+		public function set startAngle(__value:Number):void {
 			if (_startAngle != __value) {
 				_startAngle = __value;
 				checkProperties();
@@ -130,10 +130,10 @@ package com.zehfernando.display.shapes {
 			}
 		}
 
-		public function get endAngle(): Number {
+		public function get endAngle():Number {
 			return _endAngle;
 		}
-		public function set endAngle(__value:Number): void {
+		public function set endAngle(__value:Number):void {
 			if (_endAngle != __value) {
 				_endAngle = __value;
 				checkProperties();

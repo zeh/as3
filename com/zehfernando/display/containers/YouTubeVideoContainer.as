@@ -87,7 +87,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function setDefaultData(): void {
+		override protected function setDefaultData():void {
 			super.setDefaultData();
 
 			_autoPlay = true;
@@ -99,21 +99,21 @@ package com.zehfernando.display.containers {
 			youtubePlayerLoadingTries = 0;
 		}
 
-		protected function startCheckingSize(): void {
+		protected function startCheckingSize():void {
 			if (!checkingSize) {
 				addEventListener(Event.ENTER_FRAME, onEnterFrameCheckSize, false, 0, true);
 				checkingSize = true;
 			}
 		}
 
-		protected function stopCheckingSize(): void {
+		protected function stopCheckingSize():void {
 			if (checkingSize) {
 				removeEventListener(Event.ENTER_FRAME, onEnterFrameCheckSize);
 				checkingSize = false;
 			}
 		}
 
-		protected function loadContent(): void {
+		protected function loadContent():void {
 			//log ("===================================================> " + _id + " play");
 			waitingToLoad = false;
 			_isLoading = false;
@@ -137,13 +137,13 @@ package com.zehfernando.display.containers {
 			applyVolume();
 		}
 
-		protected function applyVolume(): void {
+		protected function applyVolume():void {
 			if (youtubePlayerReady && _hasVideo) {
 				youtubePlayer.content["setVolume"](Math.round(_volume * 100));
 			}
 		}
 
-		protected function initializeYoutubePlayer(): void {
+		protected function initializeYoutubePlayer():void {
 
 			// Load the chromeless video player
 
@@ -179,7 +179,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function setSizeBasedOnQuality(): void {
+		protected function setSizeBasedOnQuality():void {
 //			youtubePlayer.content["setSize"](320, 240);
 //			_contentWidth = 320;
 //			_contentHeight = 240;
@@ -219,14 +219,14 @@ package com.zehfernando.display.containers {
 			youtubePlayer.content["setSize"](_contentWidth, _contentHeight);
 		}
 
-		protected function startMonitoringTime(): void {
+		protected function startMonitoringTime():void {
 			if (!isMonitoringTime) {
 				isMonitoringTime = true;
 				addEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime, false, 0, true);
 			}
 		}
 
-		protected function stopMonitoringTime(): void {
+		protected function stopMonitoringTime():void {
 			if (isMonitoringTime) {
 				isMonitoringTime = false;
 				removeEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime);
@@ -237,11 +237,11 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onEnterFrameMonitorTime(e:Event): void {
+		protected function onEnterFrameMonitorTime(e:Event):void {
 			dispatchEvent(new Event(YouTubeVideoContainer.EVENT_TIME_CHANGE));
 		}
 
-		protected function onPlayerInit(e:Event): void {
+		protected function onPlayerInit(e:Event):void {
 			youtubePlayer.contentLoaderInfo.removeEventListener(Event.INIT, onPlayerInit);
 			youtubePlayer.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onPlayerIOError);
 
@@ -251,7 +251,7 @@ package com.zehfernando.display.containers {
 			youtubePlayer.content.addEventListener(APIPLAYER_EVENT_QUALITY_CHANGE, onVideoPlaybackQualityChange);
 		}
 
-		protected function onPlayerIOError(e:IOErrorEvent): void {
+		protected function onPlayerIOError(e:IOErrorEvent):void {
 			log("YoutubeVideoContainer :: IOError!! :: -----------------------------------------------------------------------------");
 			youtubePlayer.unload();
 			youtubePlayerInitialized = false;
@@ -267,14 +267,14 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function onPlayerReady(e:Event): void {
+		protected function onPlayerReady(e:Event):void {
 			//trace ("YoutubeVideoContainer :: onPlayerReady");
 			setSizeBasedOnQuality();
 			youtubePlayerReady = true;
 			redraw();
 		}
 
-		protected function onPlayerStateChange(e:Event): void {
+		protected function onPlayerStateChange(e:Event):void {
 			//log(_id + " changed state to " + e["data"]);
 			updateMaximumTime();
 			var stateType:int = parseInt(e["data"]);
@@ -314,16 +314,16 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function onVideoPlaybackQualityChange(e:Event): void {
+		protected function onVideoPlaybackQualityChange(e:Event):void {
 			//trace ("YoutubeVideoContainer :: onVideoPlaybackQualityChange");
 		}
 
-		protected function onPlayerError(e:Event): void {
+		protected function onPlayerError(e:Event):void {
 			log("Error: " + e);
 			dispatchEvent(new Event(EVENT_LOADING_ERROR));
 		}
 
-		protected function onEnterFrameCheckSize(e:Event): void {
+		protected function onEnterFrameCheckSize(e:Event):void {
 			_bytesTotal = youtubePlayerReady ? youtubePlayer.content["getVideoBytesTotal"]() : 0;
 			_bytesLoaded = youtubePlayerReady ? youtubePlayer.content["getVideoBytesLoaded"]() : 0;
 
@@ -341,7 +341,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function updateMaximumTime(): void {
+		protected function updateMaximumTime():void {
 			_maximumTime = Math.max(time, _maximumTime);
 		}
 
@@ -350,13 +350,13 @@ package com.zehfernando.display.containers {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		/*
-		public function loadThumb(__id:String): void {
+		public function loadThumb(__id:String):void {
 			mustPlayVideoWhenLoading = false;
 			super.load(__id);
 		}
 		*/
 
-		override public function dispose(): void {
+		override public function dispose():void {
 			//log ("disposing ===========================================> " + _id + " ++" + youtubePlayerInitialized, youtubePlayerReady, Boolean(youtubePlayer.content));
 			pauseVideo();
 			volume = 0;
@@ -402,26 +402,26 @@ package com.zehfernando.display.containers {
 			super.dispose();
 		}
 
-		public function getMaximumPositionPlayed(): Number {
+		public function getMaximumPositionPlayed():Number {
 			updateMaximumTime();
 			return MathUtils.clamp(_maximumTime / duration);
 		}
 
-		public function playVideo(): void {
+		public function playVideo():void {
 			//if (youtubePlayerInitialized) youtubePlayer.content["playVideo"]();
 			_isPlaying = true;
 			updateMaximumTime();
 			if (youtubePlayerReady && _hasVideo) youtubePlayer.content["playVideo"]();
 		}
 
-		public function seekTo(__val:Number): void {
+		public function seekTo(__val:Number):void {
 			//if (youtubePlayerInitialized) youtubePlayer.content["seekTo"](__val);
 			if (youtubePlayerReady && _hasVideo) youtubePlayer.content["seekTo"](__val);
 			onEnterFrameMonitorTime(null);
 		}
 
 
-		public function pauseVideo(): void {
+		public function pauseVideo():void {
 			//trace ("YoutubeVideoContainer :: pauseVideo :: " + _contentURL + ", initialized = " + youtubePlayerInitialized);
 			//trace ("YoutubeVideoContainer :: pauseVideo :: initialized = " + youtubePlayerInitialized + ", youtubePlayer = " + youtubePlayer);
 			// Ugh, this is returning an error for no reason at all.
@@ -450,7 +450,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		override public function load(__id:String): void {
+		override public function load(__id:String):void {
 			super.load(__id);
 
 			_id = __id;
@@ -469,7 +469,7 @@ package com.zehfernando.display.containers {
 			//log ("=====================================================> " + _id + " load");
 		}
 
-		override public function unload(): void {
+		override public function unload():void {
 			if (youtubePlayerReady) youtubePlayer.content["stopVideo"]();
 			super.unload();
 		}
@@ -477,32 +477,32 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get autoPlay(): Boolean {
+		public function get autoPlay():Boolean {
 			return _autoPlay;
 		}
-		public function set autoPlay(__value:Boolean): void {
+		public function set autoPlay(__value:Boolean):void {
 			_autoPlay = __value;
 		}
 
-		public function get videoQuality(): String {
+		public function get videoQuality():String {
 			return _videoQuality;
 		}
-		public function set videoQuality(__value:String): void {
+		public function set videoQuality(__value:String):void {
 			if (_videoQuality != __value) {
 				_videoQuality = __value;
 				// TODO: start loading again when quality changes?
 			}
 		}
 
-		public function get isCued(): Boolean {
+		public function get isCued():Boolean {
 			return _isCued;
 		}
 
-		public function get youtubeId(): String {
+		public function get youtubeId():String {
 			return _contentURL;
 		}
 
-		public function get time(): Number {
+		public function get time():Number {
 			return youtubePlayerReady && _hasVideo ? youtubePlayer.content["getCurrentTime"]() : 0;
 		}
 
@@ -511,7 +511,7 @@ package com.zehfernando.display.containers {
 			updateMaximumTime();
 		}
 
-		public function get duration(): Number {
+		public function get duration():Number {
 			return youtubePlayerReady && _hasVideo ? youtubePlayer.content["getDuration"]() : 0;
 		}
 
@@ -519,11 +519,11 @@ package com.zehfernando.display.containers {
 			return _id;
 		}
 
-		public function get position(): Number {
+		public function get position():Number {
 			if (!_hasVideo) return 0;
 			return time / duration;
 		}
-		public function set position(__value:Number): void {
+		public function set position(__value:Number):void {
 			if (!_hasVideo) return;
 			time = __value * duration;
 		}

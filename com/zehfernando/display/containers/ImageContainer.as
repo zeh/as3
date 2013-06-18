@@ -26,14 +26,14 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function ImageContainer(__width:Number = 100, __height:Number = 100, __color:Number = 0x000000) {
-			super (__width, __height, __color);
+		public function ImageContainer(__width:Number = 100, __height:Number = 100, __backgroundColor:Number = 0x000000) {
+			super (__width, __height, __backgroundColor);
 		}
 
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		override public function dispose(): void {
+		override public function dispose():void {
 			if (_isLoading) {
 				if (_isConnectionOpened && !(_bytesLoaded > 0 && _bytesLoaded == _bytesTotal)) loader.close();
 				//loader.close();
@@ -50,14 +50,14 @@ package com.zehfernando.display.containers {
 			super.dispose();
 		}
 
-		protected function removeLoaderEvents(): void {
+		protected function removeLoaderEvents():void {
 			loader.contentLoaderInfo.removeEventListener(Event.OPEN, onLoadOpen);
 			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoadComplete);
 			loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onLoadProgress);
 			loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
 		}
 
-		override protected function applySmoothing(): void {
+		override protected function applySmoothing():void {
 			if (_isLoaded) {
 				try {
 					if (Boolean(loader.content)) {
@@ -76,11 +76,11 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// EVENT functions ------------------------------------------------------------------------------------------------
 
-		protected function onLoadOpen(e:Event = null): void {
+		protected function onLoadOpen(e:Event = null):void {
 			_isConnectionOpened = true;
 		}
 
-		protected function onLoadComplete(e:Event = null): void {
+		protected function onLoadComplete(e:Event = null):void {
 			_isLoading = false;
 			_isConnectionOpened = false;
 			_isLoaded = true;
@@ -103,7 +103,7 @@ package com.zehfernando.display.containers {
 			dispatchEvent(e);
 		}
 
-		protected function onLoadProgress(e:ProgressEvent = null): void {
+		protected function onLoadProgress(e:ProgressEvent = null):void {
 			//trace ("ImageContainer :: onLoadProgress :: " + e);
 			dispatchEvent(e);
 			if (!isNaN(_timeStartedLoading)) updateStartedLoadingStats();
@@ -111,7 +111,7 @@ package com.zehfernando.display.containers {
 			_bytesTotal = e.bytesTotal;
 		}
 
-		protected function onLoadError(e:IOErrorEvent = null): void {
+		protected function onLoadError(e:IOErrorEvent = null):void {
 			trace ("ERROR :: ImageContainer :: onLoadError :: " + e);
 			_isLoading = false;
 			_isConnectionOpened = false;
@@ -135,7 +135,7 @@ package com.zehfernando.display.containers {
 			return bmp;
 		}
 
-		override public function load(__url:String): void {
+		override public function load(__url:String):void {
 			if (!Boolean(__url)) {
 				trace ("ImageContainer :: ERROR: tried loading image from null url ["+__url+"]");
 				return;

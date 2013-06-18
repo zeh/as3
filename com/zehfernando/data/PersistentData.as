@@ -8,58 +8,58 @@ package com.zehfernando.data {
 
 		// Constant properties
 		private static var datas:Vector.<PersistentData>;
-	
+
 		// Properties
 		private var _name:String;
 		private var sharedObject:SharedObject;
-		
+
 		// TODO:
 		// * Initialize from XML
 		// * Allow "defaults"
-	
+
 		// ================================================================================================================
 		// STATIC ---------------------------------------------------------------------------------------------------------
-		
+
 		{
 			datas = new Vector.<PersistentData>();
 		}
-	
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-	
+
 		public function PersistentData(__name:String) {
 			_name = __name;
 			PersistentData.addInstance(this);
 			sharedObject = SharedObject.getLocal("persistentData_" + __name);
 		}
-	
+
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
-	
+
 		private static function addInstance(__data:PersistentData):void {
 			datas.push(__data);
 		}
-	
+
 		public static function getInstance(__name:String = ""):PersistentData {
 			// TODO: use hashmap for speed?
-	
+
 			// Looks for one on the list first
 			for (var i:int = 0; i < datas.length; i++) {
 				if (datas[i].name == __name) return datas[i];
 			}
-	
+
 			// Doesn't exist, create a new one and return it
 			return new PersistentData(__name);
 		}
-	
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-	
+
 		public function clear():void {
 			sharedObject.clear();
 			sharedObject.flush();
 		}
-		
+
 		public function get(__key:String, __default:* = null):* {
 			if (hasProperty(__key)) {
 				// Has the data
@@ -68,7 +68,7 @@ package com.zehfernando.data {
 			// Doesn't have the data, use default
 			return __default;
 		}
-	
+
 		public function set(__key:String, __value:*):void {
 			sharedObject.data[__key] = __value;
 			sharedObject.flush();
@@ -81,11 +81,11 @@ package com.zehfernando.data {
 		public function getAsString(__key:String, __default:String = ""):String {
 			return get(__key, __default);
 		}
-	
+
 		public function getAsNumber(__key:String, __default:Number = 0):Number {
 			return get(__key, __default);
 		}
-	
+
 		/*
 		public void putJSONArray(String __key, JSONArray __array) {
 			SharedPreferences.Editor editor = preferences.edit();
@@ -93,7 +93,7 @@ package com.zehfernando.data {
 			//F.log("====> SAVING ARRAY! " + __array.toString());
 			editor.commit();
 		}
-	
+
 		public JSONArray getJSONArray(String __key) {
 			try {
 				//F.log("===> READING ARRAY! " + preferences.getString(__key, ""));
@@ -104,7 +104,7 @@ package com.zehfernando.data {
 			}
 		}
 		*/
-	
+
 		public function remove(__key:String):Boolean {
 			if (hasProperty(__key)) {
 				delete sharedObject.data[__key];
@@ -113,15 +113,15 @@ package com.zehfernando.data {
 				return false;
 			}
 		}
-		
+
 		public function hasProperty(__key:String):Boolean {
 			return sharedObject.data.hasOwnProperty(__key);
 		}
-	
-	
+
+
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
-	
+
 		public function get name():String {
 			return _name;
 		}

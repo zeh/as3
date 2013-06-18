@@ -43,15 +43,15 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function redrawColor(): void {
+		protected function redrawColor():void {
 			rect.color = _color;
 		}
 
-		protected function redrawHeight(): void {
+		protected function redrawHeight():void {
 			rect.height = _height;
 		}
 
-		protected function startBlinking(): void {
+		protected function startBlinking():void {
 			 if (!Boolean(blinkingTimer)) {
 			 	restartVisibilityCycle();
 
@@ -61,7 +61,7 @@ package com.zehfernando.display.components.text {
 			 }
 		}
 
-		protected function stopBlinking(): void {
+		protected function stopBlinking():void {
 			 if (Boolean(blinkingTimer)) {
 			 	blinkingTimer.removeEventListener(TimerEvent.TIMER, onBlinkingTimer);
 			 	blinkingTimer.stop();
@@ -76,37 +76,37 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onAddedToStage(e:Event): void {
+		protected function onAddedToStage(e:Event):void {
 			startBlinking();
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 		}
 
-		protected function onRemovedFromStage(e:Event): void {
+		protected function onRemovedFromStage(e:Event):void {
 			stopBlinking();
 			removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 		}
 
-		protected function onBlinkingTimer(e:Event): void {
+		protected function onBlinkingTimer(e:Event):void {
 			rect.visible = !rect.visible;
 		}
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _height;
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				redrawHeight();
 			}
 		}
 
-		public function get color(): int {
+		public function get color():int {
 			return _color;
 		}
-		public function set color(__value:int): void {
+		public function set color(__value:int):void {
 			if (_color != __value) {
 				_color = __value;
 				redrawColor();

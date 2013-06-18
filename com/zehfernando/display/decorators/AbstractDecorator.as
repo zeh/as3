@@ -21,7 +21,7 @@ package com.zehfernando.display.decorators {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function apply(): void {
+		protected function apply():void {
 			throw new Error("This must be overridden.");
 		}
 

@@ -23,7 +23,7 @@ package com.zehfernando.net.loaders {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function VideoLoaderEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false): void {
+		public function VideoLoaderEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false):void {
 			super(__type, __bubbles, __cancelable);
 		}
 

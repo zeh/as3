@@ -50,21 +50,21 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function redraw(): void {
+		override protected function redraw():void {
 			super.redraw();
 			if(_hasFocus) redrawCaret();
 		}
 
-		protected function showCaret(): void {
+		protected function showCaret():void {
 			caret.visible = true;
 			redrawCaret();
 		}
 
-		protected function hideCaret(): void {
+		protected function hideCaret():void {
 			caret.visible = false;
 		}
 
-		protected function redrawCaret(): void {
+		protected function redrawCaret():void {
 			caret.restartVisibilityCycle();
 
 			_caretPosition = MathUtils.clamp(_caretPosition, 0, getMaximumCaretPosition());
@@ -107,7 +107,7 @@ package com.zehfernando.display.components.text {
 			return rect;
 		}
 
-		protected function insertText(__text:String, __moveCaret:Boolean = true, __position:int = -1): void {
+		protected function insertText(__text:String, __moveCaret:Boolean = true, __position:int = -1):void {
 			addUndoState();
 
 			if (__position == -1) __position = _caretPosition;
@@ -119,7 +119,7 @@ package com.zehfernando.display.components.text {
 			dispatchEvent(new EditableTextSpriteEvent(EditableTextSpriteEvent.CHANGED));
 		}
 
-		protected function removeText(__position:int, __length:int, __moveCaret:Boolean = true): void {
+		protected function removeText(__position:int, __length:int, __moveCaret:Boolean = true):void {
 			addUndoState();
 
 			var remStart:int = Math.max(__position, 0);
@@ -135,15 +135,15 @@ package com.zehfernando.display.components.text {
 			dispatchEvent(new EditableTextSpriteEvent(EditableTextSpriteEvent.CHANGED));
 		}
 
-		protected function getMaximumCaretPosition(): int {
+		protected function getMaximumCaretPosition():int {
 			return text.length;
 		}
 
-		protected function addUndoState(): void {
+		protected function addUndoState():void {
 			undoManager.saveState({text:text, caretPosition:caretPosition});
 		}
 
-		protected function undo(): void {
+		protected function undo():void {
 			if (undoManager.prevState()) {
 				var obj:Object = undoManager.getState();
 				trace ("OK= "+obj["text"]);
@@ -152,7 +152,7 @@ package com.zehfernando.display.components.text {
 			}
 		}
 
-		protected function redo(): void {
+		protected function redo():void {
 			if (undoManager.nextState()) {
 				var obj:Object = undoManager.getState();
 				trace ("OK= "+obj["text"]);
@@ -164,14 +164,14 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onAddedToStage(e:Event): void {
+		protected function onAddedToStage(e:Event):void {
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			addEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
 			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		}
 
-		protected function onRemovedFromStage(e:Event): void {
+		protected function onRemovedFromStage(e:Event):void {
 			removeEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
 			removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 			removeEventListener(MouseEvent.MOUSE_OUT, onMouseOut);
@@ -181,29 +181,29 @@ package com.zehfernando.display.components.text {
 			unfocus();
 		}
 
-		protected function onMouseOver(e:MouseEvent): void {
+		protected function onMouseOver(e:MouseEvent):void {
 			Mouse.cursor = MouseCursor.IBEAM;
 			_isMouseOver = true;
 		}
 
-		protected function onMouseOut(e:MouseEvent): void {
+		protected function onMouseOut(e:MouseEvent):void {
 			_isMouseOver = false;
 			Mouse.cursor = MouseCursor.AUTO;
 		}
 
-		protected function onMouseDown(e:MouseEvent): void {
+		protected function onMouseDown(e:MouseEvent):void {
 			// TODO: caret position must be determined by ROUNDED position, not char position!
 			caretPosition = getCharAtMousePosition();
 			focus();
 		}
 
-		protected function onMouseDownStage(e:MouseEvent): void {
+		protected function onMouseDownStage(e:MouseEvent):void {
 			if (!_isMouseOver) unfocus();
 			//trace (stage.getObjectsUnderPoint(new Point(stage.mouseX, stage.mouseY)));
 			//unfocus();
 		}
 
-		protected function onSpecialKeyboardEvent(e:Event): void {
+		protected function onSpecialKeyboardEvent(e:Event):void {
 			switch (e.type) {
 				case Event.COPY:
 					break;
@@ -218,7 +218,7 @@ package com.zehfernando.display.components.text {
 			}
 		}
 
-		protected function onKeyDown(e:KeyboardEvent): void {
+		protected function onKeyDown(e:KeyboardEvent):void {
 			if (e.ctrlKey && !e.altKey) {
 				// CTRL
 				switch (String.fromCharCode(e.charCode)) {
@@ -339,10 +339,10 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get caretPosition(): int {
+		public function get caretPosition():int {
 			return _caretPosition;
 		}
-		public function set caretPosition(__value:int): void {
+		public function set caretPosition(__value:int):void {
 			if (_caretPosition != __value) {
 				_caretPosition = __value;
 				redrawCaret();

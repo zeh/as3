@@ -55,7 +55,7 @@ package com.zehfernando.display {
 			return bmp;
 		}
 
-		public function returnBitmap(__bitmap:BitmapData): void {
+		public function returnBitmap(__bitmap:BitmapData):void {
 			var i:int = usedBitmaps.indexOf(__bitmap);
 
 			log ("returning bitmap of "+__bitmap.width+"x"+__bitmap.height);

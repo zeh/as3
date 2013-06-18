@@ -72,19 +72,19 @@ package com.zehfernando.net.apis.twitter.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onSecurityError(e:SecurityErrorEvent): void {
+		override protected function onSecurityError(e:SecurityErrorEvent):void {
 			//trace ("twitter --> onSecurityError");
 			super.onSecurityError(e);
 			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
 
-		override protected function onIOError(e:IOErrorEvent): void {
+		override protected function onIOError(e:IOErrorEvent):void {
 			//trace ("twitter --> onIOError");
 			super.onIOError(e);
 			dispatchEvent(new TwitterServiceEvent(TwitterServiceEvent.ERROR));
 		}
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			//trace ("twitter --> onComplete");
 
 			var response:Object = JSON.decode(loader.data);
@@ -101,66 +101,66 @@ package com.zehfernando.net.apis.twitter.services {
 		// TODO: getters and setters are never locked; just use public parameters?
 
 		// Parameters
-		public function get count() : int {
+		public function get count() :int {
 			return _count;
 		}
-		public function set count(__value : int) : void {
+		public function set count(__value : int) :void {
 			_count = __value;
 		}
 
-		public function get userId() : String {
+		public function get userId() :String {
 			return _userId;
 		}
-		public function set userId(__value : String) : void {
+		public function set userId(__value : String) :void {
 			_userId = __value;
 		}
 
-		public function get screenName() : String {
+		public function get screenName() :String {
 			return _screenName;
 		}
-		public function set screenName(__value : String) : void {
+		public function set screenName(__value : String) :void {
 			_screenName = __value;
 		}
 
-		public function get page() : int {
+		public function get page() :int {
 			return _page;
 		}
-		public function set page(__value : int) : void {
+		public function set page(__value : int) :void {
 			_page = __value;
 		}
 
-		public function get maxId() : String {
+		public function get maxId() :String {
 			return _maxId;
 		}
-		public function set maxId(__value : String) : void {
+		public function set maxId(__value : String) :void {
 			_maxId = __value;
 		}
 
-		public function get sinceId() : String {
+		public function get sinceId() :String {
 			return _sinceId;
 		}
-		public function set sinceId(__value : String) : void {
+		public function set sinceId(__value : String) :void {
 			_sinceId = __value;
 		}
 
-		public function get trimUser() : Boolean {
+		public function get trimUser() :Boolean {
 			return _trimUser;
 		}
-		public function set trimUser(__value : Boolean) : void {
+		public function set trimUser(__value : Boolean) :void {
 			_trimUser = __value;
 		}
 
-		public function get includeRTS() : Boolean {
+		public function get includeRTS() :Boolean {
 			return _includeRTS;
 		}
-		public function set includeRTS(__value : Boolean) : void {
+		public function set includeRTS(__value : Boolean) :void {
 			_includeRTS = __value;
 		}
 
-		public function get includeEntities() : Boolean {
+		public function get includeEntities() :Boolean {
 			return _includeEntities;
 		}
-		public function set includeEntities(__value : Boolean) : void {
+		public function set includeEntities(__value : Boolean) :void {
 			_includeEntities = __value;
 		}
 

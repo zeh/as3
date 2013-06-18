@@ -66,7 +66,7 @@ package com.zehfernando.display.templates.application {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function setDefaultProperties(): void {
+		protected function setDefaultProperties():void {
 			swfLoaded = false;
 			swfLoadingPhase = 0;
 			swfLoadingWeight = 100;
@@ -91,11 +91,11 @@ package com.zehfernando.display.templates.application {
 			isFrame2Inited = false;
 		}
 
-		protected function createAssets(): void {
+		protected function createAssets():void {
 			createLoadingInterface();
 		}
 
-		protected function initialize(): void {
+		protected function initialize():void {
 			stop();
 
 			AppUtils.init(stage, this);
@@ -138,11 +138,11 @@ package com.zehfernando.display.templates.application {
 			dal.startLoadings();
 		}
 
-		protected function addAssetsToDataLibrary(__dataLibrary:AssetLibrary): void {
+		protected function addAssetsToDataLibrary(__dataLibrary:AssetLibrary):void {
 			// EXTEND THIS
 		}
 
-		protected function startLoadingAdditionalData(): void {
+		protected function startLoadingAdditionalData():void {
 			// Start loading additional XML data
 //			log("LOAD / ADDITIONAL DATA / INIT");
 			additionalDataLoading = true;
@@ -156,7 +156,7 @@ package com.zehfernando.display.templates.application {
 			dal.startLoadings();
 		}
 
-		protected function addAdditionalAssetsToDataLibrary(__dataLibrary:AssetLibrary): void {
+		protected function addAdditionalAssetsToDataLibrary(__dataLibrary:AssetLibrary):void {
 			// EXTEND THIS
 		}
 
@@ -189,12 +189,12 @@ package com.zehfernando.display.templates.application {
 			onResize(null);
 		}
 
-		protected function showFrame2(): void {
+		protected function showFrame2():void {
 			//log();
 			frame2.show();
 		}
 
-		protected function getTotalLoadingPhase(): Number {
+		protected function getTotalLoadingPhase():Number {
 			// Returns the percentage (0-1) of loading done for everything
 			var l:Number = 0;
 			var t:Number = 0;
@@ -224,7 +224,7 @@ package com.zehfernando.display.templates.application {
 			return l / t;
 		}
 
-		protected function createLoadingInterface(): void {
+		protected function createLoadingInterface():void {
 			// EXTEND THIS
 		}
 
@@ -232,15 +232,15 @@ package com.zehfernando.display.templates.application {
 			// EXTEND THIS
 		}
 
-		protected function resizeLoadingInterface(): void {
+		protected function resizeLoadingInterface():void {
 			// EXTEND THIS
 		}
 
-		protected function removeLoadingInterface(): void {
+		protected function removeLoadingInterface():void {
 			// EXTEND THIS
 		}
 
-		protected function removeLoadingInterfaceAndShowFrame2(): void {
+		protected function removeLoadingInterfaceAndShowFrame2():void {
 			removeLoadingInterface();
 			showFrame2();
 		}
@@ -371,13 +371,13 @@ package com.zehfernando.display.templates.application {
 
 		}
 
-		protected function onFrame2InitProgress(e:Event): void {
+		protected function onFrame2InitProgress(e:Event):void {
 			frame2DataLoadingPhase = frame2.getInitPhase();
 //			log("LOAD / FRAME 2 INIT / PROGRESS @ " + frame2DataLoadingPhase);
 			updateLoadingInterface();
 		}
 
-		protected function onFrame2InitComplete(e:Event): void {
+		protected function onFrame2InitComplete(e:Event):void {
 			frame2DataLoaded = true;
 
 			onFrame2InitProgress(null);

@@ -18,7 +18,7 @@ package com.zehfernando.net.apis.bitly.events {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function BitLyEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false, __data:Object = null, __status_code:int = 0, __status_txt:String = ""): void {
+		public function BitLyEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false, __data:Object = null, __status_code:int = 0, __status_txt:String = ""):void {
 			super(__type, __bubbles, __cancelable);
 
 			_data = __data;

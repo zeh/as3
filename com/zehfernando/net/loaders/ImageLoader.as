@@ -45,11 +45,11 @@ package com.zehfernando.net.loaders {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onLoadOpen(e:Event): void {
+		protected function onLoadOpen(e:Event):void {
 			dispatchEvent (new Event(Event.OPEN));
 		}
 
-		protected function onLoadComplete(e:Event): void {
+		protected function onLoadComplete(e:Event):void {
 			dispatchEvent (new Event(Event.COMPLETE));
 
 			var w:Number;
@@ -60,18 +60,18 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		protected function onLoadProgress(e:ProgressEvent): void {
+		protected function onLoadProgress(e:ProgressEvent):void {
 			dispatchEvent (new ProgressEvent(ProgressEvent.PROGRESS, e.bubbles, e.cancelable, e.bytesLoaded, e.bytesTotal));
 		}
 
-		protected function onLoadError(e:IOErrorEvent): void {
+		protected function onLoadError(e:IOErrorEvent):void {
 			dispatchEvent (new IOErrorEvent(IOErrorEvent.IO_ERROR));
 		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function load(__request:URLRequest, __context:LoaderContext = null): void {
+		public function load(__request:URLRequest, __context:LoaderContext = null):void {
 			_isLoading = true;
 			_isConnectionOpened = false;
 			_isLoaded = false;
@@ -95,11 +95,11 @@ package com.zehfernando.net.loaders {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get bytesTotal(): uint {
+		public function get bytesTotal():uint {
 			return Boolean(loader) ? loader.contentLoaderInfo.bytesTotal : 0;
 		}
 
-		public function get bytesLoaded(): uint {
+		public function get bytesLoaded():uint {
 			return Boolean(loader) ? loader.contentLoaderInfo.bytesLoaded : 0;
 		}
 	}

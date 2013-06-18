@@ -27,7 +27,7 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function paint(): void {
+		protected function paint():void {
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginFill(_color);
@@ -43,30 +43,30 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get color(): int {
+		public function get color():int {
 			return _color;
 		}
-		public function set color(__value:int): void {
+		public function set color(__value:int):void {
 			if (_color != __value) {
 				_color = __value;
 				paint();
 			}
 		}
 
-		public function get radius(): Number {
+		public function get radius():Number {
 			return _radius;
 		}
-		public function set radius(__value:Number): void {
+		public function set radius(__value:Number):void {
 			if (_radius != __value) {
 				_radius = __value;
 				paint();
 			}
 		}
 
-		public function get innerRadius(): Number {
+		public function get innerRadius():Number {
 			return _innerRadius;
 		}
-		public function set innerRadius(__value:Number): void {
+		public function set innerRadius(__value:Number):void {
 			if (_innerRadius != __value) {
 				_innerRadius = __value;
 				paint();

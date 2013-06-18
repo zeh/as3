@@ -58,7 +58,7 @@ package com.zehfernando.net.assets {
 			return vv;
 		}
 
-		public static function getFromURL(__url:String): String {
+		public static function getFromURL(__url:String):String {
 			// Based on the extension of an URL file, return the type
 			// TODO: must test for querystrings!
 			// TODO: must test for other URLs with dots on them!

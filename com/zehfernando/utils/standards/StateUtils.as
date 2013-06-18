@@ -12,7 +12,7 @@ package com.zehfernando.utils.standards {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected static function lazyInit(): void {
+		protected static function lazyInit():void {
 			if (!inited) {
 				stateList = new Vector.<StateInfo>();
 
@@ -80,7 +80,7 @@ package com.zehfernando.utils.standards {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function getStateFromZip(__zip:String): String {
+		public static function getStateFromZip(__zip:String):String {
 			lazyInit();
 
 			var zn:Number = parseInt(__zip, 10);
@@ -95,7 +95,7 @@ package com.zehfernando.utils.standards {
 			return "";
 		}
 
-		public static function getStateFromName(__stateName:String): String {
+		public static function getStateFromName(__stateName:String):String {
 			lazyInit();
 
 			var i:int;

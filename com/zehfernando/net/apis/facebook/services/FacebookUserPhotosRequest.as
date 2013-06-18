@@ -57,7 +57,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			var response:Object = JSON.decode(loader.data);
 
 			_photos = FacebookPhoto.fromJSONObjectArray(response["data"]);
@@ -84,14 +84,14 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Parameters
 
-		public function get userId(): String {
+		public function get userId():String {
 			return _userId;
 		}
 		public function set userId(__value: String):void {
 			_userId = __value;
 		}
 
-		public function get limit(): int {
+		public function get limit():int {
 			return _limit;
 		}
 		public function set limit(__value:int):void {

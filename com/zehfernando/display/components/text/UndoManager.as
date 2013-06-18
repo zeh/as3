@@ -40,7 +40,7 @@ package com.zehfernando.display.components.text {
 			currentState = -1;
 		}
 
-		public function prevState(): Boolean {
+		public function prevState():Boolean {
 			if (_currentState > 0) {
 				_currentState--;
 				return true;
@@ -48,7 +48,7 @@ package com.zehfernando.display.components.text {
 			return false;
 		}
 
-		public function nextState(): Boolean {
+		public function nextState():Boolean {
 			if (_currentState < states.length - 1) {
 				_currentState++;
 				return true;
@@ -59,10 +59,10 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get currentState(): int {
+		public function get currentState():int {
 			return _currentState;
 		}
-		public function set currentState(__value:int): void {
+		public function set currentState(__value:int):void {
 			if (_currentState != __value) {
 				_currentState = __value;
 			}

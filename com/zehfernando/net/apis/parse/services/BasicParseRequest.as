@@ -16,7 +16,7 @@ package com.zehfernando.net.apis.parse.services {
 		// Properties
 		protected var _applicationId:String;
 		protected var _restAPIKey:String;
-		
+
 		protected var _response:Object;
 
 		// ================================================================================================================
@@ -62,7 +62,7 @@ package com.zehfernando.net.apis.parse.services {
 		override protected function onComplete(e:Event):void {
 			_response = JSON.parse(loader.data);
 			// {"createdAt":"2013-06-02T01:34:10.542Z","objectId":"VXPbC2gzcw"}
-			
+
 //			if (response[FaceConstants.PARAMETER_NAME_STATUS] == FaceConstants.STATUS_FAILURE) {
 //				// Response is successfull, but it was instead an error
 //				onIOError(new IOErrorEvent(IOErrorEvent.IO_ERROR, false, false, response[FaceConstants.PARAMETER_NAME_ERROR_MESSAGE]));
@@ -89,7 +89,7 @@ package com.zehfernando.net.apis.parse.services {
 		public function set restAPIKey(__value:String):void {
 			_restAPIKey = __value;
 		}
-		
+
 		public function get response():Object {
 			return _response;
 		}

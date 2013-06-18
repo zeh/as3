@@ -51,7 +51,7 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function tick(): void {
+		protected function tick():void {
 			// Updates all values
 			_prevValue = _current;
 			_current += (_target - _current) / _divisor;
@@ -62,7 +62,7 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onEnterFrameTick(e:Event): void {
+		protected function onEnterFrameTick(e:Event):void {
 
 			if (isNaN(_tickRate)) {
 				// Always update, ignore time
@@ -82,7 +82,7 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function start(): void {
+		public function start():void {
 			if (!_isRunning) {
 				container = new Sprite();
 				container.addEventListener(Event.ENTER_FRAME, onEnterFrameTick, false, 0, true);
@@ -91,7 +91,7 @@ package com.zehfernando.data.types {
 			}
 		}
 
-		public function stop(): void {
+		public function stop():void {
 			if (_isRunning) {
 				container.removeEventListener(Event.ENTER_FRAME, onEnterFrameTick);
 				container = null;
@@ -102,11 +102,11 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get divisor(): Number {
+		public function get divisor():Number {
 			return _divisor;
 		}
 
-		public function set divisor(__value:Number): void {
+		public function set divisor(__value:Number):void {
 			if (_divisor != __value) {
 				_divisor = __value;
 			}

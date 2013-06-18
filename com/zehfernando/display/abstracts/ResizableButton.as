@@ -1,5 +1,4 @@
 package com.zehfernando.display.abstracts {
-
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	/**
@@ -37,69 +36,70 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function redrawState(): void {
+		protected function redrawState():void {
 			throw new Error("Error: the method redrawState() of ButtonSprite has to be overridden.");
 		}
 
-		protected function redrawVisibility(): void {
+		protected function redrawVisibility():void {
 			alpha = _visibility;
 			visible = _visibility > 0;
 		}
 
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onAddedToStage(e:Event): void {
+		override protected function onAddedToStage(e:Event):void {
 			super.onAddedToStage(e);
 			redrawState();
 			redrawVisibility();
 		}
 
-		protected function onRollOver(e:MouseEvent): void {
+		protected function onRollOver(e:MouseEvent):void {
 			if (enabled >= 1) mouseFocus = 1;
 		}
 
-		protected function onRollOut(e:MouseEvent): void {
+		protected function onRollOut(e:MouseEvent):void {
 			mouseFocus = 0;
 		}
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get mouseFocus(): Number {
+		public function get mouseFocus():Number {
 			return _mouseFocus;
 		}
-		public function set mouseFocus(__value:Number): void {
+		public function set mouseFocus(__value:Number):void {
 			if (_mouseFocus != __value) {
 				_mouseFocus = __value;
 				redrawState();
 			}
 		}
 
-		public function get enabled(): Number {
+		public function get enabled():Number {
 			return _enabled;
 		}
-		public function set enabled(__value:Number): void {
+		public function set enabled(__value:Number):void {
 			if (_enabled != __value) {
 				_enabled = __value;
 				redrawState();
 			}
 		}
 
-		public function get visibility(): Number {
+		public function get visibility():Number {
 			return _visibility;
 		}
-		public function set visibility(__value:Number): void {
+		public function set visibility(__value:Number):void {
 			if (_visibility != __value) {
 				_visibility = __value;
 				redrawVisibility();
 			}
 		}
 
-		public function get pressed(): Number {
+		public function get pressed():Number {
 			return _pressed;
 		}
-		public function set pressed(__value:Number): void {
+		public function set pressed(__value:Number):void {
 			if (_pressed != __value) {
 				_pressed = __value;
 				redrawState();

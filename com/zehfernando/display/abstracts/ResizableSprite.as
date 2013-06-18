@@ -1,5 +1,4 @@
 package com.zehfernando.display.abstracts {
-
 	import flash.display.Sprite;
 	import flash.events.Event;
 
@@ -51,7 +50,7 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return _width;
 		}
 		override public function set width(__value:Number):void {
@@ -61,7 +60,7 @@ package com.zehfernando.display.abstracts {
 			}
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _height;
 		}
 		override public function set height(__value:Number):void {

@@ -15,18 +15,18 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected static function invalidate(): void {
+		protected static function invalidate():void {
 			AppUtils.getStage().invalidate();
 		}
 
-		protected static function queue(): void {
+		protected static function queue():void {
 			if (!isQueued) {
 				AppUtils.getStage().addEventListener(Event.RENDER, onRenderStage);
 				isQueued = true;
 			}
 		}
 
-		protected static function executeQueue(): void {
+		protected static function executeQueue():void {
 			unQueue();
 
 //			for (var i:int = 0; i < functionsToCall.length; i++) {
@@ -39,7 +39,7 @@ package com.zehfernando.utils {
 			functionsToCall = new Vector.<Function>();
 		}
 
-		protected static function unQueue(): void {
+		protected static function unQueue():void {
 			if (isQueued) {
 				AppUtils.getStage().removeEventListener(Event.RENDER, onRenderStage);
 				isQueued = false;
@@ -50,7 +50,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected static function onRenderStage(e:Event): void {
+		protected static function onRenderStage(e:Event):void {
 			executeQueue();
 		}
 
@@ -58,7 +58,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function addFunction(__function:Function): void {
+		public static function addFunction(__function:Function):void {
 			if (functionsToCall.indexOf(__function) == -1) {
 				// Doesn't exist, so adds to the stack
 				functionsToCall.push(__function);

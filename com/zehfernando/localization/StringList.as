@@ -84,13 +84,13 @@ package com.zehfernando.localization {
 			lists = new Vector.<StringList>();
 		}
 
-		protected static function addList(__list:StringList): void {
+		protected static function addList(__list:StringList):void {
 			if (lists.indexOf(__list) == -1) {
 				lists.push(__list);
 			}
 		}
 
-		protected static function removeList(__list:StringList): void {
+		protected static function removeList(__list:StringList):void {
 			if (lists.indexOf(__list) != -1) {
 				lists.splice(lists.indexOf(__list), 1);
 			}
@@ -251,7 +251,7 @@ package com.zehfernando.localization {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function getProcessedStringInternal(__string:String, __languages:Vector.<String>): String {
+		protected function getProcessedStringInternal(__string:String, __languages:Vector.<String>):String {
 			// Returns a string with processed codes
 			// For example "this is an ${examples/example}!" returns "this is an EXAMPLE!" (where the value of examples/example in strings.xml is "EXAMPLE")
 
@@ -337,12 +337,12 @@ package com.zehfernando.localization {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function setFromXML(__xml:XML): void {
+		public function setFromXML(__xml:XML):void {
 			values.add(getXMLListAsGroup(__xml.children()));
 			// TODO: read string data replacing unix/windows line feed?
 		}
 
-		public function setCurrentLanguages(... __languages): void {
+		public function setCurrentLanguages(... __languages):void {
 			currentLanguages = new Vector.<String>();
 			for (var i:int = 0; i < __languages.length; i++) {
 				currentLanguages.push(__languages[i]);
@@ -355,7 +355,7 @@ package com.zehfernando.localization {
 			return currentLanguages.concat();
 		}
 
-//		public function setString(__id:String, __value:String): void {
+//		public function setString(__id:String, __value:String):void {
 //			var vs:ValueString = new ValueString();
 //			vs.name = __id;
 //			vs.value = __value;
@@ -367,19 +367,19 @@ package com.zehfernando.localization {
 //			values.add(vg);
 //		}
 
-		public function getString(__id:String, ... __languages): String {
+		public function getString(__id:String, ... __languages):String {
 			return getValue(__id, __languages);
 		}
 
-		public function getNumber(__id:String, ... __languages): Number {
+		public function getNumber(__id:String, ... __languages):Number {
 			return getValue(__id, __languages);
 		}
 
-		public function getBoolean(__id:String, ... __languages): Boolean {
+		public function getBoolean(__id:String, ... __languages):Boolean {
 			return getValue(__id, __languages);
 		}
 
-		public function getColor(__id:String, ... __languages): uint {
+		public function getColor(__id:String, ... __languages):uint {
 			return getValue(__id, __languages);
 		}
 
@@ -387,7 +387,7 @@ package com.zehfernando.localization {
 			return getValue(__id, __languages);
 		}
 
-		public function getProcessedString(__text:String, ... __languages): String {
+		public function getProcessedString(__text:String, ... __languages):String {
 			var langsToUse:Vector.<String>;
 			var i:int;
 			if (Boolean(__languages) && __languages.length > 0) {
@@ -419,7 +419,7 @@ package com.zehfernando.localization {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get name(): String {
+		public function get name():String {
 			return _name;
 		}
 	}

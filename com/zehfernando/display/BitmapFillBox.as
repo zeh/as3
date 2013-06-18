@@ -53,15 +53,15 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function redrawWidth(): void {
+		override protected function redrawWidth():void {
 			redraw();
 		}
 
-		override protected function redrawHeight(): void {
+		override protected function redrawHeight():void {
 			redraw();
 		}
 
-		protected function redraw(): void {
+		protected function redraw():void {
 			removeBitmap();
 
 			if (Boolean(source) && _width > 0 && _height > 0) {
@@ -148,11 +148,11 @@ package com.zehfernando.display {
 			}
 		}
 
-		protected function applySmoothing(): void {
+		protected function applySmoothing():void {
 			if (Boolean(bitmap)) bitmap.smoothing = _smoothing;
 		}
 
-		protected function removeBitmap(): void {
+		protected function removeBitmap():void {
 			if (Boolean(bitmap)) {
 				removeChild(bitmap);
 				bitmap.bitmapData = null;
@@ -165,7 +165,7 @@ package com.zehfernando.display {
 			}
 		}
 
-		protected function removeSource(): void {
+		protected function removeSource():void {
 			if (Boolean(source)) {
 				source.dispose();
 				source = null;
@@ -175,7 +175,7 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function setBitmap(__bitmap:Bitmap, __canDisposeOf:Boolean = true): void {
+		public function setBitmap(__bitmap:Bitmap, __canDisposeOf:Boolean = true):void {
 			setBitmapData(__bitmap.bitmapData, __canDisposeOf);
 
 			if (__canDisposeOf) {
@@ -183,7 +183,7 @@ package com.zehfernando.display {
 			}
 		}
 
-		public function setBitmapData(__bitmapData:BitmapData, __canDisposeOf:Boolean = true): void {
+		public function setBitmapData(__bitmapData:BitmapData, __canDisposeOf:Boolean = true):void {
 			removeSource();
 
 			source = __bitmapData.clone();
@@ -195,7 +195,7 @@ package com.zehfernando.display {
 			redraw();
 		}
 
-		public function dispose(): void {
+		public function dispose():void {
 			removeBitmap();
 			removeSource();
 		}
@@ -203,61 +203,61 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get smoothing(): Boolean {
+		public function get smoothing():Boolean {
 			return _smoothing;
 		}
-		public function set smoothing(__value:Boolean): void {
+		public function set smoothing(__value:Boolean):void {
 			if (_smoothing != __value) {
 				_smoothing = __value;
 				applySmoothing();
 			}
 		}
 
-		public function get bitmapScaleY(): Number {
+		public function get bitmapScaleY():Number {
 			return _bitmapScaleY;
 		}
-		public function set bitmapScaleY(__value:Number): void {
+		public function set bitmapScaleY(__value:Number):void {
 			if (_bitmapScaleY != __value) {
 				_bitmapScaleY = __value;
 				redraw();
 			}
 		}
 
-		public function get bitmapScaleX(): Number {
+		public function get bitmapScaleX():Number {
 			return _bitmapScaleX;
 		}
-		public function set bitmapScaleX(__value:Number): void {
+		public function set bitmapScaleX(__value:Number):void {
 			if (_bitmapScaleX != __value) {
 				_bitmapScaleX = __value;
 				redraw();
 			}
 		}
 
-		public function get alignHorizontal(): String {
+		public function get alignHorizontal():String {
 			return _alignHorizontal;
 		}
-		public function set alignHorizontal(__value:String): void {
+		public function set alignHorizontal(__value:String):void {
 			if (_alignHorizontal != __value || _alignHorizontal == BitmapFillBox.ALIGN_HORIZONTAL_RANDOM || _alignHorizontal == BitmapFillBox.ALIGN_HORIZONTAL_RANDOM_NO_SEAMS) {
 				_alignHorizontal = __value;
 				redraw();
 			}
 		}
 
-		public function get alignVertical(): String {
+		public function get alignVertical():String {
 			return _alignVertical;
 		}
-		public function set alignVertical(__value:String): void {
+		public function set alignVertical(__value:String):void {
 			if (_alignVertical != __value || _alignVertical == BitmapFillBox.ALIGN_VERTICAL_RANDOM || _alignVertical == BitmapFillBox.ALIGN_VERTICAL_RANDOM_NO_SEAMS) {
 				_alignVertical = __value;
 				redraw();
 			}
 		}
 
-		public function get bitmapWidth(): Number {
+		public function get bitmapWidth():Number {
 			return bitmapData.width;
 		}
 
-		public function get bitmapHeight(): Number {
+		public function get bitmapHeight():Number {
 			return bitmapData.height;
 		}
 	}

@@ -31,7 +31,7 @@ package com.zehfernando.display.progressbars {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function redrawAmount(): void {
+		override protected function redrawAmount():void {
 			// Redraws graphics to represent the correct amount
 			//trace ("====> " + _value.current, _value.target);
 			foreground.width = 100 * _value.current;

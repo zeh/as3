@@ -38,7 +38,7 @@ package com.zehfernando.net.apis.bitly.services {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function execute(): void {
+		public function execute():void {
 
 			var req:URLRequest = new URLRequest();
 
@@ -69,7 +69,7 @@ package com.zehfernando.net.apis.bitly.services {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function clearLoader(): void {
+		protected function clearLoader():void {
 			loader.removeEventListener(Event.COMPLETE, onComplete);
 			loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 			loader.removeEventListener(IOErrorEvent.IO_ERROR, onIOError);
@@ -81,25 +81,25 @@ package com.zehfernando.net.apis.bitly.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onHTTPStatus(e:HTTPStatusEvent): void {
+		protected function onHTTPStatus(e:HTTPStatusEvent):void {
 			// Useless: always gets 200?
 //			trace ("--> bit.ly -> onHTTPStatus");
 //			trace ("--> " + e.status);
 		}
 
-		protected function onSecurityError(e:SecurityErrorEvent): void {
+		protected function onSecurityError(e:SecurityErrorEvent):void {
 //			trace ("--> bit.ly -> onSecurityError");
 			dispatchEvent(new BitLyEvent(BitLyEvent.ERROR));
 			clearLoader();
 		}
 
-		protected function onIOError(e:IOErrorEvent): void {
+		protected function onIOError(e:IOErrorEvent):void {
 //			trace ("--> bit.ly -> onIOError");
 			dispatchEvent(new BitLyEvent(BitLyEvent.ERROR));
 			clearLoader();
 		}
 
-		protected function onComplete(e:Event): void {
+		protected function onComplete(e:Event):void {
 //			trace ("--> bit.ly -> onComplete");
 
 			var response:XML = new XML(loader.data);

@@ -59,14 +59,14 @@ package com.zehfernando.net.apis {
 			return headers;
 		}
 
-		protected function clearData(): void {
+		protected function clearData():void {
 			// Clear all the loaded data
 			if (_isLoaded) {
 				_isLoaded = false;
 			}
 		}
 
-		protected function stopLoading(): void {
+		protected function stopLoading():void {
 			// Stop loading everything
 			if (_isLoading) {
 				loader.close();
@@ -75,7 +75,7 @@ package com.zehfernando.net.apis {
 			}
 		}
 
-		protected function removeLoader(): void {
+		protected function removeLoader():void {
 			loader.removeEventListener(Event.COMPLETE, innerOnComplete);
 			loader.removeEventListener(HTTPStatusEvent.HTTP_STATUS, onHTTPStatus);
 			loader.removeEventListener(IOErrorEvent.IO_ERROR, innerOnIOError);
@@ -86,32 +86,32 @@ package com.zehfernando.net.apis {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onHTTPStatus(e:HTTPStatusEvent): void {
+		protected function onHTTPStatus(e:HTTPStatusEvent):void {
 		}
 
-		protected function onSecurityError(e:SecurityErrorEvent): void {
+		protected function onSecurityError(e:SecurityErrorEvent):void {
 			_rawResponse = loader.data;
 
 			_isLoading = false;
 			removeLoader();
 		}
 
-		protected function innerOnSecurityError(e:SecurityErrorEvent): void {
+		protected function innerOnSecurityError(e:SecurityErrorEvent):void {
 			onSecurityError(e);
 		}
 
-		protected function onIOError(e:IOErrorEvent): void {
+		protected function onIOError(e:IOErrorEvent):void {
 			_rawResponse = loader.data;
 
 			_isLoading = false;
 			removeLoader();
 		}
 
-		protected function innerOnIOError(e:IOErrorEvent): void {
+		protected function innerOnIOError(e:IOErrorEvent):void {
 			onIOError(e);
 		}
 
-		protected function onComplete(e:Event): void {
+		protected function onComplete(e:Event):void {
 			_rawResponse = loader.data;
 
 			_isLoading = false;
@@ -119,14 +119,14 @@ package com.zehfernando.net.apis {
 			removeLoader();
 		}
 
-		protected function innerOnComplete(e:Event): void {
+		protected function innerOnComplete(e:Event):void {
 			onComplete(e);
 		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function execute(): void {
+		public function execute():void {
 
 			if (_isLoading) stopLoading();
 			if (_isLoaded) clearData();

@@ -57,13 +57,13 @@ package com.zehfernando.display.debug.statgraph {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function addGraphicLine(__val:Number, __minY:int, __maxY:int, __color:Number): void {
+		protected function addGraphicLine(__val:Number, __minY:int, __maxY:int, __color:Number):void {
 			var py:Number = Math.round(__minY + __val * (__maxY - __minY));
 			graphBitmapData.fillRect(new Rectangle(_width-1, __maxY, 1, __minY-__maxY+1), colorAsBackground(__color));
 			graphBitmapData.fillRect(new Rectangle(_width-1, py, 1, 1), __color);
 		}
 
-		protected function colorAsBackground(__color:Number): Number {
+		protected function colorAsBackground(__color:Number):Number {
 			var a:Number = 0.2;
 			var r:Number = (__color >> 16 & 0xff) * a;
 			var g:Number = (__color >> 8 & 0xff) * a;

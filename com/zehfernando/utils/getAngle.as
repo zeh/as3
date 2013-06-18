@@ -2,7 +2,7 @@ package com.zehfernando.utils {
 
 	// use atan2 instead?
 
-	public function getAngle(x:Number, y:Number): Number {
+	public function getAngle(x:Number, y:Number):Number {
 		// Returns the angle (in radians) of a point
 		// 0 = right side (3 o' clock)
 

@@ -40,7 +40,7 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onPositionChangedByUser(e:Event): void {
+		protected function onPositionChangedByUser(e:Event):void {
 			dispatchEvent(new Event(Slider.EVENT_POSITION_CHANGED_BY_USER));
 		}
 
@@ -49,81 +49,81 @@ package com.zehfernando.display.components {
 
 		// Extensions of slider
 
-		public function get pickerColor(): int {
+		public function get pickerColor():int {
 			return slider.pickerColor;
 		}
-		public function set pickerColor(__value:int): void {
+		public function set pickerColor(__value:int):void {
 			slider.pickerColor = __value;
 		}
 
-		public function get pickerAlpha(): Number {
+		public function get pickerAlpha():Number {
 			return slider.pickerAlpha;
 		}
-		public function set pickerAlpha(__value:Number): void {
+		public function set pickerAlpha(__value:Number):void {
 			slider.pickerAlpha = __value;
 		}
 
-		public function get pickerScale(): Number {
+		public function get pickerScale():Number {
 			return slider.pickerScale;
 		}
-		public function set pickerScale(__value:Number): void {
+		public function set pickerScale(__value:Number):void {
 			slider.pickerScale = __value;
 		}
 
-		public function get backgroundColor(): int {
+		public function get backgroundColor():int {
 			return slider.backgroundColor;
 		}
-		public function set backgroundColor(__value:int): void {
+		public function set backgroundColor(__value:int):void {
 			slider.backgroundColor = __value;
 		}
 
-		public function get backgroundAlpha(): Number {
+		public function get backgroundAlpha():Number {
 			return slider.backgroundAlpha;
 		}
-		public function set backgroundAlpha(__value:Number): void {
+		public function set backgroundAlpha(__value:Number):void {
 			slider.backgroundAlpha = __value;
 		}
 
-		public function get minPickerHeight(): Number {
+		public function get minPickerHeight():Number {
 			return slider.minPickerSize;
 		}
-		public function set minPickerHeight(__value:Number): void {
+		public function set minPickerHeight(__value:Number):void {
 			slider.minPickerSize = __value;
 		}
 
-		public function get maxPickerHeight(): Number {
+		public function get maxPickerHeight():Number {
 			return slider.maxPickerSize;
 		}
-		public function set maxPickerHeight(__value:Number): void {
+		public function set maxPickerHeight(__value:Number):void {
 			slider.maxPickerSize = __value;
 		}
 
-		public function get value(): Number {
+		public function get value():Number {
 			return slider.value;
 		}
-		public function set value(__value:Number): void {
+		public function set value(__value:Number):void {
 			slider.value = __value;
 		}
 
-		public function get minValue(): Number {
+		public function get minValue():Number {
 			return slider.minValue;
 		}
-		public function set minValue(__value:Number): void {
+		public function set minValue(__value:Number):void {
 			slider.minValue = __value;
 		}
 
-		public function get maxValue(): Number {
+		public function get maxValue():Number {
 			return slider.maxValue;
 		}
-		public function set maxValue(__value:Number): void {
+		public function set maxValue(__value:Number):void {
 			slider.maxValue = __value;
 		}
 
-		public function get position(): Number {
+		public function get position():Number {
 			return slider.position;
 		}
 
-		public function set position(__value:Number): void {
+		public function set position(__value:Number):void {
 			slider.position = __value;
 		}
 	}

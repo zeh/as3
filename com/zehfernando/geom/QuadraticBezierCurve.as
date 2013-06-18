@@ -40,7 +40,7 @@ package com.zehfernando.geom {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get length(): Number {
+		public function get length():Number {
 			return Point.distance(p1, p2);
 		}
 	}

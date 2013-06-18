@@ -40,7 +40,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		override protected function createContent(): void {
+		override protected function createContent():void {
 			super.createContent();
 			_isStarted = false;
 			_video = new Video(100, 100);
@@ -48,14 +48,14 @@ package com.zehfernando.display.containers {
 			addAsset(_video);
 		}
 
-		override protected function destroyContent(): void {
+		override protected function destroyContent():void {
 			stopStreaming();
 			disconnect();
 			stop();
 			super.destroyContent();
 		}
 
-		protected function redrawSmoothing(): void {
+		protected function redrawSmoothing():void {
 			//if (_isLoaded && Boolean(loader.content)) Bitmap(loader.content).smoothing = _smoothing;
 			if (Boolean(_video)) _video.smoothing = false;
 		}
@@ -64,7 +64,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onNetConnectionStatus(e:NetStatusEvent): void {
+		protected function onNetConnectionStatus(e:NetStatusEvent):void {
 			trace ("NetStreamContainer :: net status event [info.code="+e.info.code+"] : " + e);
 
 			var info:Object = e.info;
@@ -95,11 +95,11 @@ package com.zehfernando.display.containers {
 				}
 		}
 
-		protected function onMetaData(info:Object): void {
+		protected function onMetaData(info:Object):void {
 			//trace("onMetaData: duration=" + info.duration + " framerate=" + info.framerate);
 	 	}
 
-		protected function onPlayStatus(info:Object): void {
+		protected function onPlayStatus(info:Object):void {
 			//trace("onPlayStatus: status=" + info.code);
 			if (info.code == "NetStream.Play.Complete") {
 				// Completed
@@ -110,7 +110,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function start(): void {
+		public function start():void {
 			if (!_isStarted) {
 				if (!Boolean(_video)) createContent();
 				_isStarted = true;
@@ -131,7 +131,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		public function disconnect(): void {
+		public function disconnect():void {
 			if (_isConnected) {
 				stopStreaming();
 				netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetConnectionStatus);
@@ -142,7 +142,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		public function startStreaming(): void {
+		public function startStreaming():void {
 			if (!_isStreaming) {
 				trace ("NetStreamContainer :: startStreaming()");
 				netStream = new NetStream(netConnection);
@@ -155,7 +155,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		public function stopStreaming(): void {
+		public function stopStreaming():void {
 			if (_isStreaming) {
 				trace ("NetStreamContainer :: stopStreaming()");
 				_video.attachNetStream(null);
@@ -165,7 +165,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		public function play(__context:String): void {
+		public function play(__context:String):void {
 			trace ("NetStreamContainer :: play()");
 			startStreaming();
 			if (_isStreaming) {
@@ -173,7 +173,7 @@ package com.zehfernando.display.containers {
 				netStream.play(__context);
 			}
 		}
-		public function stop(): void {
+		public function stop():void {
 			stopStreaming();
 			// Ugh
 			if (_isStarted) {
@@ -187,15 +187,15 @@ package com.zehfernando.display.containers {
 
 		// State information ----------------------------------
 
-		public function get smoothing(): Boolean {
+		public function get smoothing():Boolean {
 			return _smoothing;
 		}
-		public function set smoothing(__value:Boolean): void {
+		public function set smoothing(__value:Boolean):void {
 			_smoothing = __value;
 			redrawSmoothing();
 		}
 
-		public function get isConnected(): Boolean {
+		public function get isConnected():Boolean {
 			return _isConnected;
 		}
 	}

@@ -47,7 +47,7 @@ package com.zehfernando.net.apis.youtube.data {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function getHighestResolutionThumbnailURL(): String {
+		public function getHighestResolutionThumbnailURL():String {
 			// Returns the URL of the biggest thumbnail
 			var url:String = "";
 			var maxWidth:int = 0;

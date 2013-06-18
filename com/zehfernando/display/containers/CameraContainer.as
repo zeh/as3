@@ -70,12 +70,12 @@ package com.zehfernando.display.containers {
 			setAsset(_video, 100, 100);
 		}
 
-		protected function redrawSmoothing(): void {
+		protected function redrawSmoothing():void {
 			//if (_isLoaded && Boolean(loader.content)) Bitmap(loader.content).smoothing = _smoothing;
 			if (Boolean(_video)) _video.smoothing = _smoothing;
 		}
 
-		protected function startWaitingForCamera(): void {
+		protected function startWaitingForCamera():void {
 			if (!isWaitingForCamera) {
 				_camera.addEventListener(StatusEvent.STATUS, onCameraChangeStatus);
 				addEventListener(Event.ENTER_FRAME, onEnterFrameWaitForCamera);
@@ -83,7 +83,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function stopWaitingForCamera(): void {
+		protected function stopWaitingForCamera():void {
 			if (isWaitingForCamera) {
 				_camera.removeEventListener(StatusEvent.STATUS, onCameraChangeStatus);
 				removeEventListener(Event.ENTER_FRAME, onEnterFrameWaitForCamera);
@@ -95,7 +95,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onEnterFrameWaitForCamera(e:Event): void {
+		protected function onEnterFrameWaitForCamera(e:Event):void {
 			//Console.log("waiting for camera..." + _camera.muted);
 
 			// TODO: checking currentfps is bad... for some reason it doesn't always work (just first time?). Using mute is better,
@@ -107,7 +107,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function onCameraChangeStatus(e:Event): void {
+		protected function onCameraChangeStatus(e:Event):void {
 			log("camera changed status: " + e);
 			if (_camera.muted) {
 				stop();
@@ -115,7 +115,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function tryNextCamera(): void {
+		protected function tryNextCamera():void {
 			var cam:int = lastCameraTried + 1;
 
 			if (cam < Camera.names.length) {
@@ -152,7 +152,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function setCamera(__index:int = -1): void {
+		protected function setCamera(__index:int = -1):void {
 			unsetCamera();
 			_camera = Camera.getCamera(__index == -1 ? null : __index.toString(10));
 			if (Boolean(_camera)) {
@@ -164,7 +164,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function unsetCamera(): void {
+		protected function unsetCamera():void {
 			if (Boolean(_camera)) {
 				_camera.removeEventListener(ActivityEvent.ACTIVITY, onActivityOnCamera);
 				stopWaitingForCamera();
@@ -172,7 +172,7 @@ package com.zehfernando.display.containers {
 				_camera = null;
 			}
 		}
-		protected function stopFindingActiveCameras(): void {
+		protected function stopFindingActiveCameras():void {
 			if (isFindingActiveCameras) {
 				isFindingActiveCameras = false;
 			}
@@ -181,11 +181,11 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onActivityOnCamera(e:ActivityEvent): void {
+		protected function onActivityOnCamera(e:ActivityEvent):void {
 			// ...
 		}
 
-		protected function onWaitForRealCameraActivity(e:Event): void {
+		protected function onWaitForRealCameraActivity(e:Event):void {
 			if (_camera.activityLevel > 0) {
 				// Real camera active
 				onCurrentAutoCameraActivity();
@@ -212,7 +212,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function onCurrentAutoCameraActivity(): void {
+		protected function onCurrentAutoCameraActivity():void {
 			// While waiting for a camera, it had activity
 			log("Camera is active!!");
 			validCameras[lastCameraTried] = true;
@@ -221,7 +221,7 @@ package com.zehfernando.display.containers {
 			// TODO: skip next if must short-circuit for a quicker camera selection?
 		}
 
-		protected function onCurrentAutoCameraNoActivity(): void {
+		protected function onCurrentAutoCameraNoActivity():void {
 			// While waiting for a camera, it failed to have any activity
 			log("Camera is not active!!");
 			validCameras[lastCameraTried] = false;
@@ -244,7 +244,7 @@ package com.zehfernando.display.containers {
 			return bmp;
 		}
 
-		public function setCameraMode(__width:Number, __height:Number, __fps:Number = 24): void {
+		public function setCameraMode(__width:Number, __height:Number, __fps:Number = 24):void {
 			if (Boolean(_camera)) _camera.setMode(__width, __height, __fps);
 			_contentWidth = __width;
 			_contentHeight = __height;
@@ -257,7 +257,7 @@ package com.zehfernando.display.containers {
 			if (Boolean(_camera)) _camera.setQuality(__bandwidth, __quality);
 		}
 
-		public function start(): void {
+		public function start():void {
 			// Start capturing from user
 			if (!_isStarted) {
 
@@ -278,7 +278,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		public function findActiveCameras(__autoSelect:Boolean = false): void {
+		public function findActiveCameras(__autoSelect:Boolean = false):void {
 			// Cycle through cameras, automatically selecting the valid one
 			// If __tryAll is true, continue picking cameras even when a valid camera is found (useful to find ALL valid cameras)
 			if (!isFindingActiveCameras) {
@@ -295,14 +295,14 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		public function stop(): void {
+		public function stop():void {
 			if (_isStarted) {
 				unsetCamera();
 				_isStarted = false;
 			}
 		}
 
-		public function getNumValidCameras(): int {
+		public function getNumValidCameras():int {
 			// Returns the number of valid cameras, after a findActiveCameras() call
 			var c:int = 0;
 			for (var i:int = 0; i < validCameras.length; i++) {
@@ -325,47 +325,47 @@ package com.zehfernando.display.containers {
 
 		// State information ----------------------------------
 
-		public function get isStarted(): Boolean {
+		public function get isStarted():Boolean {
 			return _isStarted;
 		}
 
-		public function get smoothing(): Boolean {
+		public function get smoothing():Boolean {
 			return _smoothing;
 		}
-		public function set smoothing(__value:Boolean): void {
+		public function set smoothing(__value:Boolean):void {
 			_smoothing = __value;
 			redrawSmoothing();
 		}
 
-		public function get muted(): Boolean {
+		public function get muted():Boolean {
 			return Boolean(_camera) ? _camera.muted : false;
 		}
 
-		public function get currentFPS(): Number {
+		public function get currentFPS():Number {
 			return Boolean(_camera) ? _camera.currentFPS : 0;
 		}
 
-		public function get fps(): Number {
+		public function get fps():Number {
 			return Boolean(_camera) ? _camera.fps : 0;
 		}
 
-		public function get activityLevel(): Number {
+		public function get activityLevel():Number {
 			return Boolean(_camera) ? _camera.activityLevel : 0;
 		}
 
-		public function get bandwidth(): int {
+		public function get bandwidth():int {
 			return Boolean(_camera) ? _camera.bandwidth : 0;
 		}
 
-		public function get cameraWidth(): int {
+		public function get cameraWidth():int {
 			return Boolean(_camera) ? _camera.width : 0;
 		}
 
-		public function get cameraHeight(): int {
+		public function get cameraHeight():int {
 			return Boolean(_camera) ? _camera.height : 0;
 		}
 
-		public function get cameraName(): String {
+		public function get cameraName():String {
 			return Boolean(_camera) ? _camera.name : null;
 		}
 

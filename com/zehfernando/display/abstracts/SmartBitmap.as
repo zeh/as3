@@ -73,7 +73,7 @@ package com.zehfernando.display.abstracts {
 			borderBox.outlineWidth = _border;
 		}
 
-		protected function getBorderOffset(): Number {
+		protected function getBorderOffset():Number {
 			return _borderInside ? 0 : _border;
 		}
 
@@ -83,18 +83,18 @@ package com.zehfernando.display.abstracts {
 			borderBox.color = _borderColor;
 		}
 
-		protected function setHeightFromWidth(): void {
+		protected function setHeightFromWidth():void {
 			_height = (_width - getBorderOffset() * 2) / (bitmap.bitmapData.width / bitmap.bitmapData.height);
 		}
 
-		protected function setWidthFromHeight(): void {
+		protected function setWidthFromHeight():void {
 			_width = (_height - getBorderOffset() * 2) * (bitmap.bitmapData.width / bitmap.bitmapData.height);
 		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function dispose(): void {
+		public function dispose():void {
 			removeChild(bitmap);
 			bitmap.bitmapData.dispose();
 			bitmap.bitmapData = null;
@@ -104,10 +104,10 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return _width;
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			if (_width != __value) {
 				_width = __value;
 				if (_maintainAspectRatio) setHeightFromWidth();
@@ -115,10 +115,10 @@ package com.zehfernando.display.abstracts {
 			}
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _height;
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				if (_maintainAspectRatio) setWidthFromHeight();
@@ -126,50 +126,50 @@ package com.zehfernando.display.abstracts {
 			}
 		}
 
-		public function get border(): Number {
+		public function get border():Number {
 			return _border;
 		}
-		public function set border(__value:Number): void {
+		public function set border(__value:Number):void {
 			if (_border != __value) {
 				_border = __value;
 				redraw();
 			}
 		}
 
-		public function get borderColor(): int {
+		public function get borderColor():int {
 			return _borderColor;
 		}
-		public function set borderColor(__value:int): void {
+		public function set borderColor(__value:int):void {
 			if (_borderColor != __value) {
 				_borderColor = __value;
 				redrawBorderState();
 			}
 		}
 
-		public function get borderAlpha(): Number {
+		public function get borderAlpha():Number {
 			return _borderAlpha;
 		}
-		public function set borderAlpha(__value:Number): void {
+		public function set borderAlpha(__value:Number):void {
 			if (_borderAlpha != __value) {
 				_borderAlpha = __value;
 				redrawBorderState();
 			}
 		}
 
-		public function get maintainAspectRatio(): Boolean {
+		public function get maintainAspectRatio():Boolean {
 			return _maintainAspectRatio;
 		}
-		public function set maintainAspectRatio(__value:Boolean): void {
+		public function set maintainAspectRatio(__value:Boolean):void {
 			if (_maintainAspectRatio != __value) {
 				_maintainAspectRatio = __value;
 				if (_maintainAspectRatio) setHeightFromWidth();
 			}
 		}
 
-		public function get borderInside(): Boolean {
+		public function get borderInside():Boolean {
 			return _borderInside;
 		}
-		public function set borderInside(__value:Boolean): void {
+		public function set borderInside(__value:Boolean):void {
 			if (_borderInside != __value) {
 				_borderInside = __value;
 				redraw();

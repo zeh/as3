@@ -60,7 +60,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			var response:Object = JSON.decode(loader.data);
 
 			_albumId = response["id"];
@@ -81,44 +81,44 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Parameters
 
-		public function get name(): String {
+		public function get name():String {
 			return _name;
 		}
-		public function set name(__value:String): void {
+		public function set name(__value:String):void {
 			_name = __value;
 		}
 
-		public function get description(): String {
+		public function get description():String {
 			return _description;
 		}
-		public function set description(__value:String): void {
+		public function set description(__value:String):void {
 			_description = __value;
 		}
 
-		public function get location(): String {
+		public function get location():String {
 			return _location;
 		}
-		public function set location(__value:String): void {
+		public function set location(__value:String):void {
 			_location = __value;
 		}
 
-		public function get privacy(): String {
+		public function get privacy():String {
 			return _privacy;
 		}
-		public function set privacy(__value:String): void {
+		public function set privacy(__value:String):void {
 			_privacy = __value;
 		}
 
-		public function get type(): String {
+		public function get type():String {
 			return _type;
 		}
-		public function set type(__value:String): void {
+		public function set type(__value:String):void {
 			_type = __value;
 		}
 
 		// Results
 
-		public function get albumId(): String {
+		public function get albumId():String {
 			return _albumId;
 		}
 

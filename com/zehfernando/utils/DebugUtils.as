@@ -34,7 +34,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected static function onMouseDownDraggableObject(e:MouseEvent): void {
+		protected static function onMouseDownDraggableObject(e:MouseEvent):void {
 			// Start dragging an object
 			var sp:Sprite = e.currentTarget as Sprite;
 			draggingObject = sp;
@@ -45,13 +45,13 @@ package com.zehfernando.utils {
 
 		}
 
-		protected static function onMouseMoveDraggableObject(e:MouseEvent): void {
+		protected static function onMouseMoveDraggableObject(e:MouseEvent):void {
 			draggingObject.x = draggingObject.parent.mouseX - draggingObjectOffset.x;
 			draggingObject.y = draggingObject.parent.mouseY - draggingObjectOffset.y;
 			if (dragMoveFunctions[draggingObject]) dragMoveFunctions[draggingObject]();
 		}
 
-		protected static function onMouseUpDraggableObject(e:MouseEvent): void {
+		protected static function onMouseUpDraggableObject(e:MouseEvent):void {
 			draggingObject.stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMoveDraggableObject);
 			draggingObject.stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUpDraggableObject);
 
@@ -61,7 +61,7 @@ package com.zehfernando.utils {
 			draggingObjectOffset = null;
 		}
 
-		protected static function onClickStageTrace(e:MouseEvent): void {
+		protected static function onClickStageTrace(e:MouseEvent):void {
 			var st:Stage = e.currentTarget as Stage;
 			var objects:Array = st.getObjectsUnderPoint(new Point(st.mouseX, st.mouseY));
 
@@ -80,7 +80,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function makeDraggable(__sprite:Sprite, __onMouseMove:Function = null, __onMouseUp:Function = null): void {
+		public static function makeDraggable(__sprite:Sprite, __onMouseMove:Function = null, __onMouseUp:Function = null):void {
 			// Makes an object draggable
 			__sprite.buttonMode = true;
 			__sprite.mouseEnabled = true;
@@ -90,7 +90,7 @@ package com.zehfernando.utils {
 			if (Boolean(__onMouseUp)) dragUpFunctions[__sprite] = __onMouseUp;
 		}
 
-		public static function makeDraggableBitmap(__bitmap:Bitmap, __onMouseMove:Function = null, __onMouseUp:Function = null): void {
+		public static function makeDraggableBitmap(__bitmap:Bitmap, __onMouseMove:Function = null, __onMouseUp:Function = null):void {
 
 			if (!Boolean(__bitmap.parent)) error("Tried to make a Bitmap draggable, but it's not included in the display list yet!");
 

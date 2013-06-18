@@ -102,7 +102,7 @@ package com.zehfernando.net.loaders {
 		// ================================================================================================================
 		// INSTANCE functions ---------------------------------------------------------------------------------------------
 
-		protected function startMonitoringLoading(): void {
+		protected function startMonitoringLoading():void {
 			if (!isMonitoringLoading) {
 				isMonitoringLoading = true;
 				addEventListener(Event.ENTER_FRAME, onEnterFrameMonitorLoading, false, 0, true);
@@ -110,28 +110,28 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		protected function stopMonitoringLoading(): void {
+		protected function stopMonitoringLoading():void {
 			if (isMonitoringLoading) {
 				isMonitoringLoading = false;
 				removeEventListener(Event.ENTER_FRAME, onEnterFrameMonitorLoading);
 			}
 		}
 
-		protected function startMonitoringTime(): void {
+		protected function startMonitoringTime():void {
 			if (!isMonitoringTime) {
 				isMonitoringTime = true;
 				addEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime, false, 0, true);
 			}
 		}
 
-		protected function stopMonitoringTime(): void {
+		protected function stopMonitoringTime():void {
 			if (isMonitoringTime) {
 				isMonitoringTime = false;
 				removeEventListener(Event.ENTER_FRAME, onEnterFrameMonitorTime);
 			}
 		}
 
-		protected function startPlayingToForceMetaDataLoad(): void {
+		protected function startPlayingToForceMetaDataLoad():void {
 			if (!isPlayingToForceMetaDataLoad) {
 				debug("Started waiting for forced metadata load");
 				isPlayingToForceMetaDataLoad = true;
@@ -142,7 +142,7 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		protected function stopPlayingToForceMetaDataLoad(): void {
+		protected function stopPlayingToForceMetaDataLoad():void {
 			if (isPlayingToForceMetaDataLoad) {
 				debug("Stopped waiting for forced metadata load");
 				isPlayingToForceMetaDataLoad = false;
@@ -432,7 +432,7 @@ package com.zehfernando.net.loaders {
 		}
 
 		// Other events
-		protected function onLoadStart(): void {
+		protected function onLoadStart():void {
 			// Pseudo-event
 			_timeStartedLoading = getTimer();
 			_hasStartedLoading = true;
@@ -440,13 +440,13 @@ package com.zehfernando.net.loaders {
 			dispatchEvent(new Event(Event.OPEN));
 		}
 
-		protected function onLoadProgress(): void {
+		protected function onLoadProgress():void {
 			// Pseudo-event
 			//log(url + " / bytes = " + bytesLoaded + " / " + bytesTotal);
 			dispatchEvent(new ProgressEvent(ProgressEvent.PROGRESS, false, false, bytesLoaded, bytesTotal));
 		}
 
-		protected function onLoadComplete(): void {
+		protected function onLoadComplete():void {
 			// Pseudo-event
 			//log(url);
 
@@ -457,7 +457,7 @@ package com.zehfernando.net.loaders {
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 
-		protected function onEnterFrameMonitorLoading(e:Event): void {
+		protected function onEnterFrameMonitorLoading(e:Event):void {
 			// Some load progress has been made
 
 			//log("HAS META = " + _hasMetaData);
@@ -498,7 +498,7 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		protected function onEnterFrameMonitorTime(e:Event): void {
+		protected function onEnterFrameMonitorTime(e:Event):void {
 			if (!isPlayingToForceMetaDataLoad) {
 				dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.TIME_CHANGE));
 			}
@@ -574,7 +574,7 @@ package com.zehfernando.net.loaders {
 		// ================================================================================================================
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
 
-		public function load(__request:URLRequest): void {
+		public function load(__request:URLRequest):void {
 
 			_request = __request;
 			_isLoaded = false;
@@ -587,7 +587,7 @@ package com.zehfernando.net.loaders {
 			startMonitoringLoading();
 		}
 
-		public function dispose(): void {
+		public function dispose():void {
 			stopMonitoringLoading();
 			stopMonitoringTime();
 
@@ -614,7 +614,7 @@ package com.zehfernando.net.loaders {
 
 		// Functions that extend the existing objects
 
-		public function resume(): void {
+		public function resume():void {
 			if (_hasVideo) {
 				//log(">>>>>>>>>>>>>>> resume");
 				//logStackTrace();
@@ -631,7 +631,7 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		public function pause(): void {
+		public function pause():void {
 			if (_hasVideo) {
 				//log(">>>>>>>>>>>>>>> pause");
 				if (!_hasMetaData || isPlayingToForceMetaDataLoad) {
@@ -647,7 +647,7 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		public function seek(__time:Number): void {
+		public function seek(__time:Number):void {
 			if (_hasVideo) {
 				_netStream.seek(__time);
 				onEnterFrameMonitorTime(null);
@@ -659,7 +659,7 @@ package com.zehfernando.net.loaders {
 
 		// Self properties
 
-		public function get hasMetaData(): Boolean {
+		public function get hasMetaData():Boolean {
 			return _hasMetaData;
 		}
 
@@ -670,68 +670,68 @@ package com.zehfernando.net.loaders {
 
 		// Properties that extend existing objects
 
-		public function get bufferLength(): Number {
+		public function get bufferLength():Number {
 			return _netStream.bufferLength;
 		}
 
-		public function get bufferTime(): Number {
+		public function get bufferTime():Number {
 			return _netStream.bufferTime;
 		}
-		public function set bufferTime(__value:Number): void {
+		public function set bufferTime(__value:Number):void {
 			_netStream.bufferTime = __value;
 		}
 
-		public function get time(): Number {
+		public function get time():Number {
 			return _hasVideo ? _netStream.time : 0;
 		}
 
-		public function get duration(): Number {
+		public function get duration():Number {
 			return _metaData["duration"];
 		}
 
-		public function get framerate(): Number {
+		public function get framerate():Number {
 			return _metaData["framerate"];
 		}
 
-		public function get smoothing(): Boolean {
+		public function get smoothing():Boolean {
 			return _video.smoothing;
 		}
-		public function set smoothing(__value:Boolean): void {
+		public function set smoothing(__value:Boolean):void {
 			_video.smoothing = __value;
 		}
 
-		public function get bytesLoaded(): uint {
+		public function get bytesLoaded():uint {
 			return _hasVideo ? _netStream.bytesLoaded : 0;
 		}
 
-		public function get bytesTotal(): uint {
+		public function get bytesTotal():uint {
 			return _hasVideo && _netStream.bytesTotal < 0xffffffff ? _netStream.bytesTotal : 0;
 		}
 
-		public function get decodedFrames(): uint {
+		public function get decodedFrames():uint {
 			return _hasVideo ? _netStream.decodedFrames : 0;
 		}
 
-		public function get droppedFrames(): uint {
+		public function get droppedFrames():uint {
 			return _hasVideo ? _netStream.info.droppedFrames : 0;
 		}
 
-		public function get currentFPS(): Number {
+		public function get currentFPS():Number {
 			return _hasVideo ? _netStream.currentFPS : 0; // The number of frames per second being displayed. If you are exporting video files to be played back on a number of systems, you can check this value during testing to help you determine how much compression to apply when exporting the file
 		}
 
 		override public function get soundTransform(): SoundTransform {
 			return _hasVideo ? _netStream.soundTransform : null;
 		}
-		override public function set soundTransform(__value:SoundTransform): void {
+		override public function set soundTransform(__value:SoundTransform):void {
 			if (_hasVideo) _netStream.soundTransform = __value;
 		}
 
-		public function get url(): String {
+		public function get url():String {
 			return Boolean(_request) ? _request.url : null;
 		}
 
-		public function getLoadingSpeed(): Number {
+		public function getLoadingSpeed():Number {
 			// Returns the loading speed, in bytes per second
 			if (_isLoading) {
 				return bytesLoaded / ((getTimer() - _timeStartedLoading) / 1000);
@@ -741,7 +741,7 @@ package com.zehfernando.net.loaders {
 			return 0;
 		}
 
-		public function getFullBufferingLevel(): Number {
+		public function getFullBufferingLevel():Number {
 			// Returns a number between 0 and 1 that's the percentage of data that is loaded to provide a full non-stop playback
 			// 0 = nothing loaded; 1 = can probably provide a nonstop playback
 			if (bytesTotal > 0 && bytesLoaded >= bytesTotal) return 1;

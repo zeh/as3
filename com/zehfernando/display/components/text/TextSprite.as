@@ -116,7 +116,7 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		protected function applyElementFormatTracking(): void {
+		protected function applyElementFormatTracking():void {
 			// Based on tracking (letter spacing), applies that to the elementFormat instance
 			elementFormat.trackingLeft = _tracking/2;
 			elementFormat.trackingRight = _tracking/2;
@@ -130,12 +130,12 @@ package com.zehfernando.display.components.text {
 			return new TextElement(__text, ef);
 		}
 
-		protected function getCharAtMousePosition(): int {
+		protected function getCharAtMousePosition():int {
 			if (!Boolean(stage)) return -1;
 			return getCharAtPosition(stage.mouseX, stage.mouseY);
 		}
 
-		protected function getCharAtPosition(__stageX:Number, __stageY:Number): int {
+		protected function getCharAtPosition(__stageX:Number, __stageY:Number):int {
 			var p:Point = new Point(__stageX, __stageY);
 			var lastLine:TextLine = textBlock.firstLine;
 			var pos:int = -1;
@@ -165,7 +165,7 @@ package com.zehfernando.display.components.text {
 			return null;
 		}
 
-		protected function redraw(): void {
+		protected function redraw():void {
 			// Redraw the whole text block
 
 			var i:int;
@@ -285,7 +285,7 @@ package com.zehfernando.display.components.text {
 //			}
 //		}
 
-		protected function redrawPosition(): void {
+		protected function redrawPosition():void {
 			// Sets the position of the text based on the current alignment
 
 			// Fix vertical position
@@ -409,7 +409,7 @@ package com.zehfernando.display.components.text {
 		}
 
 
-//		protected function setTextFormatProperties(__props:Object): void {
+//		protected function setTextFormatProperties(__props:Object):void {
 //			// Set properties of the textfield's text format
 //			// TODO: set selectively, so it won't overwrite anything?
 //			var fmt:TextFormat = textField.getTextFormat();
@@ -429,7 +429,7 @@ package com.zehfernando.display.components.text {
 //			return textField.getTextFormat(beginIndex, endIndex);
 //		}
 //
-//		public function setTextFormat(format:TextFormat, beginIndex:int = -1, endIndex:int = -1): void {
+//		public function setTextFormat(format:TextFormat, beginIndex:int = -1, endIndex:int = -1):void {
 //			textField.setTextFormat(format, beginIndex, endIndex);
 //		}
 
@@ -453,50 +453,50 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get blockAlignVertical(): String {
+		public function get blockAlignVertical():String {
 			return _blockAlignVertical;
 		}
-		public function set blockAlignVertical(__value:String): void {
+		public function set blockAlignVertical(__value:String):void {
 			if (_blockAlignVertical != __value) {
 				_blockAlignVertical = __value;
 				redrawPosition();
 			}
 		}
 
-		public function get blockAlignHorizontal(): String {
+		public function get blockAlignHorizontal():String {
 			return _blockAlignHorizontal;
 		}
-		public function set blockAlignHorizontal(__value:String): void {
+		public function set blockAlignHorizontal(__value:String):void {
 			if (_blockAlignHorizontal != __value) {
 				_blockAlignHorizontal = __value;
 				redrawPosition();
 			}
 		}
 
-		public function get autoSize(): Boolean {
+		public function get autoSize():Boolean {
 			return _autoSize;
 		}
-		public function set autoSize(__value:Boolean): void {
+		public function set autoSize(__value:Boolean):void {
 			if (_autoSize != __value) {
 				_autoSize = __value;
 				redraw();
 			}
 		}
 
-		public function get align(): String {
+		public function get align():String {
 			return _align;
 		}
-		public function set align(__value:String): void {
+		public function set align(__value:String):void {
 			if (_align != __value) {
 				_align = __value;
 				redraw();
 			}
 		}
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return _width * scaleX;
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			if (_width != __value || _autoSize) {
 				_width = __value;
 				_autoSize = false;
@@ -504,90 +504,90 @@ package com.zehfernando.display.components.text {
 			}
 		}
 
-		public function get textWidth(): Number {
+		public function get textWidth():Number {
 			return _textWidth * scaleX;
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _height * scaleY;
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			throw new Error ("Warning: you cannot set the height of a TextSprite instance.");
 		}
 
 		// Textfield extensions
-//		public function get antiAliasType(): String {
+//		public function get antiAliasType():String {
 //			return textField.antiAliasType;
 //		}
-//		public function set antiAliasType(__value:String): void {
+//		public function set antiAliasType(__value:String):void {
 //			textField.antiAliasType = __value;
 //		}
 //
-//		public function get border(): Boolean {
+//		public function get border():Boolean {
 //			return textField.border;
 //		}
-//		public function set border(__value:Boolean): void {
+//		public function set border(__value:Boolean):void {
 //			textField.border = __value;
 //		}
 //
-//		public function get sharpness(): Number {
+//		public function get sharpness():Number {
 //			return textField.sharpness;
 //		}
-//		public function set sharpness(__value:Number): void {
+//		public function set sharpness(__value:Number):void {
 //			textField.sharpness = __value;
 //		}
 //
-//		public function get thickness(): Number {
+//		public function get thickness():Number {
 //			return textField.thickness;
 //		}
-//		public function set thickness(__value:Number): void {
+//		public function set thickness(__value:Number):void {
 //			textField.thickness = __value;
 //		}
 
-		public function get text(): String {
+		public function get text():String {
 			return _text;
 		}
-		public function set text(__value:String): void {
+		public function set text(__value:String):void {
 			if (_text != __value) {
 				_text = __value;
 				redraw();
 			}
 		}
 
-		public function get border(): Boolean {
+		public function get border():Boolean {
 			return _border;
 		}
-		public function set border(__value:Boolean): void {
+		public function set border(__value:Boolean):void {
 			if (_border != __value) {
 				_border = __value;
 				redraw();
 			}
 		}
 
-		public function get ascent(): Number {
+		public function get ascent():Number {
 			return _ascent;
 		}
 
-		public function get descent(): Number {
+		public function get descent():Number {
 			return _descent;
 		}
 
-		public function get baseline(): Number {
+		public function get baseline():Number {
 			return _baseline;
 		}
 
-//		public function get htmlText(): String {
+//		public function get htmlText():String {
 //			return textField.htmlText;
 //		}
-//		public function set htmlText(__value:String): void {
+//		public function set htmlText(__value:String):void {
 //			textField.htmlText = __value;
 //			resetTextPosition();
 //		}
 //
-//		public function get embedFonts(): Boolean {
+//		public function get embedFonts():Boolean {
 //			return textField.embedFonts;
 //		}
-//		public function set embedFonts(__value:Boolean): void {
+//		public function set embedFonts(__value:Boolean):void {
 //			textField.embedFonts = __value;
 //			resetTextPosition();
 //		}
@@ -595,70 +595,70 @@ package com.zehfernando.display.components.text {
 //		public function get styleSheet(): StyleSheet {
 //			return textField.styleSheet;
 //		}
-//		public function set styleSheet(__value:StyleSheet): void {
+//		public function set styleSheet(__value:StyleSheet):void {
 //			textField.styleSheet = __value;
 //			resetTextPosition();
 //		}
 //
-//		public function get multiline(): Boolean {
+//		public function get multiline():Boolean {
 //			return textField.wordWrap;
 //		}
-//		public function set multiline(__value:Boolean): void {
+//		public function set multiline(__value:Boolean):void {
 //			textField.wordWrap = textField.multiline = __value;
 //			resetTextPosition();
 //		}
 
 
 		// Textfield format extensions
-//		public function get font(): String {
+//		public function get font():String {
 //			return textField.getTextFormat().font;
 //		}
-//		public function set font(__value:String): void {
+//		public function set font(__value:String):void {
 //			setTextFormatProperties({font:__value});
 //		}
 //
-//		public function get size(): Number {
+//		public function get size():Number {
 //			return textField.getTextFormat().size == null ? 12 : (textField.getTextFormat().size as Number);
 //		}
-//		public function set size(__value:Number): void {
+//		public function set size(__value:Number):void {
 //		}
 //			setTextFormatProperties({size:__value});
 //
-//		public function get color(): int {
+//		public function get color():int {
 //			return Boolean(textField.getTextFormat().color) ? (textField.getTextFormat().color as int) : 0;
 //		}
-//		public function set color(__value:int): void {
+//		public function set color(__value:int):void {
 //			setTextFormatProperties({font:__value});
 //		}
 //
-//		public function get bold(): Boolean {
+//		public function get bold():Boolean {
 //			return Boolean(textField.getTextFormat().bold);
 //		}
-//		public function set bold(__value:Boolean): void {
+//		public function set bold(__value:Boolean):void {
 //			setTextFormatProperties({bold:__value});
 //		}
 //
-//		public function get kerning(): Boolean {
+//		public function get kerning():Boolean {
 //			return Boolean(textField.getTextFormat().kerning);
 //		}
-//		public function set kerning(__value:Boolean): void {
+//		public function set kerning(__value:Boolean):void {
 //			setTextFormatProperties({kerning:__value});
 //		}
 //
-		public function get leading(): Number {
+		public function get leading():Number {
 			return _leading;
 		}
-		public function set leading(__value:Number): void {
+		public function set leading(__value:Number):void {
 			if (_leading != __value) {
 				_leading = __value;
 				redraw();
 			}
 		}
 
-		public function get maxHeight(): Number {
+		public function get maxHeight():Number {
 			return _maxHeight;
 		}
-		public function set maxHeight(__value:Number): void {
+		public function set maxHeight(__value:Number):void {
 			if (_maxHeight != __value) {
 				_maxHeight = __value;
 				redraw();
@@ -668,7 +668,7 @@ package com.zehfernando.display.components.text {
 		public function get previousTextLine(): TextLine {
 			return _previousTextLine;
 		}
-		public function set previousTextLine(__value:TextLine): void {
+		public function set previousTextLine(__value:TextLine):void {
 			if (_previousTextLine != __value) {
 				_previousTextLine = __value;
 				redraw();
@@ -681,38 +681,38 @@ package com.zehfernando.display.components.text {
 
 		// FontDescription extensions
 
-		public function get renderingMode(): String {
+		public function get renderingMode():String {
 			return fontDescription.renderingMode;
 		}
-		public function set renderingMode(__value:String): void {
+		public function set renderingMode(__value:String):void {
 			if (renderingMode != __value) {
 				fontDescription.renderingMode = __value;
 				redraw();
 			}
 		}
 
-		public function get fontName(): String {
+		public function get fontName():String {
 			return fontDescription.fontName;
 		}
-		public function set fontName(__value:String): void {
+		public function set fontName(__value:String):void {
 			if (fontName != __value) {
 				fontDescription.fontName = __value;
 				redraw();
 			}
 		}
 
-		public function get embeddedFonts(): Boolean {
+		public function get embeddedFonts():Boolean {
 			return fontDescription.fontLookup == FontLookup.EMBEDDED_CFF;
 		}
-		public function set embeddedFonts(__value:Boolean): void {
+		public function set embeddedFonts(__value:Boolean):void {
 			fontDescription.fontLookup = __value ? FontLookup.EMBEDDED_CFF : FontLookup.DEVICE;
 			redraw();
 		}
 
-		public function get cffHinting(): String {
+		public function get cffHinting():String {
 			return fontDescription.cffHinting;
 		}
-		public function set cffHinting(__value:String): void {
+		public function set cffHinting(__value:String):void {
 			if (cffHinting != __value) {
 				fontDescription.cffHinting = __value;
 				redraw();
@@ -722,30 +722,30 @@ package com.zehfernando.display.components.text {
 		// ElementFormat extensions
 
 		// This doesn't work, or maybe depends on specific font features
-		public function get digitWidth(): String {
+		public function get digitWidth():String {
 			return elementFormat.digitWidth;
 		}
-		public function set digitWidth(__value:String): void {
+		public function set digitWidth(__value:String):void {
 			if (digitWidth != __value) {
 				elementFormat.digitWidth = __value;
 				redraw();
 			}
 		}
 
-		public function get color(): uint {
+		public function get color():uint {
 			return elementFormat.color;
 		}
-		public function set color(__value:uint): void {
+		public function set color(__value:uint):void {
 			if (color != __value) {
 				elementFormat.color = __value;
 				redraw();
 			}
 		}
 
-		public function get fontSize(): Number {
+		public function get fontSize():Number {
 			return elementFormat.fontSize;
 		}
-		public function set fontSize(__value:Number): void {
+		public function set fontSize(__value:Number):void {
 			if (fontSize != __value) {
 				elementFormat.fontSize = __value;
 				redraw();
@@ -753,10 +753,10 @@ package com.zehfernando.display.components.text {
 		}
 
 		// This doesn't work, or maybe depends on specific font features
-		public function get tracking(): Number {
+		public function get tracking():Number {
 			return _tracking;
 		}
-		public function set tracking(__value:Number): void {
+		public function set tracking(__value:Number):void {
 			if (_tracking != __value) {
 				_tracking = __value;
 				// TODO: always re-apply this?
@@ -765,35 +765,35 @@ package com.zehfernando.display.components.text {
 			}
 		}
 
-		public function get trackingAsPhotoshop(): Number {
+		public function get trackingAsPhotoshop():Number {
 			// -100 ps = -4 f (font size 40)
 			// -100 ps = -2 f (font size 20)
 			return tracking / elementFormat.fontSize * 1000;
 		}
-		public function set trackingAsPhotoshop(__value:Number): void {
+		public function set trackingAsPhotoshop(__value:Number):void {
 			// TODO: make it re-apply when font size is changed! otherwise the value is wrong
 			tracking = __value / 1000 * elementFormat.fontSize;
 		}
 
-		public function get leadingAsPhotoshop(): Number {
+		public function get leadingAsPhotoshop():Number {
 			// 55 ps = -15 f (font size 70)
 			// 32.66 ps = -7.54 f (font size 40)
 			return elementFormat.fontSize + leading;
 		}
-		public function set leadingAsPhotoshop(__value:Number): void {
+		public function set leadingAsPhotoshop(__value:Number):void {
 			// TODO: make it re-apply when font size is changed! otherwise the value is wrong
 			leading = __value - elementFormat.fontSize;
 		}
 
 
-		public function get textLineCreationResult(): String {
+		public function get textLineCreationResult():String {
 			return (Boolean(_previousTextLine) ? _previousTextLine.textBlock : textBlock).textLineCreationResult;
 		}
 
-		public function get trimFirstLineIfBlank(): Boolean {
+		public function get trimFirstLineIfBlank():Boolean {
 			return _trimFirstLineIfBlank;
 		}
-		public function set trimFirstLineIfBlank(__value:Boolean): void {
+		public function set trimFirstLineIfBlank(__value:Boolean):void {
 			if (_trimFirstLineIfBlank != __value) {
 				_trimFirstLineIfBlank = __value;
 				// TODO: better name?

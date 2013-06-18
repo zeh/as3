@@ -38,7 +38,7 @@ package com.zehfernando.display.templates.application {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function init(): void {
+		public function init():void {
 			// Start loading stuff
 			inited = true;
 			requestRedraw();
@@ -48,7 +48,7 @@ package com.zehfernando.display.templates.application {
 			dispatchEvent(new ApplicationFrame2Event(ApplicationFrame2Event.INIT_COMPLETE));
 		}
 
-		public function show(): void {
+		public function show():void {
 			// Finished, shows itself
 		}
 
@@ -56,16 +56,16 @@ package com.zehfernando.display.templates.application {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function requestRedraw(): void {
+		protected function requestRedraw():void {
 			RenderUtils.addFunction(redrawWidth);
 			RenderUtils.addFunction(redrawHeight);
 		}
 
-		protected function redrawWidth(): void {
+		protected function redrawWidth():void {
 			// EXTEND THIS!
 		}
 
-		protected function redrawHeight(): void {
+		protected function redrawHeight():void {
 			// EXTEND THIS!
 		}
 
@@ -73,20 +73,20 @@ package com.zehfernando.display.templates.application {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return _width;
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			if (_width != __value) {
 				_width = __value;
 				redrawWidth();
 			}
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _height;
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				redrawHeight();

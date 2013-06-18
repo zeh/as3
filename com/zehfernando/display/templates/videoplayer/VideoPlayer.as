@@ -11,7 +11,6 @@ package com.zehfernando.display.templates.videoplayer {
 	import com.zehfernando.utils.AppUtils;
 	import com.zehfernando.utils.DelayedCalls;
 	import com.zehfernando.utils.RenderUtils;
-	import com.zehfernando.utils.console.log;
 
 	import flash.display.DisplayObjectContainer;
 	import flash.display.StageDisplayState;
@@ -62,12 +61,12 @@ package com.zehfernando.display.templates.videoplayer {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function setDefaultProperties(): void {
+		protected function setDefaultProperties():void {
 			_scaleMode = StageScaleMode.SHOW_ALL;
 			isPanelShown = true;
 		}
 
-		protected function createAssets(): void {
+		protected function createAssets():void {
 			video = new VideoContainer();
 			video.backgroundColor = 0x000000;
 			video.backgroundAlpha = 1;
@@ -99,28 +98,28 @@ package com.zehfernando.display.templates.videoplayer {
 			setPanel(p);
 		}
 
-		override protected function redrawWidth(): void {
+		override protected function redrawWidth():void {
 			video.width = _width;
 
 			if (Boolean(panel)) panel.width = _width;
 		}
 
-		override protected function redrawHeight(): void {
+		override protected function redrawHeight():void {
 			video.height = _height;
 
 			if (Boolean(panel)) panel.height = _height;
 		}
 
-		protected function requestRedraw(): void {
+		protected function requestRedraw():void {
 			RenderUtils.addFunction(redraw);
 		}
 
-		protected function redraw(): void {
+		protected function redraw():void {
 			redrawWidth();
 			redrawHeight();
 		}
 
-		protected function setPanel(__panel:VideoPanel): void {
+		protected function setPanel(__panel:VideoPanel):void {
 			removePanel();
 
 			panel = __panel;
@@ -146,7 +145,7 @@ package com.zehfernando.display.templates.videoplayer {
 			waitToHidePanel();
 		}
 
-		protected function removePanel(): void {
+		protected function removePanel():void {
 			if (Boolean(panel)) {
 				panel.removeEventListener(VideoPanelEvent.PAUSE, onVideoPanelPause);
 				panel.removeEventListener(VideoPanelEvent.PLAY, onVideoPanelPlay);
@@ -162,11 +161,11 @@ package com.zehfernando.display.templates.videoplayer {
 			}
 		}
 
-		protected function updatePlayState(): void {
+		protected function updatePlayState():void {
 			panel.setPlayState(video.isPlaying);
 		}
 
-		protected function updateVideoScaleMode(): void {
+		protected function updateVideoScaleMode():void {
 			if (isFullScreen()) {
 				video.scaleMode = StageScaleMode.SHOW_ALL;
 			} else {
@@ -174,32 +173,32 @@ package com.zehfernando.display.templates.videoplayer {
 			}
 		}
 
-		protected function updateVideoLoad(): void {
+		protected function updateVideoLoad():void {
 			panel.setVideoLoadProgress(video.bytesLoaded / video.bytesTotal);
 		}
 
-		protected function updateVideoTime(): void {
+		protected function updateVideoTime():void {
 			panel.setVideoTime(video.time, video.duration);
 		}
 
-		protected function updateVideoVolume(): void {
+		protected function updateVideoVolume():void {
 			panel.setVideoVolume(video.volume);
 		}
 
-		protected function isFullScreen(): Boolean {
+		protected function isFullScreen():Boolean {
 			return AppUtils.getStage().displayState == StageDisplayState.FULL_SCREEN;
 		}
 
-		protected function waitToHidePanel(): void {
+		protected function waitToHidePanel():void {
 			cancelWaitToHidePanel();
 			DelayedCalls.add(TIME_WAIT_TO_HIDE_PANEL * 1000, hidePanel);
 		}
 
-		protected function cancelWaitToHidePanel(): void {
+		protected function cancelWaitToHidePanel():void {
 			DelayedCalls.remove(hidePanel);
 		}
 
-		protected function showPanel(__immediate:Boolean = false): void {
+		protected function showPanel(__immediate:Boolean = false):void {
 			if (Boolean(panel) && !isPanelShown) {
 				cancelWaitToHidePanel();
 				ZTween.remove(panel, "visibility");
@@ -213,7 +212,7 @@ package com.zehfernando.display.templates.videoplayer {
 			}
 		}
 
-		protected function hidePanel(__immediate:Boolean = false): void {
+		protected function hidePanel(__immediate:Boolean = false):void {
 			if (Boolean(panel) && isPanelShown && panel.canHide) {
 				ZTween.remove(panel, "visibility");
 				isPanelShown = false;
@@ -230,15 +229,15 @@ package com.zehfernando.display.templates.videoplayer {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onVideoPanelPause(e:VideoPanelEvent): void {
+		protected function onVideoPanelPause(e:VideoPanelEvent):void {
 			video.pauseVideo();
 		}
 
-		protected function onVideoPanelPlay(e:VideoPanelEvent): void {
+		protected function onVideoPanelPlay(e:VideoPanelEvent):void {
 			video.playVideo();
 		}
 
-		protected function onVideoPanelScreenFull(e:VideoPanelEvent): void {
+		protected function onVideoPanelScreenFull(e:VideoPanelEvent):void {
 			if (!isFullScreen()) {
 
 				originalX = x;
@@ -269,13 +268,13 @@ package com.zehfernando.display.templates.videoplayer {
 			}
 		}
 
-		protected function onVideoPanelScreenNormal(e:VideoPanelEvent): void {
+		protected function onVideoPanelScreenNormal(e:VideoPanelEvent):void {
 			if (isFullScreen()) {
 				AppUtils.getStage().displayState = StageDisplayState.NORMAL;
 			}
 		}
 
-		protected function onMouseAction(e:Event): void {
+		protected function onMouseAction(e:Event):void {
 			if (Boolean(panel)) {
 				if (!isPanelShown) showPanel();
 
@@ -285,7 +284,7 @@ package com.zehfernando.display.templates.videoplayer {
 			}
 		}
 
-		protected function onSwitchedFullScreen(e:Event): void {
+		protected function onSwitchedFullScreen(e:Event):void {
 			if (isFullScreen()) {
 				// Switched to full screen
 				updateVideoScaleMode();
@@ -306,75 +305,75 @@ package com.zehfernando.display.templates.videoplayer {
 			}
 		}
 
-		protected function onVideoPanelScrubStart(e:VideoPanelEvent): void {
+		protected function onVideoPanelScrubStart(e:VideoPanelEvent):void {
 			wasVideoPausedBeforeScrub = video.isPlaying;
 			video.pauseVideo();
 		}
 
-		protected function onVideoPanelSeek(e:VideoPanelSeekEvent): void {
+		protected function onVideoPanelSeek(e:VideoPanelSeekEvent):void {
 			video.time = e.time;
 		}
 
-		protected function onVideoPanelScrubEnd(e:VideoPanelEvent): void {
+		protected function onVideoPanelScrubEnd(e:VideoPanelEvent):void {
 			if (wasVideoPausedBeforeScrub) {
 				video.playVideo();
 			}
 			onMouseAction(null);
 		}
 
-		protected function onVideoPanelVolumeChange(e:VideoPanelVolumeEvent): void {
+		protected function onVideoPanelVolumeChange(e:VideoPanelVolumeEvent):void {
 			//video.volume =
 			video.volume = e.volume;
 		}
 
-		protected function onVideoPlayFinish(e:Event): void {
+		protected function onVideoPlayFinish(e:Event):void {
 			// TODO!
 		}
 
-		protected function onVideoPlayed(e:Event): void {
+		protected function onVideoPlayed(e:Event):void {
 			updatePlayState();
 		}
 
-		protected function onVideoPaused(e:Event): void {
+		protected function onVideoPaused(e:Event):void {
 			updatePlayState();
 		}
 
-		protected function onVideoLoadingProgress(e:Event): void {
+		protected function onVideoLoadingProgress(e:Event):void {
 			updateVideoLoad();
 		}
 
-		protected function onVideoLoadingComplete(e:Event): void {
+		protected function onVideoLoadingComplete(e:Event):void {
 			updateVideoLoad();
 		}
 
-		protected function onVideoReceivedMetadata(e:Event): void {
+		protected function onVideoReceivedMetadata(e:Event):void {
 			updateVideoLoad();
 			updateVideoTime();
 		}
 
-		protected function onVideoTimeChanged(e:Event): void {
+		protected function onVideoTimeChanged(e:Event):void {
 			updateVideoTime();
 		}
 
-		protected function onVideoVolumeChanged(e:Event): void {
+		protected function onVideoVolumeChanged(e:Event):void {
 			updateVideoVolume();
 		}
 
-		protected function onVideoSeekNotify(e:Event): void {
+		protected function onVideoSeekNotify(e:Event):void {
 		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function load(__url:String): void {
+		public function load(__url:String):void {
 			video.load(__url);
 		}
 
-		public function play(): void {
+		public function play():void {
 			video.playVideo();
 		}
 
-		public function pause(): void {
+		public function pause():void {
 			video.pauseVideo();
 		}
 
@@ -408,10 +407,10 @@ package com.zehfernando.display.templates.videoplayer {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get scaleMode(): String {
+		public function get scaleMode():String {
 			return _scaleMode;
 		}
-		public function set scaleMode(__value:String): void {
+		public function set scaleMode(__value:String):void {
 			_scaleMode = __value;
 			updateVideoScaleMode();
 		}

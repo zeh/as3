@@ -66,7 +66,7 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function setDefaultData(): void {
+		protected function setDefaultData():void {
 			_width = 20;
 			_position = 0;
 
@@ -87,7 +87,7 @@ package com.zehfernando.display.components {
 			_backgroundAlpha = 1;
 		}
 
-		protected function createAssets(): void {
+		protected function createAssets():void {
 			background = new Box(100, 100, _backgroundColor);
 			addChild(background);
 
@@ -107,20 +107,20 @@ package com.zehfernando.display.components {
 			if (Boolean(wheelTarget)) AppUtils.getStage().addEventListener(MouseEvent.MOUSE_WHEEL, onStageMouseWheel, false, 0, true);
 		}
 
-		override protected function redrawWidth(): void {
+		override protected function redrawWidth():void {
 			background.width = _width;
 
 			redrawPosition();
 		}
 
-		override protected function redrawHeight(): void {
+		override protected function redrawHeight():void {
 			background.height = _height;
 			picker.height = _height;
 			hitter.y = -_hitMargin;
 			hitter.height = _height + _hitMargin * 2;
 		}
 
-		protected function redrawPosition(): void {
+		protected function redrawPosition():void {
 			var pw:Number = Math.min(MathUtils.clamp(_pickerScale * _width, _minPickerSize, _maxPickerSize), _width);
 			if (_roundPickerPosition) pw = Math.round(pw);
 
@@ -135,7 +135,7 @@ package com.zehfernando.display.components {
 			hitter.width = pw + _hitMargin * 2;
 		}
 
-		protected function startDragging(): void {
+		protected function startDragging():void {
 			// Starts dragging the head
 			if (!_isDragging && enabled) {
 				draggingOffset = mouseX - picker.x;
@@ -147,7 +147,7 @@ package com.zehfernando.display.components {
 			}
 		}
 
-		protected function continueDragging(): void {
+		protected function continueDragging():void {
 			if (_isDragging) {
 				var newPos:Number = MathUtils.map(mouseX - draggingOffset, 0, _width - picker.width, 0, 1, true);
 				if(newPos != _position) {
@@ -157,7 +157,7 @@ package com.zehfernando.display.components {
 			}
 		}
 
-		protected function stopDragging(): void {
+		protected function stopDragging():void {
 			if (_isDragging) {
 				continueDragging();
 
@@ -171,19 +171,19 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onMouseDown(e:MouseEvent): void {
+		protected function onMouseDown(e:MouseEvent):void {
 			startDragging();
 		}
 
-		protected function onDraggingMouseMove(e:MouseEvent): void {
+		protected function onDraggingMouseMove(e:MouseEvent):void {
 			continueDragging();
 		}
 
-		protected function onDraggingMouseUp(e:MouseEvent): void {
+		protected function onDraggingMouseUp(e:MouseEvent):void {
 			stopDragging();
 		}
 
-		protected function onStageMouseWheel(e:MouseEvent): void {
+		protected function onStageMouseWheel(e:MouseEvent):void {
 			if (_enabled) {
 				position -= _wheelDeltaScale * e.delta;
 				dispatchEvent(new Event(EVENT_POSITION_CHANGED_BY_USER));
@@ -200,124 +200,124 @@ package com.zehfernando.display.components {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get position(): Number {
+		public function get position():Number {
 			return _position;
 		}
-		public function set position(__value:Number): void {
+		public function set position(__value:Number):void {
 			if (_position != __value) {
 				_position = MathUtils.clamp(__value);
 				redrawPosition();
 			}
 		}
 
-		public function get enabled(): Boolean {
+		public function get enabled():Boolean {
 			return _enabled;
 		}
-		public function set enabled(__value:Boolean): void {
+		public function set enabled(__value:Boolean):void {
 			_enabled = hitter.mouseEnabled = __value;
 		}
 
-		public function get isDragging(): Boolean {
+		public function get isDragging():Boolean {
 			return _isDragging;
 		}
 
-		public function get wheelDeltaScale(): Number {
+		public function get wheelDeltaScale():Number {
 			return _wheelDeltaScale;
 		}
-		public function set wheelDeltaScale(__value:Number): void {
+		public function set wheelDeltaScale(__value:Number):void {
 			if (_wheelDeltaScale != __value) {
 				_wheelDeltaScale = __value;
 			}
 		}
 
-		public function get backgroundColor(): int {
+		public function get backgroundColor():int {
 			return _backgroundColor;
 		}
-		public function set backgroundColor(__value:int): void {
+		public function set backgroundColor(__value:int):void {
 			if (_backgroundColor != __value) {
 				_backgroundColor = __value;
 				background.color = _backgroundColor;
 			}
 		}
 
-		public function get backgroundAlpha(): Number {
+		public function get backgroundAlpha():Number {
 			return _backgroundAlpha;
 		}
-		public function set backgroundAlpha(__value:Number): void {
+		public function set backgroundAlpha(__value:Number):void {
 			if (_backgroundAlpha != __value) {
 				_backgroundAlpha = __value;
 				background.alpha = _backgroundAlpha;
 			}
 		}
 
-		public function get pickerColor(): int {
+		public function get pickerColor():int {
 			return _pickerColor;
 		}
-		public function set pickerColor(__value:int): void {
+		public function set pickerColor(__value:int):void {
 			if (_pickerColor != __value) {
 				_pickerColor = __value;
 				picker.color = _pickerColor;
 			}
 		}
 
-		public function get pickerAlpha(): Number {
+		public function get pickerAlpha():Number {
 			return _pickerAlpha;
 		}
-		public function set pickerAlpha(__value:Number): void {
+		public function set pickerAlpha(__value:Number):void {
 			if (_pickerAlpha != __value) {
 				_pickerAlpha = __value;
 				picker.alpha = _pickerAlpha;
 			}
 		}
 
-		public function get pickerScale(): Number {
+		public function get pickerScale():Number {
 			return _pickerScale;
 		}
-		public function set pickerScale(__value:Number): void {
+		public function set pickerScale(__value:Number):void {
 			if (_pickerScale != __value) {
 				_pickerScale = __value;
 				redrawPosition();
 			}
 		}
 
-		public function get minPickerSize(): Number {
+		public function get minPickerSize():Number {
 			return _minPickerSize;
 		}
-		public function set minPickerSize(__value:Number): void {
+		public function set minPickerSize(__value:Number):void {
 			if (_minPickerSize != __value) {
 				_minPickerSize = __value;
 				redrawPosition();
 			}
 		}
 
-		public function get maxPickerSize(): Number {
+		public function get maxPickerSize():Number {
 			return _maxPickerSize;
 		}
-		public function set maxPickerSize(__value:Number): void {
+		public function set maxPickerSize(__value:Number):void {
 			if (_maxPickerSize != __value) {
 				_maxPickerSize = __value;
 				redrawPosition();
 			}
 		}
 
-		public function get minValue(): Number {
+		public function get minValue():Number {
 			return _minValue;
 		}
-		public function set minValue(__value:Number): void {
+		public function set minValue(__value:Number):void {
 			_minValue = __value;
 		}
 
-		public function get maxValue(): Number {
+		public function get maxValue():Number {
 			return _maxValue;
 		}
-		public function set maxValue(__value:Number): void {
+		public function set maxValue(__value:Number):void {
 			_maxValue = __value;
 		}
 
-		public function get value(): Number {
+		public function get value():Number {
 			return MathUtils.map(_position, 0, 1, _minValue, _maxValue, true);
 		}
-		public function set value(__value:Number): void {
+		public function set value(__value:Number):void {
 			position = MathUtils.map(__value, _minValue, _maxValue, 0, 1, true);
 		}
 	}

@@ -41,12 +41,12 @@ package com.zehfernando.net.apis.facebook.data {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get pictureLarge(): String {
+		public function get pictureLarge():String {
 			// 200 pixels wide, variable height
 			return (FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_FILE_PICTURE_LARGE).replace(FacebookConstants.PARAMETER_AUTHOR_ID, id);
 		}
 
-		public function get pictureNormal(): String {
+		public function get pictureNormal():String {
 			// 100x100
 			return (FacebookConstants.SERVICE_DOMAIN + FacebookConstants.SERVICE_FILE_PICTURE_NORMAL).replace(FacebookConstants.PARAMETER_AUTHOR_ID, id);
 		}

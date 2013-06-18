@@ -34,7 +34,7 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// INTERNAL INSTANCE functions ------------------------------------------------------------------------------------
 
-		protected function fixPosition(): void {
+		protected function fixPosition():void {
 			// Using localToGlobal/globalToLocal is less precise than doing it mathematically, but the end result is more accurate inside Flash because it's in sync with Flash's positioning and rotating limitations
 			var op:Point = new Point(0, 0);
 			var rp:Point = new Point(_registrationX, _registrationY);
@@ -44,7 +44,7 @@ package com.zehfernando.display {
 			super.y = _y - (rp.y - op.y);
 		}
 
-		protected function requestPositionFix(): void {
+		protected function requestPositionFix():void {
 			if (Boolean(stage) && !setToUpdate) {
 				setToUpdate = true;
 				stage.addEventListener(Event.RENDER, onRender, false, 0, true);
@@ -55,7 +55,7 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// EVENT functions ------------------------------------------------------------------------------------------------
 
-		protected function onRender(e:Event): void {
+		protected function onRender(e:Event):void {
 			stage.removeEventListener(Event.RENDER, onRender);
 			setToUpdate = false;
 			fixPosition();
@@ -64,47 +64,47 @@ package com.zehfernando.display {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		override public function get x(): Number {
+		override public function get x():Number {
 			return _x;
 		}
-		override public function set x(__value:Number): void {
+		override public function set x(__value:Number):void {
 			_x = __value;
 			requestPositionFix();
 		}
 
-		override public function get y(): Number {
+		override public function get y():Number {
 			return _y;
 		}
-		override public function set y(__value:Number): void {
+		override public function set y(__value:Number):void {
 			_y = __value;
 			requestPositionFix();
 		}
 
-		override public function set rotation(__value:Number): void {
+		override public function set rotation(__value:Number):void {
 			super.rotation = __value;
 			requestPositionFix();
 		}
-		override public function set scaleX(__value:Number): void {
+		override public function set scaleX(__value:Number):void {
 			super.scaleX = __value;
 			requestPositionFix();
 		}
-		override public function set scaleY(__value:Number): void {
+		override public function set scaleY(__value:Number):void {
 			super.scaleY = __value;
 			requestPositionFix();
 		}
 
-		public function get registrationX(): Number {
+		public function get registrationX():Number {
 			return _registrationX;
 		}
-		public function set registrationX(__value:Number): void {
+		public function set registrationX(__value:Number):void {
 			_registrationX = __value;
 			requestPositionFix();
 		}
 
-		public function get registrationY(): Number {
+		public function get registrationY():Number {
 			return _registrationY;
 		}
-		public function set registrationY(__value:Number): void {
+		public function set registrationY(__value:Number):void {
 			_registrationY = __value;
 			requestPositionFix();
 		}

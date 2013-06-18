@@ -91,18 +91,18 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function redrawWidth(): void {
+		override protected function redrawWidth():void {
 			bitmap.width = _width;
 		}
 
-		override protected function redrawHeight(): void {
+		override protected function redrawHeight():void {
 			bitmap.height = _height;
 		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function dispose(): void {
+		public function dispose():void {
 			bitmapData.dispose();
 			bitmap.bitmapData = null;
 			removeChild(bitmap);
@@ -112,10 +112,10 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get smoothing(): Boolean {
+		public function get smoothing():Boolean {
 			return bitmap.smoothing;
 		}
-		public function set smoothing(__value:Boolean): void {
+		public function set smoothing(__value:Boolean):void {
 			bitmap.smoothing = __value;
 		}
 	}

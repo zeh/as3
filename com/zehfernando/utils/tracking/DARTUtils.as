@@ -24,7 +24,7 @@ package com.zehfernando.utils.tracking {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		public static function init(): void {
+		public static function init():void {
 			if (!inited) {
 				inited = true;
 				if (!AppUtils.isTesting()) {
@@ -37,7 +37,7 @@ package com.zehfernando.utils.tracking {
 			}
 		}
 
-		public static function trackPageView(__tag:String): void {
+		public static function trackPageView(__tag:String):void {
 			if (!inited) return;
 
 			if (__tag == "") return;
@@ -61,7 +61,7 @@ package com.zehfernando.utils.tracking {
 
 		}
 
-		protected static function onError(e:IOErrorEvent): void {
+		protected static function onError(e:IOErrorEvent):void {
 			// To catch error message due to DART's loading of invalid content
 			trace ("GAUtils :: IOError :: ["+e+"]");
 		}

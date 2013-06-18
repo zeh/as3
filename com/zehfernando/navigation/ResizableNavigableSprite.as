@@ -28,13 +28,13 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function redrawWidth(): void {
+		protected function redrawWidth():void {
 			for (var i:int = 0; i < createdChildren.length; i++) {
 				if (createdChildren[i].parent == _childrenContainer) createdChildren[i].width = _width;
 			}
 		}
 
-		protected function redrawHeight(): void {
+		protected function redrawHeight():void {
 			for (var i:int = 0; i < createdChildren.length; i++) {
 				if (createdChildren[i].parent == _childrenContainer) createdChildren[i].height = _height;
 			}
@@ -52,7 +52,7 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onAddedToStage(e:Event): void {
+		protected function onAddedToStage(e:Event):void {
 			redrawWidth();
 			redrawHeight();
 		}
@@ -61,20 +61,20 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return _width;
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			if (_width != __value) {
 				_width = __value;
 				redrawWidth();
 			}
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _height;
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			if (_height != __value) {
 				_height = __value;
 				redrawHeight();

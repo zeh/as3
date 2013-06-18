@@ -5,7 +5,7 @@ package com.zehfernando.net.apis.youtube {
 	 */
 	public class YouTubeDataUtils {
 
-		public static function fromStringToSeconds(__time:String): Number {
+		public static function fromStringToSeconds(__time:String):Number {
 			// Converts from "00:00:13.750" to a number of seconds
 
 			var hours:int = parseInt(__time.substr(0, 2));

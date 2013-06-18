@@ -29,7 +29,7 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function paint(): void {
+		protected function paint():void {
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginFill(_color);
@@ -43,32 +43,32 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get color(): int {
+		public function get color():int {
 			return _color;
 		}
-		public function set color(__value:int): void {
+		public function set color(__value:int):void {
 			if (_color != __value) {
 				_color = __value;
 				paint();
 			}
 		}
 
-		public function get length(): Number {
+		public function get length():Number {
 			return _length;
 		}
 
-		public function set length(__value:Number): void {
+		public function set length(__value:Number):void {
 			if (_length != __value) {
 				_length = __value;
 				paint();
 			}
 		}
 
-		public function get weight(): Number {
+		public function get weight():Number {
 			return _weight;
 		}
 
-		public function set weight(__value:Number): void {
+		public function set weight(__value:Number):void {
 			if (_weight != __value) {
 				_weight = __value;
 				paint();

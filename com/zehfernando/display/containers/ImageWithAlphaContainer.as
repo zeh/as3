@@ -1,7 +1,4 @@
 package com.zehfernando.display.containers {
-
-	import com.zehfernando.utils.console.log;
-
 	import flash.display.Bitmap;
 	import flash.display.BlendMode;
 	import flash.display.Loader;
@@ -43,7 +40,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		override public function dispose(): void {
+		override public function dispose():void {
 			if (_isLoading) {
 				if (_isConnectionOpened && !(_bytesLoaded > 0 && _bytesLoaded == _bytesTotal)) loader.close();
 				if (_isConnectionOpenedAlpha && !(_bytesLoaded > 0 && _bytesLoaded == _bytesTotal)) loader.close();
@@ -72,14 +69,14 @@ package com.zehfernando.display.containers {
 			super.dispose();
 		}
 
-		protected function removeLoaderEvents(__loader:Loader): void {
+		protected function removeLoaderEvents(__loader:Loader):void {
 			__loader.contentLoaderInfo.removeEventListener(Event.OPEN, onLoadOpen);
 			__loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onLoadComplete);
 			__loader.contentLoaderInfo.removeEventListener(ProgressEvent.PROGRESS, onLoadProgress);
 			__loader.contentLoaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
 		}
 
-		override protected function applySmoothing(): void {
+		override protected function applySmoothing():void {
 			if (_isLoaded) {
 				try {
 					if (Boolean(loader.content)) Bitmap(loader.content).smoothing = _smoothing;
@@ -96,7 +93,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// EVENT functions ------------------------------------------------------------------------------------------------
 
-		protected function onLoadOpen(e:Event = null): void {
+		protected function onLoadOpen(e:Event = null):void {
 			if (e.currentTarget == loader.contentLoaderInfo) {
 				_isConnectionOpened = true;
 			} else {
@@ -104,7 +101,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function onLoadComplete(e:Event = null): void {
+		protected function onLoadComplete(e:Event = null):void {
 
 			if (e.currentTarget == loader.contentLoaderInfo) {
 				_isLoadedImage = true;
@@ -139,7 +136,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function onLoadProgress(e:ProgressEvent = null): void {
+		protected function onLoadProgress(e:ProgressEvent = null):void {
 			//trace ("ImageContainer :: onLoadProgress :: " + e);
 			dispatchEvent(e);
 			if (!isNaN(_timeStartedLoading)) updateStartedLoadingStats();
@@ -147,7 +144,7 @@ package com.zehfernando.display.containers {
 			_bytesTotal = (loader.contentLoaderInfo.bytesTotal > 0 ? loader.contentLoaderInfo.bytesTotal : 50000) + (loaderAlpha.contentLoaderInfo.bytesTotal > 0 ? loaderAlpha.contentLoaderInfo.bytesTotal : 50000);
 		}
 
-		protected function onLoadError(e:IOErrorEvent = null): void {
+		protected function onLoadError(e:IOErrorEvent = null):void {
 			trace ("ERROR :: ImageContainer :: onLoadError :: " + e);
 			_isLoading = false;
 
@@ -170,7 +167,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function loadWithAlpha(__imageURL:String, __alphaURL:String): void {
+		public function loadWithAlpha(__imageURL:String, __alphaURL:String):void {
 			if (!Boolean(__imageURL) || !Boolean(__alphaURL)) {
 				trace ("ImageContainer :: ERROR: tried loading image from null url ["+__imageURL+"] with alpha ["+__alphaURL+"]");
 				return;

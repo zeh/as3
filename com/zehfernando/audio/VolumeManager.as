@@ -50,7 +50,7 @@ package com.zehfernando.audio {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function dispatchVolumeChangeEvent(): void {
+		protected function dispatchVolumeChangeEvent():void {
 			if (_globalControl) {
 				// This is global, so update the global SoundTransform
 				SoundMixer.soundTransform = getSoundTransform();
@@ -66,7 +66,7 @@ package com.zehfernando.audio {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		public static function addManager(__manager:VolumeManager): void {
+		public static function addManager(__manager:VolumeManager):void {
 			managers.push(__manager);
 		}
 
@@ -89,27 +89,27 @@ package com.zehfernando.audio {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get volume(): Number {
+		public function get volume():Number {
 			return _volume;
 		}
-		public function set volume(__value:Number): void {
+		public function set volume(__value:Number):void {
 			if (_volume != __value) {
 				_volume = __value;
 				dispatchVolumeChangeEvent();
 			}
 		}
 
-		public function get mute(): Number {
+		public function get mute():Number {
 			return _mute;
 		}
-		public function set mute(__value:Number): void {
+		public function set mute(__value:Number):void {
 			if (_mute != __value) {
 				_mute = __value;
 				dispatchVolumeChangeEvent();
 			}
 		}
 
-		public function get name(): String {
+		public function get name():String {
 			return _name;
 		}
 	}

@@ -27,7 +27,7 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function checkLength(): void {
+		protected function checkLength():void {
 			// Check the length of the list
 			if (_values.length > _maxLength) {
 				_values.splice(0, _values.length - _maxLength);
@@ -37,7 +37,7 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function push(__value:Number): void {
+		public function push(__value:Number):void {
 			_values.push(__value);
 			checkLength();
 		}
@@ -45,7 +45,7 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get value(): Number {
+		public function get value():Number {
 			if (_values.length == 0) return NaN;
 
 			var tot:Number = 0;
@@ -53,10 +53,10 @@ package com.zehfernando.data.types {
 			return tot / _values.length;
 		}
 
-		public function get maxLength(): int {
+		public function get maxLength():int {
 			return _maxLength;
 		}
-		public function set maxLength(__value:int): void {
+		public function set maxLength(__value:int):void {
 			if (_maxLength != __value) {
 				_maxLength = __value;
 				checkLength();

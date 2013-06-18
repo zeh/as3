@@ -184,7 +184,7 @@ package com.zehfernando.net.apis.facebook.services {
 			super.onIOError(e);
 		}
 
-		override protected function onComplete(e:Event): void {
+		override protected function onComplete(e:Event):void {
 			var response:Object = JSON.decode(loader.data);
 
 			_photoId = response["id"];
@@ -231,30 +231,30 @@ package com.zehfernando.net.apis.facebook.services {
 
 		// Parameters
 
-		public function get targetId(): String {
+		public function get targetId():String {
 			return _targetId;
 		}
-		public function set targetId(__value:String): void {
+		public function set targetId(__value:String):void {
 			_targetId = __value;
 		}
 
-		public function get message(): String {
+		public function get message():String {
 			return _message;
 		}
-		public function set message(__value:String): void {
+		public function set message(__value:String):void {
 			_message = __value;
 		}
 
 		public function get source(): ByteArray {
 			return _source;
 		}
-		public function set source(__value:ByteArray): void {
+		public function set source(__value:ByteArray):void {
 			_source = __value;
 		}
 
 		// Results
 
-		public function get photoId(): String {
+		public function get photoId():String {
 			return _photoId;
 		}
 

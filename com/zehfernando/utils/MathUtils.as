@@ -15,11 +15,11 @@ package com.zehfernando.utils {
 		 * @param __max		Maximum value allowed.
 		 * @return			The newly clamped value.
 		 */
-		public static function clamp(__value:Number, __min:Number = 0, __max:Number = 1): Number {
+		public static function clamp(__value:Number, __min:Number = 0, __max:Number = 1):Number {
 			return __value < __min ? __min : __value > __max ? __max : __value;
 		}
 
-		public static function clampAuto(__value:Number, __clamp1:Number = 0, __clamp2:Number = 1): Number {
+		public static function clampAuto(__value:Number, __clamp1:Number = 0, __clamp2:Number = 1):Number {
 			if (__clamp2 < __clamp1) {
 				var v:Number = __clamp2;
 				__clamp2 = __clamp1;
@@ -37,7 +37,7 @@ package com.zehfernando.utils {
 		 * @param __newMax	The new maximum value.
 		 * @return			The new value, mapped to the new range.
 		 */
-		public static function map(__value:Number, __oldMin:Number, __oldMax:Number, __newMin:Number = 0, __newMax:Number = 1, __clamp:Boolean = false): Number {
+		public static function map(__value:Number, __oldMin:Number, __oldMax:Number, __newMin:Number = 0, __newMax:Number = 1, __clamp:Boolean = false):Number {
 			if (__oldMin == __oldMax) return __newMin;
 			var p:Number = ((__value-__oldMin) / (__oldMax-__oldMin) * (__newMax-__newMin)) + __newMin;
 			if (__clamp) p = __newMin < __newMax ? clamp(p, __newMin, __newMax) : clamp(p, __newMax, __newMin);
@@ -69,7 +69,7 @@ package com.zehfernando.utils {
 		 * </listing>
 		 */
 		// Need a better name?
-		public static function rangeMod(__value:Number, __min:Number, __pseudoMax:Number): Number {
+		public static function rangeMod(__value:Number, __min:Number, __pseudoMax:Number):Number {
 			var range:Number = __pseudoMax - __min;
 			__value = (__value - __min) % range;
 			if (__value < 0) __value = range - (-__value % range);

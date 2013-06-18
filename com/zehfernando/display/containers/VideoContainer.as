@@ -1,5 +1,4 @@
 package com.zehfernando.display.containers {
-
 	import com.zehfernando.net.loaders.VideoLoader;
 	import com.zehfernando.net.loaders.VideoLoaderCuePointEvent;
 	import com.zehfernando.net.loaders.VideoLoaderEvent;
@@ -66,7 +65,7 @@ package com.zehfernando.display.containers {
 		// ================================================================================================================
 		// INSTANCE functions ---------------------------------------------------------------------------------------------
 
-		override protected function setDefaultData(): void {
+		override protected function setDefaultData():void {
 			super.setDefaultData();
 			_maximumTime = 0;
 			_autoPlay = true;
@@ -76,15 +75,15 @@ package com.zehfernando.display.containers {
 			isMonitoringLoading = false;
 		}
 
-		override protected function applySmoothing(): void {
+		override protected function applySmoothing():void {
 			if (_hasVideo) videoLoader.smoothing = _smoothing;
 		}
 
-		protected function applyBufferTime(): void {
+		protected function applyBufferTime():void {
 			if (_hasVideo) videoLoader.bufferTime = _bufferTime;
 		}
 
-		protected function applyVolume(): void {
+		protected function applyVolume():void {
 			if (_hasVideo) {
 				var st:SoundTransform = videoLoader.soundTransform;
 				st.volume = _volume;
@@ -92,7 +91,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function updateByteCount(): void {
+		protected function updateByteCount():void {
 			if (!_hasVideo) {
 				_bytesLoaded = 0;
 				_bytesTotal = 0;
@@ -102,7 +101,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		override protected function redraw(): void {
+		override protected function redraw():void {
 			super.redraw();
 			if (_hasVideo) {
 				videoLoader.width = _contentWidth;
@@ -110,7 +109,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function updateMaximumTime(): void {
+		protected function updateMaximumTime():void {
 			_maximumTime = Math.max(time, _maximumTime);
 		}
 
@@ -124,8 +123,8 @@ package com.zehfernando.display.containers {
 
 		protected function onMetaData(e:VideoLoaderEvent):void {
 			//trace("metadata: duration=" + info.duration + " width=" + info.width + " height=" + info.height + " framerate=" + info.framerate);
-			_contentWidth = videoLoader.metaData["width"];
-			_contentHeight = videoLoader.metaData["height"];
+			_contentWidth = videoLoader.customMetaData["width"];
+			_contentHeight = videoLoader.customMetaData["height"];
 
 			redraw();
 
@@ -139,77 +138,77 @@ package com.zehfernando.display.containers {
 			dispatchEvent(new Event(EVENT_CUE_POINT));
 		}
 
-		protected function onSecurityError(e:SecurityError): void {
+		protected function onSecurityError(e:SecurityError):void {
 			log("securityErrorHandler: " + e);
 			dispatchEvent(new Event(EVENT_LOADING_ERROR));
 		}
 
-		protected function onStreamNotFound(e:VideoLoaderEvent): void {
+		protected function onStreamNotFound(e:VideoLoaderEvent):void {
 			dispatchEvent(new Event(EVENT_LOADING_ERROR));
 		}
 
-		protected function onLoadingStart(e:Event): void {
+		protected function onLoadingStart(e:Event):void {
 			updateStartedLoadingStats();
 			dispatchEvent(new Event(EVENT_LOADING_START));
 		}
 
-		protected function onLoadingProgress(e:ProgressEvent): void {
+		protected function onLoadingProgress(e:ProgressEvent):void {
 			updateByteCount();
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_LOADING_PROGRESS));
 		}
 
-		protected function onLoadingComplete(e:Event): void {
+		protected function onLoadingComplete(e:Event):void {
 			_isLoaded = true;
 			updateCompletedLoadingStats();
 			dispatchEvent(new Event(EVENT_LOADING_COMPLETE));
 		}
 
-		protected function onSeekNotify(e:VideoLoaderEvent): void {
+		protected function onSeekNotify(e:VideoLoaderEvent):void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_SEEK_NOTIFY));
 		}
 
-		protected function onBufferEmpty(e:VideoLoaderEvent): void {
+		protected function onBufferEmpty(e:VideoLoaderEvent):void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_BUFFER_EMPTY));
 		}
 
-		protected function onBufferFlush(e:VideoLoaderEvent): void {
+		protected function onBufferFlush(e:VideoLoaderEvent):void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_BUFFER_FLUSH));
 		}
 
-		protected function onBufferFull(e:VideoLoaderEvent): void {
+		protected function onBufferFull(e:VideoLoaderEvent):void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_BUFFER_FULL));
 		}
 
-		protected function onPlayStart(e:VideoLoaderEvent): void {
+		protected function onPlayStart(e:VideoLoaderEvent):void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_PLAY_START));
 		}
 
-		protected function onPlayStop(e:VideoLoaderEvent): void {
+		protected function onPlayStop(e:VideoLoaderEvent):void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_PLAY_STOP));
 		}
 
-		protected function onResume(e:VideoLoaderEvent): void {
+		protected function onResume(e:VideoLoaderEvent):void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_RESUME));
 		}
 
-		protected function onPause(e:VideoLoaderEvent): void {
+		protected function onPause(e:VideoLoaderEvent):void {
 			updateMaximumTime();
 			dispatchEvent(new Event(EVENT_PAUSE));
 		}
 
-		protected function onTimeChange(e:VideoLoaderEvent): void {
+		protected function onTimeChange(e:VideoLoaderEvent):void {
 			dispatchEvent(new Event(EVENT_TIME_CHANGE));
 		}
 
-		protected function onPlayFinish(e:VideoLoaderEvent): void {
+		protected function onPlayFinish(e:VideoLoaderEvent):void {
 
 			if (_loop) {
 				// Finished; loop
@@ -227,7 +226,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function setVideoLoaderInternal(__videoLoader:VideoLoader): void {
+		protected function setVideoLoaderInternal(__videoLoader:VideoLoader):void {
 			videoLoader = __videoLoader;
 
 			videoLoader.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
@@ -254,7 +253,7 @@ package com.zehfernando.display.containers {
 			setAsset(videoLoader);
 		}
 
-		protected function removeVideoLoaderInternal(__disposeVideoLoader:Boolean = true): void {
+		protected function removeVideoLoaderInternal(__disposeVideoLoader:Boolean = true):void {
 			if (Boolean(videoLoader)) {
 				videoLoader.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onSecurityError);
 
@@ -284,7 +283,7 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		protected function loadVideoLoader(__videoLoader:VideoLoader): void {
+		protected function loadVideoLoader(__videoLoader:VideoLoader):void {
 			// Dangerously duplicated from load()!!!
 			// TODO: get rid of load() altogether and only use this one?
 			super.load(__videoLoader.url);
@@ -299,8 +298,8 @@ package com.zehfernando.display.containers {
 			applyVolume();
 
 			if (videoLoader.hasMetaData) {
-				_contentWidth = videoLoader.metaData["width"];
-				_contentHeight = videoLoader.metaData["height"];
+				_contentWidth = videoLoader.customMetaData["width"];
+				_contentHeight = videoLoader.customMetaData["height"];
 			} else {
 				_contentWidth = _width;
 				_contentHeight = _height;
@@ -334,7 +333,7 @@ package com.zehfernando.display.containers {
 			return bmp;
 		}
 
-		override public function load(__url:String): void {
+		override public function load(__url:String):void {
 			super.load(__url);
 
 			_isLoaded = false;
@@ -387,7 +386,7 @@ package com.zehfernando.display.containers {
 			super.unload();
 		}
 
-		override public function unload(): void {
+		override public function unload():void {
 
 			pauseVideo();
 
@@ -425,18 +424,18 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-		override public function getLoadingSpeed(): Number {
+		override public function getLoadingSpeed():Number {
 			//updateByteCount();
 			//return super.getLoadingSpeed();
 			return videoLoader.getLoadingSpeed();
 		}
 
-		public function getFullBufferingLevel(): Number {
+		public function getFullBufferingLevel():Number {
 			updateByteCount();
 			return videoLoader.getFullBufferingLevel();
 		}
 
-		public function getMaximumPositionPlayed(): Number {
+		public function getMaximumPositionPlayed():Number {
 			updateMaximumTime();
 			return _maximumTime / duration;
 		}
@@ -446,61 +445,61 @@ package com.zehfernando.display.containers {
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
 		// Additional video data
-		public function get duration(): Number {
+		public function get duration():Number {
 			if (!_hasVideo) return 0;
 			if (!hasMetaData) return 0;
 			return videoLoader.duration;
 		}
 
-		public function get framerate(): Number {
+		public function get framerate():Number {
 			if (!_hasVideo) return 0;
 			if (!hasMetaData) return 0;
 			return videoLoader.framerate;
 		}
 
-		public function get isPlaying(): Boolean {
+		public function get isPlaying():Boolean {
 			if (!_hasVideo) return false;
 			return _isPlaying;
 		}
 
 		// Time/position control
-		public function get time(): Number {
+		public function get time():Number {
 			if (!_hasVideo) return 0;
 			return videoLoader.time;
 		}
-		public function set time(__value:Number): void {
+		public function set time(__value:Number):void {
 			if (!_hasVideo) return;
 			videoLoader.seek(__value);
 			updateMaximumTime();
 		}
 
-		public function get position(): Number {
+		public function get position():Number {
 			if (!_hasVideo) return 0;
 			if (!hasMetaData) return 0;
 			return time / duration;
 		}
-		public function set position(__value:Number): void {
+		public function set position(__value:Number):void {
 			if (!_hasVideo) return;
 			if (!hasMetaData) return;
 			time = __value * duration;
 		}
 
-		public function get bufferLength(): Number {
+		public function get bufferLength():Number {
 			if (!_hasVideo) return 0;
 			return videoLoader.bufferLength;
 		}
 
-		public function get autoPlay(): Boolean {
+		public function get autoPlay():Boolean {
 			return _autoPlay;
 		}
-		public function set autoPlay(__value:Boolean): void {
+		public function set autoPlay(__value:Boolean):void {
 			_autoPlay = __value;
 		}
 
-		public function get bufferTime(): Number {
+		public function get bufferTime():Number {
 			return _bufferTime;
 		}
-		public function set bufferTime(__value:Number): void {
+		public function set bufferTime(__value:Number):void {
 			_bufferTime = __value;
 			applyBufferTime();
 		}
@@ -515,14 +514,14 @@ package com.zehfernando.display.containers {
 			dispatchEvent(new Event(EVENT_VOLUME_CHANGE));
 		}
 
-		public function get loop(): Boolean {
+		public function get loop():Boolean {
 			return _loop;
 		}
-		public function set loop(__value:Boolean): void {
+		public function set loop(__value:Boolean):void {
 			_loop = __value;
 		}
 
-		override public function get loadedPercent(): Number {
+		override public function get loadedPercent():Number {
 			if (!_isLoaded) updateByteCount();
 			return super.loadedPercent;
 		}
@@ -538,15 +537,15 @@ package com.zehfernando.display.containers {
 		public function getLastCuePoint(): Object {
 			return lastCuePoint;
 		}
-		public function get droppedFrames(): int {
+		public function get droppedFrames():int {
 			//return _hasVideo ? videoLoader.metaData["droppedFrames"] : 0;
 			return _hasVideo ? videoLoader.droppedFrames : 0;
 		}
-		public function get decodedFrames(): int {
+		public function get decodedFrames():int {
 			return _hasVideo ? videoLoader.decodedFrames : 0;
 		}
 
-		public function get currentFPS(): int {
+		public function get currentFPS():int {
 			return _hasVideo ? videoLoader.currentFPS : 0;
 		}
 	}
@@ -569,7 +568,7 @@ class VideoData {
 		videoContainer = __videoContainer;
 	}
 
-	public function onXMPData(info:Object): void {
+	public function onXMPData(info:Object):void {
 		//trace ("VideoContainer :: VideoData :: onXMPData :: " + info);
 		// TODO: do something with this data
 	}

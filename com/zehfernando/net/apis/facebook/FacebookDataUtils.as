@@ -12,7 +12,7 @@ package com.zehfernando.net.apis.facebook {
 			return DateUtils.xsdDateTimeToDate(__text);
 		}
 
-		public static function getImageURLSafeReplacement(__url:String): String {
+		public static function getImageURLSafeReplacement(__url:String):String {
 			// Given an static image URL, replaces domains that don't work (https domains) with the http counterpart
 
 			var i:int;

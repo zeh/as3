@@ -49,12 +49,12 @@ package com.zehfernando.image {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function requestRedraw(__needsNewBitmap:Boolean = false): void {
+		protected function requestRedraw(__needsNewBitmap:Boolean = false):void {
 			needsRedraw = true;
 			if (__needsNewBitmap) needsBitmap = true;
 		}
 
-		protected function removeBitmap(): void {
+		protected function removeBitmap():void {
 			if (Boolean(bitmap)) {
 				bitmap.dispose();
 				bitmap = null;
@@ -69,7 +69,7 @@ package com.zehfernando.image {
 			}
 		}
 
-		protected function createDistordtedImage(__target:BitmapData, __image:MorphImageData, __alternateImage:MorphImageData, __f:Number): void {
+		protected function createDistordtedImage(__target:BitmapData, __image:MorphImageData, __alternateImage:MorphImageData, __f:Number):void {
 			var i:int;
 
 			// Create transformed image A
@@ -118,7 +118,7 @@ package com.zehfernando.image {
 			__target.draw(spr);
 		}
 
-		protected function redrawMorphedImage(): void {
+		protected function redrawMorphedImage():void {
 			// Redraws the morphed image
 
 			// Creates updated distorted images for compositing
@@ -149,33 +149,33 @@ package com.zehfernando.image {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function setImageA(__image:BitmapData): void {
+		public function setImageA(__image:BitmapData):void {
 			imageA.setBitmapData(__image);
 
 			requestRedraw(true);
 		}
 
-		public function setImageB(__image:BitmapData): void {
+		public function setImageB(__image:BitmapData):void {
 			imageB.setBitmapData(__image);
 
 			requestRedraw(true);
 		}
 
-		public function setPointsA(__points:Array): void {
+		public function setPointsA(__points:Array):void {
 			// Parameters should be an array of points, using the image's coordinate system
 			imageA.setPointsFromArray(__points);
 
 			requestRedraw();
 		}
 
-		public function setPointsB(__points:Array): void {
+		public function setPointsB(__points:Array):void {
 			// Parameters should be an array of points
 			imageB.setPointsFromArray(__points);
 
 			requestRedraw();
 		}
 
-		public function setTriangles(__triangles:Array): void {
+		public function setTriangles(__triangles:Array):void {
 			// Parameters should be by vertices, like: [[0, 1, 2], [0, 1, 3]]
 
 			triangles = new Vector.<TrianglePoints>();
@@ -203,7 +203,7 @@ package com.zehfernando.image {
 			return bitmap;
 		}
 
-		public function dispose(): void {
+		public function dispose():void {
 			removeBitmap();
 
 			imageA.dispose();
@@ -218,30 +218,30 @@ package com.zehfernando.image {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get width(): int {
+		public function get width():int {
 			return _width;
 		}
-		public function set width(__value:int): void {
+		public function set width(__value:int):void {
 			if (_width != __value) {
 				_width = __value;
 				requestRedraw(true);
 			}
 		}
 
-		public function get height(): int {
+		public function get height():int {
 			return _height;
 		}
-		public function set height(__value:int): void {
+		public function set height(__value:int):void {
 			if (_height != __value) {
 				_height = __value;
 				requestRedraw(true);
 			}
 		}
 
-		public function get phase(): Number {
+		public function get phase():Number {
 			return _phase;
 		}
-		public function set phase(__value:Number): void {
+		public function set phase(__value:Number):void {
 			if (_phase != __value) {
 				_phase = __value;
 				requestRedraw();
@@ -285,7 +285,7 @@ class MorphImageData {
 	// ================================================================================================================
 	// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-	protected function removeBitmapData(): void {
+	protected function removeBitmapData():void {
 		if (Boolean(bitmap)) {
 			bitmap.dispose();
 			bitmap = null;
@@ -295,12 +295,12 @@ class MorphImageData {
 	// ================================================================================================================
 	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-	public function setBitmapData(__bitmap:BitmapData): void {
+	public function setBitmapData(__bitmap:BitmapData):void {
 		removeBitmapData();
 		bitmap = __bitmap;
 	}
 
-	public function setPointsFromArray(__points:Array): void {
+	public function setPointsFromArray(__points:Array):void {
 		var ps:Vector.<Point> = new Vector.<Point>();
 		for (var i:int = 0; i < __points.length; i++) {
 			ps.push(__points[i]);
@@ -309,7 +309,7 @@ class MorphImageData {
 		// TODO: create triangle cache
 	}
 
-	public function dispose(): void {
+	public function dispose():void {
 		removeBitmapData();
 		vertices = null;
 	}

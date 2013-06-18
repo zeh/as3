@@ -52,18 +52,18 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected function execute(): void {
+		protected function execute():void {
 			callback.apply(scope, params);
 		}
 
-		protected function disposeTimer(): void {
+		protected function disposeTimer():void {
 			if (Boolean(timer)) {
 				timer.stop();
 				timer = null;
 			}
 		}
 
-		protected function disposeData(): void {
+		protected function disposeData():void {
 			callback = null;
 			params = null;
 			scope = null;
@@ -73,13 +73,13 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		protected static function addToList(__call:DelayedCalls): void {
+		protected static function addToList(__call:DelayedCalls):void {
 			if (calls.indexOf(__call) == -1) {
 				calls.push(__call);
 			}
 		}
 
-		protected static function removeFromList(__call:DelayedCalls): void {
+		protected static function removeFromList(__call:DelayedCalls):void {
 			var pos:int = calls.indexOf(__call);
 			if (pos != -1) {
 				calls.splice(pos, 1);
@@ -90,12 +90,12 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected function onTimerComplete(e:TimerEvent): void {
+		protected function onTimerComplete(e:TimerEvent):void {
 			execute();
 			dispose();
 		}
 
-		public function dispose(): void {
+		public function dispose():void {
 			removeFromList(this);
 			disposeTimer();
 			disposeData();
@@ -108,7 +108,7 @@ package com.zehfernando.utils {
 			return new DelayedCalls(__timeMS, __callback, __params, __scope, __reference);
 		}
 
-		public static function removeByReference(__reference:Object): void {
+		public static function removeByReference(__reference:Object):void {
 			// Remove all delayed calls that use a specific object as a reference
 			for (var i:int = 0; i < calls.length; i++) {
 				if (calls[i].reference == __reference) {
@@ -118,7 +118,7 @@ package com.zehfernando.utils {
 			}
 		}
 
-		public static function remove(__callback:Function): void {
+		public static function remove(__callback:Function):void {
 			// Remove all delayed calls that try calling a specific function
 			for (var i:int = 0; i < calls.length; i++) {
 				if (calls[i].callback == __callback) {

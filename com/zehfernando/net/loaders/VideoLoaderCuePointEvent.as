@@ -18,7 +18,7 @@ package com.zehfernando.net.loaders {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function VideoLoaderCuePointEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false, __cuePointTime:Number = NaN, __cuePointName:String = "", __cuePointType:String = "", __cuePointParameters:Object = ""): void {
+		public function VideoLoaderCuePointEvent(__type:String, __bubbles:Boolean = false, __cancelable:Boolean = false, __cuePointTime:Number = NaN, __cuePointName:String = "", __cuePointType:String = "", __cuePointParameters:Object = ""):void {
 			super(__type, __bubbles, __cancelable);
 
 			_cuePointTime = __cuePointTime;

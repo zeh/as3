@@ -25,7 +25,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// INITIALIZATION functions ---------------------------------------------------------------------------------------
 
-		public static function init(__stage:Stage): void {
+		public static function init(__stage:Stage):void {
 			if (!isInited) {
 				stage = __stage;
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
@@ -37,14 +37,14 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		protected static function onKeyDown(e:KeyboardEvent): void {
+		protected static function onKeyDown(e:KeyboardEvent):void {
 			//Logger.getInstance().addMessage("Key down: "+e.keyCode+" @ "+e.keyLocation);
 			//setKeyState(e.keyCode, e.keyLocation, true);
 			shiftDown = e.shiftKey;
 			controlDown = e.ctrlKey;
 		}
 
-		protected static function onKeyUp(e:KeyboardEvent): void {
+		protected static function onKeyUp(e:KeyboardEvent):void {
 			//Logger.getInstance().addMessage("Key up: "+e.keyCode+" @ "+e.keyLocation);
 			//setKeyState(e.keyCode, e.keyLocation, false);
 			shiftDown = e.shiftKey;
@@ -54,27 +54,27 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// PUBLIC functions -----------------------------------------------------------------------------------------------
 
-		public static function isShiftDown(): Boolean {
+		public static function isShiftDown():Boolean {
 			return shiftDown;
 		}
 
-		public static function isControlDown(): Boolean {
+		public static function isControlDown():Boolean {
 			return controlDown;
 		}
 
 		// System-specific keys, as separate functions for easier modification if needed
 
-		public static function isAdditionalSelectionModifierDown(): Boolean {
+		public static function isAdditionalSelectionModifierDown():Boolean {
 			// Additional selection key
 			return shiftDown;
 		}
 
-		public static function isMenuControlDown(): Boolean {
+		public static function isMenuControlDown():Boolean {
 			// CTRL on Windows, COMMAND on Mac (same for actionscript)
 			return controlDown;
 		}
 
-		public static function isMenuShiftDown(): Boolean {
+		public static function isMenuShiftDown():Boolean {
 			// SHIFT on all
 			return shiftDown;
 		}

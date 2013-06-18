@@ -5,7 +5,7 @@ package com.zehfernando.utils {
 	 */
 	public class NumberUtils {
 
-		public static function formatNumber(__value:Number, __thousandsSeparator:String = ",", __decimalSeparator:String = ".", __decimalPlaces:Number = NaN): String {
+		public static function formatNumber(__value:Number, __thousandsSeparator:String = ",", __decimalSeparator:String = ".", __decimalPlaces:Number = NaN):String {
 
 			var nInt:Number = Math.floor(__value);
 			var nDec:Number = __value - nInt;

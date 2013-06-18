@@ -78,7 +78,7 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// INTERNAL functions ---------------------------------------------------------------------------------------------
 
-		protected function redraw(): void {
+		protected function redraw():void {
 			// Redraws everything
 			removeAllColumns();
 
@@ -135,7 +135,7 @@ package com.zehfernando.display.components.text {
 			_width = _columns > 0 ? posX - _margins : 0;
 		}
 
-//		protected function getTagLessText(): String {
+//		protected function getTagLessText():String {
 //			// This sucks
 //			var txt:String = _text;
 //			var tag:String;
@@ -148,7 +148,7 @@ package com.zehfernando.display.components.text {
 //			return txt;
 //		}
 
-		protected function removeAllColumns(): void {
+		protected function removeAllColumns():void {
 			while (Boolean(textSprites) && textSprites.length > 0) {
 				textContainer.removeChild(textSprites[0]);
 				textSprites.splice(0, 1);
@@ -165,24 +165,24 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		override public function get width(): Number {
+		override public function get width():Number {
 			return _width;
 		}
-		override public function set width(__value:Number): void {
+		override public function set width(__value:Number):void {
 			throw new Error("You cannot set the width of a TextSpriteColumns instance");
 		}
 
-		override public function get height(): Number {
+		override public function get height():Number {
 			return _height;
 		}
-		override public function set height(__value:Number): void {
+		override public function set height(__value:Number):void {
 			throw new Error ("Warning: you cannot set the height of a TextSpriteColumns instance.");
 		}
 
-		public function get text(): String {
+		public function get text():String {
 			return _text;
 		}
-		public function set text(__value:String): void {
+		public function set text(__value:String):void {
 			if (_text != __value) {
 				_text = __value;
 				redraw();
@@ -190,10 +190,10 @@ package com.zehfernando.display.components.text {
 			}
 		}
 
-		public function get leading(): Number {
+		public function get leading():Number {
 			return _leading;
 		}
-		public function set leading(__value:Number): void {
+		public function set leading(__value:Number):void {
 			if (_leading != __value) {
 				_leading = __value;
 				redraw();
@@ -203,20 +203,20 @@ package com.zehfernando.display.components.text {
 
 //		// FontDescription extensions
 //
-//		public function get renderingMode(): String {
+//		public function get renderingMode():String {
 //			return fontDescription.renderingMode;
 //		}
-//		public function set renderingMode(__value:String): void {
+//		public function set renderingMode(__value:String):void {
 //			if (renderingMode != __value) {
 //				fontDescription.renderingMode = __value;
 //				redraw();
 //			}
 //		}
 //
-//		public function get cffHinting(): String {
+//		public function get cffHinting():String {
 //			return fontDescription.cffHinting;
 //		}
-//		public function set cffHinting(__value:String): void {
+//		public function set cffHinting(__value:String):void {
 //			if (cffHinting != __value) {
 //				fontDescription.cffHinting = __value;
 //				redraw();
@@ -224,10 +224,10 @@ package com.zehfernando.display.components.text {
 //		}
 
 		// This doesn't work, or maybe depends on specific font features
-		public function get tracking(): Number {
+		public function get tracking():Number {
 			return _tracking;
 		}
-		public function set tracking(__value:Number): void {
+		public function set tracking(__value:Number):void {
 			if (_tracking != __value) {
 				_tracking = __value;
 				redraw();
@@ -235,47 +235,47 @@ package com.zehfernando.display.components.text {
 			}
 		}
 
-		public function get trackingAsPhotoshop(): Number {
+		public function get trackingAsPhotoshop():Number {
 			return _tracking / _size * 1000;
 		}
-		public function set trackingAsPhotoshop(__value:Number): void {
+		public function set trackingAsPhotoshop(__value:Number):void {
 			tracking = __value / 1000 * _size;
 		}
 
-		public function get leadingAsPhotoshop(): Number {
+		public function get leadingAsPhotoshop():Number {
 			return _size + _leading;
 		}
-		public function set leadingAsPhotoshop(__value:Number): void {
+		public function set leadingAsPhotoshop(__value:Number):void {
 			leading = __value - _size;
 		}
 
-		public function get columnWidth(): Number {
+		public function get columnWidth():Number {
 			return _columnWidth;
 		}
-		public function set columnWidth(__value:Number): void {
+		public function set columnWidth(__value:Number):void {
 			if (_columnWidth != __value) {
 				_columnWidth = __value;
 				redraw();
 			}
 		}
 
-		public function get margins(): Number {
+		public function get margins():Number {
 			return _margins;
 		}
-		public function set margins(__value:Number): void {
+		public function set margins(__value:Number):void {
 			if (_margins != __value) {
 				_margins = __value;
 			}
 		}
 
-		public function get columns(): Number {
+		public function get columns():Number {
 			return _columns;
 		}
 
-		public function get maxHeight(): Number {
+		public function get maxHeight():Number {
 			return _maxHeight;
 		}
-		public function set maxHeight(__value:Number): void {
+		public function set maxHeight(__value:Number):void {
 			if (_maxHeight != __value) {
 				_maxHeight = __value;
 				redraw();

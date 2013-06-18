@@ -46,7 +46,7 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		private function redrawPerspective(): void {
+		private function redrawPerspective():void {
 			// 3D Transforms
 
 			// Based on wh0's work:
@@ -86,14 +86,14 @@ package com.zehfernando.display.abstracts {
 
 		}
 
-		private function scheduleRedraw(): void {
+		private function scheduleRedraw():void {
 			RenderUtils.addFunction(redrawPerspective);
 		}
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-//		protected function onExitFrameRedraw(e:Event): void {
+//		protected function onExitFrameRedraw(e:Event):void {
 //			_redrawScheduled = false;
 //			removeEventListener(Event.EXIT_FRAME, onExitFrameRedraw);
 //			redrawPerspective();
@@ -102,11 +102,11 @@ package com.zehfernando.display.abstracts {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function removeTransform(): void {
+		public function removeTransform():void {
 			_container3d.transform.matrix3D = null;
 		}
 
-//		public function redraw(): void {
+//		public function redraw():void {
 //			onExitFrameRedraw(null);
 //		}
 
@@ -127,7 +127,7 @@ package com.zehfernando.display.abstracts {
 			return _container3d.getChildByName(__name);
 		}
 
-		override public function getChildIndex(__child:DisplayObject): int {
+		override public function getChildIndex(__child:DisplayObject):int {
 			return _container3d.getChildIndex(__child);
 		}
 
@@ -139,19 +139,19 @@ package com.zehfernando.display.abstracts {
 			return _container3d.removeChildAt(__index);
 		}
 
-		override public function setChildIndex(__child:DisplayObject, __index:int): void {
+		override public function setChildIndex(__child:DisplayObject, __index:int):void {
 			_container3d.setChildIndex(__child, __index);
 		}
 
-		override public function swapChildren(__child1:DisplayObject, __child2:DisplayObject): void {
+		override public function swapChildren(__child1:DisplayObject, __child2:DisplayObject):void {
 			_container3d.swapChildren(__child1, __child2);
 		}
 
-		override public function swapChildrenAt(__index1:int, __index2:int): void {
+		override public function swapChildrenAt(__index1:int, __index2:int):void {
 			_container3d.swapChildrenAt(__index1, __index2);
 		}
 
-		override public function get numChildren() : int {
+		override public function get numChildren() :int {
 			return _container3d.numChildren;
 		}
 
@@ -161,7 +161,7 @@ package com.zehfernando.display.abstracts {
 		public function get topLeft(): Point {
 			return _topLeft;
 		}
-		public function set topLeft(__value:Point): void {
+		public function set topLeft(__value:Point):void {
 			_topLeft = __value;
 			scheduleRedraw();
 		}
@@ -169,7 +169,7 @@ package com.zehfernando.display.abstracts {
 		public function get topRight(): Point {
 			return _topRight;
 		}
-		public function set topRight(__value:Point): void {
+		public function set topRight(__value:Point):void {
 			_topRight = __value;
 			scheduleRedraw();
 		}
@@ -177,7 +177,7 @@ package com.zehfernando.display.abstracts {
 		public function get bottomLeft(): Point {
 			return _bottomLeft;
 		}
-		public function set bottomLeft(__value:Point): void {
+		public function set bottomLeft(__value:Point):void {
 			_bottomLeft = __value;
 			scheduleRedraw();
 		}
@@ -185,7 +185,7 @@ package com.zehfernando.display.abstracts {
 		public function get bottomRight(): Point {
 			return _bottomRight;
 		}
-		public function set bottomRight(__value:Point): void {
+		public function set bottomRight(__value:Point):void {
 			_bottomRight = __value;
 			scheduleRedraw();
 		}

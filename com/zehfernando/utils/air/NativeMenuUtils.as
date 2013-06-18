@@ -14,7 +14,7 @@ package com.zehfernando.utils.air {
 		// ================================================================================================================
 		// INITIALIZATION functions ---------------------------------------------------------------------------------------
 
-		public static function init(): void {
+		public static function init():void {
 			if (!isInited) {
 				menuInstance = new NativeMenuAgent();
 				isInited = true;
@@ -24,7 +24,7 @@ package com.zehfernando.utils.air {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public static function setMenu(__menuInstance:NativeMenuAgent): void {
+		public static function setMenu(__menuInstance:NativeMenuAgent):void {
 			menuInstance = __menuInstance;
 		}
 
@@ -79,7 +79,7 @@ class NativeMenuAgent extends EventDispatcher {
 	// ================================================================================================================
 	// INSTANCE functions ---------------------------------------------------------------------------------------------
 
-	public function addItem(__itemInfo:MenuItemInfo): void {
+	public function addItem(__itemInfo:MenuItemInfo):void {
 		menuData.addItem(__itemInfo);
 
 		if (__itemInfo.visible) {
@@ -163,7 +163,7 @@ class NativeMenuAgent extends EventDispatcher {
 	// ================================================================================================================
 	// EVENT functions ------------------------------------------------------------------------------------------------
 
-	protected function onMenuSelect(e:Event): void {
+	protected function onMenuSelect(e:Event):void {
 		//Logger.getInstance().addMessage("AirEditor :: pick menu & execute :: "+e);
 		if (_enabled && _shortcutsEnabled) {
 			var ie:InterfaceEvent = new InterfaceEvent(InterfaceEvent.SELECT, this);
@@ -172,7 +172,7 @@ class NativeMenuAgent extends EventDispatcher {
 		}
 	}
 
-	protected function onMenuDisplay(e:Event): void {
+	protected function onMenuDisplay(e:Event):void {
 		var mi:NativeMenuItem = NativeMenuItem(e.target);
 		var ii:MenuItemInfo = MenuItemInfo(mi.data);
 		mi.enabled = ii.enabled;

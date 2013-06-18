@@ -64,7 +64,7 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		protected static function executeNextNavigationCommand(): void {
+		protected static function executeNextNavigationCommand():void {
 			// Sets title
 			log();
 			updateTitle(); // TODO: move this somewhere else?
@@ -111,13 +111,13 @@ package com.zehfernando.navigation {
 			}
 		}
 
-		protected static function updateTitle(): void {
+		protected static function updateTitle():void {
 			//var newTitle:String = siteTitle + titleSeparator + getLocationTitles().join(titleSeparator);
 			SWFAddress.setTitle(getTitle());
 //			trace ("SpriteNavigator :: updateTitle :: new title is [" + newTitle + "]");
 		}
 
-		protected static function openSprite(__stub:String): void {
+		protected static function openSprite(__stub:String):void {
 			// Open a sprite, going down on the hierarchy
 
 			// Sets the new location
@@ -146,7 +146,7 @@ package com.zehfernando.navigation {
 
 		}
 
-		protected static function openSpriteByLocation(__location:Vector.<String>, __allowedByParent:Boolean = false, __allowedBySelf:Boolean = false): void {
+		protected static function openSpriteByLocation(__location:Vector.<String>, __allowedByParent:Boolean = false, __allowedBySelf:Boolean = false):void {
 			//trace ("SpriteNavigator :: openSpriteByLocation() :: /"+__location.join("/"));
 
 			// Opens the sprite
@@ -181,14 +181,14 @@ package com.zehfernando.navigation {
 			//trace ("SpriteNavigator :: openSprite() :: done");
 		}
 
-		protected static function onSpriteAllowedToPreOpenChild(e:Event): void {
+		protected static function onSpriteAllowedToPreOpenChild(e:Event):void {
 			rootSprite.getChildByStubs(locationWaitingToOpen.slice(0, locationWaitingToOpen.length - 1)).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_PRE_OPEN_CHILD, onSpriteAllowedToPreOpenChild);
 			var locationWaitingToOpenSafe:Vector.<String> = locationWaitingToOpen;
 			locationWaitingToOpen = null;
 			openSpriteByLocation(locationWaitingToOpenSafe);
 		}
 
-		protected static function onSpriteAllowedToOpenChild(e:Event): void {
+		protected static function onSpriteAllowedToOpenChild(e:Event):void {
 			(e.target as NavigableSprite).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_OPEN_CHILD, onSpriteAllowedToOpenChild);
 
 			rootSprite.getChildByStubs(locationWaitingToOpen.slice(0, locationWaitingToOpen.length - 1)).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_PRE_OPEN_CHILD, onSpriteAllowedToOpenChild);
@@ -197,7 +197,7 @@ package com.zehfernando.navigation {
 			openSpriteByLocation(locationWaitingToOpenSafe, true);
 		}
 
-		protected static function onSpriteAllowedToOpen(e:Event): void {
+		protected static function onSpriteAllowedToOpen(e:Event):void {
 			(e.target as NavigableSprite).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_OPEN, onSpriteAllowedToOpen);
 
 			var locationWaitingToOpenSafe:Vector.<String> = locationWaitingToOpen;
@@ -205,12 +205,12 @@ package com.zehfernando.navigation {
 			openSpriteByLocation(locationWaitingToOpenSafe, true, true);
 		}
 
-		protected static function onSpriteAllowedToClose(e:Event): void {
+		protected static function onSpriteAllowedToClose(e:Event):void {
 			(e.target as NavigableSprite).removeEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE, onSpriteAllowedToClose);
 			closeSprite(true, true);
 		}
 
-		protected static function closeSprite(__allowedByParent:Boolean = false, __allowedBySelf:Boolean = false): void {
+		protected static function closeSprite(__allowedByParent:Boolean = false, __allowedBySelf:Boolean = false):void {
 			// Close the current sprite, going up on the hierarchy
 
 			//trace ("SpriteNavigator :: closeSprite()");
@@ -236,7 +236,7 @@ package com.zehfernando.navigation {
 			}
 		}
 
-		protected static function onSpriteAllowedToCloseChild(e:Event): void {
+		protected static function onSpriteAllowedToCloseChild(e:Event):void {
 			var parentSprite:NavigableSprite = rootSprite.getChildByStubs(currentLocationInternal.slice(0, currentLocationInternal.length - 1));
 			parentSprite.removeEventListener(NavigableSpriteEvent.ALLOWED_TO_CLOSE_CHILD, onSpriteAllowedToCloseChild);
 			closeSprite(true);
@@ -267,7 +267,7 @@ package com.zehfernando.navigation {
 		}
 
 
-		protected static function changeAddressIfNeeded(): void {
+		protected static function changeAddressIfNeeded():void {
 			// Navigates from current location to the new one
 
 			if (!executingNavigationCommand && targetLocations.length > 0) {
@@ -327,13 +327,13 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected static function onAddressChange(e:SWFAddressEvent): void {
+		protected static function onAddressChange(e:SWFAddressEvent):void {
 			log("Location should change from [" + currentLocationInternal + "] ("+ (Boolean(currentLocationInternal) ? currentLocationInternal.length : "-") +") to [" + getLocation() + "]");
 			targetLocations.push(getLocation());
 			changeAddressIfNeeded();
 		}
 
-		protected static function onOpenedNavigableSprite(e:NavigableSpriteEvent): void {
+		protected static function onOpenedNavigableSprite(e:NavigableSpriteEvent):void {
 			//trace ("SpriteNavigator :: onOpenedNavigableSprite :: " + e.target);
 			var ns:NavigableSprite = e.target as NavigableSprite;
 			if (ns != rootSprite) currentLocationInternal.push(ns.stub);
@@ -341,7 +341,7 @@ package com.zehfernando.navigation {
 			executeNextNavigationCommand();
 		}
 
-		protected static function onClosedNavigableSprite(e:NavigableSpriteEvent): void {
+		protected static function onClosedNavigableSprite(e:NavigableSpriteEvent):void {
 			//trace ("SpriteNavigator :: onClosedNavigableSprite :: " + e.target);
 			var ns:NavigableSprite = e.target as NavigableSprite;
 			if (ns != rootSprite) currentLocationInternal.pop();
@@ -352,7 +352,7 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function start(__sprite:NavigableSprite): void {
+		public static function start(__sprite:NavigableSprite):void {
 			rootSprite = __sprite;
 			SWFAddress.addEventListener(SWFAddressEvent.CHANGE, onAddressChange);
 			//rootSprite.open();
@@ -363,7 +363,7 @@ package com.zehfernando.navigation {
 			//_executingCommand = false;
 		}
 
-		public static function setLocation(__path:String): void {
+		public static function setLocation(__path:String):void {
 			// Open a new location, like "/file/2000"
 			log ("======================================================> SETTING as " + __path);
 			lastCommandExecutedType = COMMAND_TYPE_DIRECT;
@@ -371,13 +371,13 @@ package com.zehfernando.navigation {
 		}
 
 		/*
-		public static function setChildLocation(__childLocation:String): void {
+		public static function setChildLocation(__childLocation:String):void {
 			// Open a new sub-location, like "/2000" on "/file" to become "/file/2000"
 			SWFAddress.setValue(getLocation() + "/" + __childLocation);
 		}
 		*/
 
-		public static function getLocation(__forceCurrent:Boolean = false): String {
+		public static function getLocation(__forceCurrent:Boolean = false):String {
 			if (__forceCurrent) {
 				// Get the current navigation phase instead
 				return Boolean(currentLocationInternal) ? "/" + currentLocationInternal.join("/") : "/";
@@ -389,7 +389,7 @@ package com.zehfernando.navigation {
 			return loc;
 		}
 
-		public static function getTitle(): String {
+		public static function getTitle():String {
 			var titles:Vector.<String> = getLocationTitles();
 			var lastTitle:String = "";
 
@@ -408,29 +408,29 @@ package com.zehfernando.navigation {
 
 		/*
 		// Only works on opera?
-		public static function setStatus(__message:String): void {
+		public static function setStatus(__message:String):void {
 			SWFAddress.setStatus(__message);
 		}
 
-		public static function resetStatus(): void {
+		public static function resetStatus():void {
 			SWFAddress.resetStatus();
 		}
 		*/
 
 		// EventDispatcher extensions
-		public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false): void {
+		public static function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false):void {
 			eventDispatcher.addEventListener(type, listener, useCapture, priority, useWeakReference);
 		}
 
-		public static function dispatchEvent(event:Event): Boolean {
+		public static function dispatchEvent(event:Event):Boolean {
 			return eventDispatcher.dispatchEvent(event);
 		}
 
-		public static  function hasEventListener(type:String): Boolean {
+		public static  function hasEventListener(type:String):Boolean {
 			return eventDispatcher.hasEventListener(type);
 		}
 
-		public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false): void {
+		public static function removeEventListener(type:String, listener:Function, useCapture:Boolean = false):void {
 			eventDispatcher.removeEventListener(type, listener, useCapture);
 		}
 
@@ -439,17 +439,17 @@ package com.zehfernando.navigation {
 		}
 
 		// SWFAddress extensions
-		public static function goBack(): void {
+		public static function goBack():void {
 			lastCommandExecutedType = COMMAND_TYPE_BACK;
 			SWFAddress.back();
 		}
 
-		public static function goForward(): void {
+		public static function goForward():void {
 			lastCommandExecutedType = COMMAND_TYPE_FORWARD;
 			SWFAddress.forward();
 		}
 
-		public static function goUp(): void {
+		public static function goUp():void {
 			lastCommandExecutedType = COMMAND_TYPE_UP;
 			SWFAddress.up();
 		}
@@ -474,7 +474,7 @@ class MovieNavigator extends MovieClip {
 		trace("This is an static class and there it can't be instantiated.");
 	}
 
-	public static function setRootMovie(p_movie:MovieClip): Void {
+	public static function setRootMovie(p_movie:MovieClip):void {
 		_rootPos = p_movie;
 		_commandList = new Array();
 		_currentLocation = "/";
@@ -489,12 +489,12 @@ class MovieNavigator extends MovieClip {
 	// ================================================================================================================
 	// INSTANCE functions ---------------------------------------------------------------------------------------------
 
-	public static function getLocation(): String {
+	public static function getLocation():String {
 		// Retorna a localização atual
 		return _currentLocation;
 	}
 
-	public static function setLocationDirectly(p_location:String): Void {
+	public static function setLocationDirectly(p_location:String):void {
 		// Seta a nova localização (exemplo: "/arquivo/1992"), indo direto pra lá, baseado na posição atual, sem ativar o SWFAddress
 
 		if (_rootPos == undefined) return; // Ainda não foi inicializado
@@ -589,7 +589,7 @@ class MovieNavigator extends MovieClip {
 		}
 	}
 
-	public static function updateTitles(): Void {
+	public static function updateTitles():void {
 		// Atualiza os títulos necessários
 		if (getCurrentTopLocation().simpleMenu[0].toString() == "true") {
 			// Sem texto
@@ -633,7 +633,7 @@ class MovieNavigator extends MovieClip {
 		_rootPos.getChild(getLocationArray(_currentLocation)).show();
 	}
 
-//	private static function getLocationColor(): Number {
+//	private static function getLocationColor():Number {
 //		// Retorna a cor da seção atual
 //		return parseInt(getCurrentTopLocation().mainColor[0].toString().substr(1), 16);
 //	}
@@ -650,7 +650,7 @@ class MovieNavigator extends MovieClip {
 		return undefined;
 	}
 
-	private static function getLocationColor(): Number {
+	private static function getLocationColor():Number {
 		// Retorna a cor da seção atual
 		var $lst:Array = getLocationArray(_currentLocation);
 		var $id = $lst[0];
@@ -689,12 +689,12 @@ class MovieNavigator extends MovieClip {
 	// ================================================================================================================
 	// Funções pra uso público real -----------------------------------------------------------------------------------
 
-	public static function openSubLocationAddress(p_location:String): Void {
+	public static function openSubLocationAddress(p_location:String):void {
 		// Abre um endereço inferior (tipo "i1996f" a partir do "/arquivo" pra virar "/arquivo/i1996f")
 		SWFAddress.setValue(_currentLocation + "/" + p_location);
 	}
 
-	public static function setLocation(p_location:String): Void {
+	public static function setLocation(p_location:String):void {
 		// Abre um endereço absoluto, tipo "/colecoes/1997i"
 	//	trace ("MovieNavigator :: setLocation "+p_location+" (atual é "+_currentLocation+")");
 		SWFAddress.setValue(p_location);
