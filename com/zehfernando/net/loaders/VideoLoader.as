@@ -1,5 +1,4 @@
 package com.zehfernando.net.loaders {
-
 	import com.zehfernando.utils.MathUtils;
 	import com.zehfernando.utils.console.debug;
 	import com.zehfernando.utils.console.log;
@@ -89,7 +88,14 @@ package com.zehfernando.net.loaders {
 			_netStream = new NetStream(_netConnection);
 			_netStream.checkPolicyFile = true;
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
-			_netStream.client = this;
+			_netStream.client = {};
+			_netStream.client["onCuePoint"] = onCuePoint;
+			_netStream.client["onImageData"] = onImageData;
+			_netStream.client["onMetaData"] = onMetaData;
+			_netStream.client["onPlayStatus"] = onPlayStatus;
+			_netStream.client["onSeekPoint"] = onSeekPoint;
+			_netStream.client["onTextData"] = onTextData;
+			_netStream.client["onXMPData"] = onXMPData;
 
 			_video = new Video(100, 100);
 			_video.attachNetStream(_netStream);
@@ -172,6 +178,10 @@ package com.zehfernando.net.loaders {
 
 		public function onTextData(__newData:Object):void {
 			log ("##### TEXT DATA : " + JSON.stringify(__newData));
+		}
+
+		public function onSeekPoint(__newData:Object):void {
+			log ("##### SEEK POINT DATA : " + JSON.stringify(__newData));
 		}
 
 		public function onImageData(__newData:Object):void {
@@ -504,15 +514,15 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		protected function onPlayStatus(event:NetStatusEvent):void {
-			log ("##### PLAY STATUS : " + event.info["code"]);
+		public function onPlayStatus(__newData:Object):void {
+			log ("##### PLAY STATUS DATA : " + JSON.stringify(__newData));
 			// NetStream.Play.Switch
 			// NetStream.Play.Complete
 			// NetStream.Play.TransitionComplete
 		}
 
-		protected function onNetStatus(event:NetStatusEvent):void {
-			//trace ("VideoContainer :: onNetStatus :: "+event.info.code);
+		public function onNetStatus(event:NetStatusEvent):void {
+			log ("##### NET STATUS CODE : " + event.info["code"]);
 
 			/*
 			event.info.code could be:
@@ -529,6 +539,24 @@ package com.zehfernando.net.loaders {
 			NetStream.Buffer.Flush
 			NetStream.Play.Stop
 			NetStream.Buffer.Empty
+
+			NEW (Flash 11)
+			Starting:
+			NetConnection.Connect.Success
+			NetStream.Pause.Notify
+			NetStream.Play.Start
+
+			Plus:
+			NetStream.Unpause.Notify
+			NetStream.Buffer.Full
+			NetStream.Unpause.Notify
+			NetStream.Buffer.Flush
+			NetStream.Play.Stop
+			NetStream.SeekStart.Notify
+			PLAY STATUS DATA : {"code":"NetStream.Play.Complete","level":"status"}
+			NetStream.Seek.Notify
+			NetStream.Buffer.Full
+			NetStream.Seek.Complete
 			*/
 
 			//trace ("videocontainer onNetStatus :: " + event.info.code);
