@@ -54,7 +54,7 @@ package com.zehfernando.utils.tracking {
 
 			if (!inited) {
 				inited = true;
-				if (!AppUtils.isTesting() && !__testMode) {
+				if (!AppUtils.isDebugSWF() && !__testMode) {
 					trace ("WebTracking :: init :: LIVE mode :: ExternalInterface.available = " + ExternalInterface.available);
 					testMode = false;
 				} else {

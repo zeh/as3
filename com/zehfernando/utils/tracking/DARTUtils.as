@@ -27,7 +27,7 @@ package com.zehfernando.utils.tracking {
 		public static function init():void {
 			if (!inited) {
 				inited = true;
-				if (!AppUtils.isTesting()) {
+				if (!AppUtils.isDebugSWF()) {
 					trace ("DARTUtils :: init :: LIVE mode :: ExternalInterface.available = " + ExternalInterface.available);
 					testMode = false;
 				} else {

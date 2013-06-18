@@ -33,13 +33,8 @@ package com.zehfernando.utils.air {
 		}
 	}
 }
-
 import com.zehfernando.utils.AppUtils;
 
-import org.ffnnkk.editor.data.MenuItemInfo;
-import org.ffnnkk.events.InterfaceEvent;
-
-import flash.desktop.NativeApplication;
 import flash.display.NativeMenu;
 import flash.display.NativeMenuItem;
 import flash.events.Event;

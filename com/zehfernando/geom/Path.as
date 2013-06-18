@@ -95,7 +95,7 @@ package com.zehfernando.geom {
 		}
 
 		public function simplify():void {
-			//var pl:int = points.length;
+			// Simplify the line by removing middle points in lines that have the same angle
 			for (var i:int = 1; i < points.length-1; i++) {
 				if (Math.atan2(points[i].y-points[i-1].y, points[i].x-points[i-1].x) == Math.atan2(points[i+1].y-points[i].y, points[i+1].x-points[i].x)) {
 					// Same angle
