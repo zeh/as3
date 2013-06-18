@@ -1,6 +1,7 @@
 package com.zehfernando.display.scenes {
 	import com.zehfernando.display.abstracts.ResizableSprite;
 
+	import flash.display.BlendMode;
 	import flash.events.Event;
 
 	/**
@@ -17,14 +18,16 @@ package com.zehfernando.display.scenes {
 		// Instances
 		private var sceneViewer:SceneViewer;
 
+		// Properties
+		private var _visibility:Number;
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function AbstractScene() {
 			super();
 
-			visible = false;
-			alpha = 0;
+			_visibility = 0;
 		}
 
 
@@ -37,6 +40,21 @@ package com.zehfernando.display.scenes {
 
 		override protected function redrawHeight():void {
 			throw new Error("Error: the method redrawHeight() of ResizableSprite has to be overridden.");
+		}
+
+		protected function redrawVisibility():void {
+			alpha = _visibility;
+			visible = _visibility > 0;
+			blendMode = _visibility < 1 ? BlendMode.LAYER : BlendMode.NORMAL;
+		}
+
+
+		// ================================================================================================================
+		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
+
+		override protected function onAddedToStage(__e:Event):void {
+			super.onAddedToStage(__e);
+			redrawVisibility();
 		}
 
 
@@ -81,6 +99,20 @@ package com.zehfernando.display.scenes {
 
 		public function dispose():void {
 
+		}
+
+
+		// ================================================================================================================
+		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
+
+		public function get visibility():Number {
+			return _visibility;
+		}
+		public function set visibility(__value:Number):void {
+			if (_visibility != __value) {
+				_visibility = __value;
+				redrawVisibility();
+			}
 		}
 	}
 }
