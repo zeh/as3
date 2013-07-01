@@ -19,7 +19,7 @@ package com.zehfernando.display.scenes {
 		private var sceneViewer:SceneViewer;
 
 		// Properties
-		private var _visibility:Number;
+		protected var _visibility:Number;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -35,11 +35,11 @@ package com.zehfernando.display.scenes {
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
 		override protected function redrawWidth():void {
-			throw new Error("Error: the method redrawWidth() of ResizableSprite has to be overridden.");
+			throw new Error("Error: the method redrawWidth() of AbstractScene has to be overridden.");
 		}
 
 		override protected function redrawHeight():void {
-			throw new Error("Error: the method redrawHeight() of ResizableSprite has to be overridden.");
+			throw new Error("Error: the method redrawHeight() of AbstractScene has to be overridden.");
 		}
 
 		protected function redrawVisibility():void {
