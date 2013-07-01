@@ -22,6 +22,8 @@ package com.zehfernando.controllers.gamecontroller {
 		private var isUpdating:Boolean;
 		private var minInterval:Number;			// Minimum interval, in ms, to wait for each update
 
+		private var _timeScale:Number;
+
 		private var timeDelta:int;
 		private var now:int;
 
@@ -40,6 +42,7 @@ package com.zehfernando.controllers.gamecontroller {
 			minInterval = __minInterval;
 			gameObjects = new Vector.<IGameObject>();
 			totalTime = 0;
+			_timeScale = 1;
 			isRunning = false;
 			isUpdating = false;
 		}
@@ -61,7 +64,7 @@ package com.zehfernando.controllers.gamecontroller {
 			now = flash.utils.getTimer();
 			timeDelta = now - lastTimeRan;
 			if (timeDelta > minInterval) {
-				update(timeDelta);
+				update(timeDelta * _timeScale);
 				lastTimeRan = now;
 				dispatchEvent(new Event(EVENT_TICK));
 			}
@@ -148,6 +151,16 @@ package com.zehfernando.controllers.gamecontroller {
 
 		public function getDeltaTime():int {
 			return timeDelta;
+		}
+
+		public function get timeScale():Number {
+			return _timeScale;
+		}
+
+		public function set timeScale(__value:Number):void {
+			if (_timeScale != __value) {
+				_timeScale = __value;
+			}
 		}
 	}
 }
