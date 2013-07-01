@@ -105,7 +105,7 @@ package com.zehfernando.net.apis.bitly.services {
 			var response:XML = new XML(loader.data);
 
 			var statusTxt:String = XMLUtils.getNodeAsString(response, "status_txt", "");
-			var statusCode:int = XMLUtils.getNodeAsInteger(response, "status_code", 0);
+			var statusCode:int = XMLUtils.getNodeAsInt(response, "status_code", 0);
 
 			var ble:BitLyEvent;
 

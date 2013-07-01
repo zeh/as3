@@ -53,7 +53,7 @@ package com.zehfernando.utils {
 			return XML(s);
 		}
 
-		public static function getNodeAsInteger(__xml:XML, __nodeName:String, __default:int = 0):int {
+		public static function getNodeAsInt(__xml:XML, __nodeName:String, __default:int = 0):int {
 			return int(getNodeAsFloat(__xml, __nodeName, __default));
 		}
 
