@@ -515,14 +515,19 @@ package com.zehfernando.net.loaders {
 		}
 
 		public function onPlayStatus(__newData:Object):void {
-			log ("##### PLAY STATUS DATA : " + JSON.stringify(__newData));
+			//log ("##### PLAY STATUS DATA : " + JSON.stringify(__newData));
 			// NetStream.Play.Switch
 			// NetStream.Play.Complete
 			// NetStream.Play.TransitionComplete
+			switch (__newData["code"]) {
+				case "NetStream.Play.Complete":
+					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_FINISH));
+					break;
+			}
 		}
 
 		public function onNetStatus(event:NetStatusEvent):void {
-			log ("##### NET STATUS CODE : " + event.info["code"]);
+			//log ("##### NET STATUS CODE : " + event.info["code"]);
 
 			/*
 			event.info.code could be:
@@ -587,7 +592,6 @@ package com.zehfernando.net.loaders {
 				case "NetStream.Play.Stop":
 					stopMonitoringTime();
 					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_STOP));
-					if (time > duration - 0.1) dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_FINISH));
 					break;
 			}
 		}
