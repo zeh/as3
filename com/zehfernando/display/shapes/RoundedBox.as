@@ -70,6 +70,15 @@ package com.zehfernando.display.shapes {
 			}
 		}
 
+		public function get outlineWidth():Number { return _outlineWidth; }
+		public function set outlineWidth(__value:Number):void {
+			if (isNaN(__value)) __value = 0;
+			if (_outlineWidth != __value) {
+				_outlineWidth = __value;
+				paint();
+			}
+		}
+
 		public function get color():Number { return _color; }
 		public function set color(__value:Number):void {
 			if (_color != __value) {
