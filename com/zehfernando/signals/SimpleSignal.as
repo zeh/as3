@@ -37,6 +37,12 @@ package com.zehfernando.signals {
 			return false;
 		}
 
+		public function removeAll():Boolean {
+			var cleared:Boolean = functions.length > 0;
+			functions.length = 0;
+			return cleared;
+		}
+
 		public function dispatch(...__args:Array):void {
 			for (var i:int = 0; i < functions.length; i++) {
 				functions[i].apply(undefined, __args);
