@@ -9,6 +9,7 @@ package com.zehfernando.signals {
 
 		// Properties
 		private var functions:Vector.<Function>;
+		private var functionsDuplicate:Vector.<Function>; // For dispatching
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -44,9 +45,11 @@ package com.zehfernando.signals {
 		}
 
 		public function dispatch(...__args:Array):void {
-			for (var i:int = 0; i < functions.length; i++) {
-				functions[i].apply(undefined, __args);
+			functionsDuplicate = functions.concat();
+			for (var i:int = 0; i < functionsDuplicate.length; i++) {
+				functionsDuplicate[i].apply(undefined, __args);
 			}
+			functionsDuplicate = null;
 		}
 	}
 }
