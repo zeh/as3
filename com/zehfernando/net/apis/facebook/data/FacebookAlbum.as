@@ -52,7 +52,7 @@ package com.zehfernando.net.apis.facebook.data {
 			album.comments =						Boolean(o["comments"]) ? FacebookComment.fromJSONObjectArray(o["comments"]["data"]) : new Vector.<FacebookComment>();
 			album.numPhotos =						o["count"];
 			album.type =							o["type"];
-			album.canUpload =						o["can_upload"];
+			album.canUpload =						Boolean(o["can_upload"]);
 			album.coverPhoto =						o["cover_photo"];
 
 			return album;

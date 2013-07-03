@@ -36,7 +36,7 @@ package com.zehfernando.net.apis.facebook.data {
 			location.name =								o["name"];
 			location.link =								o["link"];
 			location.category =							o["category"];
-			location.isCommunityPage =					o["is_community_page"];
+			location.isCommunityPage =					Boolean(o["is_community_page"]);
 			location.description =						o["description"];
 			location.fanCount =							o["fan_count"];
 

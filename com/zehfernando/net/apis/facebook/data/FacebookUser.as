@@ -1,5 +1,4 @@
 package com.zehfernando.net.apis.facebook.data {
-
 	import com.zehfernando.net.apis.facebook.FacebookDataUtils;
 
 	/**
@@ -67,7 +66,7 @@ package com.zehfernando.net.apis.facebook.data {
 			user.website =									o["website"];
 			user.timezone =									o["timezone"];
 			user.locale =									o["locale"];
-			user.verified =									o["verified"];
+			user.verified =									Boolean(o["verified"]);
 			user.updated =									FacebookDataUtils.getResultStringAsDate(o["updated"]);
 
 			return user;
