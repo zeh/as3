@@ -1,7 +1,4 @@
 package com.zehfernando.navigation {
-
-	import com.asual.swfaddress.SWFAddress;
-	import com.asual.swfaddress.SWFAddressEvent;
 	import com.zehfernando.utils.console.log;
 	import com.zehfernando.utils.console.logOff;
 
@@ -113,7 +110,9 @@ package com.zehfernando.navigation {
 
 		protected static function updateTitle():void {
 			//var newTitle:String = siteTitle + titleSeparator + getLocationTitles().join(titleSeparator);
+			/*FDT_IGNORE*/
 			SWFAddress.setTitle(getTitle());
+			/*FDT_IGNORE*/
 //			trace ("SpriteNavigator :: updateTitle :: new title is [" + newTitle + "]");
 		}
 
@@ -327,7 +326,8 @@ package com.zehfernando.navigation {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
-		protected static function onAddressChange(e:SWFAddressEvent):void {
+		protected static function onAddressChange(e:Event):void {
+		//protected static function onAddressChange(e:SWFAddressEvent):void {
 			log("Location should change from [" + currentLocationInternal + "] ("+ (Boolean(currentLocationInternal) ? currentLocationInternal.length : "-") +") to [" + getLocation() + "]");
 			targetLocations.push(getLocation());
 			changeAddressIfNeeded();
@@ -354,7 +354,10 @@ package com.zehfernando.navigation {
 
 		public static function start(__sprite:NavigableSprite):void {
 			rootSprite = __sprite;
+			/*FDT_IGNORE*/
 			SWFAddress.addEventListener(SWFAddressEvent.CHANGE, onAddressChange);
+			/*FDT_IGNORE*/
+
 			//rootSprite.open();
 			//currentLocation = null;
 			//navigationCommands = new Vector.<String>;
@@ -367,7 +370,9 @@ package com.zehfernando.navigation {
 			// Open a new location, like "/file/2000"
 			log ("======================================================> SETTING as " + __path);
 			lastCommandExecutedType = COMMAND_TYPE_DIRECT;
+			/*FDT_IGNORE*/
 			SWFAddress.setValue(__path);
+			/*FDT_IGNORE*/
 		}
 
 		/*
@@ -382,7 +387,10 @@ package com.zehfernando.navigation {
 				// Get the current navigation phase instead
 				return Boolean(currentLocationInternal) ? "/" + currentLocationInternal.join("/") : "/";
 			}
-			var loc:String = SWFAddress.getValue();
+			var loc:String;
+			/*FDT_IGNORE*/
+			loc = SWFAddress.getValue();
+			/*FDT_IGNORE*/
 			//log("current location from SWFAddress is [" + loc + "]");
 			// Quick and dirty method to remove trailing slash
 			if (loc.substr(-1,1) == "/") loc = loc.substr(0, loc.length-1);
@@ -441,17 +449,23 @@ package com.zehfernando.navigation {
 		// SWFAddress extensions
 		public static function goBack():void {
 			lastCommandExecutedType = COMMAND_TYPE_BACK;
+			/*FDT_IGNORE*/
 			SWFAddress.back();
+			/*FDT_IGNORE*/
 		}
 
 		public static function goForward():void {
 			lastCommandExecutedType = COMMAND_TYPE_FORWARD;
+			/*FDT_IGNORE*/
 			SWFAddress.forward();
+			/*FDT_IGNORE*/
 		}
 
 		public static function goUp():void {
 			lastCommandExecutedType = COMMAND_TYPE_UP;
+			/*FDT_IGNORE*/
 			SWFAddress.up();
+			/*FDT_IGNORE*/
 		}
 	}
 }
