@@ -23,8 +23,8 @@ package com.zehfernando.models {
 		private var _maxFPS:Number;
 
 		private var lastTimeUpdated:int;
-		private var minInterval:int;				// Min time to wait (in ms) between updates; causes skips (NaN = never enforces)
-		private var maxInterval:int;				// Max time to wait (in ms) between updates; causes repetitions (NaN = never enforces)
+		private var minInterval:Number;				// Min time to wait (in ms) between updates; causes skips (NaN = never enforces)
+		private var maxInterval:Number;				// Max time to wait (in ms) between updates; causes repetitions (NaN = never enforces)
 
 		// Temp stuff
 		private var now:int;
@@ -50,8 +50,8 @@ package com.zehfernando.models {
 			_tickDeltaTime = 0;
 			_isRunning = false;
 
-			maxInterval = isNaN(_minFPS) ? NaN : _minFPS / 1000;
-			minInterval = isNaN(_maxFPS) ? NaN : _maxFPS / 1000;
+			maxInterval = isNaN(_minFPS) ? NaN : (1000 / _minFPS);
+			minInterval = isNaN(_maxFPS) ? NaN : (1000 / _maxFPS);
 
 			_onResumed = new SimpleSignal();
 			_onPaused = new SimpleSignal();
@@ -74,8 +74,7 @@ package com.zehfernando.models {
 			now = getTimer();
 			frameDeltaTime = now - lastTimeUpdated;
 
-			if (isNaN(minInterval) || frameDeltaTime > minInterval) {
-				
+			if (isNaN(minInterval) || frameDeltaTime >= minInterval) {
 				if (!isNaN(maxInterval)) {
 					// Needs several updates
 					while (now > lastTimeUpdated + maxInterval) {
@@ -85,7 +84,7 @@ package com.zehfernando.models {
 				} else {
 					// Just a single simple update
 					update(frameDeltaTime * _timeScale, true);
-					lastTimeUpdated = now;
+					lastTimeUpdated = now; // TODO: not perfect? drifting for ~1 frame every 20 seconds or so when minInterval is used
 				}
 			}
 		}
@@ -95,7 +94,7 @@ package com.zehfernando.models {
 			_currentTime += __timePassedMS;
 			_tickDeltaTime = __timePassedMS;
 			_onTicked.dispatch(currentTimeSeconds, tickDeltaTimeSeconds, currentTick);
-			
+
 			if (__newVisualFrame) _onTickedOncePerVisualFrame.dispatch(currentTimeSeconds, tickDeltaTimeSeconds, currentTick);
 		}
 
@@ -107,13 +106,13 @@ package com.zehfernando.models {
 			if (!_isRunning) {
 				_isRunning = true;
 
-				lastTimeUpdated = flash.utils.getTimer();
+				lastTimeUpdated = getTimer();
 
 				_onResumed.dispatch();
 
 				if (sprite == null) {
 					sprite = new Sprite();
-					sprite.addEventListener(Event.ENTER_FRAME, onSpriteEnterFrame, false, 0, true);
+					sprite.addEventListener(Event.ENTER_FRAME, onSpriteEnterFrame);
 				}
 			}
 		}
@@ -138,6 +137,9 @@ package com.zehfernando.models {
 			_onTicked.removeAll();
 		}
 
+		// ================================================================================================================
+		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
+
 		public function get currentTick():int {
 			return _currentTick;
 		}
@@ -158,6 +160,22 @@ package com.zehfernando.models {
 			if (_timeScale != __value) {
 				_timeScale = __value;
 			}
+		}
+
+		public function get onResumed():SimpleSignal {
+			return _onResumed;
+		}
+
+		public function get onPaused():SimpleSignal {
+			return _onPaused;
+		}
+
+		public function get onTicked():SimpleSignal {
+			return _onTicked;
+		}
+
+		public function get onTickedOncePerVisualFrame():SimpleSignal {
+			return _onTickedOncePerVisualFrame;
 		}
 	}
 }
