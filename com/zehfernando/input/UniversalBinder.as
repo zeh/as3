@@ -37,7 +37,7 @@ package com.zehfernando.input {
 
 		public function UniversalBinder(__stage:Stage) {
 			stage = __stage;
-			gameInput = new GameInput();
+			if (GameInput.isSupported) gameInput = new GameInput();
 			bindings = new Vector.<Binding>();
 			commandsActivations = {};
 
@@ -166,8 +166,10 @@ package com.zehfernando.input {
 				stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 				
 				// Starts listening to device addition events
-				gameInput.addEventListener(GameInputEvent.DEVICE_ADDED, onGameInputDeviceAdded);
-                gameInput.addEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
+				if (gameInput != null) {
+					gameInput.addEventListener(GameInputEvent.DEVICE_ADDED, onGameInputDeviceAdded);
+					gameInput.addEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
+				}
 				
 
 				_isStarted = true;
@@ -181,8 +183,10 @@ package com.zehfernando.input {
 				stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
 
 				// Stops listening to device addition events
-				gameInput.removeEventListener(GameInputEvent.DEVICE_ADDED, onGameInputDeviceAdded);
-                gameInput.removeEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
+				if (gameInput != null) {
+					gameInput.removeEventListener(GameInputEvent.DEVICE_ADDED, onGameInputDeviceAdded);
+					gameInput.removeEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
+				}
 
 				_isStarted = false;
 			}
