@@ -59,7 +59,6 @@ package com.zehfernando.models {
 			_onTickedOncePerVisualFrame = new SimpleSignal();
 
 			if (!__paused) resume();
-
 		}
 
 		// ================================================================================================================
@@ -77,9 +76,10 @@ package com.zehfernando.models {
 			if (isNaN(minInterval) || frameDeltaTime >= minInterval) {
 				if (!isNaN(maxInterval)) {
 					// Needs several updates
-					while (now > lastTimeUpdated + maxInterval) {
-						update(maxInterval * _timeScale, now <= lastTimeUpdated + maxInterval * 2); // Only dispatches visual frame update on the last call
-						lastTimeUpdated += maxInterval;
+					var interval:int = Math.min(frameDeltaTime, maxInterval);
+					while (now >= lastTimeUpdated + interval) {
+						update(interval * _timeScale, now <= lastTimeUpdated + maxInterval * 2); // Only dispatches visual frame update on the last call
+						lastTimeUpdated += interval;
 					}
 				} else {
 					// Just a single simple update
