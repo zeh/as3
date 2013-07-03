@@ -1,5 +1,4 @@
 package com.zehfernando.net.apis.facebook.services {
-	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.net.apis.facebook.data.FacebookUser;
 
@@ -54,7 +53,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onComplete(e:Event):void {
-			var response:Object = JSON.decode(loader.data);
+			var response:Object = JSON.parse(loader.data);
 
 			_user = FacebookUser.fromJSONObject(response);
 

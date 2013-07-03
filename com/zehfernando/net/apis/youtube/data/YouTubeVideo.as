@@ -1,7 +1,5 @@
 package com.zehfernando.net.apis.youtube.data {
-
 	import com.zehfernando.net.apis.youtube.YouTubeConstants;
-	import com.zehfernando.net.apis.youtube.YouTubeDataUtils;
 	import com.zehfernando.utils.DateUtils;
 
 	/*FDT_IGNORE*/
@@ -132,8 +130,10 @@ package com.zehfernando.net.apis.youtube.data {
 			var tempStr:String;
 
 			// Default namespace data -------------------
+			/*FDT_IGNORE*/
 			var ns:Namespace = __xml.namespace();
 			default xml namespace = ns;
+			/*FDT_IGNORE*/
 
 			tempArray = __xml.child("id").toString().split("/");
 			video.id = tempArray[tempArray.length - 1] as String;
@@ -160,10 +160,11 @@ package com.zehfernando.net.apis.youtube.data {
 				}
 			}
 
+			/*FDT_IGNORE*/
 
 			// GD namespace data -------------------
 			var gdns:Namespace = __xml.namespace(YouTubeConstants.NAMESPACE_GD);
-
+			
 			video.comments = parseInt(__xml.gdns::comments.gdns::feedLink[0].@countHint, 10);
 
 			// YT namespace data -------------------
@@ -188,6 +189,8 @@ package com.zehfernando.net.apis.youtube.data {
 			video.duration = parseInt(__xml.medians::group[0].ytns::duration.@seconds);
 
 			default xml namespace = new Namespace(""); // WTF! one needs this otherwise the function below fails!
+			
+			/*FDT_IGNORE*/
 
 			return video;
 		}

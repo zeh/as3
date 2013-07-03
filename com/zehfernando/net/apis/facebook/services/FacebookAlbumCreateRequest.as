@@ -1,5 +1,4 @@
 package com.zehfernando.net.apis.facebook.services {
-	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 
 	import flash.events.Event;
@@ -45,8 +44,8 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function getURLVariables():URLVariables {
-			var vars:URLVariables = super.getURLVariables();
+		override protected function getData():Object {
+			var vars:URLVariables = super.getData() as URLVariables;
 
 			if (Boolean(_name))				vars["name"] = _name;
 			if (Boolean(_description))		vars["description"] = _description;
@@ -61,7 +60,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onComplete(e:Event):void {
-			var response:Object = JSON.decode(loader.data);
+			var response:Object = JSON.parse(loader.data);
 
 			_albumId = response["id"];
 

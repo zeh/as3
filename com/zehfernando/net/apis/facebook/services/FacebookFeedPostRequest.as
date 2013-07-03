@@ -1,5 +1,4 @@
 package com.zehfernando.net.apis.facebook.services {
-	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.net.apis.facebook.data.FacebookFeedPostAction;
 
@@ -60,8 +59,8 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function getURLVariables():URLVariables {
-			var vars:URLVariables = super.getURLVariables();
+		override protected function getData():Object {
+			var vars:URLVariables = super.getData() as URLVariables;
 			var i:int;
 
 			if (Boolean(_message))     vars["message"] = _message;
@@ -76,7 +75,7 @@ package com.zehfernando.net.apis.facebook.services {
 				for (i = 0; i < _actions.length; i++) {
 					actionsList.push({name:_actions[i].name, link:_actions[i].link});
 				}
-				vars["actions"] = JSON.encode(actionsList);
+				vars["actions"] = JSON.stringify(actionsList);
 			}
 			//if (Boolean(_privacy) > 0)     vars["privacy"] = _privacy;
 			//if (Boolean(_targeting) > 0)   vars["targeting"] = _targeting;
@@ -88,7 +87,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onComplete(e:Event):void {
-			var response:Object = JSON.decode(loader.data);
+			var response:Object = JSON.parse(loader.data);
 
 			_postId = response["id"];
 

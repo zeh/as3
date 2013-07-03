@@ -1,5 +1,4 @@
 package com.zehfernando.net.apis.facebook.services {
-	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.net.apis.facebook.data.FacebookUser;
 
@@ -45,8 +44,8 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function getURLVariables():URLVariables {
-			var vars:URLVariables = super.getURLVariables();
+		override protected function getData():Object {
+			var vars:URLVariables = super.getData() as URLVariables;
 
 			if (_limit > 0) vars[FacebookConstants.PARAMETER_LIMIT_NAME] = _limit;
 			if (_fields.length > 0) vars[FacebookConstants.PARAMETER_FIELDS_NAME] = _fields.join(FacebookConstants.PARAMETER_LIST_SEPARATOR);
@@ -58,7 +57,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onComplete(e:Event):void {
-			var response:Object = JSON.decode(loader.data);
+			var response:Object = JSON.parse(loader.data);
 
 			_friends = FacebookUser.fromJSONObjectArray(response["data"]);
 

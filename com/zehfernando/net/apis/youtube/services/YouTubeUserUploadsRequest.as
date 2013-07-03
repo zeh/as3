@@ -55,8 +55,10 @@ package com.zehfernando.net.apis.youtube.services {
 
 			var vidData:XML = (new XML(loader.data));
 
+			/*FDT_IGNORE*/
 			var ns:Namespace = vidData.namespace();
 			default xml namespace = ns;
+			/*FDT_IGNORE*/
 
 			_videos = YouTubeVideo.fromXMLList(vidData.child("entry"));
 

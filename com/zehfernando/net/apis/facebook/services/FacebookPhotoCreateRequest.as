@@ -1,5 +1,4 @@
 package com.zehfernando.net.apis.facebook.services {
-	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.utils.console.log;
 
@@ -53,8 +52,8 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function getURLVariables():URLVariables {
-			var vars:URLVariables = super.getURLVariables();
+		override protected function getData():Object {
+			var vars:URLVariables = super.getData() as URLVariables;
 
 			//if (Boolean(_source))			vars["source"] = _source;
 			if (Boolean(_message))			vars["message"] = _message;
@@ -73,7 +72,7 @@ package com.zehfernando.net.apis.facebook.services {
 			postData.endian = Endian.BIG_ENDIAN;
 
 			// Writes vars
-			var vars:URLVariables = getURLVariables();
+			var vars:URLVariables = getData() as URLVariables;
 			for (var n:String in vars) {
 				writePostData(postData, n, vars[n]);
 			}
@@ -185,7 +184,7 @@ package com.zehfernando.net.apis.facebook.services {
 		}
 
 		override protected function onComplete(e:Event):void {
-			var response:Object = JSON.decode(loader.data);
+			var response:Object = JSON.parse(loader.data);
 
 			_photoId = response["id"];
 

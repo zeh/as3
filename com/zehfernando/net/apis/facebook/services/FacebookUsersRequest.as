@@ -1,5 +1,4 @@
 package com.zehfernando.net.apis.facebook.services {
-	import com.zehfernando.data.serialization.json.JSON;
 	import com.zehfernando.net.apis.facebook.FacebookConstants;
 	import com.zehfernando.net.apis.facebook.data.FacebookUser;
 
@@ -50,8 +49,8 @@ package com.zehfernando.net.apis.facebook.services {
 //			return vars;
 //		}
 
-		override protected function getURLVariables():URLVariables {
-			var vars:URLVariables = super.getURLVariables();
+		override protected function getData():Object {
+			var vars:URLVariables = super.getData() as URLVariables;
 
 			vars[FacebookConstants.PARAMETER_IDS_NAME] = _userIds.join(FacebookConstants.PARAMETER_LIST_SEPARATOR);
 
@@ -62,7 +61,7 @@ package com.zehfernando.net.apis.facebook.services {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onComplete(e:Event):void {
-			var response:Object = JSON.decode(loader.data);
+			var response:Object = JSON.parse(loader.data);
 
 			_users = FacebookUser.fromJSONObjectObject(response);
 

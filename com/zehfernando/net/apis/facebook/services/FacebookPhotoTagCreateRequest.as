@@ -43,12 +43,12 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function getURLVariables():URLVariables {
-			var vars:URLVariables = super.getURLVariables();
+		override protected function getData():Object {
+			var vars:URLVariables = super.getData() as URLVariables;
 
-			if (Boolean(_userId))			vars["to"] = _userId;
-											vars["x"] = Math.round(_x * 100);
-											vars["y"] = Math.round(_y * 100);
+			if (Boolean(_userId)) vars["to"] = _userId;
+			vars["x"] = Math.round(_x * 100);
+			vars["y"] = Math.round(_y * 100);
 
 			return vars;
 		}

@@ -24,8 +24,8 @@ package com.zehfernando.net.apis.facebook.services {
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		override protected function getURLVariables():URLVariables {
-			var vars:URLVariables = super.getURLVariables();
+		override protected function getData():Object {
+			var vars:URLVariables = new URLVariables();
 
 			if (FacebookAuth.loggedIn || FacebookAuth.hasAppAccessToken) vars["access_token"] = FacebookAuth.accessToken;
 
