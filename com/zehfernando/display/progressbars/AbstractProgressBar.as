@@ -1,5 +1,6 @@
 package com.zehfernando.display.progressbars {
 	import com.zehfernando.data.types.AttenuatedNumber;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 
@@ -20,7 +21,7 @@ package com.zehfernando.display.progressbars {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function AbstractProgressBar() {
-			_value = new AttenuatedNumber(8, 0, 0);
+			_value = new AttenuatedNumber(8, 0, 0, true);
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
@@ -51,11 +52,13 @@ package com.zehfernando.display.progressbars {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		protected function onAddedToStage(e:Event):void {
+			_value.start();
 			addEventListener(Event.ENTER_FRAME, onEnterFrameDraw, false, 0, true);
 			redrawAmount();
 		}
 
 		protected function onRemovedFromStage(e:Event):void {
+			_value.stop();
 			removeEventListener(Event.ENTER_FRAME, onEnterFrameDraw);
 		}
 
