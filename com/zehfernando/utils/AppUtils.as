@@ -58,6 +58,13 @@ package com.zehfernando.utils {
 		// screenResolutionX
 		// playerType
 
+		// http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/system/Capabilities.html#playerType
+		//  "ActiveX" for the Flash Player ActiveX control used by Microsoft Internet Explorer
+		//  "Desktop" for the Adobe AIR runtime (except for SWF content loaded by an HTML page, which has Capabilities.playerType set to "PlugIn")
+		//  "External" for the external Flash Player or in test mode
+		//  "PlugIn" for the Flash Player browser plug-in (and for SWF content loaded by an HTML page in an AIR application)
+		//  "StandAlone" for the stand-alone Flash Player
+
 		public static function isMac():Boolean {
 			return Capabilities.os == "MacOS" || Capabilities.os.substr(0, 6) == "Mac OS";
 		}
