@@ -10,7 +10,60 @@ package com.zehfernando.models {
 	public class GameLooper {
 
 		/**
-		 * Dispatches events, controlling the main game loop
+		 * Create an instance that loops continuously every frame, dispatching SimpleSignal calls every time it does so.
+		 *
+		 * Using GameLooper is similar to creating an ENTER_FRAME event and watching for it, but with these differences:
+		 *  . Actual "tick" event call rate is flexible: it can execute more than one call per frame, or skip frames as needed
+		 *  . It keeps track of relative time, so the event gets passed time and frame data (for correct position calculation)
+		 *  . Time is flexible, so it can be multiplied/scaled, paused, and resumed
+		 *
+		 *
+		 * How to use:
+		 *
+		 * 1. Create a new instance of GameLooper. This will make the looper's onTicked be fired once per frame (same as ENTER_FRAME):
+		 *
+		 *     var looper:GameLooper = new GameLooper(); // Create and start
+		 *
+		 *     var looper:GameLooper = new GameLooper(true); // Creates and pauses
+		 *
+		 * 2. Create function callbacks to receive the signal (signals are like events, but simpler):
+		 *
+		 *     looper.onTicked.add(onTick);
+		 *
+		 *     private function onTick(currentTimeSeconds:Number, tickDeltaTimeSeconds:Number, currentTick:int):void {
+		 *         var speed:Number = 10; // Speed of the box, in pixels per seconds
+		 *         box.x += speed * tickDeltaTimeSeconds;
+		 *     }
+		 *
+		 *
+		 * You can also:
+		 *
+		 * 1. Pause/resume the looper to pause/resume the game loop:
+		 *
+		 *     looper.pause();
+		 *     looper.resume();
+		 *
+		 *
+		 * 2. Change the time scale to make time go "faster" (currentTimeSeconds, and tickDeltaTimeSeconds):
+		 *
+		 *     looper.timeScale = 2; // 2x original speed (faster motion)
+		 *     looper.timeScale = 0.5; // 0.5x original speed (slower motion)
+		 *
+		 * 3. Specify a minimum FPS as a parameter. When the minFPS parameter is used, the looper is always dispatched at least
+		 * that amount of times per second, regardless of the number of frames:
+		 *
+		 *     var looper:GameLooper = new GameLooper(false, 8);
+		 *
+		 * In the above example, on a SWF with 4 frames per second, onTicked would be fired twice per frame. On a SWF with
+		 * 6 frames per second, it would be fired once, and then twice every other frame.
+		 *
+		 * 4. Specify a maximum FPS as a parameter. When the maxFPS parameter is used, the looper is not dispatched more that
+		 * number of times per second:
+		 *
+		 *     var looper:GameLooper = new GameLooper(false, NaN, 10);
+		 *
+		 * In the above example, on a SWF with 30 frames per second, onTicked would be fired once every 3 frames.
+		 *
 		 */
 
 		// Properties
@@ -26,7 +79,7 @@ package com.zehfernando.models {
 		private var minInterval:Number;				// Min time to wait (in ms) between updates; causes skips (NaN = never enforces)
 		private var maxInterval:Number;				// Max time to wait (in ms) between updates; causes repetitions (NaN = never enforces)
 
-		// Temp stuff
+		// Temp stuff for speed/memory
 		private var now:int;
 		private var frameDeltaTime:int;
 
@@ -41,6 +94,13 @@ package com.zehfernando.models {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
+		/**
+		 * Creates a new GameLooper instance.
+		 *
+		 * @param paused Starts in paused state if true. Default is false, which means it starts looping right away.
+		 * @param minFPS Minimum amount of ticks to dispatch per second. This can cause frames to dispatch more than one onTicked event. Default is NaN, which means there's no minimum (adhere to ENTER_FRAME).
+		 * @param maxFPS Maximum amount of ticks to dispatch per second. This can cause frames to skip dispatching onTicked events. Default is NaN, which means there's no maximum (adhere to ENTER_FRAME).
+		 */
 		public function GameLooper(__paused:Boolean = false, __minFPS:Number = NaN, __maxFPS:Number = NaN) {
 			_minFPS = __minFPS;
 			_maxFPS = __maxFPS;
@@ -60,10 +120,6 @@ package com.zehfernando.models {
 
 			if (!__paused) resume();
 		}
-
-		// ================================================================================================================
-		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-
 
 
 		// ================================================================================================================
@@ -102,6 +158,13 @@ package com.zehfernando.models {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
+		/**
+		 * Resumes looping this instance, if it's in paused state.
+		 *
+		 * Calling this method when it is already running has no effect.
+		 *
+		 * @see isRunning
+		 */
 		public function resume():void {
 			if (!_isRunning) {
 				_isRunning = true;
@@ -117,6 +180,13 @@ package com.zehfernando.models {
 			}
 		}
 
+		/**
+		 * Pauses this instance, if it's in running state. All time- and tick-related property values are also paused.
+		 *
+		 * Calling this method when it is already paused has no effect.
+		 *
+		 * @see isRunning
+		 */
 		public function pause():void {
 			if (_isRunning) {
 				_isRunning = false;
@@ -130,6 +200,11 @@ package com.zehfernando.models {
 			}
 		}
 
+		/**
+		 * Prepares this instance for disposal, by pausing the loop and removing all signal callbacks.
+		 *
+		 * Calling this methid is not strictly necessary, but a good practice unless you're clearing all references yourself.
+		 */
 		public function dispose():void {
 			pause();
 			_onResumed.removeAll();
@@ -140,40 +215,108 @@ package com.zehfernando.models {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
+		/**
+		 * The current tick (an "internal frame") executed last.
+		 */
 		public function get currentTick():int {
 			return _currentTick;
 		}
 
+		/**
+		 * The current internal time of the looper, in seconds. This is aligned to the last tick executed.
+		 */
 		public function get currentTimeSeconds():Number {
 			return _currentTime / 1000;
 		}
 
+		/**
+		 * How much time has been spend between the last and the previous tick, in seconds.
+		 */
 		public function get tickDeltaTimeSeconds():Number {
 			return _tickDeltaTime / 1000;
 		}
 
+		/**
+		 * The time scale for the internal loop time. Changing this has an impact on the time used by the looper, and can have the effect of make objects that depend on it slower or faster.
+		 */
 		public function get timeScale():Number {
 			return _timeScale;
 		}
 
+		/**
+		 * The time scale for the internal loop time. Changing this has an impact on the time used by the looper, and can have the effect of make objects that depend on it slower or faster.
+		 */
 		public function set timeScale(__value:Number):void {
 			if (_timeScale != __value) {
 				_timeScale = __value;
 			}
 		}
 
+		/**
+		 * A signal that allows callbacks for when the looper resumes execution. Receives no parameters.
+		 *
+		 * Usage:
+		 *
+		 * myGameLooper.onResumed.add(myOnResumed);
+		 *
+		 * private function myOnResumed():void {
+		 *     trace("Looper has resumed");
+		 * }
+		 */
 		public function get onResumed():SimpleSignal {
 			return _onResumed;
 		}
 
+		/**
+		 * A signal that allows callbacks for when the looper pauses execution. Receives no parameters.
+		 *
+		 * Usage:
+		 *
+		 * myGameLooper.onPaused.add(myOnPaused);
+		 *
+		 * private function myOnPaused():void {
+		 *     trace("Looper has paused");
+		 * }
+		 */
 		public function get onPaused():SimpleSignal {
 			return _onPaused;
 		}
 
+		/**
+		 * A signal that allows callbacks for when the looper instance loops, that is, "ticks". Receives the current time (absolute and delta) and tick (as an int) as references.
+		 *
+		 * Usage:
+		 *
+		 * myGameLooper.onTicked.add(myOnTicked);
+		 *
+		 * private function myOnTicked(currentTimeSeconds:Number, tickDeltaTimeSeconds:Number, currentTick:int):void {:void {
+		 *     trace("A loop happened.");
+		 *     trace("Time since it started executing: " + currentTimeSeconds + " seconds");
+		 *     trace("           Time since last tick: " + Number + " seconds");
+		 *     trace("        Tick/frame count so far: " + currentTick);
+		 * }
+		 */
 		public function get onTicked():SimpleSignal {
 			return _onTicked;
 		}
 
+		/**
+		 * A signal that allows callbacks for when the looper instance loops, that is, "ticks", but only once per frame (basically ignoring the minFPS parameter). Receives the current time (absolute and delta) and tick (as an int) as references.
+		 *
+		 * This is useful when using minFPS because you can use the onTicked() callback to do any state changes your game needs, but then only perform visual updates on myOnTickedOncePerVisualFrame().
+		 * If you need to enforce a minimum number of frames per second but did all visual updates on onTicked(), you could potentially be repeating useless visual updates.
+		 *
+		 * Usage:
+		 *
+		 * myGameLooper.onTickedOncePerVisualFrame.add(myOnTickedOncePerVisualFrame);
+		 *
+		 * private function myOnTickedOncePerVisualFrame(currentTimeSeconds:Number, tickDeltaTimeSeconds:Number, currentTick:int):void {:void {
+		 *     trace("At least one loop happened in this frame.");
+		 *     trace("Time since it started executing: " + currentTimeSeconds + " seconds");
+		 *     trace("           Time since last tick: " + Number + " seconds");
+		 *     trace("        Tick/frame count so far: " + currentTick);
+		 * }
+		 */
 		public function get onTickedOncePerVisualFrame():SimpleSignal {
 			return _onTickedOncePerVisualFrame;
 		}
