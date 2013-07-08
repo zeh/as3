@@ -163,7 +163,7 @@ package com.zehfernando.models {
 		 *
 		 * Calling this method when it is already running has no effect.
 		 *
-		 * @see isRunning
+		 * @see #isRunning
 		 */
 		public function resume():void {
 			if (!_isRunning) {
@@ -319,6 +319,16 @@ package com.zehfernando.models {
 		 */
 		public function get onTickedOncePerVisualFrame():SimpleSignal {
 			return _onTickedOncePerVisualFrame;
+		}
+
+		/**
+		 * Returns true if the GameLooper instance is running, false if it is paused.
+		 *
+		 * @see #pause()
+		 * @see #resume()
+		 */
+		public function get isRunning():Boolean {
+			return _isRunning;
 		}
 	}
 }
