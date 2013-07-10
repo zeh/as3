@@ -299,7 +299,7 @@ package com.zehfernando.utils.console {
 				var output:String = timeFormat;
 				output = output.split(PARAM_TIME_NAME).join(Boolean(__message) ? __message : __name);
 				output = output.split(PARAM_TIME_VALUE).join(timePassed);
-				echo(output);
+				echo(output, null, -1);
 				delete timeTable[__name];
 			}
 		}
