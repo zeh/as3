@@ -1,6 +1,5 @@
 package com.zehfernando.controllers.focus {
 	import com.zehfernando.signals.SimpleSignal;
-	import com.zehfernando.utils.console.log;
 
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Stage;
@@ -15,6 +14,7 @@ package com.zehfernando.controllers.focus {
 
 		// Constants
 		public static const COMMAND_ACTIVATE:String = "commandActivate";
+		public static const COMMAND_ACTIVATION_TOGGLE:String = "commandActivationToggle";
 		public static const COMMAND_DEACTIVATE:String = "commandDeactivate";
 		public static const COMMAND_MOVE_LEFT:String = "commandMoveFocusLeft";
 		public static const COMMAND_MOVE_RIGHT:String = "commandMoveFocusRight";
@@ -44,6 +44,8 @@ package com.zehfernando.controllers.focus {
 		private var _onPressedEnter:SimpleSignal;
 		private var _onReleasedEnter:SimpleSignal;
 		private var _onMovedFocus:SimpleSignal;
+
+		private var isActivated:Boolean;
 
 
 		// ================================================================================================================
@@ -89,11 +91,12 @@ package com.zehfernando.controllers.focus {
 		private function showCurrentFocus():void {
 			if (_currentElement == null) _currentElement = getDefaultElement();
 			if (_currentElement != null) _currentElement.setFocused(true);
+			isActivated = true;
 		}
 
 		private function hideCurrentFocus():void {
 			if (_currentElement != null) _currentElement.setFocused(false);
-			log(_currentElement);
+			isActivated = false;
 		}
 
 		private function moveFocus(__direction:String):void {
@@ -121,6 +124,8 @@ package com.zehfernando.controllers.focus {
 				if (nextElement != null) nextElement.setFocused(true);
 				_currentElement = nextElement;
 			}
+
+			isActivated = true;
 
 			// End
 			_onMovedFocus.dispatch();
@@ -201,16 +206,17 @@ package com.zehfernando.controllers.focus {
 		}
 
 		public function executeCommand(__command:String):void {
-			if (__command == COMMAND_ACTIVATE)		showCurrentFocus();
-			if (__command == COMMAND_DEACTIVATE)	hideCurrentFocus();
-			if (__command == COMMAND_MOVE_LEFT)		moveFocus(DIRECTION_LEFT);
-			if (__command == COMMAND_MOVE_RIGHT)	moveFocus(DIRECTION_RIGHT);
-			if (__command == COMMAND_MOVE_UP)		moveFocus(DIRECTION_UP);
-			if (__command == COMMAND_MOVE_DOWN)		moveFocus(DIRECTION_DOWN);
-			if (__command == COMMAND_MOVE_PREVIOUS)	moveFocus(DIRECTION_PREVIOUS);
-			if (__command == COMMAND_MOVE_NEXT)		moveFocus(DIRECTION_NEXT);
-			if (__command == COMMAND_ENTER_DOWN)	keyEnterDown();
-			if (__command == COMMAND_ENTER_UP)		keyEnterUp();
+			if (__command == COMMAND_ACTIVATE)			showCurrentFocus();
+			if (__command == COMMAND_DEACTIVATE)		hideCurrentFocus();
+			if (__command == COMMAND_ACTIVATION_TOGGLE)	isActivated ? hideCurrentFocus() : showCurrentFocus();
+			if (__command == COMMAND_MOVE_LEFT)			moveFocus(DIRECTION_LEFT);
+			if (__command == COMMAND_MOVE_RIGHT)		moveFocus(DIRECTION_RIGHT);
+			if (__command == COMMAND_MOVE_UP)			moveFocus(DIRECTION_UP);
+			if (__command == COMMAND_MOVE_DOWN)			moveFocus(DIRECTION_DOWN);
+			if (__command == COMMAND_MOVE_PREVIOUS)		moveFocus(DIRECTION_PREVIOUS);
+			if (__command == COMMAND_MOVE_NEXT)			moveFocus(DIRECTION_NEXT);
+			if (__command == COMMAND_ENTER_DOWN)		keyEnterDown();
+			if (__command == COMMAND_ENTER_UP)			keyEnterUp();
 		}
 
 
