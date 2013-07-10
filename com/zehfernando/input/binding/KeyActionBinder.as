@@ -1,6 +1,6 @@
-package com.zehfernando.input {
+package com.zehfernando.input.binding {
 	import com.zehfernando.signals.SimpleSignal;
-	import com.zehfernando.utils.console.log;
+	import com.zehfernando.utils.console.debug;
 
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -12,22 +12,24 @@ package com.zehfernando.input {
 	/**
 	 * @author zeh fernando
 	 */
-	public class UniversalBinder {
+	public class KeyActionBinder {
 
 		// Provides universal input control, especially for game and keyboard
 
 		// A proxy class: http://pastebin.com/BQQGH34H
+		// http://www.adobe.com/devnet/air/articles/game-controllers-on-air.html
 
 		// Properties
 		private var _isStarted:Boolean;
 
 		// Instances
-		private var bindings:Vector.<Binding>;						// Actual bindings
-		private var commandsActivations:Object;						// How many activations each command has (key string with value uint)
+		private var bindings:Vector.<BindingInfo>;						// Actual bindings, their action, and whether they're activated or not
+		private var actionsActivations:Object;							// How many activations each action has (key string with ActivationInfo instance)
 
-		private var _onCommandPressed:SimpleSignal;
-		private var _onCommandFired:SimpleSignal;
-		private var _onCommandReleased:SimpleSignal;
+		private var _onActionActivated:SimpleSignal;					// Receives: action:String
+		private var _onActionDeactivated:SimpleSignal;					// Receives: action:String
+
+		// TODO: use caching samples?
 
 		private var stage:Stage;
 		private var gameInput:GameInput;
@@ -35,35 +37,33 @@ package com.zehfernando.input {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function UniversalBinder(__stage:Stage) {
+		public function KeyActionBinder(__stage:Stage) {
 			stage = __stage;
 			if (GameInput.isSupported) gameInput = new GameInput();
-			bindings = new Vector.<Binding>();
-			commandsActivations = {};
+			bindings = new Vector.<BindingInfo>();
+			actionsActivations = {};
 
-			_onCommandPressed = new SimpleSignal();
-			_onCommandFired = new SimpleSignal();
-			_onCommandReleased = new SimpleSignal();
+			_onActionActivated = new SimpleSignal();
+			_onActionDeactivated = new SimpleSignal();
 		}
 
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
-		private function filterKeys(__keyCode:uint, __keyLocation:uint):Vector.<Binding> {
+		private function filterKeyboardKeys(__keyCode:uint, __keyLocation:uint):Vector.<BindingInfo> {
 			// Returns a list of all key bindings that fit a filter
+			// This is faster than using Vector.<T>.filter()! With 10000 actions bound, this takes ~10ms, as opposed to ~13ms using filter()
 
-			var filteredKeys:Vector.<Binding> = new Vector.<Binding>();
+			var filteredKeys:Vector.<BindingInfo> = new Vector.<BindingInfo>();
 
 			for (var i:int = 0; i < bindings.length; i++) {
-				if (bindings[i].keyCode == __keyCode && bindings[i].keyLocation == __keyLocation) {
-					filteredKeys.push(bindings[i]);
-				}
+				if (bindings[i].binding.matchesKeyboardKey(__keyCode, __keyLocation)) filteredKeys.push(bindings[i]);
 			}
 
 			return filteredKeys;
 		}
-		
+
 		private function addGameInputDeviceEvents():void {
 			// Add events to all devices currently attached
 			// http://www.adobe.com/devnet/air/articles/game-controllers-on-air.html
@@ -73,13 +73,15 @@ package com.zehfernando.input {
 
 			for (i = 0; i < GameInput.numDevices; i++) {
                 device = GameInput.getDeviceAt(i);
+				debug("  Device (" + i + "): name = " + device.name + ", controls = " + device.numControls + ", sampleInterval = " + device.sampleInterval);
 				device.enabled = true;
 				for (j = 0; j < device.numControls; j++) {
-					device.getControlAt(i).addEventListener(Event.CHANGE, onGameInputDeviceChanged, false, 0, true);
+					debug("    Control id = " + device.getControlAt(j).id + ", val = " + device.getControlAt(j).minValue + " => " + device.getControlAt(j).maxValue);
+					device.getControlAt(j).addEventListener(Event.CHANGE, onGameInputDeviceChanged, false, 0, true);
 				}
 			}
 		}
-
+		
 		private function removeGameInputDeviceEvents():void {
 			// Remove events from all devices currently attached
 
@@ -99,59 +101,65 @@ package com.zehfernando.input {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		private function onKeyDown(__e:KeyboardEvent):void {
-			//	log("key down: " + __e);
-			var filteredKeys:Vector.<Binding> = filterKeys(__e.keyCode, __e.keyLocation);
+			//debug("key down: " + __e);
+			var filteredKeys:Vector.<BindingInfo> = filterKeyboardKeys(__e.keyCode, __e.keyLocation);
 			for (var i:int = 0; i < filteredKeys.length; i++) {
-				if (!filteredKeys[i].isPressed) {
+				if (!filteredKeys[i].isActivated) {
 					// Marks as pressed
-					filteredKeys[i].isPressed = true;
-					
-					// Counts as one press of that command, creating if needed
-					if (!commandsActivations.hasOwnProperty(filteredKeys[i].command)) commandsActivations[filteredKeys[i].command] = 0;
-					commandsActivations[filteredKeys[i].command]++;
+					filteredKeys[i].isActivated = true;
+
+					// Add this activation to the list of current activations
+					(actionsActivations[filteredKeys[i].action] as ActivationInfo).activations.push(filteredKeys[i]);
 					
 					// Dispatches signal
-					_onCommandPressed.dispatch(filteredKeys[i].command);
+					if ((actionsActivations[filteredKeys[i].action] as ActivationInfo).activations.length == 1) _onActionActivated.dispatch(filteredKeys[i].action);
 				}
-
-				_onCommandFired.dispatch(filteredKeys[i].command);
 			}
 		}
 
 		private function onKeyUp(__e:KeyboardEvent):void {
-			var filteredKeys:Vector.<Binding> = filterKeys(__e.keyCode, __e.keyLocation);
+			//debug("key up: " + __e);
+			var filteredKeys:Vector.<BindingInfo> = filterKeyboardKeys(__e.keyCode, __e.keyLocation);
+			var idx:int;
+			var activations:Vector.<BindingInfo>;
 			for (var i:int = 0; i < filteredKeys.length; i++) {
 				// Marks as released
-				filteredKeys[i].isPressed = false;
+				filteredKeys[i].isActivated = false;
 
-				// Removes the press count
-				commandsActivations[filteredKeys[i].command]--;
-
+				// Removes this activation from the list of current activations
+				activations = (actionsActivations[filteredKeys[i].action] as ActivationInfo).activations;
+				idx = activations.indexOf(filteredKeys[i]);
+				if (idx > -1) activations.splice(idx, 1);
+				
 				// Dispatches signal
-				_onCommandReleased.dispatch(filteredKeys[i].command);
+				if (activations.length == 0) _onActionDeactivated.dispatch(filteredKeys[i].action);
 			}
 		}
-		
+
 		private function onGameInputDeviceAdded(__e:GameInputEvent):void {
+			debug("Device added; num devices = " + GameInput.numDevices);
 			removeGameInputDeviceEvents();
 			addGameInputDeviceEvents();
 		}
 
 		private function onGameInputDeviceRemoved(__e:GameInputEvent):void {
+			debug("Device removed; num devices = " + GameInput.numDevices);
 			removeGameInputDeviceEvents();
 		}
 
 		private function onGameInputDeviceChanged(__e:Event):void {
 			var control:GameInputControl = __e.target as GameInputControl;
-			
+
+			debug("onGameInputDeviceChanged: " + control.id + " = " + control.value + " (of " + control.minValue + " => " + control.maxValue + ")");
+
 			if (control.value > control.minValue + (control.maxValue - control.minValue) / 2) {
 				// It is activated
-				log("control activated => " + control);
+				debug("control activated => " + control);
 				// TODO:
-				// * register command as activated
-				// * register command value
+				// * register action as activated
+				// * register action value
 			} else {
-				log("control deactivated => " + control);
+				debug("control deactivated => " + control);
 			}
 		}
 
@@ -164,13 +172,12 @@ package com.zehfernando.input {
 				// Starts listening to keyboard events
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 				stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
-				
+
 				// Starts listening to device addition events
 				if (gameInput != null) {
 					gameInput.addEventListener(GameInputEvent.DEVICE_ADDED, onGameInputDeviceAdded);
 					gameInput.addEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
 				}
-				
 
 				_isStarted = true;
 			}
@@ -192,15 +199,20 @@ package com.zehfernando.input {
 			}
 		}
 
-		public function addCommandBinding(__keyCode:int, __keyLocation:int):void {
-			var binding:Binding = new Binding();
-			binding.keyCode = __keyCode;
-			binding.keyLocation = __keyLocation;
-			bindings.push(binding);
+		public function addKeyboardActionBinding(__action:String, __keyCode:uint, __keyLocation:int = -1):void {
+			// TODO: use  KeyActionBinder.KEY_LOCATION_ANY as default param?
+			// TODO: support gamepads
+
+			// Create a binding to be verified later
+			bindings.push(new BindingInfo(__action, new KeyboardBinding(__keyCode, __keyLocation >= 0 ? __keyLocation : KeyboardBinding.KEY_LOCATION_ANY)));
+
+			// Pre-emptively creates the list of activations fcor this action
+			if (!actionsActivations.hasOwnProperty(__action)) actionsActivations[__action] = new ActivationInfo();
+
 		}
-		
-		public function isCommandPressed(__command:String):Boolean {
-			return commandsActivations.hasOwnProperty(__command) && commandsActivations[__command] > 0;
+
+		public function isActionPressed(__action:String):Boolean {
+			return actionsActivations.hasOwnProperty(__action) && actionsActivations[__action] > 0;
 		}
 
 //		public function setFromXML(__xmlData:XML):void {
@@ -217,54 +229,41 @@ package com.zehfernando.input {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get onCommandPressed():SimpleSignal {
-			return _onCommandPressed;
+		public function get onActionActivated():SimpleSignal {
+			return _onActionActivated;
 		}
 
-		public function get onCommandFired():SimpleSignal {
-			return _onCommandFired;
+		public function get onActionDeactivated():SimpleSignal {
+			return _onActionDeactivated;
 		}
-
-		public function get onCommandReleased():SimpleSignal {
-			return _onCommandReleased;
-		}
-
 	}
 }
-
-class Binding {
-
-	// Properties
-	public var keyCode:uint;
-	public var keyLocation:uint;
-	public var command:String;
-	public var isPressed:Boolean;
+import com.zehfernando.input.binding.IBinding;
+class ActivationInfo {
+	
+	public var activations:Vector.<BindingInfo>;
 
 	// ================================================================================================================
 	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-	public function Binding() {
-		keyCode = 0;
-		keyLocation = 0;
-		command = "";
-		isPressed = false;
+	public function ActivationInfo() {
+		activations = new Vector.<BindingInfo>();
 	}
+}
 
-	// TODO: add modifiers
+class BindingInfo {
+
+	// Properties
+	public var action:String;
+	public var binding:IBinding;
+	public var isActivated:Boolean;
 
 	// ================================================================================================================
-	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-//	public static function fromXML(__keyData:XML):Binding {
-//		// Based on a <key> node, returns a key binding instance
-//		// E.g.: <key code="8" shift="true">focus_prev</key>
-//
-//		var binding:Binding = new Binding();
-//
-//		binding.keyCode			= XMLUtils.getAttributeAsInt(__keyData, "code");
-//		binding.modifierShift	= XMLUtils.getAttributeAsBoolean(__keyData, "shift");
-//		binding.command			= __keyData.toString();
-//
-//		return binding;
-//	}
+	public function BindingInfo(__action:String = "", __binding:IBinding = null) {
+		action = __action;
+		binding = __binding;
+		isActivated = false;
+	}
 }
