@@ -164,7 +164,7 @@ package com.zehfernando.net.apis.youtube.data {
 
 			// GD namespace data -------------------
 			var gdns:Namespace = __xml.namespace(YouTubeConstants.NAMESPACE_GD);
-			
+
 			video.comments = parseInt(__xml.gdns::comments.gdns::feedLink[0].@countHint, 10);
 
 			// YT namespace data -------------------
@@ -189,7 +189,7 @@ package com.zehfernando.net.apis.youtube.data {
 			video.duration = parseInt(__xml.medians::group[0].ytns::duration.@seconds);
 
 			default xml namespace = new Namespace(""); // WTF! one needs this otherwise the function below fails!
-			
+
 			/*FDT_IGNORE*/
 
 			return video;

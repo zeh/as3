@@ -33,7 +33,7 @@ package com.zehfernando.input.binding {
 
 		private var stage:Stage;
 		private var gameInput:GameInput;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ package com.zehfernando.input.binding {
 				}
 			}
 		}
-		
+
 		private function removeGameInputDeviceEvents():void {
 			// Remove events from all devices currently attached
 
@@ -110,7 +110,7 @@ package com.zehfernando.input.binding {
 
 					// Add this activation to the list of current activations
 					(actionsActivations[filteredKeys[i].action] as ActivationInfo).activations.push(filteredKeys[i]);
-					
+
 					// Dispatches signal
 					if ((actionsActivations[filteredKeys[i].action] as ActivationInfo).activations.length == 1) _onActionActivated.dispatch(filteredKeys[i].action);
 				}
@@ -130,7 +130,7 @@ package com.zehfernando.input.binding {
 				activations = (actionsActivations[filteredKeys[i].action] as ActivationInfo).activations;
 				idx = activations.indexOf(filteredKeys[i]);
 				if (idx > -1) activations.splice(idx, 1);
-				
+
 				// Dispatches signal
 				if (activations.length == 0) _onActionDeactivated.dispatch(filteredKeys[i].action);
 			}
@@ -240,7 +240,7 @@ package com.zehfernando.input.binding {
 }
 import com.zehfernando.input.binding.IBinding;
 class ActivationInfo {
-	
+
 	public var activations:Vector.<BindingInfo>;
 
 	// ================================================================================================================
