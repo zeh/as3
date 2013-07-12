@@ -1,7 +1,7 @@
 package com.zehfernando.utils {
-
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
+	import flash.utils.getTimer;
 	/**
 	 * @author zeh
 	 */
@@ -12,12 +12,16 @@ package com.zehfernando.utils {
 		// Static properties
 		protected static var calls:Vector.<DelayedCalls>;
 
+		// Properties
+		private var isPaused:Boolean;
+
 		// Instances
-		protected var timer:Timer;
-		protected var callback:Function;
-		protected var params:Array;
-		protected var scope:Object;
-		protected var reference:Object;
+		private var timer:Timer;
+		private var callback:Function;
+		private var params:Array;
+		private var scope:Object;
+		private var reference:Object;
+		private var timeStarted:int;
 
 		// ================================================================================================================
 		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
@@ -29,20 +33,22 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function DelayedCalls(__time:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null) {
+		public function DelayedCalls(__timeMS:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null) {
 
 			callback = __callback;
 			params = Boolean(__params) ? __params : [];
 			scope = __scope;
 			reference = __reference;
+			isPaused = false;
+			timeStarted = getTimer();
 
-			if (__time == 0) {
+			if (__timeMS == 0) {
 				execute();
 				disposeData();
 				return;
 			}
 
-			timer = new Timer(__time, 1);
+			timer = new Timer(__timeMS, 1);
 			timer.addEventListener(TimerEvent.TIMER_COMPLETE, onTimerComplete);
 			timer.start();
 
@@ -68,6 +74,7 @@ package com.zehfernando.utils {
 			params = null;
 			scope = null;
 			reference = null;
+			isPaused = false;
 		}
 
 		// ================================================================================================================
@@ -95,6 +102,23 @@ package com.zehfernando.utils {
 			dispose();
 		}
 
+		public function pause():void {
+			if (!isPaused && timer != null) {
+				isPaused = true;
+				timer.stop();
+				timer.delay = getTimer() - timeStarted;
+				timer.reset();
+			}
+		}
+
+		public function resume():void {
+			if (isPaused && timer != null) {
+				isPaused = false;
+				timeStarted = getTimer();
+				timer.start();
+			}
+		}
+
 		public function dispose():void {
 			removeFromList(this);
 			disposeTimer();
@@ -104,7 +128,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// PUBLIC STATIC INTERFACE ----------------------------------------------------------------------------------------
 
-		public static function add(__timeMS:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null): DelayedCalls {
+		public static function add(__timeMS:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null):DelayedCalls {
 			return new DelayedCalls(__timeMS, __callback, __params, __scope, __reference);
 		}
 
