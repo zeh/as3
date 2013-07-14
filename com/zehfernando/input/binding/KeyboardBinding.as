@@ -30,5 +30,9 @@ package com.zehfernando.input.binding {
 		}
 
 		// TODO: add modifiers?
+
+		public function matchesGamepadControl(__controlId:String, __gamepadIndex:uint):Boolean {
+			return false;
+		}
 	}
 }

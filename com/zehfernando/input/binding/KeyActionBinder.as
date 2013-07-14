@@ -1,7 +1,7 @@
 package com.zehfernando.input.binding {
 	import com.zehfernando.signals.SimpleSignal;
+	import com.zehfernando.utils.MathUtils;
 	import com.zehfernando.utils.console.debug;
-
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.GameInputEvent;
@@ -23,28 +23,38 @@ package com.zehfernando.input.binding {
 		private var _isStarted:Boolean;
 
 		// Instances
-		private var bindings:Vector.<BindingInfo>;						// Actual bindings, their action, and whether they're activated or not
+		private var bindings:Vector.<BindingInfo>;						// Actual existing bindings, their action, and whether they're activated or not
 		private var actionsActivations:Object;							// How many activations each action has (key string with ActivationInfo instance)
 
 		private var _onActionActivated:SimpleSignal;					// Receives: action:String
 		private var _onActionDeactivated:SimpleSignal;					// Receives: action:String
+		private var _onGranularActionChanged:SimpleSignal;				// Receives: action:String, value:Number (0-1)
 
 		// TODO: use caching samples?
 
 		private var stage:Stage;
 		private var gameInput:GameInput;
 
+		private var alwaysPreventDefault:Boolean;								// If true, prevent action by other keys all the time (e.g. menu key)
+
+		private var gameInputDevices:Vector.<GameInputDevice>;
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function KeyActionBinder(__stage:Stage) {
 			stage = __stage;
-			if (GameInput.isSupported) gameInput = new GameInput();
+			alwaysPreventDefault = true;
 			bindings = new Vector.<BindingInfo>();
 			actionsActivations = {};
 
+			if (GameInput.isSupported) gameInput = new GameInput();
+
 			_onActionActivated = new SimpleSignal();
 			_onActionDeactivated = new SimpleSignal();
+			_onGranularActionChanged = new SimpleSignal();
+
+			refreshGameInputDeviceList();
 		}
 
 
@@ -64,6 +74,36 @@ package com.zehfernando.input.binding {
 			return filteredKeys;
 		}
 
+		private function filterGamepadControls(__controlId:String, __gamepad:uint):Vector.<BindingInfo> {
+			// Returns a list of all gamepad control bindings that fit a filter
+			// This is faster than using Vector.<T>.filter()! With 10000 actions bound, this takes ~10ms, as opposed to ~13ms using filter()
+
+			var filteredControls:Vector.<BindingInfo> = new Vector.<BindingInfo>();
+
+			for (var i:int = 0; i < bindings.length; i++) {
+				if (bindings[i].binding.matchesGamepadControl(__controlId, __gamepad)) filteredControls.push(bindings[i]);
+			}
+
+			return filteredControls;
+		}
+
+		private function prepareAction(__action:String):void {
+			// Pre-emptively creates the list of activations for this action
+			if (!actionsActivations.hasOwnProperty(__action)) actionsActivations[__action] = new ActivationInfo();
+		}
+
+		private function refreshGameInputDeviceList():void {
+			// The list of game devices has changed
+			removeGameInputDeviceEvents();
+			addGameInputDeviceEvents();
+
+			// Create a list of devices for easy identification
+			gameInputDevices = new Vector.<GameInputDevice>();
+			for (var i:int = 0; i < GameInput.numDevices; i++) {
+				gameInputDevices.push(GameInput.getDeviceAt(i));
+			}
+		}
+
 		private function addGameInputDeviceEvents():void {
 			// Add events to all devices currently attached
 			// http://www.adobe.com/devnet/air/articles/game-controllers-on-air.html
@@ -73,11 +113,15 @@ package com.zehfernando.input.binding {
 
 			for (i = 0; i < GameInput.numDevices; i++) {
                 device = GameInput.getDeviceAt(i);
-				debug("  Device (" + i + "): name = " + device.name + ", controls = " + device.numControls + ", sampleInterval = " + device.sampleInterval);
-				device.enabled = true;
-				for (j = 0; j < device.numControls; j++) {
-					debug("    Control id = " + device.getControlAt(j).id + ", val = " + device.getControlAt(j).minValue + " => " + device.getControlAt(j).maxValue);
-					device.getControlAt(j).addEventListener(Event.CHANGE, onGameInputDeviceChanged, false, 0, true);
+
+				// Some times the device is null because numDevices is updated before the added device event is dispatched
+				if (device != null) {
+					debug("  Adding events to device (" + i + "): name = " + device.name + ", controls = " + device.numControls + ", sampleInterval = " + device.sampleInterval);
+					device.enabled = true;
+					for (j = 0; j < device.numControls; j++) {
+						//debug("    Control id = " + device.getControlAt(j).id + ", val = " + device.getControlAt(j).minValue + " => " + device.getControlAt(j).maxValue);
+						device.getControlAt(j).addEventListener(Event.CHANGE, onGameInputDeviceChanged, false, 0, true);
+					}
 				}
 			}
 		}
@@ -90,8 +134,10 @@ package com.zehfernando.input.binding {
 
 			for (i = 0; i < GameInput.numDevices; i++) {
                 device = GameInput.getDeviceAt(i);
-				for (j = 0; j < device.numControls; j++) {
-					device.getControlAt(i).removeEventListener(Event.CHANGE, onGameInputDeviceChanged);
+				if (device != null) {
+					for (j = 0; j < device.numControls; j++) {
+						device.getControlAt(j).removeEventListener(Event.CHANGE, onGameInputDeviceChanged);
+					}
 				}
 			}
 		}
@@ -115,6 +161,8 @@ package com.zehfernando.input.binding {
 					if ((actionsActivations[filteredKeys[i].action] as ActivationInfo).activations.length == 1) _onActionActivated.dispatch(filteredKeys[i].action);
 				}
 			}
+
+			if (alwaysPreventDefault) __e.preventDefault();
 		}
 
 		private function onKeyUp(__e:KeyboardEvent):void {
@@ -134,32 +182,66 @@ package com.zehfernando.input.binding {
 				// Dispatches signal
 				if (activations.length == 0) _onActionDeactivated.dispatch(filteredKeys[i].action);
 			}
+
+			if (alwaysPreventDefault) __e.preventDefault();
 		}
 
 		private function onGameInputDeviceAdded(__e:GameInputEvent):void {
 			debug("Device added; num devices = " + GameInput.numDevices);
-			removeGameInputDeviceEvents();
-			addGameInputDeviceEvents();
+			refreshGameInputDeviceList();
 		}
 
 		private function onGameInputDeviceRemoved(__e:GameInputEvent):void {
 			debug("Device removed; num devices = " + GameInput.numDevices);
-			removeGameInputDeviceEvents();
+			refreshGameInputDeviceList();
 		}
 
 		private function onGameInputDeviceChanged(__e:Event):void {
 			var control:GameInputControl = __e.target as GameInputControl;
 
-			debug("onGameInputDeviceChanged: " + control.id + " = " + control.value + " (of " + control.minValue + " => " + control.maxValue + ")");
+			//debug("onGameInputDeviceChanged: " + control.id + " = " + control.value + " (of " + control.minValue + " => " + control.maxValue + ")");
 
-			if (control.value > control.minValue + (control.maxValue - control.minValue) / 2) {
-				// It is activated
-				debug("control activated => " + control);
-				// TODO:
-				// * register action as activated
-				// * register action value
-			} else {
-				debug("control deactivated => " + control);
+			var filteredControls:Vector.<BindingInfo> = filterGamepadControls(control.id, gameInputDevices.indexOf(control.device));
+			var idx:int;
+			var activations:Vector.<BindingInfo>;
+			var isActivated:Boolean = control.value > control.minValue + (control.maxValue - control.minValue) / 2;
+
+			for (var i:int = 0; i < filteredControls.length; i++) {
+
+				if (filteredControls[i].binding is GamepadGranularBinding) {
+					// A granular binding, send changed value signals instead
+
+					// TODO: accumulate value to know the correct value
+
+					// Dispatches signal
+					_onGranularActionChanged.dispatch(filteredControls[i].action, MathUtils.map(control.value, control.minValue, control.maxValue, (filteredControls[i].binding as GamepadGranularBinding).minValue, (filteredControls[i].binding as GamepadGranularBinding).maxValue));
+				} else {
+					// A standard action binding, send activated/deactivated signals
+
+					if (filteredControls[i].isActivated != isActivated) {
+						// Value changed
+						filteredControls[i].isActivated = isActivated;
+						if (isActivated) {
+							// Marks as pressed
+
+							// Add this activation to the list of current activations
+							(actionsActivations[filteredControls[i].action] as ActivationInfo).activations.push(filteredControls[i]);
+
+							// Dispatches signal
+							if ((actionsActivations[filteredControls[i].action] as ActivationInfo).activations.length == 1) _onActionActivated.dispatch(filteredControls[i].action);
+						} else {
+							// Marks as released
+
+							// Removes this activation from the list of current activations
+							activations = (actionsActivations[filteredControls[i].action] as ActivationInfo).activations;
+							idx = activations.indexOf(filteredControls[i]);
+							if (idx > -1) activations.splice(idx, 1);
+
+							// Dispatches signal
+							if (activations.length == 0) _onActionDeactivated.dispatch(filteredControls[i].action);
+						}
+					}
+				}
 			}
 		}
 
@@ -201,14 +283,22 @@ package com.zehfernando.input.binding {
 
 		public function addKeyboardActionBinding(__action:String, __keyCode:uint, __keyLocation:int = -1):void {
 			// TODO: use  KeyActionBinder.KEY_LOCATION_ANY as default param?
-			// TODO: support gamepads
 
 			// Create a binding to be verified later
 			bindings.push(new BindingInfo(__action, new KeyboardBinding(__keyCode, __keyLocation >= 0 ? __keyLocation : KeyboardBinding.KEY_LOCATION_ANY)));
+			prepareAction(__action);
+		}
 
-			// Pre-emptively creates the list of activations fcor this action
-			if (!actionsActivations.hasOwnProperty(__action)) actionsActivations[__action] = new ActivationInfo();
+		public function addGamepadActionBinding(__action:String, __controlId:String, __gamepadIndex:int = -1):void {
+			// Create a binding to be verified later
+			bindings.push(new BindingInfo(__action, new GamepadBinding(__controlId, __gamepadIndex >= 0 ? __gamepadIndex : GamepadBinding.GAMEPAD_INDEX_ANY)));
+			prepareAction(__action);
+		}
 
+		public function addGamepadGranularActionBinding(__action:String, __controlId:String, __gamepadIndex:int = -1, __minValue:Number = 0, __maxValue:Number = 1):void {
+			// Create a binding to be verified later
+			bindings.push(new BindingInfo(__action, new GamepadGranularBinding(__controlId, __gamepadIndex >= 0 ? __gamepadIndex : GamepadBinding.GAMEPAD_INDEX_ANY, __minValue, __maxValue)));
+			prepareAction(__action);
 		}
 
 		public function isActionPressed(__action:String):Boolean {
@@ -235,6 +325,10 @@ package com.zehfernando.input.binding {
 
 		public function get onActionDeactivated():SimpleSignal {
 			return _onActionDeactivated;
+		}
+
+		public function get onGranularActionChanged():SimpleSignal {
+			return _onGranularActionChanged;
 		}
 	}
 }
