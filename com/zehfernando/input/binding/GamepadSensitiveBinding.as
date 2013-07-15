@@ -2,7 +2,7 @@ package com.zehfernando.input.binding {
 	/**
 	 * @author zeh fernando
 	 */
-	public class GamepadGranularBinding extends GamepadBinding {
+	public class GamepadSensitiveBinding extends GamepadBinding {
 
 		// Properties
 		public var minValue:Number;
@@ -11,7 +11,7 @@ package com.zehfernando.input.binding {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function GamepadGranularBinding(__controlId:String, __gamepadIndex:uint, __minValue:Number, __maxValue:Number) {
+		public function GamepadSensitiveBinding(__controlId:String, __gamepadIndex:uint, __minValue:Number, __maxValue:Number) {
 			super(__controlId, __gamepadIndex);
 
 			minValue = __minValue;

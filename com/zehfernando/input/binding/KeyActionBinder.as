@@ -14,10 +14,7 @@ package com.zehfernando.input.binding {
 	 */
 	public class KeyActionBinder {
 
-		// Provides universal input control, especially for game and keyboard
-
-		// A proxy class: http://pastebin.com/BQQGH34H
-		// http://www.adobe.com/devnet/air/articles/game-controllers-on-air.html
+		// Provides universal input control for game controllers and keyboard
 
 		// Properties
 		private var _isStarted:Boolean;
@@ -28,7 +25,7 @@ package com.zehfernando.input.binding {
 
 		private var _onActionActivated:SimpleSignal;					// Receives: action:String
 		private var _onActionDeactivated:SimpleSignal;					// Receives: action:String
-		private var _onGranularActionChanged:SimpleSignal;				// Receives: action:String, value:Number (0-1)
+		private var _onSensitiveActionChanged:SimpleSignal;				// Receives: action:String, value:Number (0-1)
 
 		// TODO: use caching samples?
 
@@ -52,7 +49,7 @@ package com.zehfernando.input.binding {
 
 			_onActionActivated = new SimpleSignal();
 			_onActionDeactivated = new SimpleSignal();
-			_onGranularActionChanged = new SimpleSignal();
+			_onSensitiveActionChanged = new SimpleSignal();
 
 			refreshGameInputDeviceList();
 		}
@@ -208,15 +205,12 @@ package com.zehfernando.input.binding {
 
 			for (var i:int = 0; i < filteredControls.length; i++) {
 
-				if (filteredControls[i].binding is GamepadGranularBinding) {
-					// A granular binding, send changed value signals instead
-
-					// TODO: accumulate value to know the correct value
+				if (filteredControls[i].binding is GamepadSensitiveBinding) {
+					// A sensitive binding, send changed value signals instead
 
 					// Dispatches signal
-					//_onGranularActionChanged.dispatch(filteredControls[i].action, MathUtils.map(control.value, control.minValue, control.maxValue, (filteredControls[i].binding as GamepadGranularBinding).minValue, (filteredControls[i].binding as GamepadGranularBinding).maxValue));
-					(actionsActivations[filteredControls[i].action] as ActivationInfo).granularValues[filteredControls[i].action] = MathUtils.map(control.value, control.minValue, control.maxValue, (filteredControls[i].binding as GamepadGranularBinding).minValue, (filteredControls[i].binding as GamepadGranularBinding).maxValue);
-					_onGranularActionChanged.dispatch(filteredControls[i].action, (actionsActivations[filteredControls[i].action] as ActivationInfo).value);
+					(actionsActivations[filteredControls[i].action] as ActivationInfo).sensitiveValues[filteredControls[i].action] = MathUtils.map(control.value, control.minValue, control.maxValue, (filteredControls[i].binding as GamepadSensitiveBinding).minValue, (filteredControls[i].binding as GamepadSensitiveBinding).maxValue);
+					_onSensitiveActionChanged.dispatch(filteredControls[i].action, (actionsActivations[filteredControls[i].action] as ActivationInfo).value);
 				} else {
 					// A standard action binding, send activated/deactivated signals
 
@@ -297,9 +291,9 @@ package com.zehfernando.input.binding {
 			prepareAction(__action);
 		}
 
-		public function addGamepadGranularActionBinding(__action:String, __controlId:String, __gamepadIndex:int = -1, __minValue:Number = 0, __maxValue:Number = 1):void {
+		public function addGamepadSensitiveActionBinding(__action:String, __controlId:String, __gamepadIndex:int = -1, __minValue:Number = 0, __maxValue:Number = 1):void {
 			// Create a binding to be verified later
-			bindings.push(new BindingInfo(__action, new GamepadGranularBinding(__controlId, __gamepadIndex >= 0 ? __gamepadIndex : GamepadBinding.GAMEPAD_INDEX_ANY, __minValue, __maxValue)));
+			bindings.push(new BindingInfo(__action, new GamepadSensitiveBinding(__controlId, __gamepadIndex >= 0 ? __gamepadIndex : GamepadBinding.GAMEPAD_INDEX_ANY, __minValue, __maxValue)));
 			prepareAction(__action);
 		}
 
@@ -333,8 +327,8 @@ package com.zehfernando.input.binding {
 			return _onActionDeactivated;
 		}
 
-		public function get onGranularActionChanged():SimpleSignal {
-			return _onGranularActionChanged;
+		public function get onSensitiveActionChanged():SimpleSignal {
+			return _onSensitiveActionChanged;
 		}
 	}
 }
@@ -344,7 +338,7 @@ import flash.utils.Dictionary;
 class ActivationInfo {
 
 	public var activations:Vector.<BindingInfo>;			// All activated bindings
-	public var granularValues:Dictionary;					// Dictionary with IBinding
+	public var sensitiveValues:Dictionary;					// Dictionary with IBinding
 
 	// Temp
 	private var val:Number;
@@ -355,7 +349,7 @@ class ActivationInfo {
 
 	public function ActivationInfo() {
 		activations = new Vector.<BindingInfo>();
-		granularValues = new Dictionary();
+		sensitiveValues = new Dictionary();
 	}
 
 	// ================================================================================================================
@@ -363,8 +357,8 @@ class ActivationInfo {
 
 	public function get value():Number {
 		val = 0;
-		for (iis in granularValues) {
-			if (granularValues[iis] > val) val = granularValues[iis];
+		for (iis in sensitiveValues) {
+			if (sensitiveValues[iis] > val) val = sensitiveValues[iis];
 		}
 		return val;
 	}
