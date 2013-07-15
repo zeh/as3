@@ -1,7 +1,7 @@
 package com.zehfernando.input.binding {
 	import com.zehfernando.signals.SimpleSignal;
 	import com.zehfernando.utils.MathUtils;
-	import com.zehfernando.utils.console.debug;
+
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.GameInputEvent;
@@ -116,7 +116,7 @@ package com.zehfernando.input.binding {
 
 				// Some times the device is null because numDevices is updated before the added device event is dispatched
 				if (device != null) {
-					debug("  Adding events to device (" + i + "): name = " + device.name + ", controls = " + device.numControls + ", sampleInterval = " + device.sampleInterval);
+					//debug("  Adding events to device (" + i + "): name = " + device.name + ", controls = " + device.numControls + ", sampleInterval = " + device.sampleInterval);
 					device.enabled = true;
 					for (j = 0; j < device.numControls; j++) {
 						//debug("    Control id = " + device.getControlAt(j).id + ", val = " + device.getControlAt(j).minValue + " => " + device.getControlAt(j).maxValue);
@@ -187,12 +187,12 @@ package com.zehfernando.input.binding {
 		}
 
 		private function onGameInputDeviceAdded(__e:GameInputEvent):void {
-			debug("Device added; num devices = " + GameInput.numDevices);
+			//debug("Device added; num devices = " + GameInput.numDevices);
 			refreshGameInputDeviceList();
 		}
 
 		private function onGameInputDeviceRemoved(__e:GameInputEvent):void {
-			debug("Device removed; num devices = " + GameInput.numDevices);
+			//debug("Device removed; num devices = " + GameInput.numDevices);
 			refreshGameInputDeviceList();
 		}
 
@@ -214,7 +214,9 @@ package com.zehfernando.input.binding {
 					// TODO: accumulate value to know the correct value
 
 					// Dispatches signal
-					_onGranularActionChanged.dispatch(filteredControls[i].action, MathUtils.map(control.value, control.minValue, control.maxValue, (filteredControls[i].binding as GamepadGranularBinding).minValue, (filteredControls[i].binding as GamepadGranularBinding).maxValue));
+					//_onGranularActionChanged.dispatch(filteredControls[i].action, MathUtils.map(control.value, control.minValue, control.maxValue, (filteredControls[i].binding as GamepadGranularBinding).minValue, (filteredControls[i].binding as GamepadGranularBinding).maxValue));
+					(actionsActivations[filteredControls[i].action] as ActivationInfo).granularValues[filteredControls[i].action] = MathUtils.map(control.value, control.minValue, control.maxValue, (filteredControls[i].binding as GamepadGranularBinding).minValue, (filteredControls[i].binding as GamepadGranularBinding).maxValue);
+					_onGranularActionChanged.dispatch(filteredControls[i].action, (actionsActivations[filteredControls[i].action] as ActivationInfo).value);
 				} else {
 					// A standard action binding, send activated/deactivated signals
 
@@ -301,8 +303,12 @@ package com.zehfernando.input.binding {
 			prepareAction(__action);
 		}
 
-		public function isActionPressed(__action:String):Boolean {
-			return actionsActivations.hasOwnProperty(__action) && actionsActivations[__action] > 0;
+		public function getActionValue(__action:String):Number {
+			return actionsActivations.hasOwnProperty(__action) ? (actionsActivations[__action] as ActivationInfo).value : 0;
+		}
+
+		public function isActionActivated(__action:String):Boolean {
+			return actionsActivations.hasOwnProperty(__action) && (actionsActivations[__action] as ActivationInfo).activations.length > 0;
 		}
 
 //		public function setFromXML(__xmlData:XML):void {
@@ -333,15 +339,34 @@ package com.zehfernando.input.binding {
 	}
 }
 import com.zehfernando.input.binding.IBinding;
+
+import flash.utils.Dictionary;
 class ActivationInfo {
 
-	public var activations:Vector.<BindingInfo>;
+	public var activations:Vector.<BindingInfo>;			// All activated bindings
+	public var granularValues:Dictionary;					// Dictionary with IBinding
+
+	// Temp
+	private var val:Number;
+	private var iis:Object;
 
 	// ================================================================================================================
 	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 	public function ActivationInfo() {
 		activations = new Vector.<BindingInfo>();
+		granularValues = new Dictionary();
+	}
+
+	// ================================================================================================================
+	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+
+	public function get value():Number {
+		val = 0;
+		for (iis in granularValues) {
+			if (granularValues[iis] > val) val = granularValues[iis];
+		}
+		return val;
 	}
 }
 
