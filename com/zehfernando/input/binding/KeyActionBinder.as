@@ -109,7 +109,7 @@ package com.zehfernando.input.binding {
 			var i:int, j:int;
 
 			for (i = 0; i < GameInput.numDevices; i++) {
-                device = GameInput.getDeviceAt(i);
+				device = GameInput.getDeviceAt(i);
 
 				// Some times the device is null because numDevices is updated before the added device event is dispatched
 				if (device != null) {
@@ -130,7 +130,7 @@ package com.zehfernando.input.binding {
 			var i:int, j:int;
 
 			for (i = 0; i < GameInput.numDevices; i++) {
-                device = GameInput.getDeviceAt(i);
+				device = GameInput.getDeviceAt(i);
 				if (device != null) {
 					for (j = 0; j < device.numControls; j++) {
 						device.getControlAt(j).removeEventListener(Event.CHANGE, onGameInputDeviceChanged);
@@ -278,7 +278,7 @@ package com.zehfernando.input.binding {
 		}
 
 		public function addKeyboardActionBinding(__action:String, __keyCode:uint, __keyLocation:int = -1):void {
-			// TODO: use  KeyActionBinder.KEY_LOCATION_ANY as default param?
+			// TODO: use KeyActionBinder.KEY_LOCATION_ANY as default param?
 
 			// Create a binding to be verified later
 			bindings.push(new BindingInfo(__action, new KeyboardBinding(__keyCode, __keyLocation >= 0 ? __keyLocation : KeyboardBinding.KEY_LOCATION_ANY)));
