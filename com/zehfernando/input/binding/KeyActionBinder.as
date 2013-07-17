@@ -1,6 +1,5 @@
 package com.zehfernando.input.binding {
 	import com.zehfernando.signals.SimpleSignal;
-	import com.zehfernando.utils.MathUtils;
 
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -209,7 +208,7 @@ package com.zehfernando.input.binding {
 					// A sensitive binding, send changed value signals instead
 
 					// Dispatches signal
-					(actionsActivations[filteredControls[i].action] as ActivationInfo).sensitiveValues[filteredControls[i].action] = MathUtils.map(control.value, control.minValue, control.maxValue, (filteredControls[i].binding as GamepadSensitiveBinding).minValue, (filteredControls[i].binding as GamepadSensitiveBinding).maxValue);
+					(actionsActivations[filteredControls[i].action] as ActivationInfo).sensitiveValues[filteredControls[i].action] = (control.value - control.minValue) / (control.maxValue - control.minValue) * ((filteredControls[i].binding as GamepadSensitiveBinding).maxValue - (filteredControls[i].binding as GamepadSensitiveBinding).minValue) + (filteredControls[i].binding as GamepadSensitiveBinding).minValue;
 					_onSensitiveActionChanged.dispatch(filteredControls[i].action, (actionsActivations[filteredControls[i].action] as ActivationInfo).value);
 				} else {
 					// A standard action binding, send activated/deactivated signals
