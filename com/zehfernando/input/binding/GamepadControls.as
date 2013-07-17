@@ -182,5 +182,103 @@ package com.zehfernando.input.binding {
 		 */
 		public static const BUTTON_UNKNOWN_BUTTON_35:String = "BUTTON_35";
 
+		// These were tested on PC only and may change
+
+		/* Action button, down (green)
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_BUTTON_ACTION_A:String = "BUTTON_4";
+
+		/* Action button, right (red)
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_BUTTON_ACTION_B:String = "BUTTON_5";
+
+		/* Action button, up (yellow)
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_BUTTON_ACTION_Y:String = "BUTTON_7";
+
+		/* Action button, left (blue)
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_BUTTON_ACTION_X:String = "BUTTON_6";
+
+		/* Shoulder button, upper left (LEFT 1)
+		 * <p>Style: digital</p>
+		 * <p>Works in: OUYA Controller, Playstation DS3</p>
+		 */
+		public static const XBOX_L1:String = "BUTTON_8";
+
+		/* Shoulder button, upper right (RIGHT 1)
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_R1:String = "BUTTON_9";
+
+		/* Shoulder button, lower left (LEFT 2)
+		 * <p>Style: pressure-sensitive/analog</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_L2_SENSITIVE:String = "BUTTON_10";
+
+		/* Shoulder button, lower right (RIGHT 2)
+		 * <p>Style: pressure-sensitive/analog</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_R2_SENSITIVE:String = "BUTTON_11";
+
+		/* Left stick press (LEFT 3)
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_L3:String = "BUTTON_14";
+
+		/* Right stick press (RIGHT 3)
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_R3:String = "BUTTON_15";
+
+		/* Directional pad LEFT
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_DPAD_LEFT:String = "BUTTON_18";
+
+		/* Directional pad RIGHT
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_DPAD_RIGHT:String = "BUTTON_19";
+
+		/* Directional pad UP
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_DPAD_UP:String = "BUTTON_16";
+
+		/* Directional pad DOWN
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_DPAD_DOWN:String = "BUTTON_17";
+
+		/* BACK middle game controller button
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_BACK:String = "BUTTON_12";
+
+		/* START middle game controller button
+		 * <p>Style: digital</p>
+		 * <p>Works in: XBox 360 Controller</p>
+		 */
+		public static const XBOX_START:String = "BUTTON_13";
+
 	}
 }
