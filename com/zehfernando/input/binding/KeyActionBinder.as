@@ -18,6 +18,7 @@ package com.zehfernando.input.binding {
 
 		// Properties
 		private var _isRunning:Boolean;
+		private var alwaysPreventDefault:Boolean;								// If true, prevent action by other keys all the time (e.g. menu key)
 
 		// Instances
 		private var bindings:Vector.<BindingInfo>;						// Actual existing bindings, their action, and whether they're activated or not
@@ -31,8 +32,6 @@ package com.zehfernando.input.binding {
 
 		private var stage:Stage;
 		private var gameInput:GameInput;
-
-		private var alwaysPreventDefault:Boolean;								// If true, prevent action by other keys all the time (e.g. menu key)
 
 		private var gameInputDevices:Vector.<GameInputDevice>;
 
@@ -245,6 +244,17 @@ package com.zehfernando.input.binding {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
+		/**
+		 * Starts listening for input events.
+		 *
+		 * <p>This happens by default when a KeyActionBinder object is instantiated; this method is only useful if
+		 * called after <code>stop()</code> has been used.</p>
+		 *
+		 * <p>Calling this method when a KeyActionBinder instance is already running has no effect.</p>
+		 *
+		 * @see #isRunning
+		 * @see #stop()
+		 */
 		public function start():void {
 			if (!_isRunning) {
 				// Starts listening to keyboard events
@@ -263,6 +273,20 @@ package com.zehfernando.input.binding {
 			}
 		}
 
+		/**
+		 * Stops listening for input events.
+		 *
+		 * <p>Action bindings are not lost when a KeyActionBinder instance is stopped; it merely starts ignoring
+		 * all input events, until <code>start()<code> is called again.</p>
+		 *
+		 * <p>This method should always be called when you don't need a KeyActionBinder instance anymore, otherwise
+		 * it'll be listening to events indefinitely.</p>
+		 *
+		 * <p>Calling this method when this a KeyActionBinder instance is already stopped has no effect.</p>
+		 *
+		 * @see #isRunning
+		 * @see #start()
+		 */
 		public function stop():void {
 			if (_isRunning) {
 				// Stops listening to keyboard events
@@ -281,6 +305,35 @@ package com.zehfernando.input.binding {
 			}
 		}
 
+		/**
+		 * Add an action bound to a keyboard key. When a key with the given <code>keyCode</code> is pressed, the
+		 * desired action is activated. Optionally, keys can be restricted to a specific <code>keyLocation</code>.
+		 *
+		 * @param action		An arbritrary String id identifying the action that should be dispatched once this
+		 *						key combination is detected.
+		 * @param keyCode		The code of a key, as expressed in AS3's Keyboard constants.
+		 * @param keyLocation	The code of a key's location, as expressed in AS3's KeyLocation constants. If a
+		 *						value of -1 or <code>NaN</code> is passed, the key location is never taken into
+		 *						consideration when detecting whether the passed action should be fired.
+		 *
+		 * <p>Examples:</p>
+		 *
+		 * <pre>
+		 * // Left arrow key to move left
+		 * addKeyboardActionBinding("move-left", Keyboard.LEFT);
+		 *
+		 * // SPACE key to jump
+		 * addKeyboardActionBinding("jump", Keyboard.SPACE);
+		 *
+		 * // Any SHIFT key to shoot
+		 * addKeyboardActionBinding("shoot", Keyboard.SHIFT);
+		 *
+		 * // Left SHIFT key to boost
+		 * addKeyboardActionBinding("boost", Keyboard.SHIFT, KeyLocation.LEFT);
+		 * </pre>
+		 *
+		 * @see flash.ui.Keyboard
+		 */
 		public function addKeyboardActionBinding(__action:String, __keyCode:uint, __keyLocation:int = -1):void {
 			// TODO: use KeyActionBinder.KEY_LOCATION_ANY as default param?
 
@@ -289,6 +342,38 @@ package com.zehfernando.input.binding {
 			prepareAction(__action);
 		}
 
+		/**
+		 * Add an action bound to a game controller button, trigger, or axis. When a control of id
+		 * <code>controlId</code> is pressed, the desired action is activated. Optionally, keys can be restricted
+		 * to a specific game controller location.
+		 *
+		 * @param action		An arbritrary String id identifying the action that should be dispatched once this
+		 *						input combination is detected.
+		 * @param controlId		The id code of a GameInput contol, as an String. Use one of the constants from
+		 *						<code>GamepadControls</code>, or a string related to the control you're expecting.
+		 * @param gamepadIndex	The int of the gamepad that you want to restrict this action to. Use 0 for the
+		 *						first gamepad (player 1), 1 for the second one, and so on. If a value of -1 or
+		 *						<code>NaN</code> is passed, the gamepad index is never taken into consideration
+		 *						when detecting whether the passed action should be fired.
+		 *
+		 * <p>Examples:</p>
+		 *
+		 * <pre>
+		 * // Direction pad left to move left
+		 * addGamepadActionBinding("move-left", GamepadControls.DPAD_LEFT);
+		 *
+		 * // Action button "down" (O in the OUYA, Cross in the PS3, A in the XBox 360) to jump
+		 * addGamepadActionBinding("jump", GamepadControls.BUTTON_ACTION_DOWN);
+		 *
+		 * // L1 to shoot, on any controller
+		 * addGamepadActionBinding("shoot", GamepadControls.L1);
+		 *
+		 * // L1 to shoot, on the first controller only
+		 * addGamepadActionBinding("shoot-player-1", GamepadControls.L1, 0);
+		 * </pre>
+		 *
+		 * @see GamepadControls
+		 */
 		public function addGamepadActionBinding(__action:String, __controlId:String, __gamepadIndex:int = -1):void {
 			// Create a binding to be verified later
 			bindings.push(new BindingInfo(__action, new GamepadBinding(__controlId, __gamepadIndex >= 0 ? __gamepadIndex : GamepadBinding.GAMEPAD_INDEX_ANY)));
@@ -308,16 +393,6 @@ package com.zehfernando.input.binding {
 		public function isActionActivated(__action:String):Boolean {
 			return actionsActivations.hasOwnProperty(__action) && (actionsActivations[__action] as ActivationInfo).activations.length > 0;
 		}
-
-//		public function setFromXML(__xmlData:XML):void {
-//			// Set items from a list of <key> nodes
-//
-//			var keyDatas:XMLList = __xmlData.child("key");
-//
-//			for (var i:int = 0; i < keyDatas.length(); i++) {
-//				keys.push(Binding.fromXML(keyDatas[i]));
-//			}
-//		}
 
 
 		// ================================================================================================================
