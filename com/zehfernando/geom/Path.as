@@ -116,7 +116,8 @@ package com.zehfernando.geom {
 		}
 
 		public function simplify():void {
-			// Simplify the line by removing middle points in lines that have the same angle
+			// Simplify the path by removing middle points in lines that have the same angle
+//			var pl:int = points.length;
 			for (var i:int = 1; i < points.length-1; i++) {
 				if (Math.atan2(points[i].y-points[i-1].y, points[i].x-points[i-1].x) == Math.atan2(points[i+1].y-points[i].y, points[i+1].x-points[i].x)) {
 					// Same angle
@@ -124,7 +125,60 @@ package com.zehfernando.geom {
 					i--;
 				}
 			}
-			//log("Path optimized; points before = " + pl + ", points after = " + points.length);
+//			log("Path optimized; points before = " + pl + ", points after = " + points.length);
+		}
+
+		public function normalize():void {
+			// Make sures all coordinates are from 0 to 1 by scaling the whole path back
+
+			var i:int;
+			var minX:Number;
+			var maxX:Number;
+			var minY:Number;
+			var maxY:Number;
+
+			// Read minimum and maximums
+			for (i = 0; i < points.length; i++) {
+				if (isNaN(minX) || points[i].x < minX) minX = points[i].x;
+				if (isNaN(maxX) || points[i].x > maxX) maxX = points[i].x;
+				if (isNaN(minY) || points[i].y < minY) minY = points[i].y;
+				if (isNaN(maxY) || points[i].y > maxY) maxY = points[i].y;
+			}
+
+			// Apply mapped values
+			var w:Number = maxX - minX;
+			var h:Number = maxY - minY;
+			for (i = 0; i < points.length; i++) {
+				points[i].x = (points[i].x - minX) / w;
+				points[i].y = (points[i].y - minY) / h;
+			}
+		}
+
+		public static function getSimilarity(__path0:Path, __path1:Path):Number {
+			// Return the similarity between two paths, by measuring the distance of points at the same breakpoints in the path
+			// simplify() and normalize() the paths before calling this function!
+			// 0 = identical
+			// Higher = more different
+			var numSegs:int = 100; // Number of segments to check (more = more precise, less = faster)
+
+			var errorDrift:Number = 0;
+
+			var l0:Number = __path0.length;
+			var l1:Number = __path1.length;
+
+			for (var i:int = 0; i <= numSegs; i++) {
+				errorDrift += Point.distance(__path0.getPosition((i/numSegs) * l0), __path1.getPosition((i/numSegs) * l1));
+			}
+			return errorDrift;
+		}
+
+		public function toCoordinates():Vector.<Number> {
+			var ps:Vector.<Number> = new Vector.<Number>();
+			for (var i:int = 0; i < points.length; i++) {
+				ps.push(points[i].x);
+				ps.push(points[i].y);
+			}
+			return ps;
 		}
 
 	}
