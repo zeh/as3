@@ -15,10 +15,11 @@ package com.zehfernando.input.binding {
 	public class KeyActionBinder {
 
 		// Provides universal input control for game controllers and keyboard
+		// http://zehfernando.com/2013/abstracting-key-and-game-controller-inputs-in-adobe-air/
 
 		// Properties
 		private var _isRunning:Boolean;
-		private var alwaysPreventDefault:Boolean;								// If true, prevent action by other keys all the time (e.g. menu key)
+		private var alwaysPreventDefault:Boolean;						// If true, prevent action by other keys all the time (e.g. menu key)
 
 		// Instances
 		private var bindings:Vector.<BindingInfo>;						// Actual existing bindings, their action, and whether they're activated or not

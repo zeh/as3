@@ -1,6 +1,8 @@
 /**
  * An object that continuously loops ("ticks") on every rendering frame, dispatching SimpleSignal calls every time
  * it does so.
+ * 
+ * More information: http://zehfernando.com/2013/a-gamelooper-class-for-actionscript-3-projects/
  *
  * Using GameLooper is similar to creating an ENTER_FRAME event and watching for it, but with these differences:
  *  . Actual "tick" call rate is flexible: it can execute more than one call per frame, or skip frames as needed
