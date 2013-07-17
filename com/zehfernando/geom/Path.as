@@ -15,6 +15,27 @@ package com.zehfernando.geom {
 			points = new Vector.<Point>();
 		}
 
+		// ================================================================================================================
+		// STATIC functions -----------------------------------------------------------------------------------------------
+
+		public static function fromPoints(__points:Vector.<Point>):Path {
+			var path:Path = new Path();
+			path.points = __points.concat();
+			return path;
+		}
+
+		public static function fromCoordinates(__coordinates:Vector.<Number>):Path {
+			var path:Path = new Path();
+			for (var i:int = 0; i < __coordinates.length; i+=2) path.points.push(new Point(__coordinates[i], __coordinates[i+1]));
+			return path;
+		}
+
+		public static function fromCoordinatesArray(__coordinates:Array):Path {
+			var path:Path = new Path();
+			for (var i:int = 0; i < __coordinates.length; i+=2) path.points.push(new Point(__coordinates[i], __coordinates[i+1]));
+			return path;
+		}
+
 
 		// ================================================================================================================
 		// INSTANCE functions ---------------------------------------------------------------------------------------------
