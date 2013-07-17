@@ -144,7 +144,7 @@ package com.zehfernando.input.binding {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		private function onKeyDown(__e:KeyboardEvent):void {
-			//debug("key down: " + __e);
+//			debug("key down: " + __e);
 			var filteredKeys:Vector.<BindingInfo> = filterKeyboardKeys(__e.keyCode, __e.keyLocation);
 			for (var i:int = 0; i < filteredKeys.length; i++) {
 				if (!filteredKeys[i].isActivated) {
@@ -163,7 +163,7 @@ package com.zehfernando.input.binding {
 		}
 
 		private function onKeyUp(__e:KeyboardEvent):void {
-			//debug("key up: " + __e);
+//			debug("key up: " + __e);
 			var filteredKeys:Vector.<BindingInfo> = filterKeyboardKeys(__e.keyCode, __e.keyLocation);
 			var idx:int;
 			var activations:Vector.<BindingInfo>;
