@@ -439,9 +439,10 @@ class ActivationInfo {
 	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 	public function get value():Number {
-		val = 0;
+		val = NaN;
 		for (iis in sensitiveValues) {
-			if (sensitiveValues[iis] > val) val = sensitiveValues[iis];
+			// NOTE: this will be a problem if two axis control the same action, since +1 is not necessarily better than -1
+			if (isNaN(val) || sensitiveValues[iis] > val) val = sensitiveValues[iis];
 		}
 		return val;
 	}
