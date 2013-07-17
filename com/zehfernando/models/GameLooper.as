@@ -197,7 +197,7 @@ package com.zehfernando.models {
 		 *
 		 * <p>Calling this method when this instance is already paused has no effect.</p>
 		 *
-		 * @see isRunning
+		 * @see #isRunning
 		 */
 		public function pause():void {
 			if (_isRunning) {
