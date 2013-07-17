@@ -10,5 +10,6 @@ package com.zehfernando.controllers.focus {
 		function simulateEnterDown():void;
 		function simulateEnterUp():void;
 		function simulateEnterCancel():void;
+		function canReceiveFocus():Boolean;
 	}
 }

@@ -109,10 +109,17 @@ package com.zehfernando.controllers.focus {
 			var idx:int = elements.indexOf(_currentElement);
 
 			if (idx > -1) {
+				var pos:int = 0;
 				if (__direction == DIRECTION_NEXT) {
-					nextElement = elements[(idx + 1) % elements.length];
+					while (pos < elements.length && (nextElement == _currentElement || !nextElement.canReceiveFocus())) {
+						pos++;
+						nextElement = elements[(idx + pos) % elements.length];
+					}
 				} else if (__direction == DIRECTION_PREVIOUS) {
-					nextElement = elements[(idx - 1 + elements.length) % elements.length];
+					while (pos < elements.length && (nextElement == _currentElement || !nextElement.canReceiveFocus())) {
+						pos++;
+						nextElement = elements[(idx - pos + elements.length) % elements.length];
+					}
 				} else {
 					nextElement = findElementFromVisualDirection(_currentElement, __direction);
 				}
@@ -148,7 +155,7 @@ package com.zehfernando.controllers.focus {
 			var scaleDistanceY:Number = (__direction == DIRECTION_LEFT || __direction == DIRECTION_RIGHT) ? 2 : 1;
 			var currentP:Point = new Point(currentRect.x + currentRect.width * 0.5, currentRect.y + currentRect.height * 0.5);
 			for (i = 0; i < elements.length; i++) {
-				if (elements[i] != _currentElement) {
+				if (elements[i] != _currentElement && elements[i].canReceiveFocus()) {
 					newRect = elements[i].getBounds(stage);
 					distanceX = ((newRect.x + newRect.width * 0.5) - currentP.x) * scaleDistanceX;
 					distanceY = ((newRect.y + newRect.height * 0.5) - currentP.y) * scaleDistanceY;
