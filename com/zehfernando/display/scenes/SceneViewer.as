@@ -110,6 +110,7 @@ package com.zehfernando.display.scenes {
 		public function showScene(__scene:AbstractScene):void {
 			if (isHidingScene) {
 				// Already hiding, simply swaps the queued scene
+				if (nextScene != null) nextScene.dispose();
 				nextScene = __scene;
 			} else if (isShowingScene) {
 				// A scene is being shown already, queue to hide it immediately after it's done showing
