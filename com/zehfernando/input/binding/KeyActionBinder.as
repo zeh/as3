@@ -17,7 +17,7 @@ package com.zehfernando.input.binding {
 		// Provides universal input control for game controllers and keyboard
 
 		// Properties
-		private var _isStarted:Boolean;
+		private var _isRunning:Boolean;
 
 		// Instances
 		private var bindings:Vector.<BindingInfo>;						// Actual existing bindings, their action, and whether they're activated or not
@@ -51,7 +51,7 @@ package com.zehfernando.input.binding {
 			_onActionDeactivated = new SimpleSignal();
 			_onSensitiveActionChanged = new SimpleSignal();
 
-			refreshGameInputDeviceList();
+			start();
 		}
 
 
@@ -246,7 +246,7 @@ package com.zehfernando.input.binding {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public function start():void {
-			if (!_isStarted) {
+			if (!_isRunning) {
 				// Starts listening to keyboard events
 				stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 				stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);
@@ -257,12 +257,14 @@ package com.zehfernando.input.binding {
 					gameInput.addEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
 				}
 
-				_isStarted = true;
+				refreshGameInputDeviceList();
+
+				_isRunning = true;
 			}
 		}
 
 		public function stop():void {
-			if (_isStarted) {
+			if (_isRunning) {
 				// Stops listening to keyboard events
 				stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown, false);
 				stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp, false);
@@ -273,7 +275,9 @@ package com.zehfernando.input.binding {
 					gameInput.removeEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
 				}
 
-				_isStarted = false;
+				removeGameInputDeviceEvents();
+
+				_isRunning = false;
 			}
 		}
 
@@ -329,6 +333,10 @@ package com.zehfernando.input.binding {
 
 		public function get onSensitiveActionChanged():SimpleSignal {
 			return _onSensitiveActionChanged;
+		}
+
+		public function get isRunning():Boolean {
+			return _isRunning;
 		}
 	}
 }
