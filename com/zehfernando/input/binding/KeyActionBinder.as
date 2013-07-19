@@ -19,7 +19,7 @@ package com.zehfernando.input.binding {
 		// TODO:
 		// * Read if it was pressed/released THIS frame?
 		// * Allow sensitive controls to be treated as normal controls
-		// * Add gamepad id to return signals
+		// * Add gamepad index to return signals
 		// * Use caching samples?
 
 		// Properties
@@ -116,10 +116,10 @@ package com.zehfernando.input.binding {
 
 				// Some times the device is null because numDevices is updated before the added device event is dispatched
 				if (device != null) {
-					//debug("  Adding events to device (" + i + "): name = " + device.name + ", controls = " + device.numControls + ", sampleInterval = " + device.sampleInterval);
+//					debug("  Adding events to device (" + i + "): name = " + device.name + ", controls = " + device.numControls + ", sampleInterval = " + device.sampleInterval);
 					device.enabled = true;
 					for (j = 0; j < device.numControls; j++) {
-						//debug("    Control id = " + device.getControlAt(j).id + ", val = " + device.getControlAt(j).minValue + " => " + device.getControlAt(j).maxValue);
+//						debug("    Control id = " + device.getControlAt(j).id + ", val = " + device.getControlAt(j).minValue + " => " + device.getControlAt(j).maxValue);
 						device.getControlAt(j).addEventListener(Event.CHANGE, onGameInputDeviceChanged, false, 0, true);
 					}
 				}
@@ -199,7 +199,7 @@ package com.zehfernando.input.binding {
 		private function onGameInputDeviceChanged(__e:Event):void {
 			var control:GameInputControl = __e.target as GameInputControl;
 
-			//debug("onGameInputDeviceChanged: " + control.id + " = " + control.value + " (of " + control.minValue + " => " + control.maxValue + ")");
+//			debug("onGameInputDeviceChanged: " + control.id + " = " + control.value + " (of " + control.minValue + " => " + control.maxValue + ")");
 
 			var filteredControls:Vector.<BindingInfo> = filterGamepadControls(control.id, gameInputDevices.indexOf(control.device));
 			var idx:int;
@@ -419,9 +419,10 @@ package com.zehfernando.input.binding {
 		}
 	}
 }
-import com.zehfernando.input.binding.IBinding;
-
 import flash.utils.Dictionary;
+/**
+ * Information listing all activated bindings of a given action
+ */
 class ActivationInfo {
 
 	public var activations:Vector.<BindingInfo>;			// All activated bindings
@@ -452,6 +453,9 @@ class ActivationInfo {
 	}
 }
 
+/**
+ * Information linking an action to a binding, and whether it's activated
+ */
 class BindingInfo {
 
 	// Properties
@@ -466,5 +470,102 @@ class BindingInfo {
 		action = __action;
 		binding = __binding;
 		isActivated = false;
+	}
+}
+
+interface IBinding {
+	function matchesKeyboardKey(__keyCode:uint, __keyLocation:uint):Boolean;
+	function matchesGamepadControl(__controlId:String, __gamepadIndex:uint):Boolean;
+}
+
+/**
+ * Information on a keyboard event filter
+ */
+class KeyboardBinding implements IBinding {
+
+	// Constants
+	public static var KEY_LOCATION_ANY:uint = 8165381;
+
+	// Properties
+	public var keyCode:uint;
+	public var keyLocation:uint;
+
+	// ================================================================================================================
+	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
+
+	public function KeyboardBinding(__keyCode:uint, __keyLocation:uint) {
+		super();
+
+		keyCode = __keyCode;
+		keyLocation = __keyLocation;
+	}
+
+	// ================================================================================================================
+	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+
+	public function matchesKeyboardKey(__keyCode:uint, __keyLocation:uint):Boolean {
+		return keyCode == __keyCode && (keyLocation == __keyLocation || keyLocation == KEY_LOCATION_ANY);
+	}
+
+	// TODO: add modifiers?
+
+	public function matchesGamepadControl(__controlId:String, __gamepadIndex:uint):Boolean {
+		return false;
+	}
+}
+
+/**
+ * Information on a gamepad event filter
+ */
+class GamepadBinding implements IBinding {
+
+	// Constants
+	public static var GAMEPAD_INDEX_ANY:uint = 8165381;
+
+	// Properties
+	public var controlId:String;
+	public var gamepadIndex:uint;
+
+	// ================================================================================================================
+	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
+
+	public function GamepadBinding(__controlId:String, __gamepadIndex:uint) {
+		super();
+
+		controlId = __controlId;
+		gamepadIndex = __gamepadIndex;
+	}
+
+	// ================================================================================================================
+	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+
+	public function matchesGamepadControl(__controlId:String, __gamepadIndex:uint):Boolean {
+		return controlId == __controlId && (gamepadIndex == __gamepadIndex || gamepadIndex == GAMEPAD_INDEX_ANY);
+	}
+
+	public function matchesKeyboardKey(__keyCode:uint, __keyLocation:uint):Boolean {
+		return false;
+	}
+
+	// TODO: add option to restrict to a given gamepad based on name? (e.g. OUYA)
+}
+
+/**
+ * Information on a gamepad event filter with sensitivity values
+ */
+class GamepadSensitiveBinding extends GamepadBinding {
+
+	// Properties
+	public var minValue:Number;
+	public var maxValue:Number;
+
+	// ================================================================================================================
+	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
+
+	public function GamepadSensitiveBinding(__controlId:String, __gamepadIndex:uint, __minValue:Number, __maxValue:Number) {
+		super(__controlId, __gamepadIndex);
+
+		minValue = __minValue;
+		maxValue = __maxValue;
 	}
 }
