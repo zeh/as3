@@ -15,6 +15,12 @@ package com.zehfernando.input.binding {
 
 		// Provides universal input control for game controllers and keyboard
 		// http://zehfernando.com/2013/abstracting-key-and-game-controller-inputs-in-adobe-air/
+		
+		// TODO:
+		// * Read if it was pressed/released THIS frame?
+		// * Allow sensitive controls to be treated as normal controls
+		// * Add gamepad id to return signals
+		// * Use caching samples?
 
 		// Properties
 		private var _isRunning:Boolean;
@@ -27,8 +33,6 @@ package com.zehfernando.input.binding {
 		private var _onActionActivated:SimpleSignal;					// Receives: action:String
 		private var _onActionDeactivated:SimpleSignal;					// Receives: action:String
 		private var _onSensitiveActionChanged:SimpleSignal;				// Receives: action:String, value:Number (0-1)
-
-		// TODO: use caching samples?
 
 		private var stage:Stage;
 		private var gameInput:GameInput;
@@ -335,7 +339,7 @@ package com.zehfernando.input.binding {
 		 * @see flash.ui.Keyboard
 		 */
 		public function addKeyboardActionBinding(__action:String, __keyCode:uint, __keyLocation:int = -1):void {
-			// TODO: use KeyActionBinder.KEY_LOCATION_ANY as default param?
+			// TODO: use KeyActionBinder.KEY_LOCATION_ANY as default param? The compiler doesn't like constants.
 
 			// Create a binding to be verified later
 			bindings.push(new BindingInfo(__action, new KeyboardBinding(__keyCode, __keyLocation >= 0 ? __keyLocation : KeyboardBinding.KEY_LOCATION_ANY)));

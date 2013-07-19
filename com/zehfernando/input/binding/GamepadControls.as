@@ -69,20 +69,20 @@ package com.zehfernando.input.binding {
 		/* Shoulder button, lower left (LEFT 2)
 		 * <p>Style: digital</p>
 		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA)</p>
+		 * <p>Note: this doesn't work on the XBox 360 Controller (OUYA). Use L2_SENSITIVE instead.</p>
 		 */
 		public static const L2:String = "BUTTON_104";
 
 		/* Should button, lower right (RIGHT 2)
 		 * <p>Style: digital</p>
 		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA)</p>
-		 * <p>Note: this doesn't work on the XBox 360 Controller (OUYA). Use L2_SENSITIVE instead.</p>
+		 * <p>Note: this doesn't work on the XBox 360 Controller (OUYA). Use R2_SENSITIVE instead.</p>
 		 */
 		public static const R2:String = "BUTTON_105";
 
 		/* Left stick press (LEFT 3)
 		 * <p>Style: digital</p>
 		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
-		 * <p>Note: this doesn't work on the XBox 360 Controller (OUYA). Use R2_SENSITIVE instead.</p>
 		 */
 		public static const L3:String = "BUTTON_106";
 
@@ -106,31 +106,33 @@ package com.zehfernando.input.binding {
 
 		/* Left analog stick, horizontal (X) axis. The value received is for a left-to-right position.
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
 		 */
 		public static const STICK_LEFT_X:String = "AXIS_0";
 
 		/* Left analog stick, vertical (Y) axis. The value received is for a up-to-down position.
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
+		 * <p>Note: on Windows, when using the XBox 360 controller, the orientation is reversed: the value position is down-to-up.</p>
 		 */
 		public static const STICK_LEFT_Y:String = "AXIS_1";
 
 		/* Right analog stick, horizontal (X) axis. The value received is for a left-to-right position.
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
 		 */
 		public static const STICK_RIGHT_X:String = "AXIS_11";
 
 		/* Right analog stick, vertical (Y) axis. The value received is for a up-to-down position.
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
+		 * <p>Note: on Windows, when using the XBox 360 controller, the orientation is reversed: the value position is down-to-up.</p>
 		 */
 		public static const STICK_RIGHT_Y:String = "AXIS_14";
 
 		/* Action button, down (O/green in the OUYA, Cross/blue in the Playstation, A/green in the XBox 360)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
 		 */
 		public static const BUTTON_ACTION_DOWN:String = "BUTTON_96";
 
