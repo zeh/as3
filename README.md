@@ -4,9 +4,13 @@ This has everything put together and a little bit of a cross-dependency between 
 
 Contents of notable importance:
 
-* `com.zehfernando.net.assets.AssetLibrary` - Dynamic Asset library manager.
+* `com.zehfernando.net.assets.AssetLibrary` - Dynamic Asset library manager. Used for loading XMLs, JSONs and stuff, and keeping them in memory and accessible in a static context.
 
-* `com.zehfernando.data.Color` - Helpful color class.
+* `com.zehfernando.data.Color` - Helpful color class, for quicker manipulation.
+
+* `com.zehfernando.models.GameLooper` - A class for proper code looping, especially for games. ENTER_FRAME on steroids.
+
+* `com.zehfernando.input.binding.KeyActionBinder` - A class for binding more abstract "actions" to Keyboard or GameInput (game controller) events. Used for easier game input in things like the OUYA (uses AIR).
 
 * `com.zehfernando.display.components.RichTextSprite` - TLE-based rich text element. Powerful, but still lacking some features.
 
