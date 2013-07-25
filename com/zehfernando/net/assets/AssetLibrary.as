@@ -362,6 +362,16 @@ package com.zehfernando.net.assets {
 		public function get numAssets():int {
 			return Boolean(assets) ? assets.length : 0;
 		}
+
+		public function get numUnloadedAssets():int {
+			var unloadedAssets:int = 0;
+			if (Boolean(assets)) {
+				for (var i:int = 0; i < assets.length; i++) {
+					if (!assets[i].isLoaded) unloadedAssets++;
+				}
+			}
+			return unloadedAssets;
+		}
 	}
 }
 import com.zehfernando.net.assets.AssetType;
