@@ -9,23 +9,23 @@ package com.zehfernando.display.gestures {
 	 * @author zeh fernando
 	 */
 	public class GestureRecorderSprite extends ResizableSprite {
-		
+
 		// Event enums
 		public static const EVENT_GESTURE_COMPLETED:String = "onGestureCompleted";
-		
+
 		// Properties
 		private var _isRecording:Boolean;
 		private var _drawLines:Boolean;
-		
+
 		// Instances
 		private var _points:Vector.<Point>;
-		
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function GestureRecorderSprite(__drawLines:Boolean) {
 			super();
-			
+
 			_drawLines = __drawLines;
 		}
 
@@ -38,7 +38,7 @@ package com.zehfernando.display.gestures {
 
 		override protected function redrawHeight():void {
 		}
-		
+
 		private function startRecording():void {
 			if (!_isRecording) {
 				_isRecording = true;
@@ -46,15 +46,15 @@ package com.zehfernando.display.gestures {
 
 				stage.addEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 				stage.addEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-				
+
 				recordPoint();
 			}
 		}
-		
+
 		private function recordPoint():void {
 			if (_isRecording) {
 				_points.push(new Point(mouseX, mouseY));
-				
+
 				if (_drawLines) drawLines();
 			}
 		}
@@ -65,13 +65,13 @@ package com.zehfernando.display.gestures {
 
 				stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 				stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
-				
+
 				dispatchEvent(new Event(EVENT_GESTURE_COMPLETED));
-				
+
 				graphics.clear();
 			}
 		}
-		
+
 		private function drawLines():void {
 			graphics.clear();
 			graphics.lineStyle(2, 0xff0000);
@@ -82,20 +82,20 @@ package com.zehfernando.display.gestures {
 				}
 			}
 		}
-		
+
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		override protected function onAddedToStage(__e:Event):void {
 			super.onAddedToStage(__e);
-			
+
 			stage.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 		}
 
 		override protected function onRemovedFromStage(__e:Event):void {
 			super.onRemovedFromStage(__e);
-			
+
 			stage.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			endRecording();
 		}
@@ -111,10 +111,10 @@ package com.zehfernando.display.gestures {
 		protected function onMouseUp(__e:Event):void {
 			endRecording();
 		}
-		
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-		
+
 		public function getLastGesture():Vector.<Point> {
 			return _points;
 		}

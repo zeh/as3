@@ -15,7 +15,7 @@ package com.zehfernando.input.binding {
 
 		// Provides universal input control for game controllers and keyboard
 		// http://zehfernando.com/2013/abstracting-key-and-game-controller-inputs-in-adobe-air/
-		
+
 		// TODO:
 		// * Read if it was pressed/released THIS frame?
 		// * Allow sensitive controls to be treated as normal controls
