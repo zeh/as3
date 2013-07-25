@@ -67,7 +67,7 @@ package com.zehfernando.net.assets {
 			}
 		}
 
-		public static function getLibrary(__name:String = ""): AssetLibrary {
+		public static function getLibrary(__name:String = ""):AssetLibrary {
 			var i:int;
 			for (i = 0; i < libraries.length; i++) {
 				if (libraries[i].name == __name) return libraries[i];
@@ -184,7 +184,7 @@ package com.zehfernando.net.assets {
 			assets.push(ai);
 		}
 
-		public function getAssetItemInfoByName(__name:String): AssetItemInfo {
+		public function getAssetItemInfoByName(__name:String):AssetItemInfo {
 			// Use object list instead?
 			if (!Boolean(assets)) return null;
 			var i:int;
@@ -194,13 +194,13 @@ package com.zehfernando.net.assets {
 			return null;
 		}
 
-		public function getAssetItemInfoByIndex(__index:int): AssetItemInfo {
+		public function getAssetItemInfoByIndex(__index:int):AssetItemInfo {
 			// Use object list instead?
 			if (!Boolean(assets) || __index > assets.length) return null;
 			return assets[__index];
 		}
 
-		public function getAssetItemInfoByURL(__url:String): AssetItemInfo {
+		public function getAssetItemInfoByURL(__url:String):AssetItemInfo {
 			// Use object list instead?
 			if (!Boolean(assets)) return null;
 			var i:int;
@@ -210,7 +210,7 @@ package com.zehfernando.net.assets {
 			return null;
 		}
 
-		public function getAssetItemInfoByObject(__object:Object): AssetItemInfo {
+		public function getAssetItemInfoByObject(__object:Object):AssetItemInfo {
 			// Use object list instead?
 			if (!Boolean(assets)) return null;
 			var i:int;
@@ -220,7 +220,7 @@ package com.zehfernando.net.assets {
 			return null;
 		}
 
-		public function getAssetItemInfoByContentLoaderInfo(__contentLoaderInfo:LoaderInfo): AssetItemInfo {
+		public function getAssetItemInfoByContentLoaderInfo(__contentLoaderInfo:LoaderInfo):AssetItemInfo {
 			// Use object list instead?
 			// Sometimes this can get fired by an asset library that has already been disposed and removed, so test first to see if the asset list exists
 			if (Boolean(assets)) {
@@ -245,6 +245,7 @@ package com.zehfernando.net.assets {
 
 					switch (assets[i].type) {
 						case AssetType.XML:
+						case AssetType.JSON:
 						case AssetType.CSS:
 							// Text, use an URLLoader
 							assets[i].loadingObject = new URLLoader();
@@ -292,43 +293,49 @@ package com.zehfernando.net.assets {
 		}
 
 		// Type-specific content functions
-		public function getAssetByName(__name:String): Object {
+		public function getAssetByName(__name:String):Object {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (Boolean(ai)) return ai.getAsset();
 			return null;
 		}
 
-		public function getAssetByIndex(__index:int): Object {
+		public function getAssetByIndex(__index:int):Object {
 			var ai:AssetItemInfo = getAssetItemInfoByIndex(__index);
 			if (Boolean(ai)) return ai.getAsset();
 			return null;
 		}
 
-		public function getAssetByURL(__url:String): Object {
+		public function getAssetByURL(__url:String):Object {
 			var ai:AssetItemInfo = getAssetItemInfoByURL(__url);
 			if (Boolean(ai)) return ai.getAsset();
 			return null;
 		}
 
-		public function getXML(__name:String): XML {
+		public function getXML(__name:String):XML {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (Boolean(ai)) return ai.getAsXML();
 			return null;
 		}
 
-		public function getDisplayObject(__name:String): DisplayObject {
+		public function getJSON(__name:String):Object {
+			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
+			if (Boolean(ai)) return ai.getAsJSON();
+			return null;
+		}
+
+		public function getDisplayObject(__name:String):DisplayObject {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (Boolean(ai)) return ai.getAsDisplayObject();
 			return null;
 		}
 
-		public function getVideoLoader(__name:String): VideoLoader {
+		public function getVideoLoader(__name:String):VideoLoader {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (Boolean(ai)) return ai.getAsVideoLoader();
 			return null;
 		}
 
-		public function getStyleSheet(__name:String): StyleSheet {
+		public function getStyleSheet(__name:String):StyleSheet {
 			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
 			if (Boolean(ai)) return ai.getAsStyleSheet();
 			return null;
@@ -403,10 +410,12 @@ class AssetItemInfo {
 	// ================================================================================================================
 	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-	public function getAsset(): Object {
+	public function getAsset():Object {
 		switch (type) {
 			case AssetType.XML:
 				return getAsXML();
+			case AssetType.JSON:
+				return getAsJSON();
 			case AssetType.CSS:
 				return getAsStyleSheet();
 			case AssetType.SWF:
@@ -418,12 +427,17 @@ class AssetItemInfo {
 		return null;
 	}
 
-	public function getAsXML(): XML {
+	public function getAsXML():XML {
 		if (isLoaded) return new XML((loadingObject as URLLoader).data);
 		return null;
 	}
 
-	public function getAsStyleSheet(): StyleSheet {
+	public function getAsJSON():Object {
+		if (isLoaded) return JSON.parse((loadingObject as URLLoader).data);
+		return null;
+	}
+
+	public function getAsStyleSheet():StyleSheet {
 		if (isLoaded) {
 			var ss:StyleSheet = new StyleSheet();
 			ss.parseCSS((loadingObject as URLLoader).data);
@@ -432,12 +446,12 @@ class AssetItemInfo {
 		return null;
 	}
 
-	public function getAsDisplayObject(): DisplayObject {
+	public function getAsDisplayObject():DisplayObject {
 		if (isLoaded) return (loadingObject as Loader).content;
 		return null;
 	}
 
-	public function getAsVideoLoader(): VideoLoader {
+	public function getAsVideoLoader():VideoLoader {
 		return loadingObject as VideoLoader;
 		// TODO: allow download to check whether the request needs a fully loaded file or not?
 		//if (isLoaded) return loadingObject as VideoLoader;
@@ -447,6 +461,7 @@ class AssetItemInfo {
 	public function dispose():void {
 		switch (type) {
 			case AssetType.XML:
+			case AssetType.JSON:
 			case AssetType.CSS:
 				break;
 			case AssetType.SWF:
@@ -460,15 +475,4 @@ class AssetItemInfo {
 		}
 		loadingObject = null;
 	}
-
-	/*
-	public function get data(): * {
-		if (loadingObject is URLLoader) {
-			return (loadingObject as URLLoader).data;
-		}
-
-		trace ("AssetLibrary :: get data() :: Attempt to read data of unknown type!");
-		return null;
-	}
-	*/
 }

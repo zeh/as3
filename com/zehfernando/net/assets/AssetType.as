@@ -8,6 +8,7 @@ package com.zehfernando.net.assets {
 		// Constants
 		public static const CSS:String = "css";
 		public static const XML:String = "xml";
+		public static const JSON:String = "json";
 		public static const IMAGE:String = "image";
 		public static const SWF:String = "swf";
 		public static const VIDEO:String = "video";
@@ -19,6 +20,7 @@ package com.zehfernando.net.assets {
 			var types:Vector.<String> = new Vector.<String>();
 			types.push(AssetType.CSS);
 			types.push(AssetType.XML);
+			types.push(AssetType.JSON);
 			types.push(AssetType.IMAGE);
 			types.push(AssetType.SWF);
 			types.push(AssetType.VIDEO);
@@ -37,6 +39,9 @@ package com.zehfernando.net.assets {
 					break;
 				case AssetType.XML:
 					vv.push("xml");
+					break;
+				case AssetType.JSON:
+					vv.push("json");
 					break;
 				case AssetType.IMAGE:
 					vv.push("jpg");
