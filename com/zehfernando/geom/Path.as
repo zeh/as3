@@ -159,7 +159,7 @@ package com.zehfernando.geom {
 			// simplify() and normalize() the paths before calling this function!
 			// 0 = identical
 			// Higher = more different
-			var numSegs:int = 100; // Number of segments to check (more = more precise, less = faster)
+			var numSegs:int = 80; // Number of segments to check (more = more precise, less = faster)
 
 			var errorDrift:Number = 0;
 
@@ -169,7 +169,7 @@ package com.zehfernando.geom {
 			for (var i:int = 0; i <= numSegs; i++) {
 				errorDrift += Point.distance(__path0.getPosition((i/numSegs) * l0), __path1.getPosition((i/numSegs) * l1));
 			}
-			return errorDrift;
+			return errorDrift / numSegs;
 		}
 
 		public function toCoordinates():Vector.<Number> {
