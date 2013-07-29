@@ -309,6 +309,7 @@ package com.zehfernando.input.binding {
 					gameInput.removeEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
 				}
 
+				gameInputDevices = null;
 				removeGameInputDeviceEvents();
 
 				_isRunning = false;
