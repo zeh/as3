@@ -196,6 +196,11 @@ package com.zehfernando.input.binding {
 			refreshGameInputDeviceList();
 		}
 
+		private function onGameInputDeviceUnusable(__e:GameInputEvent):void {
+			//debug("A Device is unusable; num devices = " + GameInput.numDevices);
+			refreshGameInputDeviceList();
+		}
+
 		private function onGameInputDeviceChanged(__e:Event):void {
 			var control:GameInputControl = __e.target as GameInputControl;
 
@@ -269,6 +274,7 @@ package com.zehfernando.input.binding {
 				if (gameInput != null) {
 					gameInput.addEventListener(GameInputEvent.DEVICE_ADDED, onGameInputDeviceAdded);
 					gameInput.addEventListener(GameInputEvent.DEVICE_REMOVED, onGameInputDeviceRemoved);
+					gameInput.addEventListener(GameInputEvent.DEVICE_UNUSABLE, onGameInputDeviceUnusable);
 				}
 
 				refreshGameInputDeviceList();
