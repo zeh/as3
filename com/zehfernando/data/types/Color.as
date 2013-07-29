@@ -1,5 +1,4 @@
 package com.zehfernando.data.types {
-
 	import com.zehfernando.utils.MathUtils;
 
 	import flash.geom.ColorTransform;
@@ -50,26 +49,40 @@ package com.zehfernando.data.types {
 		 * Converts this color to a ColorTransform instance that applies the correct tinting to a DisplayObject. The alpha value of the color is ignored.
 		 * @return	The new ColorTransform object.
 		 * @example To apply a white tinting to a DisplayObject:
- 		 * <listing version="3.0">
- 		 * var colorWhite:Color = Color.fromRRGGBB(0xffffff);
- 		 * myDisplayObject.transform.colorTransform = colorWhite.toColorTransform();
- 		 * </listing>
+		 * <listing version="3.0">
+		 * var colorWhite:Color = Color.fromRRGGBB(0xffffff);
+		 * myDisplayObject.transform.colorTransform = colorWhite.toColorTransform();
+		 * </listing>
 		 */
-		public function toColorTransform(): ColorTransform {
+		public function toColorTransform():ColorTransform {
 			// Return this color as a tinting color transform
 			return new ColorTransform(0, 0, 0, 1, _r*255, _g*255, _b*255, 0);
+		}
+
+		/**
+		 * Converts this color to a ColorTransform instance that applies the correct tinting to a DisplayObject, by multiplying (expects the original object to be white). The alpha value of the color is ignored.
+		 * @return	The new ColorTransform object.
+		 * @example To apply a white tinting to a DisplayObject:
+		 * <listing version="3.0">
+		 * var colorWhite:Color = Color.fromRRGGBB(0xffffff);
+		 * myDisplayObject.transform.colorTransform = colorWhite.toColorTransformMultiplied();
+		 * </listing>
+		 */
+		public function toColorTransformMultiplied():ColorTransform {
+			// Return this color as a tinting color transform
+			return new ColorTransform(_r, _g, _b, 1);
 		}
 
 		/**
 		 * Converts this color to a ColorTransform instance that applies the correct tinting to a DisplayObject. The alpha value of the color is kept and used as the new DisplayObject's alpha value. This is not meant to be used for interpolated tinting!
 		 * @return	The new ColorTransform object.
 		 * @example To apply a black tinting to a DisplayObject:
- 		 * <listing version="3.0">
- 		 * var colorBlack:Color = Color.fromRRGGBB(0xff000000);
- 		 * myDisplayObject.transform.colorTransform = colorBlack.toColorTransformAlpha();
- 		 * </listing>
+		 * <listing version="3.0">
+		 * var colorBlack:Color = Color.fromRRGGBB(0xff000000);
+		 * myDisplayObject.transform.colorTransform = colorBlack.toColorTransformAlpha();
+		 * </listing>
 		 */
-		public function toColorTransformAlpha(): ColorTransform {
+		public function toColorTransformAlpha():ColorTransform {
 			// Return this color as a tinting + alpha color transform
 			var cf:ColorTransform = toColorTransform();
 			cf.alphaMultiplier = _a;
@@ -95,7 +108,7 @@ package com.zehfernando.data.types {
 			return txt;
 		}
 
-		public function clone(): Color {
+		public function clone():Color {
 			var cc:Color = new Color();
 			cc.r = _r;
 			cc.g = _g;
@@ -128,7 +141,7 @@ package com.zehfernando.data.types {
 		 * Creates a new Color object from a number in the RRGGBB format (for example: 0x000000 for black, or 0xffffff for white). The color's alpha property is set to 1 (totally opaque).
 		 * @return	The new color object.
 		 */
-		public static function fromRRGGBB(__value:Number): Color {
+		public static function fromRRGGBB(__value:Number):Color {
 			var newColor:Color = new Color();
 			newColor.r = getRFromNumber(__value, 1);
 			newColor.g = getGFromNumber(__value, 1);
@@ -142,7 +155,7 @@ package com.zehfernando.data.types {
 		 * Creates a new Color object from a number in the AARRGGBB format (for example: 0x00ffffff for transparent white, or 0xffffffff for opaque white).
 		 * @return	The new color object.
 		 */
-		public static function fromAARRGGBB(__value:Number): Color {
+		public static function fromAARRGGBB(__value:Number):Color {
 			var newColor:Color = Color.fromRRGGBB(__value);
 			newColor.a = getAFromNumber(__value, 1);
 			return newColor;
@@ -152,7 +165,7 @@ package com.zehfernando.data.types {
 		 * Creates a new Color object from a combination of the Red, Green, Blue and Alpha values in the 0-1 range.
 		 * @return	The new color object.
 		 */
-		public static function fromRGB(__r:Number, __g:Number, __b:Number, __a:Number = 1): Color {
+		public static function fromRGB(__r:Number, __g:Number, __b:Number, __a:Number = 1):Color {
 			var newColor:Color = new Color();
 			newColor.r = __r;
 			newColor.g = __g;
@@ -166,7 +179,7 @@ package com.zehfernando.data.types {
 		 * @see http://en.wikipedia.org/wiki/HSL_color_space
 		 * @return	The new color object.
 		 */
-		public static function fromHSV(__h:Number, __s:Number, __v:Number, __a:Number = 1): Color {
+		public static function fromHSV(__h:Number, __s:Number, __v:Number, __a:Number = 1):Color {
 			var newColor:Color = new Color();
 			newColor.v = __v;
 			newColor.s = __s;
@@ -175,7 +188,7 @@ package com.zehfernando.data.types {
 			return newColor;
 		}
 
-		public static function fromString(p_value:String): Color {
+		public static function fromString(p_value:String):Color {
 			// Based on any HTML/CSS compatible string value, returns the corresponding color
 
 			var newColor:Color = new Color();
@@ -248,7 +261,7 @@ package com.zehfernando.data.types {
 			return newColor;
 		}
 
-		public static function interpolate(__c1:Color, __c2:Color, f:Number): Color {
+		public static function interpolate(__c1:Color, __c2:Color, f:Number):Color {
 			// Linear RGB interpolation between two colors
 			var newColor:Color = new Color();
 			var nf:Number = 1 - f;
@@ -264,7 +277,7 @@ package com.zehfernando.data.types {
 		}
 
 		/*
-		public static function interpolateHSL(__c1:Color, __c2:Color, f:Number): Color {
+		public static function interpolateHSL(__c1:Color, __c2:Color, f:Number):Color {
 			// Linear HSL interpolation between two colors
 			var newColor:Color = new Color();
 			var nf:Number = 1 - f;
@@ -282,7 +295,7 @@ package com.zehfernando.data.types {
 		}
 		*/
 
-		public static function interpolateHSV(__c1:Color, __c2:Color, f:Number): Color {
+		public static function interpolateHSV(__c1:Color, __c2:Color, f:Number):Color {
 			// Linear HSL interpolation between two colors
 			var newColor:Color = new Color();
 			var nf:Number = 1 - f;
@@ -300,7 +313,7 @@ package com.zehfernando.data.types {
 		}
 
 		/*
-		public static function fromHSL(__h:Number, __s:Number, __l:Number): Color {
+		public static function fromHSL(__h:Number, __s:Number, __l:Number):Color {
 			var newColor:Color = new Color();
 			newColor.l = __l;
 			newColor.s = __s;
@@ -410,16 +423,16 @@ package com.zehfernando.data.types {
 		// GETTER and SETTER functions ------------------------------------------------------------------------------------
 
 		// Default RGB representation
-		public function get r(): Number				{ return _r; }
+		public function get r():Number				{ return _r; }
 		public function set r(__value:Number):void	{ _r = MathUtils.clamp(__value, 0, 255); } // { _r = value & 0xff; }
 
-		public function get g(): Number				{ return _g; }
+		public function get g():Number				{ return _g; }
 		public function set g(__value:Number):void	{ _g = MathUtils.clamp(__value, 0, 255); }
 
-		public function get b(): Number				{ return _b; }
+		public function get b():Number				{ return _b; }
 		public function set b(__value:Number):void	{ _b = MathUtils.clamp(__value, 0, 255); }
 
-		public function get a(): Number				{ return _a; }
+		public function get a():Number				{ return _a; }
 		public function set a(__value:Number):void	{ _a = MathUtils.clamp(__value, 0, 255); }
 
 		public function get h():Number {
