@@ -72,20 +72,14 @@ package com.zehfernando.display.scenes {
 		// Shows the scene. Classes that extend this one MUST dispatch the started showing/finished showing events
 		public function show():void {
 			dispatchEvent(new Event(EVENT_STARTED_SHOWING));
-
-			alpha = 1;
-			visible = true;
-
+			visibility = 1;
 			dispatchEvent(new Event(EVENT_FINISHED_SHOWING));
 		}
 
 		// Hides the scene. Classes that extend this one MUST dispatch the started hiding/finished hiding events
 		public function hide():void {
 			dispatchEvent(new Event(EVENT_STARTED_HIDING));
-
-			alpha = 0;
-			visible = false;
-
+			visibility = 0;
 			dispatchEvent(new Event(EVENT_FINISHED_HIDING));
 		}
 
