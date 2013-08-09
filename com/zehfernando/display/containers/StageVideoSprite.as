@@ -129,7 +129,9 @@ package com.zehfernando.display.containers {
 
 		private function detachFromStageVideo():void {
 			if (_stageVideo != null) {
+				log("Detaching from StageVideo");
 				_stageVideo.removeEventListener(StageVideoEvent.RENDER_STATE, onStageVideoRenderStateChange);
+				_stageVideo.attachNetStream(null);
 				_stageVideo = null;
 			}
 		}
@@ -148,8 +150,10 @@ package com.zehfernando.display.containers {
 
 		private function detachFromVideo():void {
 			if (_video != null) {
+				log("Detaching from fallback Video");
 				AppUtils.getStage().removeChild(_video);
 				_video.removeEventListener(VideoEvent.RENDER_STATE, onVideoRenderStateChange);
+				_video.attachNetStream(null);
 				_video = null;
 			}
 		}
@@ -190,6 +194,7 @@ package com.zehfernando.display.containers {
 		private function resizeVideo():void {
 			// Resize video to fit the screen
 			if (_video != null) {
+				log("Resizing Video to " + _video.videoWidth + "x" + _video.videoHeight);
 				var rect:Rectangle = getVideoRect(_video.videoWidth, _video.videoHeight, true);
 				_video.x = rect.x;
 				_video.y = rect.y;
@@ -198,9 +203,13 @@ package com.zehfernando.display.containers {
 			}
 
 			if (_stageVideo != null) {
-				_stageVideo.viewPort = getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true);
+				log("Resizing StageVideo to " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight);
+				try {
+					_stageVideo.viewPort = getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true);
+				} catch (__e:Error) {
+					log("Error resizing StageVideo: " + __e);
+				}
 			}
-
 		}
 
 
@@ -208,15 +217,20 @@ package com.zehfernando.display.containers {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		private function onStageVideoAvailability(__e:StageVideoAvailabilityEvent):void {
-			log("Video availability state is " + __e.availability);
+			log("StageVideo availability state is " + __e.availability);
 
 			if (__e.availability == StageVideoAvailability.AVAILABLE) {
 				// StageVideo is available
-				detachFromVideo();
-				attachToStageVideo();
+				if (_stageVideo == null) {
+					detachFromVideo();
+					attachToStageVideo();
+				}
 			} else {
-				detachFromStageVideo();
-				attachToVideo();
+				// StageVideo is not available
+				if (_video == null) {
+					detachFromStageVideo();
+					attachToVideo();
+				}
 			}
 
 			_netStream.play(_url);
