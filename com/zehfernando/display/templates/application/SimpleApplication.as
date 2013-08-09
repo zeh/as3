@@ -42,23 +42,7 @@ package com.zehfernando.display.templates.application {
 			isLoadingDataSecondPass = false;
 
 			// Other initializations
-			stage.quality = StageQuality.HIGH;
-			stage.align = StageAlign.TOP_LEFT;
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-
-			stage.addEventListener(Event.RESIZE, onStageResized);
-			stage.addEventListener(Event.ACTIVATE, onStageActivated);
-			stage.addEventListener(Event.DEACTIVATE, onStageDeactivated);
-
-			AppUtils.init(stage, this);
-
-			assetLibrary = new AssetLibrary();
-
-			// Higher-level initialization
-			addDynamicAssetsFirstPass();
-
-			// Wait until the stage size is known before properly initializing
-			waitUntilStageSizeIsKnownToStart();
+			waitUntilStageIsKnownToStart();
 
 			// End -- do not add anything else in the constructor
 		}
@@ -124,6 +108,7 @@ package com.zehfernando.display.templates.application {
 		}
 
 		private function initializeApplication():void {
+			// Finally, everything has been done, so initialize the application
 			isInitialized = true;
 			createVisualAssets();
 			redrawVisualAssets();
@@ -172,13 +157,41 @@ package com.zehfernando.display.templates.application {
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
+		private function waitUntilStageIsKnownToStart(__e:Event = null):void {
+			// Only allows initializing if the stage exists
+			if (stage != null) {
+				removeEventListener(Event.ENTER_FRAME, waitUntilStageIsKnownToStart);
+
+				stage.quality = StageQuality.HIGH;
+				stage.align = StageAlign.TOP_LEFT;
+				stage.scaleMode = StageScaleMode.NO_SCALE;
+
+				stage.addEventListener(Event.RESIZE, onStageResized);
+				stage.addEventListener(Event.ACTIVATE, onStageActivated);
+				stage.addEventListener(Event.DEACTIVATE, onStageDeactivated);
+
+				AppUtils.init(stage, this);
+
+				assetLibrary = AssetLibrary.getLibrary();
+				if (assetLibrary == null) assetLibrary = new AssetLibrary();
+
+				// Higher-level initialization
+				addDynamicAssetsFirstPass();
+
+				// Wait until the stage size is known before properly initializing
+				waitUntilStageSizeIsKnownToStart();
+			} else {
+				addEventListener(Event.ENTER_FRAME, waitUntilStageIsKnownToStart);
+			}
+		}
+
 		private function waitUntilStageSizeIsKnownToStart(__e:Event = null):void {
 			// Only allows initializing if the stage size is known
 			if (AppUtils.getStage().stageWidth > 0) {
-				stage.removeEventListener(Event.ENTER_FRAME, waitUntilStageSizeIsKnownToStart);
+				removeEventListener(Event.ENTER_FRAME, waitUntilStageSizeIsKnownToStart);
 				start();
 			} else {
-				stage.addEventListener(Event.ENTER_FRAME, waitUntilStageSizeIsKnownToStart);
+				addEventListener(Event.ENTER_FRAME, waitUntilStageSizeIsKnownToStart);
 			}
 		}
 
@@ -242,6 +255,13 @@ package com.zehfernando.display.templates.application {
 
 				initializeApplication();
 			}
+		}
+
+		// ================================================================================================================
+		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+
+		public function getAssetLibrary():AssetLibrary {
+			return assetLibrary;
 		}
 	}
 }
