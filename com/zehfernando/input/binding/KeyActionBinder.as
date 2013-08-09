@@ -17,7 +17,7 @@ package com.zehfernando.input.binding {
 		// http://zehfernando.com/2013/abstracting-key-and-game-controller-inputs-in-adobe-air/
 
 		// TODO:
-		// * Read if it was pressed/released THIS frame?
+		// * Read if it was pressed/released THIS frame? (or in any ms) or valueOnce
 		// * Allow sensitive controls to be treated as normal controls
 		// * Add gamepad index to return signals
 		// * Use caching samples?

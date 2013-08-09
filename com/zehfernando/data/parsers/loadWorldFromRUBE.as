@@ -180,11 +180,11 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:b2Body):void {
 		//edgeShape = new b2EdgeChainDef();
 		// TODO: everything
 		//"vertices": (vector array),
-		////If the following properties are not present, the shape is an open-ended 
+		////If the following properties are not present, the shape is an open-ended
 		////chain shape. If they are present, the shape is a closed loop shape.
-		//"hasNextVertex": true, 
-		//"hasPrevVertex": true, 
-		//"nextVertex": (vector), 
+		//"hasNextVertex": true,
+		//"hasPrevVertex": true,
+		//"nextVertex": (vector),
 		//"prevVertex": (vector)
 	} else {
 		trace("loadWorldFromRUBE: could not create fixture from definition.");
@@ -208,12 +208,12 @@ function loadJointFromRUBE(__rubeJoint:Object, __world:b2World, __worldBodies:Ve
 		case "revolute":
 			// Revolute joint definition
 			var revoluteJointDef:b2RevoluteJointDef = new b2RevoluteJointDef();
-			revoluteJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA"); 
+			revoluteJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA");
 			revoluteJointDef.localAnchorB		= getB2Vec2FromProperty(__rubeJoint, "anchorB");
 
 			revoluteJointDef.enableLimit		= getBooleanFromProperty(__rubeJoint, "enableLimit");
 			revoluteJointDef.enableMotor		= getBooleanFromProperty(__rubeJoint, "enableMotor");
-			// TODO: "jointSpeed": 0, 
+			// TODO: "jointSpeed": 0,
 			revoluteJointDef.lowerAngle			= getFloatFromProperty(__rubeJoint, "lowerLimit");		// Different name?
 			revoluteJointDef.maxMotorTorque		= getFloatFromProperty(__rubeJoint, "maxMotorTorque");
 			revoluteJointDef.motorSpeed			= getFloatFromProperty(__rubeJoint, "motorSpeed");
@@ -225,7 +225,7 @@ function loadJointFromRUBE(__rubeJoint:Object, __world:b2World, __worldBodies:Ve
 		case "distance":
 			// Distance joint definition
 			var distanceJointDef:b2DistanceJointDef = new b2DistanceJointDef();
-			distanceJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA"); 
+			distanceJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA");
 			distanceJointDef.localAnchorB		= getB2Vec2FromProperty(__rubeJoint, "anchorB");
 
 			distanceJointDef.dampingRatio		= getFloatFromProperty(__rubeJoint, "dampingRatio");
@@ -237,7 +237,7 @@ function loadJointFromRUBE(__rubeJoint:Object, __world:b2World, __worldBodies:Ve
 		case "prismatic":
 			// Prismatic joint definition
 			var prismaticJointDef:b2PrismaticJointDef = new b2PrismaticJointDef();
-			prismaticJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA"); 
+			prismaticJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA");
 			prismaticJointDef.localAnchorB		= getB2Vec2FromProperty(__rubeJoint, "anchorB");
 
 			prismaticJointDef.enableLimit		= getBooleanFromProperty(__rubeJoint, "enableLimit");
@@ -254,61 +254,61 @@ function loadJointFromRUBE(__rubeJoint:Object, __world:b2World, __worldBodies:Ve
 			// Wheel joint definition
 			// TODO: everything! Not supported by this version of box2d!
 //			"type": "wheel",
-//			"name": "joint4", 
-//			"anchorA": (vector), 
-//			"anchorB": (vector), 
+//			"name": "joint4",
+//			"anchorA": (vector),
+//			"anchorB": (vector),
 //			"bodyA": 4, //zero-based index of body in bodies array
 //			"bodyB": 1, //zero-based index of body in bodies array
-//			"collideConnected": true, 
-//			"enableMotor": true, 
-//			"localAxisA": (vector), 
-//			"maxMotorTorque": 0, 
-//			"motorSpeed": 0, 
-//			"springDampingRatio": 0.7, 
-//			"springFrequency": 4, 
+//			"collideConnected": true,
+//			"enableMotor": true,
+//			"localAxisA": (vector),
+//			"maxMotorTorque": 0,
+//			"motorSpeed": 0,
+//			"springDampingRatio": 0.7,
+//			"springFrequency": 4,
 			break;
 		case "rope":
 			// Rope joint definition
 			// TODO: everything! Not supported by this version of box2d!
 //			"type": "rope",
-//			"name": "joint5", 
-//			"anchorA": (vector), 
-//			"anchorB": (vector), 
+//			"name": "joint5",
+//			"anchorA": (vector),
+//			"anchorB": (vector),
 //			"bodyA": 4, //zero-based index of body in bodies array
 //			"bodyB": 1, //zero-based index of body in bodies array
-//			"collideConnected": true, 
-//			"maxLength": 4.73, 
+//			"collideConnected": true,
+//			"maxLength": 4.73,
 			break;
 		case "motor":
 			// Motor joint definition
 			// TODO: everything! Not supported by this version of box2d!
 //			"type": "motor",
-//			"name": "joint5", 
+//			"name": "joint5",
 //			"anchorA": (vector), //this is the 'linear offset' of the joint
 //			"anchorB": (vector), //ignored
 //			"bodyA": 4, //zero-based index of body in bodies array
 //			"bodyB": 1, //zero-based index of body in bodies array
-//			"collideConnected": true, 
-//			"maxForce": 10, 
-//			"maxTorque": 7.5, 
-//			"correctionFactor": 0.2, 
+//			"collideConnected": true,
+//			"maxForce": 10,
+//			"maxTorque": 7.5,
+//			"correctionFactor": 0.2,
 			break;
 		case "weld":
 			// Weld joint definition
 			var weldJointDef:b2WeldJointDef = new b2WeldJointDef();
-			weldJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA"); 
+			weldJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA");
 			weldJointDef.localAnchorB		= getB2Vec2FromProperty(__rubeJoint, "anchorB");
 
 			weldJointDef.referenceAngle		= getFloatFromProperty(__rubeJoint, "refAngle");		// Different name?
-			// TODO: "dampingRatio": 0, 
-			// TODO: "frequency": 0, 
+			// TODO: "dampingRatio": 0,
+			// TODO: "frequency": 0,
 
 			jointDef = weldJointDef;
 			break;
 		case "friction":
 			// Friction joint definition
 			var frictionJointDef:b2FrictionJointDef = new b2FrictionJointDef();
-			frictionJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA"); 
+			frictionJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA");
 			frictionJointDef.localAnchorB		= getB2Vec2FromProperty(__rubeJoint, "anchorB");
 
 			frictionJointDef.maxForce			= getFloatFromProperty(__rubeJoint, "maxForce");
@@ -320,7 +320,7 @@ function loadJointFromRUBE(__rubeJoint:Object, __world:b2World, __worldBodies:Ve
 
 	if (jointDef != null) {
 		// Common definition properties
-		jointDef.bodyA				= __worldBodies[getIntegerFromProperty(__rubeJoint, "bodyA")]; 
+		jointDef.bodyA				= __worldBodies[getIntegerFromProperty(__rubeJoint, "bodyA")];
 		jointDef.bodyB				= __worldBodies[getIntegerFromProperty(__rubeJoint, "bodyB")];
 		jointDef.collideConnected	= getBooleanFromProperty(__rubeJoint, "collideConnected");
 

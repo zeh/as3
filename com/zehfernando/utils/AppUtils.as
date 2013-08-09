@@ -112,7 +112,7 @@ package com.zehfernando.utils {
 		}
 
 		public static function isDebugSWF():Boolean {
-			// Whether the SWF is compiled for debugging or not
+			// Whether the SWF is compiled for debugging or not (only works on debug players)
 			// http://michaelvandaniker.com/blog/2008/11/25/how-to-check-debug-swf/
 			if (!hasDeterminedDebugStatus) {
 				var stackTrace:String = new Error().getStackTrace();
