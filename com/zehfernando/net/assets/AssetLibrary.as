@@ -19,7 +19,7 @@ package com.zehfernando.net.assets {
 	public class AssetLibrary extends EventDispatcher {
 
 		// Static properties
-		protected static var libraries:Vector.<AssetLibrary>;
+		protected static var libraries:Vector.<AssetLibrary> = new Vector.<AssetLibrary>();
 
 		// Properties
 		protected var _name:String;
@@ -52,16 +52,12 @@ package com.zehfernando.net.assets {
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
 		protected static function addLibrary(__library:AssetLibrary):void {
-			if (!Boolean(libraries)) libraries = new Vector.<AssetLibrary>();
-
 			if (libraries.indexOf(__library) == -1) {
 				libraries.push(__library);
 			}
 		}
 
 		protected static function removeLibrary(__library:AssetLibrary):void {
-			if (!Boolean(libraries)) libraries = new Vector.<AssetLibrary>();
-
 			if (libraries.indexOf(__library) != -1) {
 				libraries.splice(libraries.indexOf(__library), 1);
 			}
