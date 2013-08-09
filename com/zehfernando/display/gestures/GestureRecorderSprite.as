@@ -68,7 +68,7 @@ package com.zehfernando.display.gestures {
 
 				dispatchEvent(new Event(EVENT_GESTURE_COMPLETED));
 
-				graphics.clear();
+				if (_drawLines) graphics.clear();
 			}
 		}
 
