@@ -158,7 +158,7 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:b2Body):void {
 		// Circle shape object
 		circleShape = new b2CircleShape();
 		circleShape.SetRadius(getFloatFromProperty(__rubeFixture["circle"], "radius"));
-		// TODO: "center": (vector)
+		circleShape.SetLocalPosition(getB2Vec2FromProperty(__rubeFixture["circle"], "center"));
 		fixtureDef.shape = circleShape;
 	} else if ((__rubeFixture as Object).hasOwnProperty("polygon")) {
 		// Polygon shape object
