@@ -46,13 +46,14 @@ package com.zehfernando.data.parsers {
 	}
 
 }
-import Box2D.Dynamics.Joints.b2FrictionJointDef;
+import Box2D.Collision.Shapes.b2Shape;
 import Box2D.Collision.Shapes.b2CircleShape;
 import Box2D.Collision.Shapes.b2EdgeShape;
 import Box2D.Collision.Shapes.b2MassData;
 import Box2D.Collision.Shapes.b2PolygonShape;
 import Box2D.Common.Math.b2Vec2;
 import Box2D.Dynamics.Joints.b2DistanceJointDef;
+import Box2D.Dynamics.Joints.b2FrictionJointDef;
 import Box2D.Dynamics.Joints.b2Joint;
 import Box2D.Dynamics.Joints.b2JointDef;
 import Box2D.Dynamics.Joints.b2PrismaticJointDef;
@@ -102,7 +103,7 @@ function loadBodyFromRUBE(__rubeBody:Object, __world:b2World):b2Body {
 	return body;
 }
 
-function loadUserDataFromRUBE(__rubeData:Object): Object {
+function loadUserDataFromRUBE(__rubeData:Object):Object {
 	var object:Object = {};
 	if (Boolean(__rubeData) && __rubeData.hasOwnProperty("customProperties")) {
 		var objects:Array = __rubeData["customProperties"] as Array;
@@ -131,6 +132,7 @@ function loadUserDataFromRUBE(__rubeData:Object): Object {
 			}
 		}
 	}
+	return object;
 }
 
 function loadFixtureFromRUBE(__rubeFixture:Object, __body:b2Body):void {
@@ -280,18 +282,15 @@ function loadJointFromRUBE(__rubeJoint:Object, __world:b2World, __worldBodies:Ve
 //			"maxLength": 4.73,
 			break;
 		case "motor":
-			// Motor joint definition
-			// TODO: everything! Not supported by this version of box2d!
-//			"type": "motor",
-//			"name": "joint5",
+			// Gear joint definition
+			// TODO: this is wrong? update the class?
+//			var gearJointDef:b2GearJointDef = new b2GearJointDef();
 //			"anchorA": (vector), //this is the 'linear offset' of the joint
 //			"anchorB": (vector), //ignored
-//			"bodyA": 4, //zero-based index of body in bodies array
-//			"bodyB": 1, //zero-based index of body in bodies array
-//			"collideConnected": true,
 //			"maxForce": 10,
 //			"maxTorque": 7.5,
 //			"correctionFactor": 0.2,
+//			jointDef = gearJointDef;
 			break;
 		case "weld":
 			// Weld joint definition
@@ -354,9 +353,24 @@ function getB2Vec2FromProperty(__object:Object, __propertyName:String):b2Vec2 {
 	var defaultValue:b2Vec2 = new b2Vec2(0, 0);
 	if (!Boolean(__object)) return defaultValue.Copy();
 	if (!__object.hasOwnProperty(__propertyName)) return defaultValue.Copy();
-	if (__object[__propertyName] === 0) return new b2Vec2(0, 0); // Not necessarily the same value
+	if (__object[__propertyName] === 0) return new b2Vec2(0, 0); // Not necessarily the same value as the default
 	return new b2Vec2(getFloatFromProperty(__object[__propertyName], "x"), getFloatFromProperty(__object[__propertyName], "y"));
-	// TODO: invert everything?
+}
+
+function getB2Vec2ArrayFromProperty(__object:Object, __propertyName:String):Array {
+	// This is needed because "vertices" is an object with an array of x and an array of y
+	var vectors:Array = [];
+	if (Boolean(__object) && __object.hasOwnProperty(__propertyName)) {
+		var xArray:Array = __object[__propertyName]["x"] as Array;
+		var yArray:Array = __object[__propertyName]["y"] as Array;
+		if (Boolean(xArray) && Boolean(yArray)) {
+			var i:int;
+			for (i = 0; i < xArray.length && i < yArray.length; i++) {
+				vectors.push(new b2Vec2(xArray[i], yArray[i]));
+			}
+		}
+	}
+	return vectors;
 }
 
 function getB2Vec2VectorFromProperty(__object:Object, __propertyName:String):Vector.<b2Vec2> {
