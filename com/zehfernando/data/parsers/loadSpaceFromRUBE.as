@@ -7,6 +7,8 @@ package com.zehfernando.data.parsers {
 	 */
 	public function loadSpaceFromRUBE(__rubeScene:Object, __scale:Number = 1, __lineThickness:Number = 1):Space {
 		// Creates a Nape World with data from a JSON Object parsed from R.U.B.E
+		// PLEASE READ: http://zehfernando.com/2013/loading-and-running-r-u-b-e-scenes-with-nape-as3/
+		// Other references:
 		// https://www.iforce2d.net/rube/json-structure
 		// http://www.iforce2d.net/rube/loaders/javascript/loadrube.js
 		// http://napephys.com/help/manual.html
