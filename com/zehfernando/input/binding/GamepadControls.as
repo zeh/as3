@@ -8,25 +8,25 @@ package com.zehfernando.input.binding {
 
 		/* Directional pad LEFT
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const DPAD_LEFT:String = "BUTTON_21";
 
 		/* Directional pad RIGHT
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const DPAD_RIGHT:String = "BUTTON_22";
 
 		/* Directional pad UP
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const DPAD_UP:String = "BUTTON_19";
 
 		/* Directional pad DOWN
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const DPAD_DOWN:String = "BUTTON_20";
 
@@ -54,26 +54,26 @@ package com.zehfernando.input.binding {
 		 */
 		public static const DPAD_DOWN_SENSITIVE:String = "BUTTON_38";
 
-		/* Shoulder button, upper left (LEFT 1)
+		/* Shoulder button, upper left (LEFT 1/LEFT BUTTON)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const L1:String = "BUTTON_102";
 
-		/* Shoulder button, upper right (RIGHT 1)
+		/* Shoulder button, upper right (RIGHT 1/RIGHT BUTTON)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const R1:String = "BUTTON_103";
 
-		/* Shoulder button, lower left (LEFT 2)
+		/* Shoulder button, lower left (LEFT 2/LEFT TRIGGER)
 		 * <p>Style: digital</p>
 		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA)</p>
 		 * <p>Note: this doesn't work on the XBox 360 Controller (OUYA). Use L2_SENSITIVE instead.</p>
 		 */
 		public static const L2:String = "BUTTON_104";
 
-		/* Should button, lower right (RIGHT 2)
+		/* Should button, lower right (RIGHT 2/RIGHT TRIGGER)
 		 * <p>Style: digital</p>
 		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA)</p>
 		 * <p>Note: this doesn't work on the XBox 360 Controller (OUYA). Use R2_SENSITIVE instead.</p>
@@ -82,75 +82,74 @@ package com.zehfernando.input.binding {
 
 		/* Left stick press (LEFT 3)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const L3:String = "BUTTON_106";
 
 		/* Right stick press (RIGHT 3)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const R3:String = "BUTTON_107";
 
-		/* Shoulder button, lower left (LEFT 2)
+		/* Shoulder button, lower left (LEFT 2/LEFT TRIGGER)
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const L2_SENSITIVE:String = "AXIS_17";
 
-		/* Shoulder button, lower right (RIGHT 2)
+		/* Shoulder button, lower right (RIGHT 2/RIGHT TRIGGER)
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const R2_SENSITIVE:String = "AXIS_18";
 
 		/* Left analog stick, horizontal (X) axis. The value received is for a left-to-right position.
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android), XBox 360 Controller (Windows)</p>
 		 */
 		public static const STICK_LEFT_X:String = "AXIS_0";
 
 		/* Left analog stick, vertical (Y) axis. The value received is for a up-to-down position.
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android), XBox 360 Controller (Windows)</p>
 		 * <p>Note: on Windows, when using the XBox 360 controller, the orientation is reversed: the value position is down-to-up.</p>
 		 */
 		public static const STICK_LEFT_Y:String = "AXIS_1";
 
 		/* Right analog stick, horizontal (X) axis. The value received is for a left-to-right position.
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const STICK_RIGHT_X:String = "AXIS_11";
 
 		/* Right analog stick, vertical (Y) axis. The value received is for a up-to-down position.
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
-		 * <p>Note: on Windows, when using the XBox 360 controller, the orientation is reversed: the value position is down-to-up.</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const STICK_RIGHT_Y:String = "AXIS_14";
 
 		/* Action button, down (O/green in the OUYA, Cross/blue in the Playstation, A/green in the XBox 360)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA), XBox 360 Controller (Windows)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const BUTTON_ACTION_DOWN:String = "BUTTON_96";
 
 		/* Action button, right (A/red in the OUYA, Circle/red in the Playstation, B/red in the XBox 360)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const BUTTON_ACTION_RIGHT:String = "BUTTON_97";
 
 		/* Action button, up (Y/yellow in the OUYA, Triangle/green in the Playstation, Y/yellow in the XBox 360)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const BUTTON_ACTION_UP:String = "BUTTON_100";
 
 		/* Action button, left (U/blue in the OUYA, Square/purple in the Playstation, X/blue in the XBox 360)
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA)</p>
+		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
 		 */
 		public static const BUTTON_ACTION_LEFT:String = "BUTTON_99";
 
