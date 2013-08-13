@@ -51,8 +51,10 @@ package com.zehfernando.data.parsers {
 	}
 
 }
+import nape.constraint.AngleJoint;
 import nape.constraint.Constraint;
 import nape.constraint.DistanceJoint;
+import nape.constraint.LineJoint;
 import nape.constraint.PivotJoint;
 import nape.constraint.WeldJoint;
 import nape.geom.GeomPoly;
@@ -60,6 +62,7 @@ import nape.geom.GeomPolyList;
 import nape.geom.Vec2;
 import nape.phys.Body;
 import nape.phys.BodyType;
+import nape.phys.Material;
 import nape.shape.Circle;
 import nape.shape.Polygon;
 import nape.shape.Shape;
@@ -151,13 +154,42 @@ function loadUserDataFromRUBE(__userData:*, __rubeData:Object, __scale:Number):v
 function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, __lineThickness:Number):Boolean {
 	// Loads shapes
 
-	// Fixture definition
-//	TODO: var fixtureDef:b2FixtureDef = new b2FixtureDef();
-//	TODO: fixtureDef.density		= getFloatFromProperty(__rubeFixture, "density");
-//	TODO: fixtureDef.friction		= getFloatFromProperty(__rubeFixture, "friction");
-//	TODO: fixtureDef.restitution	= getFloatFromProperty(__rubeFixture, "restitution");
-//	TODO: fixtureDef.isSensor		= getBooleanFromProperty(__rubeFixture, "sensor");
-//
+	// Shape material
+	var material:Material = new Material();
+	// For friction, both Nape and Box2d use friction as being the square root of the product: friction = sqrt(shape1.friction shape2.friction);
+	material.staticFriction			= getFloatFromProperty(__rubeFixture, "friction");
+	material.dynamicFriction		= getFloatFromProperty(__rubeFixture, "friction");
+	// Restitution is not really possible to translate into elasticity.
+	// Box2_rest = max(shape1.restitution, shape2.restitution); nape_elast = max(1, (shape1.elasticity + shape2.elasticity)/2)
+	// Example:
+	//  a     b   rst  els
+	// 0.00  0.0  0.0  0.00
+	// 0.00  0.5  0.5  0.25 <-- wrong by 50%
+	// 0.25  0.5  0.5  0.375 <-- wrong by 25%
+	// 0.50  0.5  0.5  0.50
+	// 0.00  1.0  1.0  0.50 <-- wrong by 50%
+	// 1.00  1.0  1.0  1.00
+	// If we multiply by 2:
+	//  a     b   rst  els
+	// 0.00  0.0  0.0  0.00
+	// 0.00  0.5  0.5  0.5
+	// 0.25  0.5  0.5  0.75 <-- wrong by 50%
+	// 0.50  0.5  0.5  1  <-- wrong by 100%
+	// 0.00  1.0  1.0  1
+	// 1.00  1.0  1.0  1
+	// Hence why I multiply by 1.5:
+	//  a     b   rst  els
+	// 0.00  0.0  0.0  0.00
+	// 0.00  0.5  0.5  0.375 <-- wrong by 25%
+	// 0.25  0.5  0.5  0.5625 <-- wrong by 12.5%
+	// 0.50  0.5  0.5  0.75 <-- wrong by 25%
+	// 0.00  1.0  1.0  0.75 <-- wrong by 25%
+	// 1.00  1.0  1.0  1
+	material.elasticity 			= getFloatFromProperty(__rubeFixture, "restitution") * 1.5; // TODO: think of an alternative?
+
+	// Density in box2d is arbitrary; in Nape it's g/pixel/pixel. Should be equivalent
+	material.density				= getFloatFromProperty(__rubeFixture, "density");
+
 //	// Filter definition
 //	TODO: var filterData:b2FilterData = new b2FilterData();
 //	TODO: filterData.categoryBits	= getIntegerFromProperty(__rubeFixture, "categoryBits", 1);
@@ -170,6 +202,8 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 	var circleShape:Circle;
 	var polygonShape:Polygon;
 	var vertices:Vector.<Vec2>;
+
+	var isSensor:Boolean = getBooleanFromProperty(__rubeFixture, "sensor");
 
 	// Shape
 	if ((__rubeFixture as Object).hasOwnProperty("circle")) {
@@ -188,19 +222,24 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 		var isHollow:Boolean = getBooleanFromProperty(getCustomProperties(__rubeFixture, __scale), "nape_isHollow");
 		if (vertices.length == 2) {
 			// Just one edge, create line
-			createPolygonEdges(vertices, __body, __scale, __lineThickness, false);
+			createPolygonEdges(vertices, __body, __scale, __lineThickness, false, material, isSensor);
 			shape = __body.shapes.at(0);
 			addedShapeToBody = true;
 		} else if (!isLoop || isHollow) {
 			// An opened or hollow polygon, create line enclosure
-			createPolygonEdges(vertices, __body, __scale, __lineThickness, isLoop);
+			createPolygonEdges(vertices, __body, __scale, __lineThickness, isLoop, material, isSensor);
 			shape = __body.shapes.at(0);
 			addedShapeToBody = true;
 		} else {
 			// A solid polygon, just create a complex polygon and subdivide it
 			var geom:GeomPoly = GeomPoly.get(vertices);
 			var gpl:GeomPolyList = geom.convexDecomposition();
-			gpl.foreach(function(poly:GeomPoly):void { __body.shapes.add(new Polygon(poly)); } );
+			gpl.foreach(function(poly:GeomPoly):void {
+				shape = new Polygon(poly);
+				shape.material = material;
+				shape.sensorEnabled = isSensor;
+				__body.shapes.add(shape);
+			} );
 			shape = __body.shapes.at(0);
 			addedShapeToBody = true;
 		}
@@ -211,6 +250,8 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 	// Create shape
 	if (shape != null) {
 		if (!addedShapeToBody) __body.shapes.add(shape);
+		shape.material = material;
+		shape.sensorEnabled = isSensor;
 
 		// Custom properties
 		loadUserDataFromRUBE(shape.userData, __rubeFixture, __scale);
@@ -223,7 +264,7 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 	return false;
 }
 
-function createPolygonEdges(__vertices:Vector.<Vec2>, __body:Body, __scale:Number, __lineThickness:Number, __isLoop:Boolean):void {
+function createPolygonEdges(__vertices:Vector.<Vec2>, __body:Body, __scale:Number, __lineThickness:Number, __isLoop:Boolean, __material:Material, __isSensor:Boolean):void {
 	// Creates a number of polygons that simulates edges or a chain shape (since Nape doesn't support just lines)
 	// Only returns the first shape (for userData's sake)
 
@@ -234,6 +275,8 @@ function createPolygonEdges(__vertices:Vector.<Vec2>, __body:Body, __scale:Numbe
 	for (var i:int = 0; i < __vertices.length; i++) {
 		// Create corner circle
 		circleShape = new Circle(__lineThickness / 2, __vertices[i]);
+		circleShape.material = __material;
+		circleShape.sensorEnabled = __isSensor;
 		__body.shapes.add(circleShape);
 
 		// Create line box
@@ -244,6 +287,8 @@ function createPolygonEdges(__vertices:Vector.<Vec2>, __body:Body, __scale:Numbe
 			vThickness = Vec2.fromPolar(__lineThickness * 0.5, vDiff.angle + Math.PI * 0.5);
 			if (vDiff.length > 0) {
 				polygonShape = new Polygon([new Vec2(v1.x + vThickness.x, v1.y + vThickness.y), new Vec2(v2.x + vThickness.x, v2.y + vThickness.y), new Vec2(v2.x - vThickness.x, v2.y - vThickness.y), new Vec2(v1.x - vThickness.x, v1.y - vThickness.y)]);
+				polygonShape.material = __material;
+				polygonShape.sensorEnabled = __isSensor;
 				//polygonShape = new Polygon(Polygon.rect(v1.x, v1.y - __lineThickness * 0.5, vDiff.length, __lineThickness));
 				__body.shapes.add(polygonShape);
 			}
@@ -305,7 +350,7 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 				lineJoint.ignore = !getBooleanFromProperty(__rubeJoint, "collideConnected");
 				joint = lineJoint;
 
-				// Construct secondary angle joint to keep the angle
+				// Construct secondary angle joint to maintain the angle
 				var angleJoint:AngleJoint = new AngleJoint(body2, body1, 0, 0, 1);
 				angleJoint.ignore = !getBooleanFromProperty(__rubeJoint, "collideConnected");
 				__space.constraints.add(angleJoint);
@@ -322,6 +367,7 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 			break;
 		case "wheel":
 			// Wheel joint definition: use a PivotJoint
+			// TODO: use a linejoint instead?
 			if (body1 != null && body2 != null) {
 				pivotJoint = new PivotJoint(body1, body2, anchor1, anchor2);
 				pivotJoint.ignore = !getBooleanFromProperty(__rubeJoint, "collideConnected");
