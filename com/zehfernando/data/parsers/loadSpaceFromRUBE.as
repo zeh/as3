@@ -291,12 +291,11 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 			if (body1 != null && body2 != null) {
 				var length:Number = getFloatFromProperty(__rubeJoint, "length") * __scale;
 				distanceJoint = new DistanceJoint(body1, body2, anchor1, anchor2, length, length);
-				distanceJoint.ignore = !getBooleanFromProperty(__rubeJoint, "collideConnected");
+				distanceJoint.ignore		= !getBooleanFromProperty(__rubeJoint, "collideConnected");
+				distanceJoint.frequency		= getFloatFromProperty(__rubeJoint, "frequency"); // TODO: test if this is correct
+				distanceJoint.damping		= getFloatFromProperty(__rubeJoint, "dampingRatio");// TODO: test if this is correct
 				joint = distanceJoint;
 			}
-
-//			TODO: distanceJointDef.dampingRatio		= getFloatFromProperty(__rubeJoint, "dampingRatio");
-//			TODO: distanceJointDef.frequencyHz		= getFloatFromProperty(__rubeJoint, "frequency");		// Different name?
 			break;
 		case "prismatic":
 			// Prismatic joint definition
