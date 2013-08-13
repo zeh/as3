@@ -298,20 +298,27 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 			}
 			break;
 		case "prismatic":
-			// Prismatic joint definition
+			// Prismatic joint definition: use a LineJoint and an AngleJoint
+			// TODO: test if this is correct
+			if (body1 != null && body2 != null) {
+				var lineJoint:LineJoint = new LineJoint(body1, body2, anchor1, anchor2, getVec2FromProperty(__rubeJoint, "localAxisA", __scale), getFloatFromProperty(__rubeJoint, "lowerLimit")  * __scale, getFloatFromProperty(__rubeJoint, "upperLimit") * __scale);
+				lineJoint.ignore = !getBooleanFromProperty(__rubeJoint, "collideConnected");
+				joint = lineJoint;
+
+				// Construct secondary angle joint to keep the angle
+				var angleJoint:AngleJoint = new AngleJoint(body2, body1, 0, 0, 1);
+				angleJoint.ignore = !getBooleanFromProperty(__rubeJoint, "collideConnected");
+				__space.constraints.add(angleJoint);
+			}
 //			TODO: var prismaticJointDef:b2PrismaticJointDef = new b2PrismaticJointDef();
-//			TODO: prismaticJointDef.localAnchorA		= getB2Vec2FromProperty(__rubeJoint, "anchorA");
-//			TODO: prismaticJointDef.localAnchorB		= getB2Vec2FromProperty(__rubeJoint, "anchorB");
-//
+//			TODO: prismaticJointDef.lowerTranslation	= getFloatFromProperty(__rubeJoint, "lowerLimit");		// Different name?
+//			TODO: prismaticJointDef.upperTranslation	= getFloatFromProperty(__rubeJoint, "upperLimit");		// Different name?
+//			TODO: prismaticJointDef.localAxisA		= getB2Vec2FromProperty(__rubeJoint, "localAxisA");
+
 //			TODO: prismaticJointDef.enableLimit		= getBooleanFromProperty(__rubeJoint, "enableLimit");
 //			TODO: prismaticJointDef.enableMotor		= getBooleanFromProperty(__rubeJoint, "enableMotor");
-//			TODO: prismaticJointDef.localAxisA		= getB2Vec2FromProperty(__rubeJoint, "localAxisA");
-//			TODO: prismaticJointDef.lowerTranslation	= getFloatFromProperty(__rubeJoint, "lowerLimit");		// Different name?
 //			TODO: prismaticJointDef.maxMotorForce		= getFloatFromProperty(__rubeJoint, "maxMotorForce");
 //			TODO: prismaticJointDef.motorSpeed		= getFloatFromProperty(__rubeJoint, "motorSpeed");
-//			TODO: prismaticJointDef.upperTranslation	= getFloatFromProperty(__rubeJoint, "upperLimit");		// Different name?
-//
-//			jointDef = distanceJointDef;
 			break;
 		case "wheel":
 			// Wheel joint definition: use a PivotJoint
