@@ -17,10 +17,11 @@ package com.zehfernando.input.binding {
 		// http://zehfernando.com/2013/abstracting-key-and-game-controller-inputs-in-adobe-air/
 
 		// TODO:
-		// * Read if it was pressed/released THIS frame? (or in any ms) or valueOnce
+		// * isActionActivated() must properly support time tolerance
 		// * Allow sensitive controls to be treated as normal controls
 		// * Add gamepad index to return signals
 		// * Use caching samples?
+		// * Some missing asdocs
 
 		// Properties
 		private var _isRunning:Boolean;
@@ -401,6 +402,23 @@ package com.zehfernando.input.binding {
 			return actionsActivations.hasOwnProperty(__action) ? (actionsActivations[__action] as ActivationInfo).value : 0;
 		}
 
+		/**
+		 * Checks whether an action is currently activated (in practice, a button is pressed).
+		 *
+		 * @param action				An arbritrary String id identifying the action that should be checked.
+		 *
+		 * <p>Examples:</p>
+		 *
+		 * <pre>
+		 * // Moves player right when right is pressed
+		 * // Setup:
+		 * addGamepadActionBinding("move-right", GamepadControls.DPAD_RIGHT);
+		 * // In the game loop:
+		 * if (isActionActivated("move-right")) {
+		 *     player.moveRight();
+		 * }
+		 * </pre>
+		 */
 		public function isActionActivated(__action:String):Boolean {
 			return actionsActivations.hasOwnProperty(__action) && (actionsActivations[__action] as ActivationInfo).activations.length > 0;
 		}
