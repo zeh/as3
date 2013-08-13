@@ -405,6 +405,11 @@ package com.zehfernando.input.binding {
 			return actionsActivations.hasOwnProperty(__action) && (actionsActivations[__action] as ActivationInfo).activations.length > 0;
 		}
 
+		public function consumeAction(__action:String):void {
+			// Deactivates all current actions of an action (forcing a button to be pressed again)
+			if (actionsActivations.hasOwnProperty(__action)) (actionsActivations[__action] as ActivationInfo).activations.length = 0;
+		}
+
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
