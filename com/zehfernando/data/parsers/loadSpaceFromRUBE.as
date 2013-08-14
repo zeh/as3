@@ -51,6 +51,7 @@ package com.zehfernando.data.parsers {
 	}
 
 }
+import nape.phys.GravMassMode;
 import nape.constraint.AngleJoint;
 import nape.constraint.Constraint;
 import nape.constraint.DistanceJoint;
@@ -90,6 +91,12 @@ function loadBodyFromRUBE(__rubeBody:Object, __space:Space, __scale:Number, __li
 	body.isBullet			= getBooleanFromProperty(__rubeBody, "bullet");
 	body.angularVel			= getFloatFromProperty(__rubeBody, "angularVelocity") * getAngleScale(); // Clockwise Radians per second
 	body.velocity			= getVec2FromProperty(__rubeBody, "linearVelocity", __scale);
+
+	var gravityScale:Number = getFloatFromProperty(__rubeBody, "gravityScale", 1);
+	if (gravityScale != 1) {
+		body.gravMassMode	= GravMassMode.SCALED;
+		body.gravMassScale	= gravityScale;
+	}
 	// TODO: bodyDef.angularDamping	= getFloatFromProperty(__rubeBody, "angularDamping");
 	// TODO: bodyDef.awake			= getBooleanFromProperty(__rubeBody, "awake");
 	// TODO: bodyDef.linearDamping	= getFloatFromProperty(__rubeBody, "linearDamping");
