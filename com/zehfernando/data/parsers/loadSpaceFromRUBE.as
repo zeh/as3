@@ -159,7 +159,7 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 	// For friction, both Nape and Box2d use friction as being the square root of the product: friction = sqrt(shape1.friction shape2.friction);
 	material.staticFriction			= getFloatFromProperty(__rubeFixture, "friction");
 	material.dynamicFriction		= getFloatFromProperty(__rubeFixture, "friction");
-	// Restitution is not really possible to translate into elasticity.
+	// Restitution is not really possible to translate into elasticity. I decided to keep the value, but it has to be designed with elasticity in mind.
 	// Box2_rest = max(shape1.restitution, shape2.restitution); nape_elast = max(1, (shape1.elasticity + shape2.elasticity)/2)
 	// Example:
 	//  a     b   rst  els
@@ -169,23 +169,7 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 	// 0.50  0.5  0.5  0.50
 	// 0.00  1.0  1.0  0.50 <-- wrong by 50%
 	// 1.00  1.0  1.0  1.00
-	// If we multiply by 2:
-	//  a     b   rst  els
-	// 0.00  0.0  0.0  0.00
-	// 0.00  0.5  0.5  0.5
-	// 0.25  0.5  0.5  0.75 <-- wrong by 50%
-	// 0.50  0.5  0.5  1  <-- wrong by 100%
-	// 0.00  1.0  1.0  1
-	// 1.00  1.0  1.0  1
-	// Hence why I multiply by 1.5:
-	//  a     b   rst  els
-	// 0.00  0.0  0.0  0.00
-	// 0.00  0.5  0.5  0.375 <-- wrong by 25%
-	// 0.25  0.5  0.5  0.5625 <-- wrong by 12.5%
-	// 0.50  0.5  0.5  0.75 <-- wrong by 25%
-	// 0.00  1.0  1.0  0.75 <-- wrong by 25%
-	// 1.00  1.0  1.0  1
-	material.elasticity 			= getFloatFromProperty(__rubeFixture, "restitution") * 1.5; // TODO: think of an alternative?
+	material.elasticity 			= getFloatFromProperty(__rubeFixture, "restitution");
 
 	// Density in box2d is arbitrary; in Nape it's g/pixel/pixel. Should be equivalent
 	material.density				= getFloatFromProperty(__rubeFixture, "density");
