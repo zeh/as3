@@ -297,6 +297,7 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 	var pivotJoint:PivotJoint;
 	var distanceJoint:DistanceJoint;
 
+	var frequency:Number;
 	switch (getStringFromProperty(__rubeJoint, "type")) {
 		case "revolute":
 			// Revolute joint definition: use a PivotJoint
@@ -318,10 +319,16 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 		case "distance":
 			// Distance joint definition: use a DistanceJoint
 			if (body1 != null && body2 != null) {
+				frequency = getFloatFromProperty(__rubeJoint, "frequency"); // TODO: test if this is correct
 				var length:Number = getFloatFromProperty(__rubeJoint, "length") * __scale;
 				distanceJoint = new DistanceJoint(body1, body2, anchor1, anchor2, length, length);
 				distanceJoint.ignore		= !getBooleanFromProperty(__rubeJoint, "collideConnected");
-				distanceJoint.frequency		= getFloatFromProperty(__rubeJoint, "frequency"); // TODO: test if this is correct
+				if (frequency > 0) {
+					distanceJoint.frequency	= frequency;
+					distanceJoint.stiff		= false;
+				} else {
+					distanceJoint.stiff		= true;
+				}
 				distanceJoint.damping		= getFloatFromProperty(__rubeJoint, "dampingRatio");// TODO: test if this is correct
 				joint = distanceJoint;
 			}
