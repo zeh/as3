@@ -298,6 +298,7 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 	var distanceJoint:DistanceJoint;
 
 	var frequency:Number;
+
 	switch (getStringFromProperty(__rubeJoint, "type")) {
 		case "revolute":
 			// Revolute joint definition: use a PivotJoint
@@ -392,15 +393,18 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 		case "weld":
 			// Weld joint definition: use a WeldJoint
 			if (body1 != null && body2 != null) {
-				var weldJoint:WeldJoint = new WeldJoint(body1, body2, anchor1, anchor2, body2.rotation - body1.rotation); // TODO: rotation/position is incorrect
-				weldJoint.ignore = !getBooleanFromProperty(__rubeJoint, "collideConnected");
+				frequency = getFloatFromProperty(__rubeJoint, "frequency"); // TODO: test if this is correct
+				var weldJoint:WeldJoint = new WeldJoint(body1, body2, anchor1, anchor2, getFloatFromProperty(__rubeJoint, "refAngle") * getAngleScale()); // TODO: rotation/position is incorrect
+				weldJoint.ignore		= !getBooleanFromProperty(__rubeJoint, "collideConnected");
+				body2.rotation = 0;
+				if (frequency > 0) {
+					weldJoint.frequency	= frequency;
+					weldJoint.stiff		= false;
+				} else {
+					weldJoint.stiff		= true;
+				}
 				joint = weldJoint;
 			}
-
-//			TODO: weldJointDef.referenceAngle		= getFloatFromProperty(__rubeJoint, "refAngle");		// Different name?
-//			// TODO: "dampingRatio": 0,
-//			// TODO: "frequency": 0,
-
 			break;
 		case "friction":
 			// Friction joint definition
