@@ -10,8 +10,8 @@ package com.zehfernando.data.parsers {
 		// PLEASE READ: http://zehfernando.com/2013/loading-and-running-r-u-b-e-scenes-with-nape-as3/
 		// Other references:
 		// https://www.iforce2d.net/rube/json-structure
-		// http://www.iforce2d.net/rube/loaders/javascript/loadrube.js
 		// http://napephys.com/help/manual.html
+		// http://www.box2d.org/manual.html
 
 		var i:int, j:int, k:int;
 
@@ -21,7 +21,8 @@ package com.zehfernando.data.parsers {
 		// Space
 		var gravity:Vec2 = getVec2FromProperty(__rubeScene, "gravity", __scale);
 		var space:Space = new Space(gravity);
-		// TODO: allowSleep; // getBooleanFromProperty(__rubeScene, "allowSleep")
+
+		// IGNORED: "allowSleep" (Boolean). Bodies in Nape always wake up when needed, so you cannot prevent sleep. See: http://deltaluca.me.uk/forum/index.php/t/632/84f0803c87667803d6d528328e6eadb3/
 
 		// TODO: "autoClearForces": true, // Information only - for Step()
 		// TODO: "positionIterations": 3,  // Information only - for Step()
@@ -97,9 +98,12 @@ function loadBodyFromRUBE(__rubeBody:Object, __space:Space, __scale:Number, __li
 		body.gravMassMode	= GravMassMode.SCALED;
 		body.gravMassScale	= gravityScale;
 	}
+
+	// IGNORED: "awake" (Boolean). You cannot set a body as not awake - a body is always awakened when needed.
+
 	// TODO: bodyDef.angularDamping	= getFloatFromProperty(__rubeBody, "angularDamping");
-	// TODO: bodyDef.awake			= getBooleanFromProperty(__rubeBody, "awake");
 	// TODO: bodyDef.linearDamping	= getFloatFromProperty(__rubeBody, "linearDamping");
+	// Not added? See http://deltaluca.me.uk/forum/index.php/mv/msg/228/1334
 
 	//body.mass				= Math.max(getFloatFromProperty(__rubeBody, "massData-mass"), 0.001);
 	// TODO: massData.center			= getB2Vec2FromProperty(__rubeBody, "massData-center");
@@ -166,16 +170,9 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 	// For friction, both Nape and Box2d use friction as being the square root of the product: friction = sqrt(shape1.friction shape2.friction);
 	material.staticFriction			= getFloatFromProperty(__rubeFixture, "friction");
 	material.dynamicFriction		= getFloatFromProperty(__rubeFixture, "friction");
-	// Restitution is not really possible to translate into elasticity. I decided to keep the value, but it has to be designed with elasticity in mind.
-	// Box2_rest = max(shape1.restitution, shape2.restitution); nape_elast = max(1, (shape1.elasticity + shape2.elasticity)/2)
-	// Example:
-	//  a     b   rst  els
-	// 0.00  0.0  0.0  0.00
-	// 0.00  0.5  0.5  0.25 <-- wrong by 50%
-	// 0.25  0.5  0.5  0.375 <-- wrong by 25%
-	// 0.50  0.5  0.5  0.50
-	// 0.00  1.0  1.0  0.50 <-- wrong by 50%
-	// 1.00  1.0  1.0  1.00
+	// Restitution is not really possible to translate into elasticity. I keep the values as-is, but they have to be entered with elasticity in mind.
+	// box2d_restitution = max(shape1.restitution, shape2.restitution)
+	//   nape_elasticity = max(1, (shape1.elasticity + shape2.elasticity)/2)
 	material.elasticity 			= getFloatFromProperty(__rubeFixture, "restitution");
 
 	// Density in box2d is arbitrary; in Nape it's g/pixel/pixel. Should be equivalent
@@ -354,11 +351,6 @@ function loadJointFromRUBE(__rubeJoint:Object, __space:Space, __spaceBodies:Vect
 				angleJoint.ignore = !getBooleanFromProperty(__rubeJoint, "collideConnected");
 				__space.constraints.add(angleJoint);
 			}
-//			TODO: var prismaticJointDef:b2PrismaticJointDef = new b2PrismaticJointDef();
-//			TODO: prismaticJointDef.lowerTranslation	= getFloatFromProperty(__rubeJoint, "lowerLimit");		// Different name?
-//			TODO: prismaticJointDef.upperTranslation	= getFloatFromProperty(__rubeJoint, "upperLimit");		// Different name?
-//			TODO: prismaticJointDef.localAxisA		= getB2Vec2FromProperty(__rubeJoint, "localAxisA");
-
 //			TODO: prismaticJointDef.enableLimit		= getBooleanFromProperty(__rubeJoint, "enableLimit");
 //			TODO: prismaticJointDef.enableMotor		= getBooleanFromProperty(__rubeJoint, "enableMotor");
 //			TODO: prismaticJointDef.maxMotorForce		= getFloatFromProperty(__rubeJoint, "maxMotorForce");
