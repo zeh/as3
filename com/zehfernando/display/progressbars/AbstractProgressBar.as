@@ -14,14 +14,14 @@ package com.zehfernando.display.progressbars {
 		*/
 
 		// Properties
-		protected var _value:AttenuatedNumber;								// Virtual amount
+		protected var _value:AutoAttenuatedNumber;								// Virtual amount
 
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function AbstractProgressBar() {
-			_value = new AttenuatedNumber(8, 0, 0, true);
+			_value = new AutoAttenuatedNumber(8, 0, 0, true);
 
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
 			addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage, false, 0, true);
