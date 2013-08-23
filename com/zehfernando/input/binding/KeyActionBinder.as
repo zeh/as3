@@ -19,9 +19,11 @@ package com.zehfernando.input.binding {
 		// TODO:
 		// * isActionActivated() must properly support time tolerance
 		// * Allow sensitive controls to be treated as normal controls
+		// * think of a way to avoid axis injecting button pressed
 		// * Add gamepad index to return signals
 		// * Use caching samples?
 		// * Some missing asdocs
+		// * Error on initialization, devices missing - try workaround with static initializer: http://forums.adobe.com/message/5618821#5618821
 
 		// Properties
 		private var _isRunning:Boolean;
@@ -36,9 +38,16 @@ package com.zehfernando.input.binding {
 		private var _onSensitiveActionChanged:SimpleSignal;				// Receives: action:String, value:Number (0-1)
 
 		private var stage:Stage;
-		private var gameInput:GameInput;
-
 		private var gameInputDevices:Vector.<GameInputDevice>;
+
+		private static var gameInput:GameInput;
+
+		// ================================================================================================================
+		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
+
+		{
+			if (GameInput.isSupported) gameInput = new GameInput();
+		}
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -48,8 +57,6 @@ package com.zehfernando.input.binding {
 			alwaysPreventDefault = true;
 			bindings = new Vector.<BindingInfo>();
 			actionsActivations = {};
-
-			if (GameInput.isSupported) gameInput = new GameInput();
 
 			_onActionActivated = new SimpleSignal();
 			_onActionDeactivated = new SimpleSignal();
