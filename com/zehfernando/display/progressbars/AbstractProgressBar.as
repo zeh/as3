@@ -1,5 +1,5 @@
 package com.zehfernando.display.progressbars {
-	import com.zehfernando.data.types.AttenuatedNumber;
+	import com.zehfernando.data.types.AutoAttenuatedNumber;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
