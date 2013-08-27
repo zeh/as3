@@ -13,6 +13,9 @@ package com.zehfernando.data.parsers {
 		// http://napephys.com/help/manual.html
 		// http://www.box2d.org/manual.html
 
+		// Additional custom properties:
+		// nape_isHollow (Boolean) (in fixtures/shapes: if true, instead of creating a line polygon for a chain shape ("loop"), creates a hollow solid polygon and subvidivides it
+
 		var i:int, j:int, k:int;
 
 		// Instance holders
