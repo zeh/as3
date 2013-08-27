@@ -96,6 +96,7 @@ package com.zehfernando.display.scenes {
 			removeScene(currentScene);
 			currentScene = null;
 
+			System.pauseForGCIfCollectionImminent(0);
 			if (nextScene != null) {
 				// Has a scene queued up, show it
 				var newScene:AbstractScene = nextScene;
