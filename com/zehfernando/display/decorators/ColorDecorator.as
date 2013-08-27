@@ -194,40 +194,50 @@ package com.zehfernando.display.decorators {
 			return _saturation;
 		}
 		public function set saturation(__value:Number):void {
-			_saturation = __value;
-			updateSaturationMatrix();
+			if (_saturation != __value) {
+				_saturation = __value;
+				updateSaturationMatrix();
+			}
 		}
 
 		public function get contrast():Number {
 			return _contrast;
 		}
 		public function set contrast(__value:Number):void {
-			_contrast = __value;
-			updateContrastMatrix();
+			if (_contrast != __value) {
+				_contrast = __value;
+				updateContrastMatrix();
+			}
 		}
 
 		public function get brightness():Number {
 			return _brightness;
 		}
 		public function set brightness(__value:Number):void {
-			_brightness = __value;
-			updateBrightnessMatrix();
+			if (_brightness != __value) {
+				_brightness = __value;
+				updateBrightnessMatrix();
+			}
 		}
 
 		public function get exposure():Number {
 			return _exposure;
 		}
 		public function set exposure(__value:Number):void {
-			_exposure = __value;
-			updateExposureMatrix();
+			if (_exposure != __value) {
+				_exposure = __value;
+				updateExposureMatrix();
+			}
 		}
 
 		public function get hue():Number {
 			return _hue;
 		}
 		public function set hue(__value:Number):void {
-			_hue = __value;
-			updateHueMatrix();
+			if (_hue != __value) {
+				_hue = __value;
+				updateHueMatrix();
+			}
 		}
 
 //		override public function get filters(): Array {
