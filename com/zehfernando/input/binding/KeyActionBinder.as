@@ -22,6 +22,8 @@ package com.zehfernando.input.binding {
 		// * think of a way to avoid axis injecting button pressed
 		// * Add gamepad index to return signals
 		// * Use caching samples?
+		// * Allow "any" gamepad key?
+		// * Allow sensitive control activation with threshold?
 		// * Some missing asdocs
 		// * Error on initialization, devices missing - try workaround with static initializer: http://forums.adobe.com/message/5618821#5618821
 
@@ -353,11 +355,11 @@ package com.zehfernando.input.binding {
 		 *
 		 * @see flash.ui.Keyboard
 		 */
-		public function addKeyboardActionBinding(__action:String, __keyCode:uint, __keyLocation:int = -1):void {
+		public function addKeyboardActionBinding(__action:String, __keyCode:int = -1, __keyLocation:int = -1):void {
 			// TODO: use KeyActionBinder.KEY_LOCATION_ANY as default param? The compiler doesn't like constants.
 
 			// Create a binding to be verified later
-			bindings.push(new BindingInfo(__action, new KeyboardBinding(__keyCode, __keyLocation >= 0 ? __keyLocation : KeyboardBinding.KEY_LOCATION_ANY)));
+			bindings.push(new BindingInfo(__action, new KeyboardBinding(__keyCode >= 0 ? __keyCode : KeyboardBinding.KEY_CODE_ANY, __keyLocation >= 0 ? __keyLocation : KeyboardBinding.KEY_LOCATION_ANY)));
 			prepareAction(__action);
 		}
 
@@ -521,6 +523,7 @@ interface IBinding {
 class KeyboardBinding implements IBinding {
 
 	// Constants
+	public static var KEY_CODE_ANY:uint = 81653812;
 	public static var KEY_LOCATION_ANY:uint = 8165381;
 
 	// Properties
@@ -541,7 +544,7 @@ class KeyboardBinding implements IBinding {
 	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 	public function matchesKeyboardKey(__keyCode:uint, __keyLocation:uint):Boolean {
-		return keyCode == __keyCode && (keyLocation == __keyLocation || keyLocation == KEY_LOCATION_ANY);
+		return (keyCode == __keyCode || keyCode == KEY_CODE_ANY) && (keyLocation == __keyLocation || keyLocation == KEY_LOCATION_ANY);
 	}
 
 	// TODO: add modifiers?
