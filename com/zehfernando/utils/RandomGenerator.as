@@ -35,8 +35,12 @@ package com.zehfernando.utils {
 			return __min + Math.random() * (__max-__min);
 		}
 
-		public static function getFromArray(__vector:Vector.<*>):int {
-			return Math.floor(Math.random() * __vector.length);
+		public static function getFromVector(__vector:Vector.<*>):Vector.<*> {
+			return __vector[Math.floor(Math.random() * __vector.length)];
+		}
+
+		public static function getFromArray(__array:Array):* {
+			return __array[Math.floor(Math.random() * __array.length)];
 		}
 	}
 }
