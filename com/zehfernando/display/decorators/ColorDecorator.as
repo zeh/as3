@@ -69,20 +69,20 @@ package com.zehfernando.display.decorators {
 		}
 
 		protected function doVisualUpdate():void {
-		 	// Create empty maytix
-		 	var mtx:Array = [
-		 		1,0,0,0,0,
+			// Create empty matrix
+			var mtx:Array = [
+				1,0,0,0,0,
 				0,1,0,0,0,
 				0,0,1,0,0,
 				0,0,0,1,0
 			];
 			var temp:Array = [];
 
-		 	// Precalculate a single matrix from all matrices by multiplication
-		 	// The order the final matrix is calculated can change the way it looks
-		 	var matrices:Array = [saturationMatrix, contrastMatrix, brightnessMatrix, exposureMatrix, hueMatrix];
+			// Precalculate a single matrix from all matrices by multiplication
+			// The order the final matrix is calculated can change the way it looks
+			var matrices:Array = [saturationMatrix, contrastMatrix, brightnessMatrix, exposureMatrix, hueMatrix];
 
-		 	var i:int, j:int, mat:Array;
+			var i:int, j:int, mat:Array;
 			var x:int, y:int;
 
 			for (j = 0; j < matrices.length; j++) {
@@ -91,11 +91,11 @@ package com.zehfernando.display.decorators {
 				for (y = 0; y < 4; y++ ) {
 
 					for (x = 0; x < 5; x++ ) {
-						temp[ int( i + x) ] =  Number(mat[i  ])      * Number(mtx[x]) +
-									   		   Number(mat[int(i+1)]) * Number(mtx[int(x +  5)]) +
-									   		   Number(mat[int(i+2)]) * Number(mtx[int(x + 10)]) +
-									   		   Number(mat[int(i+3)]) * Number(mtx[int(x + 15)]) +
-									   		   (x == 4 ? Number(mat[int(i+4)]) : 0);
+						temp[ int( i + x) ] =	Number(mat[i])        * Number(mtx[x]) +
+												Number(mat[int(i+1)]) * Number(mtx[int(x +  5)]) +
+												Number(mat[int(i+2)]) * Number(mtx[int(x + 10)]) +
+												Number(mat[int(i+3)]) * Number(mtx[int(x + 15)]) +
+												(x == 4 ? Number(mat[int(i+4)]) : 0);
 					}
 					i+=5;
 				}
@@ -120,7 +120,7 @@ package com.zehfernando.display.decorators {
 				nr+_saturation,	ng,				nb,				0,	0,
 				nr,				ng+_saturation,	nb,				0,	0,
 				nr,				ng,				nb+_saturation,	0,	0,
-				0,  			0, 				0,  			1,  0
+				0,				0,				0,				1,	0
 			];
 
 			apply();
@@ -132,10 +132,10 @@ package com.zehfernando.display.decorators {
 			var co:Number = 128 * (1-_contrast);
 
 			contrastMatrix = [
-				_contrast,	0,	0, 	0, 	co,
-				0,	_contrast,	0, 	0, 	co,
-				0,	0,	_contrast, 	0, 	co,
-				0,	0,	0, 	1, 	0
+				_contrast,	0,	0,	0,	co,
+				0,	_contrast,	0,	0,	co,
+				0,	0,	_contrast,	0,	co,
+				0,	0,	0,	1,	0
 			];
 
 			apply();
@@ -147,10 +147,10 @@ package com.zehfernando.display.decorators {
 			var co:Number = 255 * _brightness;
 
 			brightnessMatrix = [
-				1,	0,	0, 	0, 	co,
-				0,	1,	0, 	0, 	co,
-				0,	0,	1, 	0, 	co,
-				0,	0,	0, 	1, 	0
+				1,	0,	0,	0,	co,
+				0,	1,	0,	0,	co,
+				0,	0,	1,	0,	co,
+				0,	0,	0,	1,	0
 			];
 
 			apply();
@@ -160,10 +160,10 @@ package com.zehfernando.display.decorators {
 			// Create the pre-calculated exposture matrix
 
 			exposureMatrix = [
-				_exposure,	0,	0, 	0, 	0,
-				0,	_exposure,	0, 	0, 	0,
-				0,	0,	_exposure, 	0, 	0,
-				0,	0,	0, 	1, 	0
+				_exposure,	0,	0,	0,	0,
+				0,	_exposure,	0,	0,	0,
+				0,	0,	_exposure,	0,	0,
+				0,	0,	0,	1,	0
 			];
 
 			apply();
@@ -181,7 +181,7 @@ package com.zehfernando.display.decorators {
 				((LUMINANCE_R + (hCos * -(LUMINANCE_R))) + (hSin * 0.143)), ((LUMINANCE_G + (hCos * (1 - LUMINANCE_G))) + (hSin * 0.14)), ((LUMINANCE_B + (hCos * -(LUMINANCE_B))) + (hSin * -0.283)), 0, 0,
 				((LUMINANCE_R + (hCos * -(LUMINANCE_R))) + (hSin * -((1 - LUMINANCE_R)))), ((LUMINANCE_G + (hCos * -(LUMINANCE_G))) + (hSin * LUMINANCE_G)), ((LUMINANCE_B + (hCos * (1 - LUMINANCE_B))) + (hSin * LUMINANCE_B)), 0, 0,
 				0, 0, 0, 1, 0
-		   	];
+			];
 
 			apply();
 		}
