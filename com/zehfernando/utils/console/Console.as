@@ -69,6 +69,7 @@ package com.zehfernando.utils.console {
 		protected static var _useTrace:Boolean;
 		protected static var _useScreen:Boolean;
 		protected static var _useJS:Boolean;
+		protected static var _useFullMethodName:Boolean;
 
 		protected static var textField:TextField;
 
@@ -94,6 +95,7 @@ package com.zehfernando.utils.console {
 			_useTrace = true;
 			_useScreen = false;
 			_useJS = false;
+			_useFullMethodName = true;
 
 			logStates = [];
 
@@ -154,20 +156,32 @@ package com.zehfernando.utils.console {
 		protected static function echo(__output:String, __type:String = null, __callStackOffset:int = 0):void {
 			// Raw writes something to the required outputs
 
-			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[3 + __callStackOffset]);
+			var packageName:String = "?";
+			var className:String = "?";
+			var methodName:String = "?";
 
-			if (logStates[className] == LOG_STATE_OFF) return;
+			if (_useFullMethodName) {
+				var currentCallStack:Vector.<Vector.<String>> = DebugUtils.getCurrentCallStack();
+				var fullClassName:String = getClassNameFromCallStack(currentCallStack[3 + __callStackOffset]);
 
-			var currCall:Vector.<String> = DebugUtils.getCurrentCallStack()[3 + __callStackOffset]; // Package, class, function; or ?, null, package::function
+				if (logStates[fullClassName] == LOG_STATE_OFF) return;
+
+				var currCall:Vector.<String> = currentCallStack[3 + __callStackOffset]; // Package, class, function; or ?, null, package::function
+
+				packageName = currCall[0];
+				className = currCall[1] == null ? "<global>" : currCall[1]; // for functions, this is null
+				methodName = currCall[1] == null ? currCall[2].split("::")[1] : currCall[2];
+			}
+
 			var currFrame:String = (PARAM_CURRENT_FRAME_FORMAT + currentFrame.toString(10)).substr(-PARAM_CURRENT_FRAME_FORMAT.length, PARAM_CURRENT_FRAME_FORMAT.length);
 			var currTime:String = getFormattedTime();
 
 			var output:String = echoFormat;
 			output = output.split(PARAM_CURRENT_TIME).join(currTime);
 			output = output.split(PARAM_CURRENT_FRAME).join(currFrame);
-			output = output.split(PARAM_PACKAGE_NAME).join(currCall[0]);
-			output = output.split(PARAM_CLASS_NAME).join(currCall[1] == null ? "<global>" : currCall[1]); // for functions, this is null
-			output = output.split(PARAM_FUNCTION_NAME).join(currCall[1] == null ? currCall[2].split("::")[1] : currCall[2]);
+			output = output.split(PARAM_PACKAGE_NAME).join(packageName);
+			output = output.split(PARAM_CLASS_NAME).join(className);
+			output = output.split(PARAM_FUNCTION_NAME).join(methodName);
 			output = output.split(PARAM_OUTPUT).join(__output);
 
 			output = getGroupsPrefix() + output;
@@ -371,6 +385,13 @@ package com.zehfernando.utils.console {
 		}
 		public static function set useJS(__value:Boolean):void {
 			_useJS = __value;
+		}
+
+		public static function get useFullMethodName():Boolean {
+			return _useFullMethodName;
+		}
+		public static function set useFullMethodName(__value:Boolean):void {
+			_useFullMethodName = __value;
 		}
 
 		public static function get useScreen():Boolean {
