@@ -1,6 +1,7 @@
 package com.zehfernando.display {
 
 	import com.zehfernando.display.abstracts.ResizableSprite;
+	import com.zehfernando.utils.RenderUtils;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -10,6 +11,8 @@ package com.zehfernando.display {
 	 * @author zeh
 	 */
 	public class BitmapFillBox extends ResizableSprite {
+
+		// Creates a bitmap with a tiled pattern
 
 		// Constants
 		public static const ALIGN_HORIZONTAL_LEFT:String = "left";
@@ -54,11 +57,11 @@ package com.zehfernando.display {
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
 
 		override protected function redrawWidth():void {
-			redraw();
+			RenderUtils.addFunction(redraw);
 		}
 
 		override protected function redrawHeight():void {
-			redraw();
+			RenderUtils.addFunction(redraw);
 		}
 
 		protected function redraw():void {
