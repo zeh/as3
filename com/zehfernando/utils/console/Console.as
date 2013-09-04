@@ -40,12 +40,14 @@ package com.zehfernando.utils.console {
 		public static const GROUP_START_FORMAT:String = PARAM_GROUP_NAME + " \\\\\\ -------";
 		public static const GROUP_END_FORMAT:String = PARAM_GROUP_NAME + " //// -------";
 
-		public static var prefixDebug:String = "[D] ";
-		public static var prefixInfo:String = "[i] ";
-		public static var prefixWarning:String = "/!\\ ";
-		public static var prefixError:String = "(X) ";
-		public static var prefixLog:String = "--- ";
-		public static var groupPrefix:String = "  ";
+		public static const prefixDebug:String = "[D] ";
+		public static const prefixInfo:String = "[i] ";
+		public static const prefixWarning:String = "/!\\ ";
+		public static const prefixError:String = "(X) ";
+		public static const prefixLog:String = "--- ";
+		public static const groupPrefix:String = "  ";
+
+		public static const LOG_PARAMETER_SEPARATOR:String = " ";
 
 		public static var echoFormat:String = ECHO_FORMAT_SHORT;
 		public static var timeFormat:String = TIME_FORMAT;
@@ -189,7 +191,6 @@ package com.zehfernando.utils.console {
 			var jsFunction:String;
 
 			// Adds group spacing
-
 			switch (__type) {
 				case LOG_TYPE_DEBUG:
 					jsFunction = JS_FUNCTION_DEBUG;
@@ -215,7 +216,7 @@ package com.zehfernando.utils.console {
 			}
 
 			if (_useTrace) {
-				trace (output);
+				trace(output);
 			}
 
 			if (_useScreen) {
@@ -228,7 +229,7 @@ package com.zehfernando.utils.console {
 					try {
 						ExternalInterface.call("function(__message) { if(typeof(console) != 'undefined' && console != null) { " + jsFunction + "(__message); } }", output);
 					} catch (e:Error) {
-						trace ("Console.echo error: Tried calling console.log(), but ExternalInterface is not available! Error: " + e);
+						trace ("Console.echo error: Tried calling console.log(), but it didn't work! Error: " + e);
 					}
 				} else {
 					trace ("Console.echo error: Tried calling console.log(), but ExternalInterface is not available!");
@@ -280,27 +281,27 @@ package com.zehfernando.utils.console {
 
 		public static function log(__args:Array):void {
 			// Logs something
-			echo(__args.join(" "), LOG_TYPE_LOG);
+			echo(__args.join(LOG_PARAMETER_SEPARATOR), LOG_TYPE_LOG);
 		}
 
 		public static function info(__args:Array):void {
 			// Logs something as an info
-			echo(__args.join(" "), LOG_TYPE_INFO);
+			echo(__args.join(LOG_PARAMETER_SEPARATOR), LOG_TYPE_INFO);
 		}
 
 		public static function debug(__args:Array):void {
 			// Logs something as debug
-			echo(__args.join(" "), LOG_TYPE_DEBUG);
+			echo(__args.join(LOG_PARAMETER_SEPARATOR), LOG_TYPE_DEBUG);
 		}
 
 		public static function warn(__args:Array):void {
 			// Logs something as warning
-			echo(__args.join(" "), LOG_TYPE_WARNING);
+			echo(__args.join(LOG_PARAMETER_SEPARATOR), LOG_TYPE_WARNING);
 		}
 
 		public static function error(__args:Array):void {
 			// Logs something as an error
-			echo(__args.join(" "), LOG_TYPE_ERROR);
+			echo(__args.join(LOG_PARAMETER_SEPARATOR), LOG_TYPE_ERROR);
 		}
 
 		public static function time(__name:String):void {
