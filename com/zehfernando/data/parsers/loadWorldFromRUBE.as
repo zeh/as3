@@ -178,6 +178,16 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:b2Body):void {
 			// It's an edge
 			polygonShape.SetAsEdge(vertices[0], vertices[1]);
 			fixtureDef.shape = polygonShape;
+		/*
+		} else {
+			var verticesArray:Array = getB2Vec2ArrayFromProperty(__rubeFixture["chain"], "vertices");
+			var edgeChainDef:b2EdgeChainDef = new b2EdgeChainDef();
+			edgeChainDef.vertices = verticesArray;
+			edgeChainDef.vertexCount = verticesArray.length;
+			edgeChainDef.isALoop = false;
+			//fixtureDef.shape = __body.crea;
+			return;
+		*/
 		}
 		//edgeShape = new b2EdgeChainDef();
 		// TODO: everything
