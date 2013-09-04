@@ -175,6 +175,27 @@ package com.zehfernando.display {
 			}
 		}
 
+
+		// ================================================================================================================
+		// PUBLIC STATIC INTERFACE ----------------------------------------------------------------------------------------
+
+		public static function getPatternNoise(__width:int = 64, __height:int = 64):BitmapData {
+			// Generates a noise bitmap
+			var pixels:Vector.<uint> = new Vector.<uint>();
+			pixels.length = __width * __height;
+			pixels.fixed = true;
+
+			for (var i:int = 0; i < pixels.length; i++) {
+				pixels[i] = Math.round(Math.random() * 0xffffff) | 0xff000000;
+			}
+
+			var bmp:BitmapData = new BitmapData(__width, __height, false);
+			bmp.setVector(bmp.rect, pixels);
+
+			return bmp;
+		}
+
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
