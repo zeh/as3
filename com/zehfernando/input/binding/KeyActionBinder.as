@@ -121,8 +121,12 @@ package com.zehfernando.input.binding {
 			var device:GameInputDevice;
 			var i:int, j:int;
 
+//			debug("Devices: " + GameInput.numDevices);
+
 			for (i = 0; i < GameInput.numDevices; i++) {
 				device = GameInput.getDeviceAt(i);
+
+//				debug("  Found device (" + i + "): " + device);
 
 				// Some times the device is null because numDevices is updated before the added device event is dispatched
 				if (device != null) {
