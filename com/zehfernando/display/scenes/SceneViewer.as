@@ -2,6 +2,7 @@ package com.zehfernando.display.scenes {
 	import com.zehfernando.display.abstracts.ResizableSprite;
 
 	import flash.events.Event;
+	import flash.system.System;
 
 	/**
 	 * @author zeh fernando
