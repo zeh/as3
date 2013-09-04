@@ -12,6 +12,11 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
+		public static function hasNode(__xml:XML, __nodeName:String):Boolean {
+			if (!Boolean(__xml)) return false;
+			return __xml.child(__nodeName).length() > 0;
+		}
+
 		public static function getNodeAsBoolean(__xml:XML, __nodeName:String, __default:Boolean = false):Boolean {
 			if (!Boolean(__xml)) return __default;
 			var __nodeValue:String = getNodeValue(__xml.child(__nodeName));
