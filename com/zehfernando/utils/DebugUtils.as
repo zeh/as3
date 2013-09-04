@@ -115,7 +115,7 @@ package com.zehfernando.utils {
 			__stage.addEventListener(MouseEvent.CLICK, onClickStageTrace);
 		}
 
-		public static function getCurrentCallStack(): Vector.<Vector.<String>> {
+		public static function getCurrentCallStack():Vector.<Vector.<String>> {
 
 			if (!Capabilities.isDebugger) {
 				// It's not the debug player, so returns nothing
