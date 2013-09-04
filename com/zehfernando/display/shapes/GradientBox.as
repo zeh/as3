@@ -28,23 +28,9 @@ package com.zehfernando.display.shapes {
 			_width = __width;
 			_height = __height;
 
-			var i:int;
-
 			_angle = __angle;
-
-			if (__colors == null) __colors = [0xff0000, 0x00ff00];
 			_colors = __colors;
-
-			if (__alphas == null) {
-				__alphas = [];
-				for (i = 0; i < _colors.length; i++) __alphas.push(1 + (1 * (i/(_colors.length-1))));
-			}
 			_alphas = __alphas;
-
-			if (__ratios == null) {
-				__ratios = [];
-				for (i = 0; i < _colors.length; i++) __ratios.push(0 + (255 * (i/(_colors.length-1))));
-			}
 			_ratios = __ratios;
 
 			if (!Boolean(__type)) __type = GradientType.LINEAR;
@@ -61,9 +47,25 @@ package com.zehfernando.display.shapes {
 			var mtx:Matrix = new Matrix();
 			mtx.createGradientBox(_width, _height, (_angle / 180) * Math.PI, 0, 0);
 
+			var i:int;
+
+			var colorsTemp:Array = _colors;
+			var alphasTemp:Array = _alphas;
+			var ratiosTemp:Array = _ratios;
+
+			if (colorsTemp == null) colorsTemp = [0xff0000, 0x00ff00];
+			if (alphasTemp == null) {
+				alphasTemp = [];
+				for (i = 0; i < colorsTemp.length; i++) alphasTemp.push(1 + (1 * (i/(colorsTemp.length-1))));
+			}
+			if (ratiosTemp == null) {
+				ratiosTemp = [];
+				for (i = 0; i < colorsTemp.length; i++) ratiosTemp.push(0 + (255 * (i/(colorsTemp.length-1))));
+			}
+
 			graphics.clear();
 			graphics.lineStyle();
-			graphics.beginGradientFill(_type, _colors, _alphas, _ratios, mtx, SpreadMethod.PAD, InterpolationMethod.RGB);
+			graphics.beginGradientFill(_type, colorsTemp, alphasTemp, ratiosTemp, mtx, SpreadMethod.PAD, InterpolationMethod.RGB);
 			graphics.drawRect(0, 0, _width, _height);
 			graphics.endFill();
 		}
