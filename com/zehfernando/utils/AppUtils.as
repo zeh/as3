@@ -81,6 +81,7 @@ package com.zehfernando.utils {
 
 		public static function isAndroid():Boolean {
 			// Android: "Android Linux"
+			// TODO: this is true on Linux too?
 			return Capabilities.manufacturer == "Android Linux";
 		}
 
