@@ -40,8 +40,8 @@ package com.zehfernando.geom {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get length():Number {
-			return Point.distance(p1, p2);
-		}
+//		public function get length():Number {
+//			return Point.distance(p1, p2);
+//		}
 	}
 }
