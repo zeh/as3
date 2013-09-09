@@ -15,6 +15,9 @@ package com.zehfernando.data.parsers {
 
 		// Additional custom properties:
 		// nape_isHollow (Boolean) (in fixtures/shapes: if true, instead of creating a line polygon for a chain shape ("loop"), creates a hollow solid polygon and subvidivides it
+		// nape_staticFriction (Float) (in fixtures/shapes: set the static friction of the shape material
+		// nape_dynamicFriction (Float) (in fixtures/shapes: set the dynamic friction of the shape material
+		// nape_rollingFriction (Float) (in fixtures/shapes: set the rolling friction of the shape material
 
 		var i:int, j:int, k:int;
 
@@ -168,6 +171,8 @@ function loadUserDataFromRUBE(__userData:*, __rubeData:Object, __scale:Number):v
 function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, __lineThickness:Number):Boolean {
 	// Loads shapes
 
+	var customProperties:* = getCustomProperties(__rubeFixture, __scale);
+
 	// Shape material
 	var material:Material = new Material();
 	// For friction, both Nape and Box2d use friction as being the square root of the product: friction = sqrt(shape1.friction shape2.friction);
@@ -180,6 +185,14 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 
 	// Density in box2d is arbitrary; in Nape it's g/pixel/pixel. Should be equivalent
 	material.density				= getFloatFromProperty(__rubeFixture, "density");
+
+	var staticFriction:Number = getFloatFromProperty(customProperties, "nape_staticFriction", NaN);
+	var dynamicFriction:Number = getFloatFromProperty(customProperties, "nape_dynamicFriction", NaN);
+	var rollingFriction:Number = getFloatFromProperty(customProperties, "nape_rollingFriction", NaN);
+
+	if (!isNaN(staticFriction)) material.staticFriction = staticFriction;
+	if (!isNaN(dynamicFriction)) material.dynamicFriction = dynamicFriction;
+	if (!isNaN(rollingFriction)) material.rollingFriction = rollingFriction;
 
 //	// Filter definition
 //	TODO: var filterData:b2FilterData = new b2FilterData();
@@ -210,7 +223,7 @@ function loadFixtureFromRUBE(__rubeFixture:Object, __body:Body, __scale:Number, 
 		// Chain shape object, or edge: use box polygons and circles
 		vertices = getVec2VectorFromProperty(__rubeFixture["chain"], "vertices", __scale);
 		var isLoop:Boolean = getBooleanFromProperty(__rubeFixture["chain"], "hasNextVertex") || getBooleanFromProperty(__rubeFixture["chain"], "hasPrevVertex");
-		var isHollow:Boolean = getBooleanFromProperty(getCustomProperties(__rubeFixture, __scale), "nape_isHollow");
+		var isHollow:Boolean = getBooleanFromProperty(customProperties, "nape_isHollow");
 		if (vertices.length == 2) {
 			// Just one edge, create line
 			createPolygonEdges(vertices, __body, __scale, __lineThickness, false, material, isSensor);
