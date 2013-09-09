@@ -58,6 +58,21 @@ package com.zehfernando.utils {
 			return XML(s);
 		}
 
+		public static function stripDefaultXMLNamespace(__xml:XML):XML {
+			// Use for SVG
+			// Source: http://stackoverflow.com/questions/673412/how-can-i-remove-a-namespace-from-an-xml-document
+			var rawXMLString:String = __xml.toXMLString();
+
+			/* Define the regex pattern to remove the default namespace from the String representation of the XML result. */
+			var xmlnsPattern:RegExp = new RegExp("xmlns=[^\"]*\"[^\"]*\"", "gi");
+
+			/* Replace the default namespace from the String representation of the result XML with an empty string. */
+			var cleanXMLString:String = rawXMLString.replace(xmlnsPattern, "");
+
+			// Create a new XML Object from the String just created
+			return new XML(cleanXMLString);
+		}
+
 		public static function getNodeAsInt(__xml:XML, __nodeName:String, __default:int = 0):int {
 			return int(getNodeAsFloat(__xml, __nodeName, __default));
 		}
