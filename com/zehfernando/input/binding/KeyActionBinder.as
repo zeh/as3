@@ -8,6 +8,7 @@ package com.zehfernando.input.binding {
 	import flash.ui.GameInput;
 	import flash.ui.GameInputControl;
 	import flash.ui.GameInputDevice;
+	import flash.utils.getTimer;
 	/**
 	 * @author zeh fernando
 	 */
@@ -43,6 +44,9 @@ package com.zehfernando.input.binding {
 		private var gameInputDevices:Vector.<GameInputDevice>;
 
 		private static var gameInput:GameInput;
+
+		private var ii:int;												// Internal i, for speed
+		private var it:int;												// Internal t, for speed
 
 		// ================================================================================================================
 		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
@@ -167,6 +171,7 @@ package com.zehfernando.input.binding {
 				if (!filteredKeys[i].isActivated) {
 					// Marks as pressed
 					filteredKeys[i].isActivated = true;
+					filteredKeys[i].lastActivatedTime = getTimer();
 
 					// Add this activation to the list of current activations
 					(actionsActivations[filteredKeys[i].action] as ActivationInfo).activations.push(filteredKeys[i]);
@@ -419,6 +424,7 @@ package com.zehfernando.input.binding {
 		 * Checks whether an action is currently activated (in practice, a button is pressed).
 		 *
 		 * @param action				An arbritrary String id identifying the action that should be checked.
+		 * @param timeToleranceSeconds	Time tolerance, in seconds, before the action is assumed to be expired. If < 0, no time is checked.
 		 *
 		 * <p>Examples:</p>
 		 *
@@ -430,10 +436,29 @@ package com.zehfernando.input.binding {
 		 * if (isActionActivated("move-right")) {
 		 *     player.moveRight();
 		 * }
+		 *
+		 * // Check if a jump was activated (includes just before falling, for a more user-friendly control):
+		 * if (isTouchingSurface && isActionActivated("jump"), 0.1) {
+		 *     player.moveRight();
+		 * }
 		 * </pre>
 		 */
-		public function isActionActivated(__action:String):Boolean {
-			return actionsActivations.hasOwnProperty(__action) && (actionsActivations[__action] as ActivationInfo).activations.length > 0;
+		public function isActionActivated(__action:String, __timeToleranceSeconds:Number = 0):Boolean {
+			if (actionsActivations.hasOwnProperty(__action) && (actionsActivations[__action] as ActivationInfo).activations.length > 0) {
+				if (__timeToleranceSeconds <= 0) {
+					// No need for time tolerance check
+					return true;
+				} else {
+					// Needs to check the time
+					var actionActivations:Vector.<BindingInfo> = (actionsActivations[__action] as ActivationInfo).activations;
+					it = getTimer() - __timeToleranceSeconds * 1000;
+					for (ii = 0; ii < actionActivations.length; ii++) {
+						if (actionActivations[ii].lastActivatedTime >= it) return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		public function consumeAction(__action:String):void {
@@ -505,6 +530,7 @@ class BindingInfo {
 	public var action:String;
 	public var binding:IBinding;
 	public var isActivated:Boolean;
+	public var lastActivatedTime:uint;
 
 	// ================================================================================================================
 	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -513,6 +539,7 @@ class BindingInfo {
 		action = __action;
 		binding = __binding;
 		isActivated = false;
+		lastActivatedTime = 0;
 	}
 }
 
