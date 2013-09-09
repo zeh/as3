@@ -39,6 +39,7 @@ package com.zehfernando.net.assets {
 					break;
 				case AssetType.XML:
 					vv.push("xml");
+					vv.push("svg");
 					break;
 				case AssetType.JSON:
 					vv.push("json");
