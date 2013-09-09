@@ -6,6 +6,7 @@ package com.zehfernando.display.containers {
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.net.URLRequest;
+	import flash.system.ImageDecodingPolicy;
 	import flash.system.LoaderContext;
 
 	/**
@@ -157,6 +158,7 @@ package com.zehfernando.display.containers {
 
 			var context:LoaderContext = new LoaderContext();
 			context.checkPolicyFile = true;
+			context.imageDecodingPolicy = ImageDecodingPolicy.ON_LOAD;
 
 			loader.load(new URLRequest(_contentURL), context);
 		}
