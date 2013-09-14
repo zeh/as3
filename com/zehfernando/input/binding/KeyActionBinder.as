@@ -246,6 +246,7 @@ package com.zehfernando.input.binding {
 						filteredControls[i].isActivated = isActivated;
 						if (isActivated) {
 							// Marks as pressed
+							filteredControls[i].lastActivatedTime = getTimer();
 
 							// Add this activation to the list of current activations
 							(actionsActivations[filteredControls[i].action] as ActivationInfo).activations.push(filteredControls[i]);
