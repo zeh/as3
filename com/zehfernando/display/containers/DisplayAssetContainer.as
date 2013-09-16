@@ -381,5 +381,8 @@ package com.zehfernando.display.containers {
 			}
 		}
 
+		public function hasContent():Boolean {
+			return Boolean(contentAsset);
+		}
 	}
 }
