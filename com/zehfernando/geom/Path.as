@@ -18,9 +18,13 @@ package com.zehfernando.geom {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		public static function fromPoints(__points:Vector.<Point>):Path {
+		public static function fromPoints(__points:Vector.<Point>, __clone:Boolean = true):Path {
 			var path:Path = new Path();
-			path.points = __points.concat();
+			if (__clone) {
+				for (var i:int = 0; i < __points.length; i++) path.points.push(__points[i].clone());
+			} else {
+				path.points = __points;
+			}
 			return path;
 		}
 
@@ -180,6 +184,5 @@ package com.zehfernando.geom {
 			}
 			return ps;
 		}
-
 	}
 }
