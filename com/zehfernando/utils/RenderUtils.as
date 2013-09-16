@@ -59,6 +59,8 @@ package com.zehfernando.utils {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		public static function addFunction(__function:Function):void {
+//			__function();
+//			return;
 			if (functionsToCall.indexOf(__function) == -1) {
 				// Doesn't exist, so adds to the stack
 				functionsToCall.push(__function);
