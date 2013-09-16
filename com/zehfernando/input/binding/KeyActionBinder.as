@@ -16,9 +16,9 @@ package com.zehfernando.input.binding {
 
 		// Provides universal input control for game controllers and keyboard
 		// http://zehfernando.com/2013/abstracting-key-and-game-controller-inputs-in-adobe-air/
+		// http://zehfernando.com/2013/keyactionbinder-updates-time-sensitive-activations-new-constants/
 
 		// TODO:
-		// * isActionActivated() must properly support time tolerance
 		// * Allow sensitive controls to be treated as normal controls
 		// * think of a way to avoid axis injecting button pressed
 		// * Add gamepad index to return signals
@@ -443,6 +443,8 @@ package com.zehfernando.input.binding {
 		 *     player.moveRight();
 		 * }
 		 * </pre>
+		 * 
+		 * @see http://zehfernando.com/2013/keyactionbinder-updates-time-sensitive-activations-new-constants/
 		 */
 		public function isActionActivated(__action:String, __timeToleranceSeconds:Number = 0):Boolean {
 			if (actionsActivations.hasOwnProperty(__action) && (actionsActivations[__action] as ActivationInfo).activations.length > 0) {
