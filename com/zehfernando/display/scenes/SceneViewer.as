@@ -74,6 +74,11 @@ package com.zehfernando.display.scenes {
 			__scene.removeEventListener(AbstractScene.EVENT_FINISHED_HIDING, onFinishedHidingScene);
 		}
 
+		private function waitAndShowCurrentScene():void {
+			addEventListener(Event.ENTER_FRAME, onEnterFrameCheckIfCurrentSceneCanBeShown);
+		}
+
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
@@ -106,6 +111,14 @@ package com.zehfernando.display.scenes {
 			}
 		}
 
+		private function onEnterFrameCheckIfCurrentSceneCanBeShown(__e:Event):void {
+			if (currentScene.canShow()) {
+				removeEventListener(Event.ENTER_FRAME, onEnterFrameCheckIfCurrentSceneCanBeShown);
+				showCurrentScene();
+			}
+		}
+
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -122,7 +135,11 @@ package com.zehfernando.display.scenes {
 				// No scene at all, just show the new one
 				currentScene = __scene;
 				addScene(currentScene);
-				showCurrentScene();
+				if (currentScene.canShow()) {
+					showCurrentScene();
+				} else {
+					waitAndShowCurrentScene();
+				}
 			} else {
 				// Has scene, so must hide current first
 				nextScene = __scene;

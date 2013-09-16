@@ -95,6 +95,11 @@ package com.zehfernando.display.scenes {
 
 		}
 
+		public function canShow():Boolean {
+			// Returns true if everything is loaded and it is ready to be shown
+			return true;
+		}
+
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
