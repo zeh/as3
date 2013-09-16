@@ -10,7 +10,7 @@ package com.zehfernando.display.shapes {
 		// Properties
 		protected var _width:Number;
 		protected var _height:Number;
-		protected var _color:int;
+		protected var _color:uint;
 
 		protected var _outlineWidth:Number;
 
@@ -47,18 +47,13 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get color():int {
-			return _color;
-		}
-		public function set color(__value:int):void {
+		public function get color():uint { return _color; }
+		public function set color(__value:uint):void {
 			if (_color != __value) {
 				_color = __value & 0xffffff;
 				paint();
 			}
 		}
-
-		// TODO: use invalidate
-		// The repetitive redraws don't look good but impact in rendering is virtually none
 
 		override public function get width():Number { return _width; }
 		override public function set width(__value:Number):void {

@@ -9,7 +9,7 @@ package com.zehfernando.display.shapes {
 		// Properties
 		protected var _width:Number;
 		protected var _height:Number;
-		protected var _color:Number;
+		protected var _color:uint;
 
 		protected var _radius:Number;
 		protected var _outlineWidth:Number;
@@ -51,9 +51,6 @@ package com.zehfernando.display.shapes {
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		// TODO: use invalidate
-		// The repetitive redraws don't look good but impact in rendering is virtually none
-
 		override public function get width():Number { return _width; }
 		override public function set width(__value:Number):void {
 			if (_width != __value) {
@@ -79,17 +76,15 @@ package com.zehfernando.display.shapes {
 			}
 		}
 
-		public function get color():Number { return _color; }
-		public function set color(__value:Number):void {
+		public function get color():uint { return _color; }
+		public function set color(__value:uint):void {
 			if (_color != __value) {
-				_color = __value;
+				_color = __value & 0xffffff;
 				paint();
 			}
 		}
 
-		public function get radius():Number {
-			return _radius;
-		}
+		public function get radius():Number { return _radius; }
 		public function set radius(__value:Number):void {
 			_radius = _topLeftRadius = _topRightRadius = _bottomLeftRadius = _bottomRightRadius = __value;
 			paint();
@@ -128,7 +123,6 @@ package com.zehfernando.display.shapes {
 		}
 
 		public function get borderSize():Number { return _outlineWidth; }
-
 		public function set borderSize(__value:Number):void {
 			if (_outlineWidth != __value) {
 				_outlineWidth = __value;
