@@ -78,6 +78,8 @@ package com.zehfernando.utils.console {
 		protected static var logStates:Array;
 
 		protected static var timeTable:Object;						// Named array of ints
+		protected static var timeList:Vector.<String>;				// List in order, so it can be removed in order too
+		protected static var timerIndex:int;
 		protected static var groups:Vector.<String>;
 
 		protected static var currentFrame:int;
@@ -104,6 +106,8 @@ package com.zehfernando.utils.console {
 			currentFrame = 0;
 
 			timeTable = {};
+			timeList = new Vector.<String>();
+			timerIndex = 0;
 			groups = new Vector.<String>();
 
 			frameCounter = new Sprite();
@@ -304,11 +308,15 @@ package com.zehfernando.utils.console {
 			echo(__args.join(LOG_PARAMETER_SEPARATOR), LOG_TYPE_ERROR);
 		}
 
-		public static function time(__name:String):void {
+		public static function timeStart(__name:String = null):void {
+			if (__name == null) __name = "Timer " + (timerIndex++);
 			timeTable[__name] = getTimer();
+			while (timeList.indexOf(__name) > -1) timeList.splice(timeList.indexOf(__name), 1);
+			timeList.push(__name);
 		}
 
-		public static function timeEnd(__name:String, __message:String = ""):void {
+		public static function timeEnd(__message:String = "", __name:String = null):void {
+			if (__name == null && timeList.length > 0) __name = timeList[timeList.length - 1];
 			if (timeTable.hasOwnProperty(__name)) {
 				var timePassed:int = getTimer() - timeTable[__name];
 				var output:String = timeFormat;
@@ -316,6 +324,7 @@ package com.zehfernando.utils.console {
 				output = output.split(PARAM_TIME_VALUE).join(timePassed);
 				echo(output, null, -1);
 				delete timeTable[__name];
+				while (timeList.indexOf(__name) > -1) timeList.splice(timeList.indexOf(__name), 1);
 			}
 		}
 
