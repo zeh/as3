@@ -69,6 +69,37 @@ package com.zehfernando.geom {
 
 		}
 
+		public function setLength(__length:Number, __alignment:Number):void {
+			// Sets the new length of the line; __alignment = 0 aligns to the starting point, __alignment == 1 to the end point
+			if (isNaN(__length)) return;
+
+			var l:Number = length;
+			var rest:Number = l - __length;
+			var f0:Number = __alignment * rest;
+			var f1:Number = (1-__alignment) * rest;
+			var pp1:Point, pp2:Point;
+			if (f0 == 0) {
+				// Fast - start
+				pp2 = Point.interpolate(p2, p1, (l-f1) / l);
+				p2.setTo(pp2.x, pp2.y);
+			} else if (f1 == 0) {
+				// Fast = end
+				pp2 = Point.interpolate(p2, p1, f0 / l);
+				p1.setTo(pp1.x, pp1.y);
+			} else {
+				// Normal, middle
+				pp1 = Point.interpolate(p2, p1, f0 / l);
+				pp2 = Point.interpolate(p2, p1, (l-f1) / l);
+				p1.setTo(pp1.x, pp1.y);
+				p2.setTo(pp2.x, pp2.y);
+			}
+		}
+
+		public function clone():Line {
+			return new Line(p1.clone(), p2.clone());
+		}
+
+
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
