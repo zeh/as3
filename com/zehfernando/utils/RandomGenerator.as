@@ -42,5 +42,9 @@ package com.zehfernando.utils {
 		public static function getFromArray(__array:Array):* {
 			return __array[Math.floor(Math.random() * __array.length)];
 		}
+
+		public static function getColor():uint {
+			return (Math.random() * 0xffffff) & 0xffffff;
+		}
 	}
 }
