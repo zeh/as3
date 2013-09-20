@@ -57,7 +57,11 @@ package com.zehfernando.display.shapes {
 			graphics.clear();
 			graphics.lineStyle();
 			graphics.beginGradientFill(_type, _colors, _alphas, _ratios, mtx, SpreadMethod.PAD, InterpolationMethod.RGB);
-			graphics.drawRoundRectComplex(0, 0, _width, _height, _topLeftRadius, _topRightRadius, _bottomLeftRadius, _bottomRightRadius);
+			if (_superEllipseCorners) {
+				drawRoundRectSuperEllipse(0, 0, _width, _height, _topLeftRadius, _topRightRadius, _bottomLeftRadius, _bottomRightRadius);
+			} else {
+				graphics.drawRoundRectComplex(0, 0, _width, _height, _topLeftRadius, _topRightRadius, _bottomLeftRadius, _bottomRightRadius);
+			}
 			graphics.endFill();
 		}
 
