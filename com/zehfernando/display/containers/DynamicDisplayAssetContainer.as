@@ -1,4 +1,5 @@
 package com.zehfernando.display.containers {
+	import flash.display.Bitmap;
 	import flash.utils.getTimer;
 
 	/**
@@ -52,6 +53,9 @@ package com.zehfernando.display.containers {
 
 		protected function applySmoothing():void {
 			// TODO! youtube doesn't allow it!
+			if (contentAsset != null) {
+				if (contentAsset is Bitmap) (contentAsset as Bitmap).smoothing = _smoothing;
+			}
 		}
 
 		override protected function redraw():void {
