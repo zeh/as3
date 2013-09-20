@@ -54,9 +54,9 @@ package com.zehfernando.data.types {
 		 * myDisplayObject.transform.colorTransform = colorWhite.toColorTransform();
 		 * </listing>
 		 */
-		public function toColorTransform():ColorTransform {
+		public function toColorTransform(__amount:Number = 1):ColorTransform {
 			// Return this color as a tinting color transform
-			return new ColorTransform(0, 0, 0, 1, _r*255, _g*255, _b*255, 0);
+			return new ColorTransform(1 - __amount, 1 - __amount, 1 - __amount, 1, _r*255*__amount, _g*255*__amount, _b*255*__amount, 0);
 		}
 
 		/**
