@@ -1,140 +1,83 @@
 package com.zehfernando.data {
-	import flash.utils.Dictionary;
+	import com.zehfernando.utils.console.log;
 	/**
 	 * @author zeh fernando
 	 */
 	public class ObjectPool {
 
-		// Properties
-		private static var lists:Dictionary;
+		private var objects:Array;
+		private var objectsUsed:Vector.<Boolean>;
+
+		private var numObjectsFree:int;
+
+		public var create:Function;
 
 		// ================================================================================================================
-		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
+		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		{
-			lists = new Dictionary(false);
-		}
-
-		public static function reset():void {
-			lists = new Dictionary(false);
-		}
-
-		// ================================================================================================================
-		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
-
-		private static function getList(__class:Class):ObjectList {
-			var objectList:ObjectList = lists[__class];
-			if (objectList == null) {
-				// Doesn't exist yet
-				objectList = new ObjectList(__class);
-				lists[__class] = objectList;
-			}
-			return objectList;
+		public function ObjectPool() {
+			objects = [];
+			objectsUsed = new Vector.<Boolean>();
+			numObjectsFree = 0;
 		}
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public static function get(__class:Class):* {
-			return getList(__class).get();
-		}
-
-		public static function put(__class:Class, __object:*):void {
-			getList(__class).put(__object);
-		}
-
-		// For debugging purposes
-		public static function getNumObjects(__class:Class = null):Number {
-			if (__class == null) {
-				// All objects
-				var c:Number = 0;
-				for (var ii:* in lists) {
-					c += getList(ii).getNumObjects();
+		public function get():* {
+			// Returns an unused object from the existing pool, or creating a new if none is available
+			if (numObjectsFree == 0) {
+				// No objects free, create a new one
+				if (create != null) {
+					var obj:* = create();
+					objects.push(obj);
+					objectsUsed.push(true);
+					return obj;
+				} else {
+					return null;
 				}
-				return c;
 			} else {
-				// One specific object
-				return getList(__class).getNumObjects();
+				// Find first unused object
+				for (var i:int = 0; i < objectsUsed.length; i++) {
+					if (!objectsUsed[i]) {
+						// This is not used
+						objectsUsed[i] = true;
+						numObjectsFree--;
+						return objects[i];
+					}
+				}
 			}
+			return null;
 		}
 
-		public static function getNumObjectsFree(__class:Class = null):Number {
-			if (__class == null) {
-				// All objects
-				var c:Number = 0;
-				for (var ii:* in lists) {
-					c += getList(ii).getNumObjectsFree();
-				}
-				return c;
+		public function put(__object:*):void {
+			// Put an object back in the pool
+			var index:int = objects.indexOf(__object);
+			if (index > -1) {
+				// Object is in the pool, just put it back
+				objectsUsed[index] = false;
+				numObjectsFree++;
 			} else {
-				// One specific object
-				return getList(__class).getNumObjectsFree();
+				// Object is not in the pool yet, add it
+				objects.push(__object);
+				objectsUsed.push(false);
+				numObjectsFree++;
 			}
 		}
 
-	}
-
-}
-import com.zehfernando.utils.console.warn;
-class ObjectList {
-
-	private var _class:Class;
-	private var objects:Array;
-	private var objectsUsed:Vector.<Boolean>;
-
-	private var numObjectsFree:int;
-
-	// ================================================================================================================
-	// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
-
-	public function ObjectList(__class:Class) {
-		_class = __class;
-		objects = [];
-		objectsUsed = new Vector.<Boolean>();
-		numObjectsFree = 0;
-	}
-
-	// ================================================================================================================
-	// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
-
-	public function get(): * {
-		// Returns an unused object from the existing pool, or creating a new if none is available
-		if (numObjectsFree == 0) {
-			// No objects free, create a new one
-			var obj:* = new _class();
-			objects.push(obj);
-			objectsUsed.push(true);
-			return obj;
-		} else {
-			// Find first unused object
-			for (var i:int = 0; i < objectsUsed.length; i++) {
-				if (!objectsUsed[i]) {
-					// This is not used
-					objectsUsed[i] = true;
-					numObjectsFree--;
-					return objects[i];
-				}
-			}
+		public function clear():void {
+			objects.length = 0;
+			objectsUsed.length = 0;
+			numObjectsFree = 0;
 		}
-	}
 
-	public function put(__object:*):void {
-		// Put an object back in the pool
-		var index:int = objects.indexOf(__object);
-		if (index > -1) {
-			objectsUsed[index] = false;
-			numObjectsFree++;
-		} else {
-			warn("Trying to put an object [" + __object + "] back into a pool of [" + _class + "] where it doesn't exist");
+		public function getNumObjectsFree():int {
+			return numObjectsFree;
 		}
-	}
 
-	public function getNumObjectsFree():int {
-		return numObjectsFree;
-	}
+		public function getNumObjects():int {
+			return objects.length;
+		}
 
-	public function getNumObjects():int {
-		return objects.length;
 	}
-
 }
