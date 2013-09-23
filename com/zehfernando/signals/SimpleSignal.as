@@ -9,7 +9,10 @@ package com.zehfernando.signals {
 
 		// Properties
 		private var functions:Vector.<Function>;
-		private var functionsDuplicate:Vector.<Function>; // For dispatching
+		private var functionsDuplicate:Vector.<Function>;			// For dispatching
+
+		private var ifd:int;										// i for dispatching (to limit garbage collection)
+		private var ifr:int;										// i for removal (to limit garbage collection)
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -30,24 +33,27 @@ package com.zehfernando.signals {
 		}
 
 		public function remove(__function:Function):Boolean {
-			var i:int = functions.indexOf(__function);
-			if (i > -1) {
-				functions.splice(i, 1);
+			ifr = functions.indexOf(__function);
+			if (ifr > -1) {
+				functions.splice(ifr, 1);
 				return true;
 			}
 			return false;
 		}
 
 		public function removeAll():Boolean {
-			var cleared:Boolean = functions.length > 0;
-			functions.length = 0;
-			return cleared;
+			if (functions.length > 0) {
+				functions.length = 0;
+				return true;
+			}
+			return false;
 		}
 
 		public function dispatch(...__args:Array):void {
 			functionsDuplicate = functions.concat();
-			for (var i:int = 0; i < functionsDuplicate.length; i++) {
-				functionsDuplicate[i].apply(undefined, __args);
+			functionsDuplicate.fixed = true;
+			for (ifd = 0; ifd < functionsDuplicate.length; ifd++) {
+				functionsDuplicate[ifd].apply(undefined, __args);
 			}
 			functionsDuplicate = null;
 		}
