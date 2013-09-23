@@ -439,7 +439,7 @@ class AssetItemInfo {
 	}
 
 	public function getAsJSON():Object {
-		if (isLoaded) return JSON.parse((loadingObject as URLLoader).data);
+		if (isLoaded) return JSON.parse(((loadingObject as URLLoader).data as String).replace(/\/\*.*?\*\//sg, ""));
 		return null;
 	}
 
