@@ -187,7 +187,7 @@ package com.zehfernando.display.templates.application {
 
 		private function waitUntilStageSizeIsKnownToStart(__e:Event = null):void {
 			// Only allows initializing if the stage size is known
-			if (AppUtils.getStage().stageWidth > 0) {
+			if (AppUtils.getStage().stageWidth > 0 && AppUtils.getStage().stageHeight > 0) {
 				removeEventListener(Event.ENTER_FRAME, waitUntilStageSizeIsKnownToStart);
 				start();
 			} else {
