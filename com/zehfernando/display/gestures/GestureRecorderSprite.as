@@ -66,9 +66,9 @@ package com.zehfernando.display.gestures {
 				stage.removeEventListener(MouseEvent.MOUSE_UP, onMouseUp);
 				stage.removeEventListener(MouseEvent.MOUSE_MOVE, onMouseMove);
 
-				dispatchEvent(new Event(EVENT_GESTURE_COMPLETED));
-
 				if (_drawLines) graphics.clear();
+
+				dispatchEvent(new Event(EVENT_GESTURE_COMPLETED));
 			}
 		}
 
