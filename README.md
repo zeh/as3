@@ -10,7 +10,7 @@ Contents of notable importance:
 
 * `com.zehfernando.models.GameLooper` - A class for proper code looping, especially for games. ENTER_FRAME on steroids.
 
-* `com.zehfernando.input.binding.KeyActionBinder` - A class for binding more abstract "actions" to Keyboard or GameInput (game controller) events. Used for easier game input in things like the OUYA (uses AIR).
+* `com.zehfernando.input.binding.KeyActionBinder` - A class for binding more abstract "actions" to Keyboard or GameInput (game controller) events. Used for easier game input in things like the OUYA (uses AIR). Hosted [at its own repository](https://github.com/zeh/key-action-binder), but copied here for reference.
 
 * `com.zehfernando.display.components.RichTextSprite` - TLE-based rich text element. Powerful, but still lacking some features.
 
