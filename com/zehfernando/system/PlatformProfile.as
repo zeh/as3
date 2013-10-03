@@ -21,8 +21,12 @@ package com.zehfernando.system {
 		public var showMouse:Boolean;			// Whether the mouse is shown or not
 		public var antiAliasLevel:int;			// Anti-alias level for texture/polygon edges in starling; 0 (none) to (16) maximum. Default is 0
 		public var textureSmoothing:String;		// Texture smoothing; [none|bilinear|trilinear]. Default is bilinear. None is nearest neighbor
-		public var backgroundFormat:String;		// Background format (Context3DTextureFormat); [bgra|compressed|compressedAlpha|bgrPacked565|bgraPacked4444]. Default is bgra
+		public var geometryFormat:String;		// Static geometry format (Context3DTextureFormat); [bgra|compressed|compressedAlpha|bgrPacked565|bgraPacked4444]. Default is bgra
+		public var geometryTextureSize:int;		// Ideal size for geometry chunks, default 512
 		public var maximumTextureSize:int;		// Maximum texture dimensions. Default 2048
+		public var forceFullscreen:Boolean;		// If true, never use "window" mode
+		public var showStatsSimple:Boolean;		// If true, shows starling statistics
+		public var showStatsComplex:Boolean;	// If true, shows my statistics
 		public var context3DProfile:String;		// Context3DProfile. [baseline|baselineConstrained|baselineExtended]. Default is baselineConstrained. extended increases maximum texture size to 4096.
 
 
@@ -38,8 +42,10 @@ package com.zehfernando.system {
 			showMouse = true;
 			antiAliasLevel = 0;
 			textureSmoothing = TextureSmoothing.BILINEAR;
-			backgroundFormat = Context3DTextureFormat.BGRA;
+			geometryFormat = Context3DTextureFormat.BGRA;
+			geometryTextureSize = 512;
 			maximumTextureSize = 2048;
+			forceFullscreen = false;
 			context3DProfile = Context3DProfile.BASELINE_CONSTRAINED;
 		}
 
