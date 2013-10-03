@@ -74,6 +74,7 @@ package com.zehfernando.geom {
 			if (isNaN(__length)) return;
 
 			var l:Number = length;
+			if (l == 0) return;
 			var rest:Number = l - __length;
 			var f0:Number = __alignment * rest;
 			var f1:Number = (1-__alignment) * rest;
@@ -83,8 +84,8 @@ package com.zehfernando.geom {
 				pp2 = Point.interpolate(p2, p1, (l-f1) / l);
 				p2.setTo(pp2.x, pp2.y);
 			} else if (f1 == 0) {
-				// Fast = end
-				pp2 = Point.interpolate(p2, p1, f0 / l);
+				// Fast - end
+				pp1 = Point.interpolate(p2, p1, f0 / l);
 				p1.setTo(pp1.x, pp1.y);
 			} else {
 				// Normal, middle
