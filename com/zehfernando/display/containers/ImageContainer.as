@@ -28,7 +28,7 @@ package com.zehfernando.display.containers {
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
 		public function ImageContainer(__width:Number = 100, __height:Number = 100, __backgroundColor:Number = 0x000000) {
-			super (__width, __height, __backgroundColor);
+			super(__width, __height, __backgroundColor);
 		}
 
 		// ================================================================================================================
@@ -63,6 +63,7 @@ package com.zehfernando.display.containers {
 				try {
 					if (Boolean(loader.content)) {
 						Bitmap(loader.content).smoothing = _smoothing;
+						//Bitmap(loader.content).pixelSnapping = PixelSnapping.ALWAYS;
 						// Connection to http://static.ak.fbcdn.net/rsrc.php/v1/yL/r/HsTZSDw4avx.gif?type=large halted - not permitted from http://fakehost.com/5GUM_COACHELLA2912/deploy/site/index.swf
 					}
 				} catch (e:Error) {

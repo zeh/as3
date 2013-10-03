@@ -443,7 +443,7 @@ package com.zehfernando.input.binding {
 		 *     player.moveRight();
 		 * }
 		 * </pre>
-		 * 
+		 *
 		 * @see http://zehfernando.com/2013/keyactionbinder-updates-time-sensitive-activations-new-constants/
 		 */
 		public function isActionActivated(__action:String, __timeToleranceSeconds:Number = 0):Boolean {
