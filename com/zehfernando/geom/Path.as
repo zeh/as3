@@ -1,9 +1,16 @@
 package com.zehfernando.geom {
+	import com.zehfernando.utils.console.log;
+	import com.zehfernando.utils.console.warn;
+
 	import flash.geom.Point;
 	/**
 	 * @author zeh fernando
 	 */
 	public class Path {
+
+		// Constants
+		public static var WINDING_CLOCKWISE:String = "clockwise";
+		public static var WINDING_COUNTERCLOCKWISE:String = "counterclockwise";
 
 		// Properties
 		public var points:Vector.<Point>;
@@ -122,9 +129,10 @@ package com.zehfernando.geom {
 		public function simplify():void {
 			// Simplify the path by removing middle points in lines that have the same angle
 //			var pl:int = points.length;
+			// TODO: better understood closed loops
 			for (var i:int = 1; i < points.length-1; i++) {
-				if (Math.atan2(points[i].y-points[i-1].y, points[i].x-points[i-1].x) == Math.atan2(points[i+1].y-points[i].y, points[i+1].x-points[i].x)) {
-					// Same angle
+				if (points[i].equals(points[i-1]) || Math.atan2(points[i].y-points[i-1].y, points[i].x-points[i-1].x) == Math.atan2(points[i+1].y-points[i].y, points[i+1].x-points[i].x)) {
+					// Same point or same angle
 					points.splice(i, 1);
 					i--;
 				}
@@ -158,6 +166,65 @@ package com.zehfernando.geom {
 			}
 		}
 
+		public function inflate(__amount:Number, __loop:Boolean = false):void {
+			// Inflates the path by a given amount
+			// If "loop", assumes it's a closed loop
+			// TODO: milter limit
+
+			const HALF_PI:Number = Math.PI * 0.5;
+			var winding:String = getWinding();
+			if (winding == Path.WINDING_CLOCKWISE) __amount *= -1; //? This should be the opposite
+			var p:Point, prevP:Point, nextP:Point;
+			var nextAngle:Number, prevAngle:Number;
+			var newPoints:Vector.<Point> = new Vector.<Point>(points.length, false);
+
+			var nextPA:Point, nextPB:Point;
+			var prevPA:Point, prevPB:Point;
+			var prevLine:Line, nextLine:Line;
+
+			for (var i:int = 0; i < points.length; i++) {
+				p = points[i];
+				nextP = points[(i+1) % points.length];
+				prevP = points[(i-1+points.length) % points.length];
+				nextAngle = Math.atan2(nextP.y - p.y, nextP.x - p.x);
+				prevAngle = Math.atan2(p.y - prevP.y, p.x - prevP.x);
+				nextPA = Point.polar(__amount, nextAngle + HALF_PI).add(p);
+				nextPB = Point.polar(__amount, nextAngle + HALF_PI).add(nextP);
+				prevPA = Point.polar(__amount, prevAngle + HALF_PI).add(prevP);
+				prevPB = Point.polar(__amount, prevAngle + HALF_PI).add(p);
+				nextLine = new Line(nextPA, nextPB, true);
+				prevLine = new Line(prevPA, prevPB, true);
+				if (i == 0 && !__loop) {
+					// Start
+					newPoints[i] = nextPA;
+				} else if (i == points.length - 1 && !__loop) {
+					// End
+					newPoints[i] = prevPB;
+				} else {
+					// Mid-point
+					if (nextLine.intersectsLine(prevLine)) {
+						// There's an intersection, use it
+						newPoints[i] = nextLine.intersection(prevLine);
+					} else {
+						// No intersection, try to extend
+						prevLine.setLength(prevLine.length + 1000, 0);
+						nextLine.setLength(nextLine.length + 1000, 1);
+						if (nextLine.intersectsLine(prevLine)) {
+							// There's an intersection, use it
+							newPoints[i] = nextLine.intersection(prevLine);
+						} else {
+							warn("Intersection too long " + nextPA, prevPB, i, "/", points.length);
+							// Too long, must cut?
+							// TODO: use milter limit
+							newPoints[i] = new Point((nextPA.x + prevPB.x)/2, (nextPA.y + prevPB.y)/2);
+						}
+					}
+				}
+			}
+
+			points = newPoints;
+		}
+
 		public static function getSimilarity(__path0:Path, __path1:Path):Number {
 			// Return the similarity between two paths, by measuring the distance of points at the same breakpoints in the path
 			// simplify() and normalize() the paths before calling this function!
@@ -183,6 +250,22 @@ package com.zehfernando.geom {
 				ps.push(points[i].y);
 			}
 			return ps;
+		}
+
+		public function getWinding():String {
+			var area:Number = getArea();
+			return area > 0 ? Path.WINDING_COUNTERCLOCKWISE : Path.WINDING_CLOCKWISE;
+		}
+
+		public function getArea():Number {
+			// Calculate area of non-self-intersecting polygon, assumes it's closed
+			var area:Number = 0;
+			var j:Number;
+			for (var i:int = 0; i < points.length; i++) {
+				j = (i + 1) % points.length;
+				area += points[j].x * points[i].y - points[i].x * points[j].y;
+			}
+			return area / 2;
 		}
 	}
 }
