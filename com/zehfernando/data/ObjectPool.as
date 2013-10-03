@@ -1,5 +1,4 @@
 package com.zehfernando.data {
-	import com.zehfernando.utils.console.log;
 	/**
 	 * @author zeh fernando
 	 */
