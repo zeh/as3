@@ -5,8 +5,8 @@ package com.zehfernando.controllers.focus {
 	 * @author zeh fernando
 	 */
 	public interface IFocusable {
-		function setFocused(__isFocused:Boolean):void;						// So it can tell the item whether it's focused or not
-		function getBounds(__targetCoordinateSpace:DisplayObject):Rectangle;	// To calculate position for moving with the arrows
+		function setFocused(__isFocused:Boolean, __immediate:Boolean = false):void;			// So it can tell the item whether it's focused or not
+		function getBounds(__targetCoordinateSpace:DisplayObject):Rectangle;				// To calculate position for moving with the arrows
 		function wasClickSimulated():Boolean;												// Whether the click came from simulate() or not
 		function simulateEnterDown():void;
 		function simulateEnterUp():void;

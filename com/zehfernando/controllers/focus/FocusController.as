@@ -45,7 +45,7 @@ package com.zehfernando.controllers.focus {
 		private var _onReleasedEnter:SimpleSignal;
 		private var _onMovedFocus:SimpleSignal;
 
-		private var isActivated:Boolean;
+		private var _isActivated:Boolean;
 
 
 		// ================================================================================================================
@@ -91,12 +91,12 @@ package com.zehfernando.controllers.focus {
 		private function showCurrentFocus():void {
 			if (_currentElement == null) _currentElement = getDefaultElement();
 			if (_currentElement != null) _currentElement.setFocused(true);
-			isActivated = true;
+			_isActivated = true;
 		}
 
 		private function hideCurrentFocus():void {
 			if (_currentElement != null) _currentElement.setFocused(false);
-			isActivated = false;
+			_isActivated = false;
 		}
 
 		private function moveFocus(__direction:String):void {
@@ -132,7 +132,7 @@ package com.zehfernando.controllers.focus {
 				_currentElement = nextElement;
 			}
 
-			isActivated = true;
+			_isActivated = true;
 
 			// End
 			_onMovedFocus.dispatch();
@@ -203,6 +203,7 @@ package com.zehfernando.controllers.focus {
 		public function addElement(__element:IFocusable):void {
 			if (elements.indexOf(__element) < 0) elements.push(__element);
 			if (_currentElement == null) _currentElement = __element;
+			if (_isActivated) _currentElement.setFocused(true, true);
 		}
 
 		public function removeElement(__element:IFocusable):void {
@@ -213,17 +214,17 @@ package com.zehfernando.controllers.focus {
 		}
 
 		public function executeCommand(__command:String):void {
-			if (__command == COMMAND_ACTIVATE)			showCurrentFocus();
-			if (__command == COMMAND_DEACTIVATE)		hideCurrentFocus();
-			if (__command == COMMAND_ACTIVATION_TOGGLE)	isActivated ? hideCurrentFocus() : showCurrentFocus();
-			if (__command == COMMAND_MOVE_LEFT)			moveFocus(DIRECTION_LEFT);
-			if (__command == COMMAND_MOVE_RIGHT)		moveFocus(DIRECTION_RIGHT);
-			if (__command == COMMAND_MOVE_UP)			moveFocus(DIRECTION_UP);
-			if (__command == COMMAND_MOVE_DOWN)			moveFocus(DIRECTION_DOWN);
-			if (__command == COMMAND_MOVE_PREVIOUS)		moveFocus(DIRECTION_PREVIOUS);
-			if (__command == COMMAND_MOVE_NEXT)			moveFocus(DIRECTION_NEXT);
-			if (__command == COMMAND_ENTER_DOWN)		keyEnterDown();
-			if (__command == COMMAND_ENTER_UP)			keyEnterUp();
+			if (__command == COMMAND_ACTIVATE)					showCurrentFocus();
+			if (__command == COMMAND_DEACTIVATE)				hideCurrentFocus();
+			if (__command == COMMAND_ACTIVATION_TOGGLE)			_isActivated ? hideCurrentFocus() : showCurrentFocus();
+			if (__command == COMMAND_MOVE_LEFT)					moveFocus(DIRECTION_LEFT);
+			if (__command == COMMAND_MOVE_RIGHT)				moveFocus(DIRECTION_RIGHT);
+			if (__command == COMMAND_MOVE_UP)					moveFocus(DIRECTION_UP);
+			if (__command == COMMAND_MOVE_DOWN)					moveFocus(DIRECTION_DOWN);
+			if (__command == COMMAND_MOVE_PREVIOUS)				moveFocus(DIRECTION_PREVIOUS);
+			if (__command == COMMAND_MOVE_NEXT)					moveFocus(DIRECTION_NEXT);
+			if (__command == COMMAND_ENTER_DOWN)				keyEnterDown();
+			if (__command == COMMAND_ENTER_UP)					keyEnterUp();
 		}
 
 
@@ -232,6 +233,10 @@ package com.zehfernando.controllers.focus {
 
 		public function get currentFocusedElement():IFocusable {
 			return _currentElement;
+		}
+
+		public function get isActivated():Boolean {
+			return _isActivated;
 		}
 
 		public function get onPressedEnter():SimpleSignal {
