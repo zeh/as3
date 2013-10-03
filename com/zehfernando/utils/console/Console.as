@@ -87,6 +87,9 @@ package com.zehfernando.utils.console {
 
 		protected static var _lastLineWritten:String;				// Last line written, for events
 
+		protected static var _textFieldX:Number;
+		protected static var _textFieldWidth:Number;
+
 		// Instances
 		protected static var eventDispatcher:EventDispatcher;		// For event dispatching
 
@@ -358,7 +361,7 @@ package com.zehfernando.utils.console {
 		public static function logOff():void {
 			// Turns off log for one class
 			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[2]);
-			echo("Log is now set to OFF", LOG_TYPE_INFO);
+			echo("Log is now set to OFF", LOG_TYPE_DEBUG);
 			logStates[className] = LOG_STATE_OFF;
 		}
 
@@ -375,8 +378,8 @@ package com.zehfernando.utils.console {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		protected static function onScreenResizeResizeTextField(e:Event):void {
-			textField.x = AppUtils.getStage().stageWidth * 0.5;
-			textField.width = AppUtils.getStage().stageWidth * 0.5;
+			textField.x = isNaN(_textFieldX) ? AppUtils.getStage().stageWidth * 0.5 : _textFieldX;
+			textField.width = isNaN(_textFieldWidth) ? AppUtils.getStage().stageWidth * 0.5 : _textFieldWidth;
 			textField.height = AppUtils.getStage().stageHeight;
 		}
 
@@ -419,6 +422,25 @@ package com.zehfernando.utils.console {
 			return _lastLineWritten;
 		}
 
+		public static function get textFieldX():Number {
+			return _textFieldX;
+		}
+		public static function set textFieldX(__value:Number):void {
+			if (_textFieldX != __value) {
+				_textFieldX = __value;
+				if (textField != null) onScreenResizeResizeTextField(null);
+			}
+		}
+
+		public static function get textFieldWidth():Number {
+			return _textFieldWidth;
+		}
+		public static function set textFieldWidth(__value:Number):void {
+			if (_textFieldWidth != __value) {
+				_textFieldWidth = __value;
+				if (textField != null) onScreenResizeResizeTextField(null);
+			}
+		}
 	}
 }
 
