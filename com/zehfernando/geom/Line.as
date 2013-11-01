@@ -96,6 +96,12 @@ package com.zehfernando.geom {
 			}
 		}
 
+		public function setAngle(__angle:Number):void {
+			// Sets the angle, from the starting point
+			// TODO: allow alignment of the new angle?
+			p2 = p1.add(Point.polar(length, __angle));
+		}
+
 		public function clone():Line {
 			return new Line(p1.clone(), p2.clone());
 		}
@@ -106,6 +112,10 @@ package com.zehfernando.geom {
 
 		public function get length():Number {
 			return Point.distance(p1, p2);
+		}
+
+		public function get angle():Number {
+			return Math.atan2(p2.y - p1.y, p2.x - p1.x);
 		}
 	}
 }
