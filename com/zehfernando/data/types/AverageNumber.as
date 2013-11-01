@@ -2,9 +2,16 @@ package com.zehfernando.data.types {
 	/**
 	 * @author zeh
 	 */
-	public class MedianNumber {
+	public class AverageNumber {
 
-		// Like AttenuatedNumber, but using a median
+		// Like AttenuatedNumber, but using an average
+
+		// https://www.khanacademy.org/math/arithmetic/applying-math-reasoning-topic/reading_data/v/reading-bar-charts-3
+		// Midrange: (higher + lower) / 2
+		// Median: middle item
+		// Average or mean: sumAllItems / numItems
+		// Mode: most common item
+		// Range: higher - lower
 
 		// Properties
 		private var _length:int;
@@ -21,7 +28,7 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function MedianNumber(__maxLength:int = 3, __startingValue:Number = NaN) {
+		public function AverageNumber(__maxLength:int = 3, __startingValue:Number = NaN) {
 			_maxLength = __maxLength;
 			_values = new Vector.<Number>();
 			_values.length = _maxLength;
