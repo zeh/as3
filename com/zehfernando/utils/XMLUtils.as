@@ -125,8 +125,8 @@ package com.zehfernando.utils {
 			//return StringUtils.stripDoubleCRLF(str);
 		}
 
-		public static function getFirstNode(__xmlList:XMLList): XML {
-			if (__xmlList.length() > 0) return __xmlList[0];
+		public static function getFirstNode(__xmlList:XMLList):XML {
+			if (__xmlList != null && __xmlList.length() > 0) return __xmlList[0];
 			return null;
 		}
 	}
