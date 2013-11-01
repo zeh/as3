@@ -1,8 +1,8 @@
 package com.zehfernando.geom {
-	import com.zehfernando.utils.console.log;
 	import com.zehfernando.utils.console.warn;
 
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	/**
 	 * @author zeh fernando
 	 */
@@ -101,32 +101,12 @@ package com.zehfernando.geom {
 //
 //		}
 
+
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
 
-		public function get length():Number {
-			var l:Number = 0;
-			for (var i:int = 0; i < points.length-1; i++) {
-				l += Point.distance(points[i], points[i+1]);
-			}
-			return l;
-		}
-
-		public function getPosition(__position:Number):Point {
-			// Returns a point in this position in the path (0 to length)
-			if (__position < 0) return points[0].clone();
-
-			var p:Number = 0;
-			var l:Number;
-			for (var i:int = 0; i < points.length-1; i++) {
-				l = Point.distance(points[i], points[i+1]);
-				if (p <= __position && p + l >= __position) {
-					return Point.interpolate(points[i+1], points[i], (__position - p) / l);
-				}
-				p += l;
-			}
-
-			return points[points.length-1].clone();
+		public function clone():Path {
+			return Path.fromPoints(points, true);
 		}
 
 		public function simplify():void {
@@ -146,26 +126,29 @@ package com.zehfernando.geom {
 		public function normalize():void {
 			// Make sures all coordinates are from 0 to 1 by scaling the whole path back
 
+			var bounds:Rectangle = getBounds();
 			var i:int;
-			var minX:Number;
-			var maxX:Number;
-			var minY:Number;
-			var maxY:Number;
-
-			// Read minimum and maximums
-			for (i = 0; i < points.length; i++) {
-				if (isNaN(minX) || points[i].x < minX) minX = points[i].x;
-				if (isNaN(maxX) || points[i].x > maxX) maxX = points[i].x;
-				if (isNaN(minY) || points[i].y < minY) minY = points[i].y;
-				if (isNaN(maxY) || points[i].y > maxY) maxY = points[i].y;
-			}
 
 			// Apply mapped values
-			var w:Number = maxX - minX;
-			var h:Number = maxY - minY;
 			for (i = 0; i < points.length; i++) {
-				points[i].x = (points[i].x - minX) / w;
-				points[i].y = (points[i].y - minY) / h;
+				points[i].setTo((points[i].x - bounds.x) / bounds.width, (points[i].y - bounds.y) / bounds.height);
+			}
+		}
+
+		public function translate(__x:Number, __y:Number):void {
+			// Moves all points by a certain amount
+			var i:int;
+			for (i = 0; i < points.length; i++) {
+				points[i].setTo(points[i].x + __x, points[i].y + __y);
+			}
+		}
+
+		public function scale(__scaleX:Number, __scaleY:Number, __pivot:Point = null):void {
+			// Moves all points by a certain amount
+			var i:int;
+			if (__pivot == null) __pivot = new Point(0, 0);
+			for (i = 0; i < points.length; i++) {
+				points[i].setTo((points[i].x - __pivot.x) * __scaleX + __pivot.x, (points[i].y - __pivot.y) * __scaleY + __pivot.y);
 			}
 		}
 
@@ -228,6 +211,37 @@ package com.zehfernando.geom {
 			points = newPoints;
 		}
 
+
+		// ================================================================================================================
+		// ACCESSOR functions ---------------------------------------------------------------------------------------------
+
+		public function get length():Number {
+			var l:Number = 0;
+			for (var i:int = 0; i < points.length-1; i++) {
+				l += Point.distance(points[i], points[i+1]);
+			}
+			return l;
+		}
+
+		public function getPosition(__position:Number):Point {
+			// Returns a point in this position in the path (0 to length)
+			if (__position <= 0) return points[0].clone();
+			if (__position >= 1) return points[points.length-1].clone();
+
+			var p:Number = 0;
+			var l:Number;
+			for (var i:int = 0; i < points.length-1; i++) {
+				l = Point.distance(points[i], points[i+1]);
+				if (p <= __position && p + l >= __position) {
+					return Point.interpolate(points[i+1], points[i], (__position - p) / l);
+				}
+				p += l;
+			}
+
+			// Should never happen
+			return null;
+		}
+
 		public static function getSimilarity(__path0:Path, __path1:Path):Number {
 			// Return the similarity between two paths, by measuring the distance of points at the same breakpoints in the path
 			// simplify() and normalize() the paths before calling this function!
@@ -269,6 +283,25 @@ package com.zehfernando.geom {
 				area += points[j].x * points[i].y - points[i].x * points[j].y;
 			}
 			return area / 2;
+		}
+
+		public function getBounds():Rectangle {
+			// Find the bounds of all the points in the path
+			var i:int;
+			var minX:Number;
+			var maxX:Number;
+			var minY:Number;
+			var maxY:Number;
+
+			// Read minimum and maximums
+			for (i = 0; i < points.length; i++) {
+				if (isNaN(minX) || points[i].x < minX) minX = points[i].x;
+				if (isNaN(maxX) || points[i].x > maxX) maxX = points[i].x;
+				if (isNaN(minY) || points[i].y < minY) minY = points[i].y;
+				if (isNaN(maxY) || points[i].y > maxY) maxY = points[i].y;
+			}
+
+			return new Rectangle(minX, minY, maxX - minX, maxY - minY);
 		}
 	}
 }
