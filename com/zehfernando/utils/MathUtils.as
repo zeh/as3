@@ -89,5 +89,19 @@ package com.zehfernando.utils {
 			__value += __min;
 			return __value;
 		}
+
+		public static function isPowerOfTwo(__value:Number):Boolean {
+			// Return true if a number if a power of two (2, 4, 8, etc)
+			// There's probably a better way, but trying to avoid bitwise manipulations
+			while (__value % 2 == 0 && __value > 2) __value /= 2;
+			return __value == 2;
+		}
+
+		public static function getHighestPowerOfTwo(__value:Number):int {
+			// Return a power of two number that is higher than the passed value
+			var c:int = 1;
+			while (c < __value) c *= 2;
+			return c;
+		}
 	}
 }
