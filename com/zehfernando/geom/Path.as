@@ -25,25 +25,28 @@ package com.zehfernando.geom {
 		// ================================================================================================================
 		// STATIC functions -----------------------------------------------------------------------------------------------
 
-		public static function fromPoints(__points:Vector.<Point>, __clone:Boolean = true):Path {
+		public static function fromPoints(__points:Vector.<Point>, __clone:Boolean = true, __optimize:Boolean = false):Path {
 			var path:Path = new Path();
 			if (__clone) {
 				for (var i:int = 0; i < __points.length; i++) path.points.push(__points[i].clone());
 			} else {
 				path.points = __points;
 			}
+			if (__optimize) path.simplify();
 			return path;
 		}
 
-		public static function fromCoordinates(__coordinates:Vector.<Number>):Path {
+		public static function fromCoordinates(__coordinates:Vector.<Number>, __optimize:Boolean = false):Path {
 			var path:Path = new Path();
 			for (var i:int = 0; i < __coordinates.length; i+=2) path.points.push(new Point(__coordinates[i], __coordinates[i+1]));
+			if (__optimize) path.simplify();
 			return path;
 		}
 
-		public static function fromCoordinatesArray(__coordinates:Array):Path {
+		public static function fromCoordinatesArray(__coordinates:Array, __optimize:Boolean = false):Path {
 			var path:Path = new Path();
 			for (var i:int = 0; i < __coordinates.length; i+=2) path.points.push(new Point(__coordinates[i], __coordinates[i+1]));
+			if (__optimize) path.simplify();
 			return path;
 		}
 
