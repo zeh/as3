@@ -89,7 +89,10 @@ package com.zehfernando.controllers.focus {
 		}
 
 		private function showCurrentFocus():void {
-			if (_currentElement == null) _currentElement = getDefaultElement();
+			if (_currentElement == null || !_currentElement.canReceiveFocus()) {
+				if (_currentElement != null) _currentElement.setFocused(false);
+				_currentElement = getDefaultElement();
+			}
 			if (_currentElement != null) _currentElement.setFocused(true);
 			_isActivated = true;
 		}
@@ -180,10 +183,12 @@ package com.zehfernando.controllers.focus {
 			var newRect:Rectangle;
 
 			for (var i:int = 0; i < elements.length; i++) {
-				newRect = elements[i].getBounds(stage);
-				if (element == null || newRect.y < elementRect.y || (newRect.y == elementRect.y && newRect.x < elementRect.x)) {
-					element = elements[i];
-					elementRect = newRect;
+				if (elements[i].canReceiveFocus()) {
+					newRect = elements[i].getBounds(stage);
+					if (element == null || newRect.y < elementRect.y || (newRect.y == elementRect.y && newRect.x < elementRect.x)) {
+						element = elements[i];
+						elementRect = newRect;
+					}
 				}
 			}
 
@@ -202,14 +207,25 @@ package com.zehfernando.controllers.focus {
 
 		public function addElement(__element:IFocusable):void {
 			if (elements.indexOf(__element) < 0) elements.push(__element);
-			if (_currentElement == null) _currentElement = __element;
-			if (_isActivated) _currentElement.setFocused(true, true);
+			var changedFocus:Boolean = false;
+			if (_currentElement == null && __element.canReceiveFocus()) {
+				_currentElement = __element;
+				changedFocus = true;
+			}
+			if (_isActivated && _currentElement != null) {
+				_currentElement.setFocused(true, true);
+				changedFocus = true;
+			}
+			if (changedFocus) _onMovedFocus.dispatch();
 		}
 
 		public function removeElement(__element:IFocusable):void {
 			if (elements.indexOf(__element) > -1) {
 				elements.splice(elements.indexOf(__element), 1);
-				if (_currentElement == __element) _currentElement = null;
+				if (_currentElement == __element) {
+					_currentElement = null;
+					_onMovedFocus.dispatch();
+				}
 			}
 		}
 
@@ -225,6 +241,16 @@ package com.zehfernando.controllers.focus {
 			if (__command == COMMAND_MOVE_NEXT)					moveFocus(DIRECTION_NEXT);
 			if (__command == COMMAND_ENTER_DOWN)				keyEnterDown();
 			if (__command == COMMAND_ENTER_UP)					keyEnterUp();
+		}
+
+		public function checkValidityOfCurrentElement(__immediate:Boolean = false):void {
+			// Checks if the current element can still be selected
+			if (_currentElement != null && !_currentElement.canReceiveFocus()) {
+				if (_isActivated) _currentElement.setFocused(false, __immediate);
+				_currentElement = getDefaultElement();
+				if (_isActivated) _currentElement.setFocused(true, __immediate);
+				_onMovedFocus.dispatch();
+			}
 		}
 
 
