@@ -1,6 +1,4 @@
 package com.zehfernando.data {
-	import com.zehfernando.utils.console.log;
-	import com.zehfernando.utils.console.logOff;
 	import com.zehfernando.utils.console.warn;
 
 	import flash.display.BitmapData;
@@ -28,8 +26,6 @@ package com.zehfernando.data {
 			usedBitmaps = new Vector.<BitmapData>();
 
 			addPool(this);
-
-			logOff();
 		}
 
 
@@ -72,9 +68,9 @@ package com.zehfernando.data {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function get(__width:int, __height:int, __transparent:Boolean = false, __fillColor:int = -1):BitmapData {
+		public function get(__width:int, __height:int, __transparent:Boolean = false, __fillColor:uint = 0x00000000):BitmapData {
 			// Search for a valid bitmapdata
-			log("Borrowing a bitmap of "+__width+"x"+__height);
+			//log("Borrowing a bitmap of "+__width+"x"+__height);
 			var i:int;
 			var bmp:BitmapData;
 			for (i = 0; i < availableBitmaps.length; i++) {
@@ -82,25 +78,25 @@ package com.zehfernando.data {
 					usedBitmaps.push(availableBitmaps[i]);
 					availableBitmaps.splice(i, 1);
 
-					log("-->      Used bitmaps: " + usedBitmaps.length);
-					log("--> Available bitmaps: " + availableBitmaps.length);
+					//log("-->      Used bitmaps: " + usedBitmaps.length);
+					//log("--> Available bitmaps: " + availableBitmaps.length);
 
 					bmp = usedBitmaps[usedBitmaps.length-1];
 
-					if (__fillColor >= 0) bmp.fillRect(bmp.rect, __fillColor);
+					bmp.fillRect(bmp.rect, __fillColor);
 
 					return bmp;
 				}
 			}
 
-			log("  Doesn't exist, need to create first");
+			//log("  Doesn't exist, need to create first");
 
 			// No valid bitmapdata found, create a new one
-			bmp = new BitmapData(__width, __height, __transparent, __fillColor >= 0 ? __fillColor : 0x00000000);
+			bmp = new BitmapData(__width, __height, __transparent, __fillColor);
 			usedBitmaps.push(bmp);
 
-			log("-->      Used bitmaps: " + usedBitmaps.length);
-			log("--> Available bitmaps: " + availableBitmaps.length);
+			//log("-->      Used bitmaps: " + usedBitmaps.length);
+			//log("--> Available bitmaps: " + availableBitmaps.length);
 
 			return bmp;
 		}
@@ -108,7 +104,7 @@ package com.zehfernando.data {
 		public function put(__bitmap:BitmapData):void {
 			var i:int = usedBitmaps.indexOf(__bitmap);
 
-			log ("returning bitmap of "+__bitmap.width+"x"+__bitmap.height);
+			//log ("returning bitmap of "+__bitmap.width+"x"+__bitmap.height);
 
 			if (i < 0) {
 				warn("BitmapData being returned is not listed as used: will dispose of it instead");
@@ -118,8 +114,8 @@ package com.zehfernando.data {
 				usedBitmaps.splice(i, 1);
 			}
 
-			log("-->      Used bitmaps: " + usedBitmaps.length);
-			log("--> Available bitmaps: " + availableBitmaps.length);
+			//log("-->      Used bitmaps: " + usedBitmaps.length);
+			//log("--> Available bitmaps: " + availableBitmaps.length);
 		}
 
 		public function clean():void {
