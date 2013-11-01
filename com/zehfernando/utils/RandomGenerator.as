@@ -35,6 +35,10 @@ package com.zehfernando.utils {
 			return __min + Math.random() * (__max-__min);
 		}
 
+		public static function getInIntegerRange(__min:Number, __max:Number):Number {
+			return Math.round(__min + Math.random() * (__max-__min));
+		}
+
 		public static function getFromVector(__vector:Vector.<*>):Vector.<*> {
 			return __vector[Math.floor(Math.random() * __vector.length)];
 		}
@@ -45,6 +49,10 @@ package com.zehfernando.utils {
 
 		public static function getColor():uint {
 			return (Math.random() * 0xffffff) & 0xffffff;
+		}
+
+		public static function getBoolean():Boolean {
+			return Math.random() > 0.5;
 		}
 	}
 }
