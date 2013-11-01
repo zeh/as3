@@ -171,6 +171,10 @@ package com.zehfernando.models {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
+		public function updateOnce(__callback:Function):void {
+			__callback(currentTimeSeconds, tickDeltaTimeSeconds, currentTick);
+		}
+
 		/**
 		 * Resumes running this instance, if it's in a paused state.
 		 *
