@@ -521,6 +521,7 @@ package com.zehfernando.net.loaders {
 			// NetStream.Play.TransitionComplete
 			switch (__newData["code"]) {
 				case "NetStream.Play.Complete":
+					pause();
 					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.PLAY_FINISH));
 					break;
 			}
@@ -619,7 +620,7 @@ package com.zehfernando.net.loaders {
 			startMonitoringLoading();
 		}
 
-		public function dispose():void {
+		public function dispose(__skipNetstreamDispose:Boolean = false):void {
 			stopMonitoringLoading();
 			stopMonitoringTime();
 
@@ -634,7 +635,7 @@ package com.zehfernando.net.loaders {
 				_video = null;
 
 				_netStream.pause();
-				_netStream.close();
+				if (!__skipNetstreamDispose) _netStream.dispose(); // .close()
 				_netStream = null;
 
 				_netConnection.close();
@@ -679,9 +680,9 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		public function seek(__time:Number):void {
+		public function seek(__timeSeconds:Number):void {
 			if (_hasVideo) {
-				_netStream.seek(__time);
+				_netStream.seek(__timeSeconds);
 				onEnterFrameMonitorTime(null);
 			}
 		}
@@ -786,16 +787,16 @@ package com.zehfernando.net.loaders {
 			return MathUtils.clamp(remainingPlaybackTime / remainingLoadingTime);
 		}
 
-//		public function get video(): Video {
-//			return _video;
-//		}
-//
-//		public function get netStream(): NetStream {
-//			return _netStream;
-//		}
+		public function get video():Video {
+			return _video;
+		}
 
-//		public function get netConnection(): NetConnection {
-//			return _netConnection;
-//		}
+		public function get netStream(): NetStream {
+			return _netStream;
+		}
+
+		public function get netConnection(): NetConnection {
+			return _netConnection;
+		}
 	}
 }
