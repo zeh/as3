@@ -32,6 +32,7 @@ package com.zehfernando.display.debug {
 			_text = __text;
 
 			background = new RoundedBox(100, 100, 0x3b856e, 4);
+			background.superEllipseCorners = true;
 			addChild(background);
 
 			textField = new TextField();
@@ -42,7 +43,8 @@ package com.zehfernando.display.debug {
 
 			var fmt:TextFormat = new TextFormat();
 			fmt.font = "_sans";
-			fmt.size = 10;
+			fmt.bold = true;
+			fmt.size = 12;
 			fmt.color = 0xffffff;
 			fmt.align = TextFormatAlign.CENTER;
 			textField.defaultTextFormat = fmt;
