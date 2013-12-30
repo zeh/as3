@@ -130,12 +130,11 @@ package com.zehfernando.display.components.text {
 			//var qsRegex:RegExp = new RegExp("[?&]" + __parameterName + "(?:=([^&]*))?","i");
 			//var match:Object = qsRegex.exec(__url);
 
-			var elements:Vector.<ContentElement> = new Vector.<ContentElement>();
-
 			XML.ignoreWhitespace = false;
 
 			var contentAsXML:XML = new XML("<root>" + __text + "</root>");
 			var contentChildren:XMLList = contentAsXML.children();
+			var elements:Vector.<ContentElement> = new Vector.<ContentElement>(contentChildren.length(), true);
 			var te:TextElement;
 			var ts:TextStyle;
 			for (i = 0; i < contentChildren.length(); i++) {
@@ -157,7 +156,7 @@ package com.zehfernando.display.components.text {
 					// No node, just add the text
 					te = new TextElement(contentChildren[i], __ef);
 				}
-				elements.push(te);
+				elements[i] = te;
 //				if (Boolean(tStyles[i])) {
 //					// Special text style
 //					elements.push(new TextElement(texts[i], getStyle(tStyles[i]).getAsElementFormat(__ef, __fd)));
