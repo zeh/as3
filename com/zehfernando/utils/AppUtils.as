@@ -13,12 +13,12 @@ package com.zehfernando.utils {
 	 */
 	public class AppUtils {
 
-		protected static var stage:Stage;
-		protected static var root:DisplayObjectContainer;
-		protected static var hasDeterminedDebugStatus:Boolean;
-		protected static var _isDebuggingSWF:Boolean;
+		private static var stage:Stage;
+		private static var root:DisplayObjectContainer;
+		private static var hasDeterminedDebugStatus:Boolean;
+		private static var _isDebuggingSWF:Boolean;
 
-		protected static var zoomScale:Number = (isAndroid() || isIOS()) ? 1 : 2;
+		private static var zoomScale:Number = (isAndroid() || isIOS()) ? 1 : 2;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -182,6 +182,7 @@ package com.zehfernando.utils {
 			// Like getScreenDensityScale, but with a proper zoom
 			return getScreenDensityScale() * zoomScale;
 		}
+
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
