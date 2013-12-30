@@ -44,8 +44,10 @@ package com.zehfernando.controllers.focus {
 		private var _onPressedEnter:SimpleSignal;
 		private var _onReleasedEnter:SimpleSignal;
 		private var _onMovedFocus:SimpleSignal;
+		private var _onActivationChanged:SimpleSignal;
 
 		private var _isActivated:Boolean;
+		private var _enabled:Boolean;
 
 
 		// ================================================================================================================
@@ -58,6 +60,7 @@ package com.zehfernando.controllers.focus {
 			_onPressedEnter = new SimpleSignal();
 			_onReleasedEnter = new SimpleSignal();
 			_onMovedFocus = new SimpleSignal();
+			_onActivationChanged = new SimpleSignal();
 		}
 
 
@@ -95,11 +98,13 @@ package com.zehfernando.controllers.focus {
 			}
 			if (_currentElement != null) _currentElement.setFocused(true);
 			_isActivated = true;
+			_onActivationChanged.dispatch();
 		}
 
 		private function hideCurrentFocus():void {
 			if (_currentElement != null) _currentElement.setFocused(false);
 			_isActivated = false;
+			_onActivationChanged.dispatch();
 		}
 
 		private function moveFocus(__direction:String):void {
@@ -135,7 +140,10 @@ package com.zehfernando.controllers.focus {
 				_currentElement = nextElement;
 			}
 
-			_isActivated = true;
+			if (!_isActivated) {
+				_isActivated = true;
+				_onActivationChanged.dispatch();
+			}
 
 			// End
 			_onMovedFocus.dispatch();
@@ -147,19 +155,19 @@ package com.zehfernando.controllers.focus {
 			if (__element == null) return null;
 
 			// Find next element to one of the sides, as close as possible
-			var currentRect:Rectangle = _currentElement.getBounds(stage);
+			var currentRect:Rectangle = _currentElement.getVisualBounds();
 			var i:int;
 			var currentNextElement:IFocusable;
 			var currentNextElementDistance:Number;
 			var distanceX:Number, distanceY:Number;
-			var distance:Number; // Weighted ration, not exactly distance - X = preferable over Y
+			var distance:Number; // Weighted ratio, not exactly distance - X = preferable over Y
 			var newRect:Rectangle;
 			var scaleDistanceX:Number = (__direction == DIRECTION_LEFT || __direction == DIRECTION_RIGHT) ? 1 : 2;
 			var scaleDistanceY:Number = (__direction == DIRECTION_LEFT || __direction == DIRECTION_RIGHT) ? 2 : 1;
 			var currentP:Point = new Point(currentRect.x + currentRect.width * 0.5, currentRect.y + currentRect.height * 0.5);
 			for (i = 0; i < elements.length; i++) {
 				if (elements[i] != _currentElement && elements[i].canReceiveFocus()) {
-					newRect = elements[i].getBounds(stage);
+					newRect = elements[i].getVisualBounds();
 					distanceX = ((newRect.x + newRect.width * 0.5) - currentP.x) * scaleDistanceX;
 					distanceY = ((newRect.y + newRect.height * 0.5) - currentP.y) * scaleDistanceY;
 					if ((__direction == DIRECTION_RIGHT && distanceX > 0) || (__direction == DIRECTION_LEFT && distanceX < 0) || (__direction == DIRECTION_DOWN && distanceY > 0) || (__direction == DIRECTION_UP && distanceY < 0)) {
@@ -184,7 +192,7 @@ package com.zehfernando.controllers.focus {
 
 			for (var i:int = 0; i < elements.length; i++) {
 				if (elements[i].canReceiveFocus()) {
-					newRect = elements[i].getBounds(stage);
+					newRect = elements[i].getVisualBounds();
 					if (element == null || newRect.y < elementRect.y || (newRect.y == elementRect.y && newRect.x < elementRect.x)) {
 						element = elements[i];
 						elementRect = newRect;
@@ -229,7 +237,12 @@ package com.zehfernando.controllers.focus {
 			}
 		}
 
+		public function hasElement(__element:IFocusable):Boolean {
+			return elements.indexOf(__element) > -1;
+		}
+
 		public function executeCommand(__command:String):void {
+			//log("command ==> " + __command);
 			if (__command == COMMAND_ACTIVATE)					showCurrentFocus();
 			if (__command == COMMAND_DEACTIVATE)				hideCurrentFocus();
 			if (__command == COMMAND_ACTIVATION_TOGGLE)			_isActivated ? hideCurrentFocus() : showCurrentFocus();
@@ -275,6 +288,20 @@ package com.zehfernando.controllers.focus {
 
 		public function get onMovedFocus():SimpleSignal {
 			return _onMovedFocus;
+		}
+
+		public function get onActivationChanged():SimpleSignal {
+			return _onActivationChanged;
+		}
+
+		public function get enabled():Boolean {
+			return _enabled;
+		}
+
+		public function set enabled(__value:Boolean):void {
+			if (_enabled != __value) {
+				_enabled = __value;
+			}
 		}
 	}
 }
