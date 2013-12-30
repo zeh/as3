@@ -6,11 +6,19 @@ package com.zehfernando.display.abstracts {
 	 */
 	public class ResizableButton extends ResizableSprite {
 
+		// Constants
+		public static const EVENT_CLICK:String = "ResizableButton.onButtonClick";
+		public static const EVENT_MOUSE_DOWN:String = "ResizableButton.onMouseDown";
+		public static const EVENT_MOUSE_UP:String = "ResizableButton.onMouseUp";
+
 		// Properties
-		protected var _mouseFocus:Number;
+		private var _isMouseOverButton:Boolean;
+		private var _isMousePressed:Boolean;
+
 		protected var _enabled:Number;
 		protected var _visibility:Number;
 		protected var _pressed:Number;
+		protected var _focused:Number;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -18,18 +26,20 @@ package com.zehfernando.display.abstracts {
 		public function ResizableButton() {
 			super();
 
-			_mouseFocus = 0;
 			_enabled = 1;
 			_visibility = 1;
 			_pressed = 0;
+			_focused = 0;
+			_isMouseOverButton = false;
+			_isMousePressed = false;
 
 			mouseChildren = false;
 			buttonMode = true;
 
 			addEventListener(MouseEvent.ROLL_OVER, onRollOver, false, 0, true);
 			addEventListener(MouseEvent.ROLL_OUT, onRollOut, false, 0, true);
-
-			//addEventListener(Event.ADDED_TO_STAGE, onAddedToStage, false, 0, true);
+			addEventListener(MouseEvent.MOUSE_DOWN, onMouseDownInternal, false, 0, true);
+			addEventListener(MouseEvent.MOUSE_UP, onMouseUpInternal, false, 0, true);
 		}
 
 
@@ -55,23 +65,56 @@ package com.zehfernando.display.abstracts {
 			redrawVisibility();
 		}
 
+		protected function onButtonDownInternal():void {
+			if (_enabled) {
+				pressed = 1;
+				dispatchEvent(new Event(EVENT_MOUSE_DOWN));
+			}
+		}
+
+		protected function onButtonUpInternal(__canceled:Boolean = false):void {
+			pressed = 0;
+			if (_enabled) {
+				if (!__canceled) dispatchEvent(new Event(EVENT_CLICK));
+				dispatchEvent(new Event(EVENT_MOUSE_UP));
+			}
+		}
+
+		protected function onMouseDownInternal(__e:MouseEvent):void {
+			if (!_isMousePressed) {
+				_isMousePressed = true;
+				onButtonDownInternal();
+			}
+		}
+
+		protected function onMouseUpInternal(__e:MouseEvent):void {
+			if (_isMousePressed) {
+				_isMousePressed = false;
+				onButtonUpInternal();
+			}
+		}
+
 		protected function onRollOver(e:MouseEvent):void {
-			if (enabled >= 1) mouseFocus = 1;
+			_isMouseOverButton = true;
 		}
 
 		protected function onRollOut(e:MouseEvent):void {
-			mouseFocus = 0;
+			if (_isMousePressed) {
+				_isMousePressed = false;
+				onButtonUpInternal(true);
+			}
+			_isMouseOverButton = false;
 		}
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
-		public function get mouseFocus():Number {
-			return _mouseFocus;
+		public function get focused():Number {
+			return _focused;
 		}
-		public function set mouseFocus(__value:Number):void {
-			if (_mouseFocus != __value) {
-				_mouseFocus = __value;
+		public function set focused(__value:Number):void {
+			if (_focused != __value) {
+				_focused = __value;
 				redrawState();
 			}
 		}
@@ -105,6 +148,5 @@ package com.zehfernando.display.abstracts {
 				redrawState();
 			}
 		}
-
 	}
 }
