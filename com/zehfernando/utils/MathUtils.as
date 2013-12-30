@@ -8,7 +8,8 @@ package com.zehfernando.utils {
 		public static const DEG2RAD:Number = 1/180 * Math.PI;
 		public static const RAD2DEG:Number = 1/Math.PI * 180;
 
-		private static var fp:Number;
+		// Temporary vars for faster allocations
+		private static var map_p:Number;
 
 		// Inlining: http://www.bytearray.org/?p=4789
 		// Not working: returning a buffer underflow every time I try using it
@@ -44,17 +45,9 @@ package com.zehfernando.utils {
 		 */
 		public static function map(__value:Number, __oldMin:Number, __oldMax:Number, __newMin:Number = 0, __newMax:Number = 1, __clamp:Boolean = false):Number {
 			if (__oldMin == __oldMax) return __newMin;
-			var p:Number = ((__value-__oldMin) / (__oldMax-__oldMin) * (__newMax-__newMin)) + __newMin;
-			if (__clamp) p = __newMin < __newMax ? clamp(p, __newMin, __newMax) : clamp(p, __newMax, __newMin);
-			return p;
-		}
-
-		public static function fastMap(__value:Number, __oldMin:Number, __oldMax:Number, __newMin:Number = 0, __newMax:Number = 1, __clamp:Boolean = false):Number {
-			// Same as map, but without allocations
-			if (__oldMin == __oldMax) return __newMin;
-			fp = ((__value-__oldMin) / (__oldMax-__oldMin) * (__newMax-__newMin)) + __newMin;
-			if (__clamp) fp = __newMin < __newMax ? clamp(fp, __newMin, __newMax) : clamp(fp, __newMax, __newMin);
-			return fp;
+			map_p = ((__value-__oldMin) / (__oldMax-__oldMin) * (__newMax-__newMin)) + __newMin;
+			if (__clamp) map_p = __newMin < __newMax ? clamp(map_p, __newMin, __newMax) : clamp(map_p, __newMax, __newMin);
+			return map_p;
 		}
 
 		/**

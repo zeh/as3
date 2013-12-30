@@ -14,5 +14,14 @@ package com.zehfernando.utils {
 
 			return newArray;
 		}
+
+		public static function stringArrayToNumberArray(__array:Array):Array {
+			var l:Array = [];
+			if (Boolean(__array)) {
+				for (var i:int = 0; i < __array.length; i++) l.push(parseFloat(__array[i]));
+			}
+			return l;
+		}
+
 	}
 }
