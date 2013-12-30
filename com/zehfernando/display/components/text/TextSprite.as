@@ -150,7 +150,7 @@ package com.zehfernando.display.components.text {
 			return pos;
 		}
 
-		protected function getElementAtPos(__element:ContentElement, __pos:int): ContentElement {
+		protected function getElementAtPos(__element:ContentElement, __pos:int):ContentElement {
 			if (__element is GroupElement) {
 				return getElementAtPos((__element as GroupElement).getElementAtCharIndex(__pos), __pos);
 //				var ge:GroupElement = (__element as GroupElement);
@@ -161,8 +161,6 @@ package com.zehfernando.display.components.text {
 			} else {
 				return __element;
 			}
-
-			return null;
 		}
 
 		protected function redraw():void {
