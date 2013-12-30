@@ -8,7 +8,7 @@ package com.zehfernando.data.types {
 
 		// https://www.khanacademy.org/math/arithmetic/applying-math-reasoning-topic/reading_data/v/reading-bar-charts-3
 		// Midrange: (higher + lower) / 2
-		// Median: middle item
+		// Median: middle item (in case of an even number of items, the average of the middle two)
 		// Average or mean: sumAllItems / numItems
 		// Mode: most common item
 		// Range: higher - lower
