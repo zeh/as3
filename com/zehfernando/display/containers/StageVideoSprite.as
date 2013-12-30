@@ -38,6 +38,7 @@ package com.zehfernando.display.containers {
 		private var _loop:Boolean;
 		private var _bufferTime:Number;
 		private var _autoPlay:Boolean;
+		private var _isOnStage:Boolean;
 
 		// Instances
 		private var _netConnection:NetConnection;
@@ -56,6 +57,7 @@ package com.zehfernando.display.containers {
 			_needToPlay = false;
 			_isPlaying = false;
 			_bufferTime = 0.1; // Netstream default is 0.1
+			_isOnStage = false;
 
 			_loop = false;
 		}
@@ -200,12 +202,17 @@ package com.zehfernando.display.containers {
 				_video.y = rect.y;
 				_video.width = rect.width;
 				_video.height = rect.height;
+
+				_video.visible = rect.width > 0 && _video.height > 0;
 			}
 
 			if (_stageVideo != null) {
 				log("Resizing StageVideo to " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight);
 				try {
-					_stageVideo.viewPort = getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true);
+//					//log("   viewport was: " + _stageVideo.viewPort + ", will resize to: " + getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true) + " for size = " + _width + "x" + _height + " vis = " + visible + ", on stage = " + _isOnStage);
+					_stageVideo.viewPort = visible && _isOnStage ? getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true) : new Rectangle(0, 0, 0, 0);
+					//if (_stageVideo.videoWidth > 0 && _stageVideo.videoHeight > 0)
+					//_stageVideo.visible = _stageVideo.videoWidth > 0 && _stageVideo.videoHeight > 0;
 				} catch (__e:Error) {
 					log("Error resizing StageVideo: " + __e);
 				}
@@ -240,6 +247,8 @@ package com.zehfernando.display.containers {
 			} else {
 				pauseVideo();
 			}
+
+			resizeVideo();
 		}
 
 		private function onVideoRenderStateChange(__e:VideoEvent):void {
@@ -265,6 +274,7 @@ package com.zehfernando.display.containers {
 
 		private function onNetConnectionStatus(__e:NetStatusEvent):void {
 			log("##### NET CONNECTION STATUS CODE: " + __e.info["code"]);
+			resizeVideo();
 		}
 
 		protected function onNetConnectionError(__e:SecurityErrorEvent):void {
@@ -272,7 +282,13 @@ package com.zehfernando.display.containers {
 		}
 
 		private function onNetStatus(__e:NetStatusEvent):void {
-//			log("##### NET STREAM STATUS CODE: " + __e.info["code"]);
+			//log("##### NET STREAM STATUS CODE: " + __e.info["code"]);
+			switch (__e.info["code"]) {
+				case "NetStream.Play.StreamNotFound":
+					trace("Stream [" + _url + "] not found!");
+					break;
+			}
+			resizeVideo();
 		}
 
 		private function onPlayStatus(__newData:Object):void {
@@ -314,6 +330,7 @@ package com.zehfernando.display.containers {
 
 		private function onXMPData(__newData:Object):void {
 			log("##### NET STREAM XMP DATA : " + JSON.stringify(__newData));
+			resizeVideo();
 		}
 
 		public function onTextData(__newData:Object):void {
@@ -326,10 +343,23 @@ package com.zehfernando.display.containers {
 
 		public function onImageData(__newData:Object):void {
 			log("##### NET STREAM IMAGE DATA : " + JSON.stringify(__newData));
+			resizeVideo();
 		}
 
 		public function onMetaData(__newData:Object):void {
 //			log("##### NET STREAM METADATA DATA : " + JSON.stringify(__newData));
+			resizeVideo();
+		}
+
+		override protected function onAddedToStage(__e:Event):void {
+			_isOnStage = true;
+			super.onAddedToStage(__e);
+		}
+
+		override protected function onRemovedFromStage(__e:Event):void {
+			super.onRemovedFromStage(__e);
+			_isOnStage = false;
+			resizeVideo();
 		}
 
 
@@ -415,6 +445,13 @@ package com.zehfernando.display.containers {
 		public function set bufferTime(__value:Number):void {
 			_bufferTime = __value;
 			applyNetStreamBufferTime();
+		}
+
+		override public function set visible(__value:Boolean):void {
+			if (super.visible != __value) {
+				super.visible = __value;
+				resizeVideo();
+			}
 		}
 	}
 }
