@@ -1,5 +1,4 @@
 package com.zehfernando.display.shapes {
-
 	import flash.display.Sprite;
 
 	/**
@@ -53,6 +52,24 @@ package com.zehfernando.display.shapes {
 				_color = __value & 0xffffff;
 				paint();
 			}
+		}
+
+		public function get colorR():Number { return ((_color & 0xff0000) >> 16)/255; }
+		public function set colorR(__value:Number):void {
+			_color = (_color & 0x00ffff) | (Math.round(__value * 255) << 16);
+			paint();
+		}
+
+		public function get colorG():Number { return ((_color & 0xff00) >> 8)/255; }
+		public function set colorG(__value:Number):void {
+			_color = (_color & 0xff00ff) | (Math.round(__value * 255) << 8);
+			paint();
+		}
+
+		public function get colorB():Number { return (_color & 0xff) / 255; }
+		public function set colorB(__value:Number):void {
+			_color = (_color & 0xffff00) | Math.round(__value * 255);
+			paint();
 		}
 
 		override public function get width():Number { return _width; }
