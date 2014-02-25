@@ -101,6 +101,12 @@ package com.zehfernando.display.debug {
 
 			Console.addEventListener(Console.EVENT_LINE_WRITTEN, onLineWritten);
 
+			// Writes all existing lines (pre-console creation)
+			var linesWritten:Vector.<String> = Console.linesWritten;
+			for (var i:int = 0; i < linesWritten.length; i++) {
+				writeLine(Console.linesWritten[i]);
+			}
+
 			redrawVisibility();
 		}
 
@@ -160,6 +166,23 @@ package com.zehfernando.display.debug {
 			textField.internalTextField.scrollV = textField.internalTextField.maxScrollV - currentScrollLine;
 		}
 
+		private function writeLine(__text:String):void {
+			// Write a line to the log
+			logLines.push(__text);
+
+			if (logLines.length > MAX_LOG_LINES) {
+				// Too many log lines, strip it down
+				logLines.splice(0, logLines.length - MIN_LOG_LINES);
+				textField.text = logLines.join("\n");
+
+				info("Console text was stripped");
+			} else {
+				// Can still fit, just add the line
+				textField.internalTextField.appendText("\n" + __text);
+			}
+			if (currentScrollLine == 0) textField.internalTextField.scrollV = textField.internalTextField.maxScrollV;
+		}
+
 
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
@@ -177,19 +200,7 @@ package com.zehfernando.display.debug {
 		}
 
 		private function onLineWritten(__e:Event):void {
-			logLines.push(Console.lastLineWritten);
-
-			if (logLines.length > MAX_LOG_LINES) {
-				// Too many log lines, strip it down
-				logLines.splice(0, logLines.length - MIN_LOG_LINES);
-				textField.text = logLines.join("\n");
-
-				info("Console text was stripped!");
-			} else {
-				// Can still fit, just add the line
-				textField.internalTextField.appendText("\n" + Console.lastLineWritten);
-			}
-			if (currentScrollLine == 0) textField.internalTextField.scrollV = textField.internalTextField.maxScrollV;
+			writeLine(Console.lastLineWritten);
 		}
 
 		private function onKeyDown(__e:KeyboardEvent):void {
@@ -210,6 +221,14 @@ package com.zehfernando.display.debug {
 		public function addBackgroundChild(__child:Sprite):void {
 			// Add something to the background of the console (only visible when the console is visible)
 			backgroundChildrenContainer.addChild(__child);
+		}
+
+		public function clear():void {
+			// Clear the console
+			logLines = new Vector.<String>();
+			textField.text = "";
+			currentScrollLine = 0;
+			textField.internalTextField.scrollV = textField.internalTextField.maxScrollV;
 		}
 
 
