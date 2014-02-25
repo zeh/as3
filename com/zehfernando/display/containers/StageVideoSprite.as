@@ -196,7 +196,7 @@ package com.zehfernando.display.containers {
 		private function resizeVideo():void {
 			// Resize video to fit the screen
 			if (_video != null) {
-				log("Resizing Video to " + _video.videoWidth + "x" + _video.videoHeight);
+				if (_video.width != _video.videoWidth || _video.height != _video.videoHeight) log("Resizing Video to " + _video.videoWidth + "x" + _video.videoHeight);
 				var rect:Rectangle = getVideoRect(_video.videoWidth, _video.videoHeight, true);
 				_video.x = rect.x;
 				_video.y = rect.y;
@@ -207,14 +207,12 @@ package com.zehfernando.display.containers {
 			}
 
 			if (_stageVideo != null) {
-				log("Resizing StageVideo to " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight);
+				var targetRect:Rectangle = getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true);
+				if (_stageVideo.viewPort.width != _stageVideo.videoWidth || _stageVideo.viewPort.height != _stageVideo.videoHeight) log("Resizing StageVideo to " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight);
 				try {
-//					//log("   viewport was: " + _stageVideo.viewPort + ", will resize to: " + getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true) + " for size = " + _width + "x" + _height + " vis = " + visible + ", on stage = " + _isOnStage);
-					_stageVideo.viewPort = visible && _isOnStage ? getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true) : new Rectangle(0, 0, 0, 0);
-					//if (_stageVideo.videoWidth > 0 && _stageVideo.videoHeight > 0)
-					//_stageVideo.visible = _stageVideo.videoWidth > 0 && _stageVideo.videoHeight > 0;
+					_stageVideo.viewPort = visible && _isOnStage ? targetRect : new Rectangle(0, 0, 1, 1);
 				} catch (__e:Error) {
-					log("Error resizing StageVideo: " + __e);
+					log("Error resizing StageVideo to resolution " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight +": " + __e);
 				}
 			}
 		}
@@ -224,7 +222,7 @@ package com.zehfernando.display.containers {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		private function onStageVideoAvailability(__e:StageVideoAvailabilityEvent):void {
-			log("StageVideo availability state is " + __e.availability);
+			//log("StageVideo availability state is " + __e.availability);
 
 			if (__e.availability == StageVideoAvailability.AVAILABLE) {
 				// StageVideo is available
