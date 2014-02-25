@@ -131,5 +131,31 @@ package com.zehfernando.data {
 		public function get name():String {
 			return _name;
 		}
+
+		public function getNumAvailableBitmaps():uint {
+			return availableBitmaps.length;
+		}
+
+		public function getNumUsedBitmaps():uint {
+			return usedBitmaps.length;
+		}
+
+		// Static
+
+		public static function getNumPools():uint {
+			return pools.length;
+		}
+
+		public static function getNumUsedBitmaps():uint {
+			var total:uint = 0;
+			for (var i:int = 0; i < pools.length; i++) total += pools[i].getNumUsedBitmaps();
+			return total;
+		}
+
+		public static function getNumAvailableBitmaps():uint {
+			var total:uint = 0;
+			for (var i:int = 0; i < pools.length; i++) total += pools[i].getNumAvailableBitmaps();
+			return total;
+		}
 	}
 }
