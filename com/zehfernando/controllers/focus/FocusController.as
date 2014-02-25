@@ -16,6 +16,7 @@ package com.zehfernando.controllers.focus {
 		public static const COMMAND_ACTIVATE:String = "commandActivate";
 		public static const COMMAND_ACTIVATION_TOGGLE:String = "commandActivationToggle";
 		public static const COMMAND_DEACTIVATE:String = "commandDeactivate";
+		public static const COMMAND_DEACTIVATE_SILENT:String = "commandDeactivateSilent";
 		public static const COMMAND_MOVE_LEFT:String = "commandMoveFocusLeft";
 		public static const COMMAND_MOVE_RIGHT:String = "commandMoveFocusRight";
 		public static const COMMAND_MOVE_UP:String = "commandMoveFocusUp";
@@ -35,6 +36,10 @@ package com.zehfernando.controllers.focus {
 		// Properties
 		private var isKeyEnterDown:Boolean;
 
+		private var _isActivated:Boolean;
+		private var _enabled:Boolean;
+		private var defaultElements:Vector.<IFocusable>;
+
 		// Instances
 		private var elements:Vector.<IFocusable>;
 		private var stage:Stage;
@@ -46,9 +51,6 @@ package com.zehfernando.controllers.focus {
 		private var _onMovedFocus:SimpleSignal;
 		private var _onActivationChanged:SimpleSignal;
 
-		private var _isActivated:Boolean;
-		private var _enabled:Boolean;
-
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -56,6 +58,7 @@ package com.zehfernando.controllers.focus {
 		public function FocusController(__stage:Stage) {
 			isKeyEnterDown = false;
 			stage = __stage;
+			defaultElements = new Vector.<IFocusable>;
 			elements = new Vector.<IFocusable>();
 			_onPressedEnter = new SimpleSignal();
 			_onReleasedEnter = new SimpleSignal();
@@ -92,19 +95,29 @@ package com.zehfernando.controllers.focus {
 		}
 
 		private function showCurrentFocus():void {
+//			log("==========> SHOWING FOCUS!");
+			var changedFocus:Boolean = false;
 			if (_currentElement == null || !_currentElement.canReceiveFocus()) {
 				if (_currentElement != null) _currentElement.setFocused(false);
 				_currentElement = getDefaultElement();
+				changedFocus = true;
 			}
-			if (_currentElement != null) _currentElement.setFocused(true);
+			if (_currentElement != null) {
+				_currentElement.setFocused(true);
+				changedFocus = true;
+			}
 			_isActivated = true;
 			_onActivationChanged.dispatch();
+			if (changedFocus) _onMovedFocus.dispatch();
 		}
 
-		private function hideCurrentFocus():void {
-			if (_currentElement != null) _currentElement.setFocused(false);
-			_isActivated = false;
-			_onActivationChanged.dispatch();
+		private function hideCurrentFocus(__silent:Boolean = false):void {
+//			log("==========> HIDING FOCUS!");
+			if (_isActivated) {
+				if (_currentElement != null) _currentElement.setFocused(false);
+				_isActivated = false;
+				if (!__silent) _onActivationChanged.dispatch();
+			}
 		}
 
 		private function moveFocus(__direction:String):void {
@@ -185,22 +198,37 @@ package com.zehfernando.controllers.focus {
 
 		private function getDefaultElement():IFocusable {
 			// Finds whatever element is closer to the top left corner to be the first, default element
-			var element:IFocusable = null;
-			var elementRect:Rectangle = null;
 
-			var newRect:Rectangle;
+			var i:int;
 
-			for (var i:int = 0; i < elements.length; i++) {
-				if (elements[i].canReceiveFocus()) {
-					newRect = elements[i].getVisualBounds();
-					if (element == null || newRect.y < elementRect.y || (newRect.y == elementRect.y && newRect.x < elementRect.x)) {
-						element = elements[i];
-						elementRect = newRect;
-					}
-				}
+			// Try to use the latest "default" element
+			i = defaultElements.length - 1;
+			while (i >= 0) {
+				if (defaultElements[i].canReceiveFocus()) return defaultElements[i];
+				i--;
 			}
 
-			return element;
+			// Try to use any from the list
+			for each (var element:IFocusable in elements) {
+				if (element.canReceiveFocus()) return element;
+			}
+
+			// None found!
+			return null;
+
+//			var element:IFocusable = null;
+//			var elementRect:Rectangle = null;
+//			var newRect:Rectangle;
+//			for (var i:int = 0; i < elements.length; i++) {
+//				if (elements[i].canReceiveFocus()) {
+//					newRect = elements[i].getVisualBounds();
+//					if (element == null || newRect.y < elementRect.y || (newRect.y == elementRect.y && newRect.x < elementRect.x)) {
+//						element = elements[i];
+//						elementRect = newRect;
+//					}
+//				}
+//			}
+//			return element;
 		}
 
 
@@ -213,14 +241,12 @@ package com.zehfernando.controllers.focus {
 			__root.tabEnabled = false;
 		}
 
-		public function addElement(__element:IFocusable):void {
+		public function addElement(__element:IFocusable, __isDefault:Boolean = false):void {
 			if (elements.indexOf(__element) < 0) elements.push(__element);
+			if (__isDefault) defaultElements.push(__element);
 			var changedFocus:Boolean = false;
-			if (_currentElement == null && __element.canReceiveFocus()) {
+			if (_isActivated && _currentElement == null) {
 				_currentElement = __element;
-				changedFocus = true;
-			}
-			if (_isActivated && _currentElement != null) {
 				_currentElement.setFocused(true, true);
 				changedFocus = true;
 			}
@@ -229,11 +255,37 @@ package com.zehfernando.controllers.focus {
 
 		public function removeElement(__element:IFocusable):void {
 			if (elements.indexOf(__element) > -1) {
+				// Remove from list
 				elements.splice(elements.indexOf(__element), 1);
+
+				// Remove from default elements if needed
+				if (defaultElements.indexOf(__element) > -1) defaultElements.splice(defaultElements.indexOf(__element), 1);
+
+				// Remove if current
 				if (_currentElement == __element) {
 					_currentElement = null;
 					_onMovedFocus.dispatch();
 				}
+			}
+		}
+
+		public function unsetCurrentElement(__immediate:Boolean = false):void {
+			// Resets the currently selected element (next time it is activated, it will use the default)
+			if (_currentElement != null) {
+				_currentElement.setFocused(false, __immediate);
+				_currentElement = null;
+				_onMovedFocus.dispatch();
+			}
+		}
+
+		public function resetCurrentElement(__immediate:Boolean = false):void {
+			// Switches to what should be the current element
+			var newElement:IFocusable = getDefaultElement();
+			if (_currentElement != newElement) {
+				if (_currentElement != null) _currentElement.setFocused(false, __immediate);
+				_currentElement = newElement;
+				if (newElement != null) _currentElement.setFocused(true, __immediate);
+				_onMovedFocus.dispatch();
 			}
 		}
 
@@ -245,6 +297,7 @@ package com.zehfernando.controllers.focus {
 			//log("command ==> " + __command);
 			if (__command == COMMAND_ACTIVATE)					showCurrentFocus();
 			if (__command == COMMAND_DEACTIVATE)				hideCurrentFocus();
+			if (__command == COMMAND_DEACTIVATE_SILENT)				hideCurrentFocus(true);
 			if (__command == COMMAND_ACTIVATION_TOGGLE)			_isActivated ? hideCurrentFocus() : showCurrentFocus();
 			if (__command == COMMAND_MOVE_LEFT)					moveFocus(DIRECTION_LEFT);
 			if (__command == COMMAND_MOVE_RIGHT)				moveFocus(DIRECTION_RIGHT);
@@ -256,12 +309,17 @@ package com.zehfernando.controllers.focus {
 			if (__command == COMMAND_ENTER_UP)					keyEnterUp();
 		}
 
+		public function updateCurrentElement(__immediate:Boolean = false):void {
+			// Forces an update to the current element if it is focused
+			if (_currentElement != null) _currentElement.setFocused(true, __immediate);
+		}
+
 		public function checkValidityOfCurrentElement(__immediate:Boolean = false):void {
 			// Checks if the current element can still be selected
 			if (_currentElement != null && !_currentElement.canReceiveFocus()) {
 				if (_isActivated) _currentElement.setFocused(false, __immediate);
 				_currentElement = getDefaultElement();
-				if (_isActivated) _currentElement.setFocused(true, __immediate);
+				if (_isActivated && _currentElement != null) _currentElement.setFocused(true, __immediate);
 				_onMovedFocus.dispatch();
 			}
 		}
