@@ -1,13 +1,22 @@
 package com.zehfernando.utils {
-
+	import flash.sampler.getMasterString;
+	import flash.utils.getTimer;
 	/**
 	 * @author Zeh Fernando - z at zeh.com.br
 	 */
 	public class StringUtils {
 
+		private static const VALUE_TRUE:String = "true";			// Array considered as explicit "true" when reading data from a XML
+		private static const VALUE_FALSE:String = "false";		// Array considered as explicit "false" when reading data from a XML
+
 		public static const VALIDATION_EMAIL:RegExp = /^[a-z][\w.-]+@\w[\w.-]+\.[\w.-]*[a-z][a-z]$/i;
 
-		protected static var uniqueSerialNumber:int = 0;
+		private static var savedBytes:uint = 0;
+		private static var savedByteTimes:uint = 0;
+
+		private static var uniqueSerialNumber:int = 0;
+
+		public static var reportCleanedStrings:Boolean = false;
 
 		public static function stripDoubleCRLF(__text:String):String {
 			if (__text == null) return null;
@@ -145,7 +154,7 @@ package com.zehfernando.utils {
 			// Tag close
 			__txt += "</"+xml.name()+">";
 
-			return __txt;
+			return getCleanString(__txt);
 
 		}
 
@@ -185,7 +194,7 @@ package com.zehfernando.utils {
 				__txt += "</"+xml.name()+">";
 			}
 
-			return __txt;
+			return getCleanString(__txt);
 
 		}
 
@@ -370,5 +379,26 @@ package com.zehfernando.utils {
 			return __text;
 		}
 
+		public static function toBoolean(__string:String, __default:Boolean = false):Boolean {
+			if (__string == null || __string.length == 0) return __default;
+			if (__string.toLowerCase() == VALUE_TRUE) return true;
+			if (__string.toLowerCase() == VALUE_FALSE) return false;
+			return __default;
+		}
+
+		public static function getCleanString(__string:String):String {
+			// "Cleans" a string, by separating it from its "master" string
+			// http://jacksondunstan.com/articles/2260
+			if (__string == null) return null;
+			if (reportCleanedStrings) {
+				var str:String = getMasterString(__string);
+				if (str != null) {
+					savedBytes += str.length - (__string.length + 1);
+					savedByteTimes++;
+					if (savedByteTimes % 1000 == 0) trace("Saved " + (savedBytes/1024/1024).toFixed(2) + " string MB so far (" + (savedBytes / (getTimer() / 1000)).toFixed(2) + " bytes/s)");
+				}
+			}
+			return ("_"+__string).substr(1);
+		}
 	}
 }
