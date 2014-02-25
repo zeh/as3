@@ -33,7 +33,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function DelayedCalls(__timeMS:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null) {
+		public function DelayedCalls(__timeMS:uint, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null) {
 
 			callback = __callback;
 			params = Boolean(__params) ? __params : [];
@@ -128,7 +128,7 @@ package com.zehfernando.utils {
 		// ================================================================================================================
 		// PUBLIC STATIC INTERFACE ----------------------------------------------------------------------------------------
 
-		public static function add(__timeMS:Number, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null):DelayedCalls {
+		public static function add(__timeMS:uint, __callback:Function, __params:Array = null, __scope:Object = null, __reference:Object = null):DelayedCalls {
 			return new DelayedCalls(__timeMS, __callback, __params, __scope, __reference);
 		}
 
