@@ -34,7 +34,7 @@ package com.zehfernando.display.starling {
 		private var _internalScale:Number;
 
 		// Instances
-		private var _onFinished:SimpleSignal; 
+		private var _onFinished:SimpleSignal;
 
 		// Temporary properties for avoiding garbage collection
 		private var row:int, col:int;
@@ -141,14 +141,15 @@ package com.zehfernando.display.starling {
 			if (_isPlaying) {
 				_isPlaying = false;
 				removeEventListener(Event.ENTER_FRAME, onEnterFramePlay);
-
 			}
 		}
 
 		override public function dispose():void {
 			pause();
-			texture.dispose();
+
 			_onFinished.removeAll();
+			_onFinished = null;
+
 			super.dispose();
 		}
 
