@@ -2,7 +2,6 @@ package com.zehfernando.net.loaders {
 	import com.zehfernando.utils.MathUtils;
 	import com.zehfernando.utils.console.debug;
 	import com.zehfernando.utils.console.log;
-	import com.zehfernando.utils.console.warn;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -64,6 +63,7 @@ package com.zehfernando.net.loaders {
 		protected var isPlayingToForceMetaDataLoad:Boolean;
 		protected var previousSoundTransform:SoundTransform;
 		protected var timeStartedWaitingForMetaData:int;
+
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
@@ -149,7 +149,7 @@ package com.zehfernando.net.loaders {
 		}
 
 		protected function stopPlayingToForceMetaDataLoad():void {
-			if (isPlayingToForceMetaDataLoad) {
+			if (isPlayingToForceMetaDataLoad && _netStream != null) {
 				debug("Stopped waiting for forced metadata load");
 				isPlayingToForceMetaDataLoad = false;
 				seek(0);
@@ -485,20 +485,20 @@ package com.zehfernando.net.loaders {
 					if (_hasMetaData) {
 						// Completed loading
 						if (isPlayingToForceMetaDataLoad) {
-							debug("Received metadata later");
+							//debug("Received metadata later");
 							stopPlayingToForceMetaDataLoad();
 						}
-						debug("Finished loading");
+						//debug("Finished loading");
 						onLoadComplete();
 					} else {
 						// Fix for videos that complete loading without onMetaData dispatched
 						if (!isPlayingToForceMetaDataLoad) {
 							if (timeStartedWaitingForMetaData == 0) {
-								debug("Completed loading but doesn't have metadata yet! Waiting some more");
+								//debug("Completed loading but doesn't have metadata yet! Waiting some more");
 								timeStartedWaitingForMetaData = getTimer();
 							} else {
 								if (getTimer() > timeStartedWaitingForMetaData + 750) {
-									warn("Too much time passed, forcing video playback");
+									//warn("Too much time passed, forcing video playback");
 									startPlayingToForceMetaDataLoad();
 								}
 							}
