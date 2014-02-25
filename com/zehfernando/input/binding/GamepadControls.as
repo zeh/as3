@@ -6,386 +6,204 @@ package com.zehfernando.input.binding {
 
 		// List of typical controls
 
-		// ================================================================================================================
-		// ANDROID/OUYA controls
-
-		/* Directional pad LEFT
+		/* Horizontal axis of left stick
+		 *
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: Playstation DS3 (OUYA)</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: -1 (left) to 1 (right)</p>
 		 */
-		public static const ANDROID_DPAD_LEFT_SENSITIVE:String = "BUTTON_39"; // TODO: this wasn't working. Must test.
+		public static const STICK_LEFT_X:String = "stick_left_x";
 
-		/* Directional pad RIGHT
+		/* Vertical axis of left stick
+		 *
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: Playstation DS3 (OUYA)</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: -1 (up) to 1 (down)</p>
 		 */
-		public static const ANDROID_DPAD_RIGHT_SENSITIVE:String = "BUTTON_37";
+		public static const STICK_LEFT_Y:String = "stick_left_y";
 
-		/* Directional pad UP
+		/* Pressing the left stick (also known as L3)
+		 *
+		 * <p>Style: digital</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const STICK_LEFT_PRESS:String = "stick_left_press";
+
+		/* Horizontal axis of right stick
+		 *
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: Playstation DS3 (OUYA)</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: -1 (left) to 1 (right)</p>
 		 */
-		public static const ANDROID_DPAD_UP_SENSITIVE:String = "BUTTON_36";
+		public static const STICK_RIGHT_X:String = "stick_right_x";
 
-		/* Directional pad DOWN
+		/* Vertical axis of right stick
+		 *
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: Playstation DS3 (OUYA)</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: -1 (up) to 1 (down)</p>
 		 */
-		public static const ANDROID_DPAD_DOWN_SENSITIVE:String = "BUTTON_38";
+		public static const STICK_RIGHT_Y:String = "stick_right_y";
 
-		/* Shoulder button, upper left (LEFT 1/LEFT BUTTON)
+		/* Pressing the right stick (also known as R3)
+		 *
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const ANDROID_L1:String = "BUTTON_102";
+		public static const STICK_RIGHT_PRESS:String = "stick_right_press";
 
-		/* Shoulder button, upper right (RIGHT 1/RIGHT BUTTON)
+		/* Left shoulder bumper (also known as LB or L1)
+		 *
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const ANDROID_R1:String = "BUTTON_103";
+		public static const LB:String = "left_button";
 
-		/* Shoulder button, lower left (LEFT 2/LEFT TRIGGER)
-		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA)</p>
-		 * <p>Note: this doesn't work on the XBox 360 Controller (OUYA). Use L2_SENSITIVE instead.</p>
-		 */
-		public static const ANDROID_L2:String = "BUTTON_104";
-
-		/* Should button, lower right (RIGHT 2/RIGHT TRIGGER)
-		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA)</p>
-		 * <p>Note: this doesn't work on the XBox 360 Controller (OUYA). Use R2_SENSITIVE instead.</p>
-		 */
-		public static const ANDROID_R2:String = "BUTTON_105";
-
-		/* Left stick press (LEFT 3)
-		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
-		 */
-		public static const ANDROID_L3:String = "BUTTON_106";
-
-		/* Right stick press (RIGHT 3)
-		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
-		 */
-		public static const ANDROID_R3:String = "BUTTON_107";
-
-		/* Shoulder button, lower left (LEFT 2/LEFT TRIGGER)
+		/* Left shoulder trigger (also known as LT or L2)
+		 *
 		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const ANDROID_L2_SENSITIVE:String = "AXIS_17";
+		public static const LT:String = "left_trigger";
 
-		/* Shoulder button, lower right (RIGHT 2/RIGHT TRIGGER)
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
-		 */
-		public static const ANDROID_R2_SENSITIVE:String = "AXIS_18";
-
-		/* Left analog stick, horizontal (X) axis. The value received is for a left-to-right position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android), XBox 360 Controller (Windows), XBox 360 Controller (OSX)</p>
-		 */
-		public static const ANDROID_STICK_LEFT_X:String = "AXIS_0";
-
-		/* Left analog stick, vertical (Y) axis. The value received is for a up-to-down position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android), XBox 360 Controller (Windows; reversed orientation), XBox 360 Controller (OSX; reversed orientation)</p>
-		 */
-		public static const ANDROID_STICK_LEFT_Y:String = "AXIS_1";
-
-		/* Right analog stick, horizontal (X) axis. The value received is for a left-to-right position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
-		 */
-		public static const ANDROID_STICK_RIGHT_X:String = "AXIS_11";
-
-		/* Right analog stick, vertical (Y) axis. The value received is for a up-to-down position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
-		 */
-		public static const ANDROID_STICK_RIGHT_Y:String = "AXIS_14";
-
-		/* Action button, down (O/green in the OUYA, Cross/blue in the Playstation, A/green in the XBox 360)
+		/* Right shoulder bumper (also known as RB or R1)
+		 *
 		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const ANDROID_BUTTON_ACTION_DOWN:String = "BUTTON_96";
+		public static const RB:String = "right_button";
 
-		/* Action button, right (A/red in the OUYA, Circle/red in the Playstation, B/red in the XBox 360)
-		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
+		/* Right shoulder trigger (also known as RT or R2)
+		 *
+		 * <p>Style: pressure-sensitive/analog</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const ANDROID_BUTTON_ACTION_RIGHT:String = "BUTTON_97";
+		public static const RT:String = "right_trigger";
 
-		/* Action button, up (Y/yellow in the OUYA, Triangle/green in the Playstation, Y/yellow in the XBox 360)
-		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
+		/* Directional pad up
+		 *
+		 * <p>Style: digital OR pressure-sensitive/analog</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3 [analog]; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const ANDROID_BUTTON_ACTION_UP:String = "BUTTON_100";
+		public static const DPAD_UP:String = "dpad_up";
 
-		/* Action button, left (U/blue in the OUYA, Square/purple in the Playstation, X/blue in the XBox 360)
-		 * <p>Style: digital</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
+		/* Directional pad down
+		 *
+		 * <p>Style: digital OR pressure-sensitive/analog</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3 [analog]; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const ANDROID_BUTTON_ACTION_LEFT:String = "BUTTON_99";
+		public static const DPAD_DOWN:String = "dpad_down";
+
+		/* Directional pad left
+		 *
+		 * <p>Style: digital OR pressure-sensitive/analog</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3 [analog]; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const DPAD_LEFT:String = "dpad_left";
+
+		/* Directional pad right
+		 *
+		 * <p>Style: digital OR pressure-sensitive/analog</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3 [analog]; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const DPAD_RIGHT:String = "dpad_right";
+
+		/* Action button up (Y/yellow in the OUYA, Triangle/green in the Playstation, Y/yellow in the XBox 360)
+		 *
+		 * <p>Style: digital</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const ACTION_UP:String = "action_up";
+
+		/* Action button down (O/green in the OUYA, Cross/blue in the Playstation, A/green in the XBox 360)
+		 *
+		 * <p>Style: digital</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const ACTION_DOWN:String = "action_down";
+
+		/* Action button left (U/blue in the OUYA, Square/purple in the Playstation, X/blue in the XBox 360)
+		 *
+		 * <p>Style: digital</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const ACTION_LEFT:String = "action_left";
+
+		/* Action button right (A/red in the OUYA, Circle/red in the Playstation, B/red in the XBox 360)
+		 *
+		 * <p>Style: digital</p>
+		 * <p>Works in: OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const ACTION_RIGHT:String = "action_right";
+
+		/* Back button (BACK in the XBox 360)
+		 *
+		 * <p>Style: digital</p>
+		 * <p>Works in: OUYA (XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const BACK:String = "meta_back";
+
+		/* Select button
+		 *
+		 * <p>Style: digital</p>
+		 * <p>Works in: Windows (Generic Gamepad), OUYA (Playstation DS3)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
+		 */
+		public static const SELECT:String = "meta_select";
 
 		/* Start button
+		 *
 		 * <p>Style: digital</p>
-		 * <p>Works in: Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android)</p>
+		 * <p>Works in: OUYA (Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const ANDROID_START:String = "BUTTON_108";
+		public static const START:String = "meta_start";
 
-
-		// ================================================================================================================
-		// WINDOWS controls
-
-		/* Left analog stick, horizontal (X) axis. The value received is for a left-to-right position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android), XBox 360 Controller (Windows), XBox 360 Controller (OSX)</p>
-		 */
-		public static const WINDOWS_STICK_LEFT_X:String = "AXIS_0";
-
-		/* Left analog stick, vertical (Y) axis. The value received is for a down-to-up position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA; reversed orientation), Playstation DS3 (OUYA; reversed orientation), XBox 360 Controller (OUYA/Android; reversed orientation), XBox 360 Controller (Windows), XBox 360 Controller (OSX)</p>
-		 */
-		public static const WINDOWS_STICK_LEFT_Y:String = "AXIS_1";
-
-		/* Left analog stick, horizontal (X) axis. The value received is for a left-to-right position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_STICK_RIGHT_X:String = "AXIS_2";
-
-		/* Left analog stick, vertical (Y) axis. The value received is for a down-to-up position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_STICK_RIGHT_Y:String = "AXIS_3";
-
-		/* Action button, down (A/green)
+		/* Menu/home button (OUYA button in the OUYA controller, XBox Button in the XBox 360 controller, PS button in the Playstation controller)
+		 *
 		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
+		 * <p>Works in: Windows (Playstation DS4), OUYA (Native Controller; Playstation DS3; XBox 360 Controller)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const WINDOWS_BUTTON_ACTION_A:String = "BUTTON_4";
+		public static const MENU:String = "meta_menu";
 
-		/* Action button, right (B/red)
+		/* Options button
+		 *
 		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
+		 * <p>Works in: Windows (Playstation DS4)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const WINDOWS_BUTTON_ACTION_B:String = "BUTTON_5";
+		public static const OPTIONS:String = "meta_options";
 
-		/* Action button, up (Y/yellow)
+		/* Trackpad press
+		 *
 		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
+		 * <p>Works in: Windows (Playstation DS4)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const WINDOWS_BUTTON_ACTION_Y:String = "BUTTON_7";
+		public static const TRACKPAD:String = "meta_trackpad";
 
-		/* Action button, left (X/blue)
+		/* Share button
+		 *
 		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
+		 * <p>Works in: Windows (Playstation DS4)</p>
+		 * <p>Possible values: 0 (at rest) to 1 (pressed)</p>
 		 */
-		public static const WINDOWS_BUTTON_ACTION_X:String = "BUTTON_6";
-
-		/* Shoulder button, upper left (LEFT 1)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_L1:String = "BUTTON_8";
-
-		/* Shoulder button, upper right (RIGHT 1)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_R1:String = "BUTTON_9";
-
-		/* Shoulder button, lower left (LEFT 2)
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_L2_SENSITIVE:String = "BUTTON_10";
-
-		/* Shoulder button, lower right (RIGHT 2)
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const XBOX_R2_SENSITIVE:String = "BUTTON_11";
-
-		/* Left stick press (LEFT 3)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_L3:String = "BUTTON_14";
-
-		/* Right stick press (RIGHT 3)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_R3:String = "BUTTON_15";
-
-		/* Directional pad LEFT
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_DPAD_LEFT:String = "BUTTON_18";
-
-		/* Directional pad RIGHT
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_DPAD_RIGHT:String = "BUTTON_19";
-
-		/* Directional pad UP
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_DPAD_UP:String = "BUTTON_16";
-
-		/* Directional pad DOWN
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_DPAD_DOWN:String = "BUTTON_17";
-
-		/* BACK middle game controller button
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_BACK:String = "BUTTON_12";
-
-		/* START middle game controller button
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (Windows)</p>
-		 */
-		public static const WINDOWS_START:String = "BUTTON_13";
-
-
-		// ================================================================================================================
-		// OX controls
-
-		/* Left analog stick, horizontal (X) axis. The value received is for a left-to-right position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA), Playstation DS3 (OUYA), XBox 360 Controller (OUYA/Android), XBox 360 Controller (Windows), XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_STICK_LEFT_X:String = "AXIS_0";
-
-		// TODO: check if the direction is correct
-		/* Left analog stick, vertical (Y) axis. The value received is for a down-to-up position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: OUYA Controller (OUYA; reversed orientation), Playstation DS3 (OUYA; reversed orientation), XBox 360 Controller (OUYA/Android; reversed orientation), XBox 360 Controller (Windows), XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_STICK_LEFT_Y:String = "AXIS_1";
-
-		/* Left analog stick, horizontal (X) axis. The value received is for a left-to-right position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_STICK_RIGHT_X:String = "AXIS_3";
-
-		/* Left analog stick, vertical (Y) axis. The value received is for a down-to-up position.
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_STICK_RIGHT_Y:String = "AXIS_4";
-
-		/* Action button, down (A/green)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_BUTTON_ACTION_A:String = "BUTTON_17";
-
-		/* Action button, right (B/red)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_BUTTON_ACTION_B:String = "BUTTON_18";
-
-		/* Action button, up (Y/yellow)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_BUTTON_ACTION_Y:String = "BUTTON_20";
-
-		/* Action button, left (X/blue)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_BUTTON_ACTION_X:String = "BUTTON_19";
-
-		/* Shoulder button, upper left (LEFT 1)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_L1:String = "BUTTON_14";
-
-		/* Shoulder button, upper right (RIGHT 1)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_R1:String = "BUTTON_15";
-
-		// TODO: is it really sensitive?
-		/* Shoulder button, lower left (LEFT 2)
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_L2_SENSITIVE:String = "AXIS_2";
-
-		// TODO: is it really sensitive?
-		/* Shoulder button, lower right (RIGHT 2)
-		 * <p>Style: pressure-sensitive/analog</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_R2_SENSITIVE:String = "AXIS_5";
-
-		/* Left stick press (LEFT 3)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_L3:String = "BUTTON_12";
-
-		/* Right stick press (RIGHT 3)
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_R3:String = "BUTTON_13";
-
-		/* Directional pad LEFT
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_DPAD_LEFT:String = "BUTTON_8";
-
-		/* Directional pad RIGHT
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_DPAD_RIGHT:String = "BUTTON_9";
-
-		/* Directional pad UP
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_DPAD_UP:String = "BUTTON_6";
-
-		/* Directional pad DOWN
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_DPAD_DOWN:String = "BUTTON_7";
-
-		/* BACK middle game controller button
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_BACK:String = "BUTTON_11";
-
-		/* START middle game controller button
-		 * <p>Style: digital</p>
-		 * <p>Works in: XBox 360 Controller (OSX)</p>
-		 */
-		public static const OSX_START:String = "BUTTON_10";
+		public static const SHARE:String = "meta_share";
 	}
 }
