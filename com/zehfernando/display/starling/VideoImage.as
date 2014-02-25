@@ -103,13 +103,13 @@ package com.zehfernando.display.starling {
 			bitmapData = bitmapDataPool.get(w, h, transparent, 0x00000000);
 
 			textureVideo = Texture.fromBitmapData(bitmapData, false, true);
-			textureVideo.root.onRestore = function():void {
-				try {
-					textureVideo.root.uploadBitmapData(bitmapData);
-				} catch (__e:Error) {
-					warn("Caught error when restoring bitmap: " + __e);
-				}
-			};
+//			textureVideo.root.onRestore = function():void {
+//				try {
+//					textureVideo.root.uploadBitmapData(bitmapData);
+//				} catch (__e:Error) {
+//					warn("Caught error when restoring bitmap: " + __e);
+//				}
+//			};
 
 			videoMatrix.scale(w / 100, h / 100); // Ugh, not sure why it's forcing the original video to be set at a size of 100x100, so it needs a matrix
 
@@ -230,8 +230,6 @@ package com.zehfernando.display.starling {
 		public function load():void {
 			if (videoLoader == null) {
 				videoLoader = new VideoLoader();
-				//videoLoader.netStream.inBufferSeek
-				videoLoader.netStream.bufferTimeMax = 1;
 				videoLoader.netStream.receiveAudio(false);
 				videoLoader.addEventListener(VideoLoaderEvent.RECEIVED_METADATA, onVideoLoaderReceivedMetadata);
 				videoLoader.addEventListener(VideoLoaderEvent.PLAY_FINISH, onVideoLoaderFinishedPLaying);
