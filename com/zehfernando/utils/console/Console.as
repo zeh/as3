@@ -1,6 +1,7 @@
 package com.zehfernando.utils.console {
 	import com.zehfernando.utils.AppUtils;
 	import com.zehfernando.utils.DebugUtils;
+	import com.zehfernando.utils.StringUtils;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -49,6 +50,8 @@ package com.zehfernando.utils.console {
 
 		public static const LOG_PARAMETER_SEPARATOR:String = " ";
 
+		public static const MAX_LINES_SAVED:int = 50;
+
 		public static var echoFormat:String = ECHO_FORMAT_SHORT;
 		public static var timeFormat:String = TIME_FORMAT;
 		public static var groupStartFormat:String = GROUP_START_FORMAT;
@@ -85,7 +88,7 @@ package com.zehfernando.utils.console {
 		protected static var currentFrame:int;
 		protected static var frameCounter:Sprite;
 
-		protected static var _lastLineWritten:String;				// Last line written, for events
+		protected static var _linesWritten:Vector.<String>;			// Last lines written, for events
 
 		protected static var _textFieldX:Number;
 		protected static var _textFieldWidth:Number;
@@ -103,6 +106,7 @@ package com.zehfernando.utils.console {
 			_useScreen = false;
 			_useJS = false;
 			_useFullMethodName = true;
+			_linesWritten = new Vector.<String>();
 
 			logStates = [];
 
@@ -193,7 +197,7 @@ package com.zehfernando.utils.console {
 			output = output.split(PARAM_FUNCTION_NAME).join(methodName);
 			output = output.split(PARAM_OUTPUT).join(__output);
 
-			output = getGroupsPrefix() + output;
+			output = StringUtils.getCleanString(getGroupsPrefix() + output);
 
 			var jsFunction:String;
 
@@ -236,14 +240,15 @@ package com.zehfernando.utils.console {
 					try {
 						ExternalInterface.call("function(__message) { if(typeof(console) != 'undefined' && console != null) { " + jsFunction + "(__message); } }", output);
 					} catch (e:Error) {
-						trace ("Console.echo error: Tried calling console.log(), but it didn't work! Error: " + e);
+						trace("Console.echo error: Tried calling console.log(), but it didn't work! Error: " + e);
 					}
 				} else {
-					trace ("Console.echo error: Tried calling console.log(), but ExternalInterface is not available!");
+					trace("Console.echo error: Tried calling console.log(), but ExternalInterface is not available!");
 				}
 			}
 
-			_lastLineWritten = output;
+			_linesWritten.push(output);
+			if (_linesWritten.length > MAX_LINES_SAVED) _linesWritten.splice(0, _linesWritten.length - MAX_LINES_SAVED);
 			eventDispatcher.dispatchEvent(new Event(EVENT_LINE_WRITTEN));
 		}
 
@@ -262,7 +267,7 @@ package com.zehfernando.utils.console {
 			var packageName:String = __callStack[0];
 			var className:String = __callStack[1];
 			if (className != null && className.indexOf("$") > 0) className = className.split("$")[0];
-			return packageName + "::" + (className == null ? "<?>" : className);
+			return StringUtils.getCleanString(packageName + "::" + (className == null ? "<?>" : className));
 		}
 
 		// ================================================================================================================
@@ -352,16 +357,16 @@ package com.zehfernando.utils.console {
 		}
 
 		public static function logOn():void {
-			// Turns off log for one class
-			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[2]);
+			// Turns log on for one class
+			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[1]);
 			logStates[className] = LOG_STATE_ON;
-			echo("Log is now set to ON", LOG_TYPE_INFO);
+			echo("Log is now set to ON", LOG_TYPE_INFO, -1);
 		}
 
 		public static function logOff():void {
-			// Turns off log for one class
-			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[2]);
-			echo("Log is now set to OFF", LOG_TYPE_DEBUG);
+			// Turns log off for one class
+			var className:String = getClassNameFromCallStack(DebugUtils.getCurrentCallStack()[1]);
+			echo("Log is now set to OFF", LOG_TYPE_DEBUG, -1);
 			logStates[className] = LOG_STATE_OFF;
 		}
 
@@ -419,7 +424,11 @@ package com.zehfernando.utils.console {
 		}
 
 		public static function get lastLineWritten():String {
-			return _lastLineWritten;
+			return _linesWritten[_linesWritten.length-1];
+		}
+
+		public static function get linesWritten():Vector.<String> {
+			return _linesWritten.concat();
 		}
 
 		public static function get textFieldX():Number {
