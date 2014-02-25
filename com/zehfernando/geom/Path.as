@@ -135,6 +135,18 @@ package com.zehfernando.geom {
 			}
 		}
 
+		public function getDistance(__point:Point):Number {
+			// Get the closest distance to a point
+			var i:int;
+			var minDistance:Number = NaN;
+			var distance:Number;
+			for (i = 0; i < points.length - 1; i++) {
+				distance = GeomUtils.getLineSegmentDistanceToPoint(__point, points[i], points[i+1]);
+				if (isNaN(minDistance) || distance < minDistance) minDistance = distance;
+			}
+			return minDistance;
+		}
+
 		public function translate(__x:Number, __y:Number):void {
 			// Moves all points by a certain amount
 			var i:int;
@@ -226,7 +238,6 @@ package com.zehfernando.geom {
 		public function getPosition(__position:Number):Point {
 			// Returns a point in this position in the path (0 to length)
 			if (__position <= 0) return points[0].clone();
-			if (__position >= 1) return points[points.length-1].clone();
 
 			var p:Number = 0;
 			var l:Number;
@@ -238,8 +249,7 @@ package com.zehfernando.geom {
 				p += l;
 			}
 
-			// Should never happen
-			return null;
+			return points[points.length-1].clone();
 		}
 
 		public static function getSimilarity(__path0:Path, __path1:Path):Number {

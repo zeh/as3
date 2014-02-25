@@ -19,6 +19,7 @@ package com.zehfernando.geom {
 			p2 = __clone ? __p2.clone() : __p2;
 		}
 
+
 		// ================================================================================================================
 		// INSTANCE functions ---------------------------------------------------------------------------------------------
 
@@ -96,10 +97,24 @@ package com.zehfernando.geom {
 			}
 		}
 
+		public function getDistance(__point:Point):Number {
+			return GeomUtils.getLineSegmentDistanceToPoint(__point, p1, p2);
+		}
+
 		public function setAngle(__angle:Number):void {
 			// Sets the angle, from the starting point
 			// TODO: allow alignment of the new angle?
 			p2 = p1.add(Point.polar(length, __angle));
+		}
+
+		public function getPoint(__position:Number):Point {
+			// Find a point in the line (0-length)
+			return Point.interpolate(p2, p1, __position / length);
+		}
+
+		public function getPointNormalized(__position:Number):Point {
+			// Find a point in the line (0-1)
+			return Point.interpolate(p2, p1, __position);
 		}
 
 		public function clone():Line {
