@@ -21,7 +21,7 @@ package com.zehfernando.utils {
 		private var params:Array;
 		private var scope:Object;
 		private var reference:Object;
-		private var timeStarted:int;
+		private var timeStarted:uint;
 
 		// ================================================================================================================
 		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
@@ -150,6 +150,10 @@ package com.zehfernando.utils {
 					i--;
 				}
 			}
+		}
+
+		public static function getNumCalls():uint {
+			return calls.length;
 		}
 	}
 }
