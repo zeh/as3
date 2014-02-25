@@ -160,7 +160,7 @@ package com.zehfernando.display.debug {
 		private function onMouseMove(__e:MouseEvent):void {
 			matrix.identity();
 			matrix.scale(density, density);
-			matrix.translate(__e.localX * density, __e.localY * density);
+			matrix.translate(__e.stageX * density, __e.stageY * density);
 			bitmapData.draw(isMouseDown ? shapeMouseDown : shapeMouseUp, matrix);
 
 			eventsDrawn = (eventsDrawn+1) % 100;
