@@ -1,5 +1,4 @@
 package com.zehfernando.utils {
-
 	/**
 	 * @author zeh
 	 */
@@ -17,9 +16,24 @@ package com.zehfernando.utils {
 			return __xml.child(__nodeName).length() > 0;
 		}
 
+		public static function getNode(__xml:XML, __nodeName:String):XML {
+			if (!Boolean(__xml)) return null;
+			var __nodes:XMLList = __xml.child(__nodeName);
+			if (__nodes.length() == 0) return null;
+			return __nodes[0];
+		}
+
+		public static function getValue(__xml:XML, __default:String = ""):String {
+			return __xml == null ? __default : StringUtils.getCleanString(__xml);
+		}
+
+		public static function getNodeName(__xml:XML, __default:String = ""):String {
+			return __xml == null ? __default : StringUtils.getCleanString(__xml.name());
+		}
+
 		public static function getNodeAsBoolean(__xml:XML, __nodeName:String, __default:Boolean = false):Boolean {
 			if (!Boolean(__xml)) return __default;
-			var __nodeValue:String = getNodeValue(__xml.child(__nodeName));
+			var __nodeValue:String = StringUtils.getCleanString(getNodeValue(__xml.child(__nodeName)));
 			if (__nodeValue.toLowerCase() == VALUE_TRUE) return true;
 			if (__nodeValue.toLowerCase() == VALUE_FALSE) return false;
 			return __default;
@@ -27,7 +41,7 @@ package com.zehfernando.utils {
 
 		public static function getNodeAsString(__xml:XML, __nodeName:String, __default:String = ""):String {
 			if (!Boolean(__xml)) return __default;
-			var __nodeValue:String = getNodeValue(__xml.child(__nodeName));
+			var __nodeValue:String = StringUtils.getCleanString(getNodeValue(__xml.child(__nodeName)));
 			if (Boolean(__nodeValue)) return __nodeValue;
 			return __default;
 		}
@@ -55,7 +69,7 @@ package com.zehfernando.utils {
 			while(pattern2.test(s)) {
 				s = s.replace(pattern2.exec(s)[1], "");
 			}
-			return XML(s);
+			return XML(StringUtils.getCleanString(s));
 		}
 
 		public static function stripDefaultXMLNamespace(__xml:XML):XML {
@@ -67,7 +81,7 @@ package com.zehfernando.utils {
 			var xmlnsPattern:RegExp = new RegExp("xmlns=[^\"]*\"[^\"]*\"", "gi");
 
 			/* Replace the default namespace from the String representation of the result XML with an empty string. */
-			var cleanXMLString:String = rawXMLString.replace(xmlnsPattern, "");
+			var cleanXMLString:String = StringUtils.getCleanString(rawXMLString.replace(xmlnsPattern, ""));
 
 			// Create a new XML Object from the String just created
 			return new XML(cleanXMLString);
@@ -86,7 +100,7 @@ package com.zehfernando.utils {
 
 		public static function getAttributeAsBoolean(__xml:XML, __attributeName:String, __default:Boolean = false):Boolean {
 			if (!Boolean(__xml)) return __default;
-			var __attributeValue:String = __xml.attribute(__attributeName);
+			var __attributeValue:String = StringUtils.getCleanString(__xml.attribute(__attributeName));
 			if (__attributeValue.toLowerCase() == VALUE_TRUE) return true;
 			if (__attributeValue.toLowerCase() == VALUE_FALSE) return false;
 			return __default;
@@ -94,7 +108,7 @@ package com.zehfernando.utils {
 
 		public static function getAttributeAsString(__xml:XML, __attributeName:String, __default:String = ""):String {
 			if (!Boolean(__xml)) return __default;
-			var __attributeValue:String = __xml.attribute(__attributeName);
+			var __attributeValue:String = StringUtils.getCleanString(__xml.attribute(__attributeName));
 			if (Boolean(__attributeValue)) return __attributeValue;
 			return __default;
 		}
@@ -102,7 +116,7 @@ package com.zehfernando.utils {
 		public static function getAttributeAsStringVector(__xml:XML, __attributeName:String, __separator:String, __default:Array = null):Vector.<String> {
 			if (!Boolean(__default)) __default = [];
 			if (!Boolean(__xml)) return VectorUtils.arrayToStringVector(__default);
-			var __attributeValue:String = __xml.attribute(__attributeName);
+			var __attributeValue:String = StringUtils.getCleanString(__xml.attribute(__attributeName));
 			if (Boolean(__attributeValue)) return VectorUtils.arrayToStringVector(__attributeValue.split(__separator));
 			return VectorUtils.arrayToStringVector(__default);
 		}
@@ -120,7 +134,7 @@ package com.zehfernando.utils {
 
 		protected static function getNodeValue(__xmlList:XMLList):String {
 			var str:String = "";
-			if (__xmlList.length() > 0) str = __xmlList[0];
+			if (__xmlList.length() > 0) str = StringUtils.getCleanString(__xmlList[0]);
 			return str;
 			//return StringUtils.stripDoubleCRLF(str);
 		}

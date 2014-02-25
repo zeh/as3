@@ -1,7 +1,7 @@
 package com.zehfernando.localization {
-
 	import com.zehfernando.data.types.Color;
 	import com.zehfernando.utils.DateUtils;
+	import com.zehfernando.utils.StringUtils;
 
 	import flash.events.EventDispatcher;
 	/**
@@ -96,7 +96,7 @@ package com.zehfernando.localization {
 			}
 		}
 
-		public static function getList(__name:String = "", __canCreate:Boolean = true): StringList {
+		public static function getList(__name:String = "", __canCreate:Boolean = true):StringList {
 			var i:int;
 			for (i = 0; i < lists.length; i++) {
 				if (lists[i].name == __name) return lists[i];
@@ -112,11 +112,11 @@ package com.zehfernando.localization {
 			return null;
 		}
 
-		protected static function getXMLAsItem(__item:XML): ValueNode {
+		protected static function getXMLAsItem(__item:XML):ValueNode {
 			// Converts XML data to a value node
 			var newItem:ValueNode;
 			var i:int;
-			var nodeName:String = __item.name();
+			var nodeName:String = StringUtils.getCleanString(__item.name());
 
 			// Set the value's content
 			switch (nodeName) {
@@ -128,7 +128,7 @@ package com.zehfernando.localization {
 					// String-based values are stored as string
 					newItem = new ValueString();
 					newItem.type = nodeName;
-					(newItem as ValueString).value = __item.toString();
+					(newItem as ValueString).value = StringUtils.getCleanString(__item.toString());
 					break;
 				case TYPE_STRING_ARRAY:
 				case TYPE_NUMBER_ARRAY:
@@ -140,7 +140,7 @@ package com.zehfernando.localization {
 					newItem.type = nodeName;
 					var subItems:XMLList = __item.child(TYPE_ITEM);
 					for (i = 0; i < subItems.length(); i++) {
-						(newItem as ValueArray).items.push((subItems[i] as XML).toString());
+						(newItem as ValueArray).items.push(StringUtils.getCleanString((subItems[i] as XML).toString()));
 					}
 					break;
 				case TYPE_DATA:
@@ -158,21 +158,21 @@ package com.zehfernando.localization {
 			}
 
 			// Sets the value's name
-			newItem.name = __item.attribute("name");
+			newItem.name = StringUtils.getCleanString(__item.attribute("name"));
 
 			// Sets the value's languages
-			var itemLang:String = __item.attribute("language");
+			var itemLang:String = StringUtils.getCleanString(__item.attribute("language"));
 			if (Boolean(itemLang)> 0) {
 				var langs:Array = itemLang.split(LANGUAGE_LIST_SEPARATOR);
 				for (i = 0; i < langs.length; i++) {
-					newItem.languages.push(langs[i]);
+					newItem.languages.push(StringUtils.getCleanString(langs[i]));
 				}
 			}
 
 			return newItem;
 		}
 
-		protected static function getXMLListAsGroup(__items:XMLList): ValueGroup {
+		protected static function getXMLListAsGroup(__items:XMLList):ValueGroup {
 			// Converts XML data to a value group
 			var newGroup:ValueGroup = new ValueGroup();
 			newGroup.type = TYPE_GROUP; // This is a little bit redundant but consistent with how other types are treated
@@ -183,7 +183,7 @@ package com.zehfernando.localization {
 			return newGroup;
 		}
 
-		protected static function convertStringToType(__string:String, __type:String): * {
+		protected static function convertStringToType(__string:String, __type:String):* {
 			// Converts a string-based value to its specific value
 			switch(__type) {
 				case TYPE_STRING:
@@ -208,7 +208,7 @@ package com.zehfernando.localization {
 			return null;
 		}
 
-		protected static function convertStringArrayToType(__strings:Vector.<String>, __type:String): * {
+		protected static function convertStringArrayToType(__strings:Vector.<String>, __type:String):* {
 			// Converts a string-based array to its specific value array
 			var lst:Object;
 			var itemType:String;
@@ -238,7 +238,6 @@ package com.zehfernando.localization {
 				default:
 					trace ("StringList :: Error trying to convert array to node of type ["+String(__type)+"]");
 					return null;
-				break;
 			}
 
 			for (i = 0; i < __strings.length; i++) {
@@ -282,10 +281,10 @@ package com.zehfernando.localization {
 			// End text after last tag
 			newString += __string.substring(lastIndex, __string.length);
 
-			return newString;
+			return StringUtils.getCleanString(newString);
 		}
 
-		protected function getProcessedStringArrayInternal(__strings:Vector.<String>, __languages:Vector.<String>): Vector.<String> {
+		protected function getProcessedStringArrayInternal(__strings:Vector.<String>, __languages:Vector.<String>):Vector.<String> {
 			var i:int;
 			var newStrings:Vector.<String> = new Vector.<String>();
 
@@ -296,7 +295,7 @@ package com.zehfernando.localization {
 			return newStrings;
 		}
 
-		protected function getValue(__id:String, __languages:Array): * {
+		protected function getValue(__id:String, __languages:Array):* {
 			var i:int;
 
 			// Get the full path to the value name
@@ -351,7 +350,7 @@ package com.zehfernando.localization {
 			dispatchEvent(new StringListEvent(StringListEvent.CHANGED_LANGUAGE));
 		}
 
-		public function getCurrentLanguages(): Vector.<String> {
+		public function getCurrentLanguages():Vector.<String> {
 			return currentLanguages.concat();
 		}
 
@@ -383,7 +382,7 @@ package com.zehfernando.localization {
 			return getValue(__id, __languages);
 		}
 
-		public function getXML(__id:String, ... __languages): XML {
+		public function getXML(__id:String, ... __languages):XML {
 			return getValue(__id, __languages);
 		}
 
@@ -400,19 +399,19 @@ package com.zehfernando.localization {
 			return getProcessedStringInternal(__text, langsToUse);
 		}
 
-		public function getStringArray(__id:String, ... __languages): Vector.<String> {
+		public function getStringArray(__id:String, ... __languages):Vector.<String> {
 			return getValue(__id, __languages);
 		}
 
-		public function getNumberArray(__id:String, ... __languages): Vector.<Number> {
+		public function getNumberArray(__id:String, ... __languages):Vector.<Number> {
 			return getValue(__id, __languages);
 		}
 
-		public function getBooleanArray(__id:String, ... __languages): Vector.<Boolean> {
+		public function getBooleanArray(__id:String, ... __languages):Vector.<Boolean> {
 			return getValue(__id, __languages);
 		}
 
-		public function getColorArray(__id:String, ... __languages): Vector.<uint> {
+		public function getColorArray(__id:String, ... __languages):Vector.<uint> {
 			return getValue(__id, __languages);
 		}
 
@@ -531,7 +530,7 @@ class ValueGroup extends ValueNode {
 	}
 
 	// Public functions
-	public function getValueNodeByNames(__names:Vector.<String>, __languages:Vector.<String>): ValueNode {
+	public function getValueNodeByNames(__names:Vector.<String>, __languages:Vector.<String>):ValueNode {
 		// Returns a value given its name path and languages
 		// Same as StringList.getValue(), but with pre-processed parameters (split)
 

@@ -1,4 +1,6 @@
 package com.zehfernando.display.components.text {
+	import com.zehfernando.utils.StringUtils;
+
 	import flash.display.Sprite;
 	import flash.geom.Point;
 	import flash.text.engine.CFFHinting;
@@ -547,7 +549,7 @@ package com.zehfernando.display.components.text {
 		}
 		public function set text(__value:String):void {
 			if (_text != __value) {
-				_text = __value;
+				_text = StringUtils.getCleanString(__value);
 				redraw();
 			}
 		}

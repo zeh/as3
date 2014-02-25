@@ -152,8 +152,8 @@ package com.zehfernando.utils {
 				cStack = stackTrace[i];
 				cStack = cStack.substr(4, cStack.indexOf("(") - 4);
 
-				cFullClass = cStack.split("/")[0];
-				cFunction = cStack.split("/")[1];
+				cFullClass = StringUtils.getCleanString(cStack.split("/")[0]);
+				cFunction = StringUtils.getCleanString(cStack.split("/")[1]);
 
 				// Is a global function?
 				cIsFunction = cFullClass == "Function";
@@ -168,7 +168,7 @@ package com.zehfernando.utils {
 
 				// Static calls?
 				cIsStatic = false;
-				if (Boolean(cClass) && cClass.substr(-1, 1) == "$") {
+				if (cClass != null && cClass.substr(-1, 1) == "$") {
 					cIsStatic = true;
 					cClass = cClass.substr(0, cClass.length - 1);
 				}

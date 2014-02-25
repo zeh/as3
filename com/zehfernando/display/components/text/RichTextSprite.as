@@ -1,5 +1,8 @@
 package com.zehfernando.display.components.text {
+	import com.zehfernando.utils.StringUtils;
+
 	import flash.events.MouseEvent;
+	import flash.system.System;
 	import flash.text.engine.ContentElement;
 	import flash.text.engine.ElementFormat;
 	import flash.text.engine.FontDescription;
@@ -96,6 +99,10 @@ package com.zehfernando.display.components.text {
 					elements.push(new TextElement(texts[i], ef));
 				}
 			}
+
+			fd = null;
+			ef = null;
+
 			//elements.push(new TextElement(_text, ef));
 			return new GroupElement(elements);
 		}
@@ -137,12 +144,14 @@ package com.zehfernando.display.components.text {
 			var elements:Vector.<ContentElement> = new Vector.<ContentElement>(contentChildren.length(), true);
 			var te:TextElement;
 			var ts:TextStyle;
+			var ccn:String;
 			for (i = 0; i < contentChildren.length(); i++) {
 				//trace (i, (contentChildren[i] as XML));
-				if (Boolean((contentChildren[i] as XML).name())) {
+				ccn = (contentChildren[i] as XML).name();
+				if (ccn != null && ccn.length > 0) {
 					// A sub-node
 					//trace ("---> style " + String((contentChildren[i] as XML).name()));
-					ts = getStyle(String((contentChildren[i] as XML).name()));
+					ts = getStyle(ccn);
 					if (Boolean(ts)) {
 						// The style exists
 						te = new TextElement(contentChildren[i], ts.getAsElementFormat(__ef, __fd));
@@ -165,6 +174,14 @@ package com.zehfernando.display.components.text {
 //					elements.push(new TextElement(texts[i], __ef));
 //				}
 			}
+
+			ccn = null;
+			ts = null;
+			te = null;
+			contentChildren = null;
+
+			System.disposeXML(contentAsXML);
+			contentAsXML = null;
 
 			XML.ignoreWhitespace = true;
 
@@ -268,6 +285,8 @@ package com.zehfernando.display.components.text {
 						_currentLinkHref = null;
 						_currentLinkTarget = null;
 					}
+					System.disposeXML(elx);
+					elx = null;
 				} else {
 					// No XML data
 					buttonMode = false;
@@ -329,7 +348,6 @@ package com.zehfernando.display.components.text {
 		}
 	}
 }
-
 import flash.text.engine.ElementFormat;
 import flash.text.engine.FontDescription;
 class TextStyle {

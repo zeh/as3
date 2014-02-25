@@ -1,6 +1,6 @@
 package com.zehfernando.display.components.text.legacy {
-
 	import com.zehfernando.display.abstracts.ResizableSprite;
+	import com.zehfernando.utils.StringUtils;
 
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -172,7 +172,7 @@ package com.zehfernando.display.components.text.legacy {
 		}
 
 		public function set text(__value:String):void {
-			textField.text = __value;
+			textField.text = StringUtils.getCleanString(__value);
 		}
 
 		override public function get tabIndex():int {
