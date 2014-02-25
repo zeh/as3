@@ -21,6 +21,7 @@ package com.zehfernando.signals {
 			functions = new Vector.<Function>();
 		}
 
+
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
@@ -56,6 +57,14 @@ package com.zehfernando.signals {
 				functionsDuplicate[ifd].apply(undefined, __args);
 			}
 			functionsDuplicate = null;
+		}
+
+
+		// ================================================================================================================
+		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
+
+		public function get numItems():uint {
+			return functions.length;
 		}
 	}
 }
