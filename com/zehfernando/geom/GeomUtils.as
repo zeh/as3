@@ -74,6 +74,49 @@ package com.zehfernando.geom {
 			if (t > 1) return Point.distance(__point, __p2);
 			return Math.sqrt(distanceSquared(__point, new Point(__p1.x + t * (__p2.x - __p1.x), __p1.y + t * (__p2.y - __p1.y))));
 		}
+
+		public static function offsetPolygonEdges(__points:Vector.<Point>, __amount:Number):Vector.<Point> {
+			// Offset all points of a polygon, creating a new set of points that defines all offset lines of the original polygon
+			// The new list of points has 2x the original number of points
+
+			var i:int;
+
+			var p:Point, nextP:Point;
+			var nextAngle:Number;
+			var newPoints:Vector.<Point> = new Vector.<Point>(__points.length * 2, true);
+
+			for (i = 0; i < __points.length; i++) {
+				p = __points[i];
+				nextP = __points[(i+1) % __points.length];
+				nextAngle = Math.atan2(nextP.y - p.y, nextP.x - p.x);
+				newPoints[i * 2] = Point.polar(__amount, nextAngle + HALF_PI).add(p);
+				newPoints[i * 2 + 1] = Point.polar(__amount, nextAngle + HALF_PI).add(nextP);
+			}
+
+			return newPoints;
+		}
+
+		public static function filterPolygonsByWinding(__polygons:Vector.<Vector.<Point>>, __winding:String):Vector.<Vector.<Point>> {
+			// Filter a polygon, by removing all the polygons that don't conform to a given winding
+			var newPolys:Vector.<Vector.<Point>> = new Vector.<Vector.<Point>>();
+			for (var i:int = 0; i < __polygons.length; i++) {
+				if (GeomUtils.getPolygonWinding(__polygons[i]) == __winding) newPolys.push(__polygons[i]);
+			}
+
+			return newPolys;
+		}
+
+		private static function countPoints(__points:Vector.<Point>, __p:Point):int {
+			var c:int = 0;
+			var pos:int;
+			pos = 0;
+			while (__points.indexOf(__p, pos) > -1) {
+				pos = __points.indexOf(__p, pos) + 1;
+				c++;
+			}
+			return pos;
+		}
+
 		public static function decomposePolygon(__points:Vector.<Point>):Vector.<Vector.<Point>> {
 			// Decomposes a polygon (as a series of points) into several different polygons, avoiding intersections and maintaining winding of each sub-area
 
@@ -231,6 +274,49 @@ package com.zehfernando.geom {
 			return __cache[idx1];
 		}
 
+		public static function closePolygonEdgeGaps(__points:Vector.<Point>, __amount:Number):Vector.<Point> {
+			// Given a list of points that compose lines (pa, pb, pa, pb, ...) connect all end points with start points when the lines don't intersect, by extending them
+			// TODO: allow milter limit and type of connection
+
+			var newPoints:Vector.<Point> = new Vector.<Point>();
+			var i:int = 0;
+			var fi:int;
+			var p:Point; // Intersection
+			var skipNextStartPoint:Boolean = false;
+			for (i = 0; i < __points.length; i+= 2) {
+				fi = (i + 2) % __points.length;
+				p = getLineIntersection(__points[i].x, __points[i].y, __points[i+1].x, __points[i+1].y, __points[fi].x, __points[fi].y, __points[fi+1].x, __points[fi+1].y, true);
+
+				if (p != null) {
+					// Lines intersect, so just push this line
+					if (!skipNextStartPoint) newPoints.push(__points[i]);
+					newPoints.push(__points[i+1]);
+
+					skipNextStartPoint = false;
+				} else {
+					// No segment intersection, must close the gap by finding the intersection as a line
+					p = getLineIntersection(__points[i].x, __points[i].y, __points[i+1].x, __points[i+1].y, __points[fi].x, __points[fi].y, __points[fi+1].x, __points[fi+1].y, false);
+
+					if (p == null) {
+						// Should never happen
+						trace("No intersection between lines?!");
+						return null;
+					}
+
+					newPoints.push(__points[i]);
+					newPoints.push(p);
+
+					skipNextStartPoint = true;
+				}
+			}
+
+			if (skipNextStartPoint) {
+				// Start point of first line should be skipped
+				newPoints.splice(0, 1);
+			}
+
+			return newPoints;
+		}
 
 		[Inline]
 		public static function getPolygonWinding(__points:Vector.<Point>):String {
