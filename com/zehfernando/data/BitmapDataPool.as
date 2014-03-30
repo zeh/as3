@@ -118,8 +118,16 @@ package com.zehfernando.data {
 			//log("--> Available bitmaps: " + availableBitmaps.length);
 		}
 
-		public function clean():void {
+		public function clean(__aggressive:Boolean = false):void {
 			// Removes everything in a non-destructive way (allows borrowed objects to still be used, and upon returning they're disposed of)
+
+			// If aggressive, disposes of all unused objects immediately - effect is the same, but aggressive mode may clear memory earlier
+			if (__aggressive) {
+				for (var i:int = 0; i < availableBitmaps.length; i++) {
+					availableBitmaps[i].dispose();
+				}
+			}
+
 			availableBitmaps.length = 0;
 			usedBitmaps.length = 0;
 		}
