@@ -6,16 +6,22 @@ package com.zehfernando.geom {
 	 */
 	public class GeomUtils {
 
+		// Constants
+		public static var WINDING_CLOCKWISE:String = "clockwise";
+		public static var WINDING_COUNTERCLOCKWISE:String = "counterclockwise";
+
+		// Others
 		public static const DEG2RAD:Number = Math.PI / 180; // Multiply by this number to convert degrees to radians
 		public static const RAD2DEG:Number = 180 / Math.PI; // Multiply by this number to convert radians to degrees
+		public static const HALF_PI:Number = Math.PI * 0.5;
 
 		[Inline]
-		public final static function distanceSquared(__p1:Point, __p2:Point):Number {
+		public static function distanceSquared(__p1:Point, __p2:Point):Number {
 			return sqr(__p1.x - __p2.x) + sqr(__p1.y - __p2.y);
 		}
 
 		[Inline]
-		public final static function sqr(__x:Number):Number {
+		public static function sqr(__x:Number):Number {
 			return __x * __x;
 		}
 
