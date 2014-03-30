@@ -328,6 +328,10 @@ package com.zehfernando.controllers.focus {
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
 
+		public function get numElements():int {
+			return elements.length;
+		}
+
 		public function get currentFocusedElement():IFocusable {
 			return _currentElement;
 		}
