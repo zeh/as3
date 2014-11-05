@@ -25,6 +25,31 @@ package com.zehfernando.math.equations {
 		// http://en.wikipedia.org/wiki/Abstract_syntax_tree
 		// http://en.wikipedia.org/wiki/Shunting_yard_algorithm#Detailed_example
 		// http://en.wikipedia.org/wiki/Order_of_operations
+
+		// Test equations
+		//log("=========================");
+		//log("Testing equation: 1+2        :", new EquationInterpreter("1+2").getResult(), 1+2);
+		//log("Testing equation: 1+2*3      :", new EquationInterpreter("1+2*3").getResult(), 1+2*3);
+		//log("Testing equation: 1+2*3+7          :", new EquationInterpreter("1+2*3+7").getResult(), 1+2*3+7);
+		//log("Testing equation: 1+2*3/2+1        :", new EquationInterpreter("1+2*3/2+11").getResult(), 1+2*3/2+11);
+		//log("Testing equation: 3+4*2/(1-5)      :", new EquationInterpreter("3+4*2/(1-5)").getResult(), 3+4*2/(1-5));
+		//log("Testing equation: 3+4*2/(1-5)^2	:", new EquationInterpreter("3+4*2/(1-5)^2").getResult(), 3+4*2/Math.pow((1-5), 2));
+		//log("Testing equation: 3+4*2/(1-5)^2^3  :", new EquationInterpreter("3+4*2/(1-5)^2^3").getResult(), 3+4*2/Math.pow((1-5), Math.pow(2,3)));
+		//log("Testing equation: 1+2+3-5 			  :", new EquationInterpreter("1+2+3-5").getResult(), 1+2+3-5);
+		//log("Testing equation: 2^(3*4)^5 			  :", new EquationInterpreter("2^(3*4)^5").getResult(), Math.pow(2, Math.pow(3*4, 5)));
+		//log("Testing equation: (1)		 			  :", new EquationInterpreter("(1)").getResult(), 1);
+		//log("Testing equation: sin(1)+1 			  :", new EquationInterpreter("sin(1)+1").getResult(), Math.sin(1 /180 * Math.PI)+1);
+		//log("Testing equation: sin(2*3)  		  :", new EquationInterpreter("sin(2*3)").getResult(), Math.sin((2 * 3) / 180 * Math.PI));
+		//log("Testing equation: -1 		  :", new EquationInterpreter("-1").getResult(), -1);
+		//log("Testing equation: -(1) 		  :", new EquationInterpreter("-(1)").getResult(), -1);
+		//log("Testing equation: (-1) 		  :", new EquationInterpreter("(-1)").getResult(), -1);
+		//log("Testing equation: -(1-(-1-(1))) 		  :", new EquationInterpreter("-(1-(-1-(1)))").getResult(), -(1-(-1-(1))));
+		//log("Testing equation: (1)) 		  :", new EquationInterpreter("(1))").getResult(), 1);
+		//log("Testing equation: -1-1 		  :", new EquationInterpreter("-1-1").getResult(), -1-1);
+		//log("Testing equation: (1 % 2) * -90 		  :", new EquationInterpreter("(1 % 2) * -90").getResult(), (1 % 2) * -90);
+		//log("Testing equation: 5+(2/sin(1*2)+1) 		  :", new EquationInterpreter("5+(2/sin(1*2)+1)").getResult(), 5+(2/Math.sin((1 *2)/180 * Math.PI)+1));
+		//log("Testing equation: pi-1 				  :", new EquationInterpreter("pi-1").getResult(), Math.PI - 1);
+		//log("=========================");
 		
 		// Constants
 		protected static const CHARS_IGNORED:String = " \r\n\t";
