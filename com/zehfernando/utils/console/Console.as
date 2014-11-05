@@ -183,7 +183,7 @@ package com.zehfernando.utils.console {
 
 				packageName = currCall[0];
 				className = currCall[1] == null ? "<global>" : currCall[1]; // for functions, this is null
-				methodName = currCall[1] == null ? currCall[2].split("::")[1] : currCall[2];
+				methodName = currCall[1] == null ? (currCall[2] == null ? "<Constructor?>" : currCall[2].split("::")[1]) : currCall[2]; // null for internal classes
 			}
 
 			var currFrame:String = (PARAM_CURRENT_FRAME_FORMAT + currentFrame.toString(10)).substr(-PARAM_CURRENT_FRAME_FORMAT.length, PARAM_CURRENT_FRAME_FORMAT.length);
