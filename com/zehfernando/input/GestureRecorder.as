@@ -238,7 +238,6 @@ package com.zehfernando.input {
 			//debug("Spent " + (getTimer() - ti) + "ms to recognize gesture -- closestPathSimilarity = " + closestPathSimilarity);
 
 			return closestPath > -1 ? knownGestureIds[closestPath] : null;
-			return null;
 		}
 
 
