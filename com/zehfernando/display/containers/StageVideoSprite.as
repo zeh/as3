@@ -2,8 +2,9 @@ package com.zehfernando.display.containers {
 	import com.zehfernando.display.abstracts.ResizableSprite;
 	import com.zehfernando.geom.GeomUtils;
 	import com.zehfernando.utils.AppUtils;
-	import com.zehfernando.utils.console.info;
+	import com.zehfernando.utils.console.error;
 	import com.zehfernando.utils.console.log;
+	import com.zehfernando.utils.console.warn;
 
 	import flash.events.Event;
 	import flash.events.NetStatusEvent;
@@ -17,6 +18,7 @@ package com.zehfernando.display.containers {
 	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
+	import flash.utils.getTimer;
 	/**
 	 * @author zeh fernando
 	 */
@@ -29,6 +31,8 @@ package com.zehfernando.display.containers {
 		public static const EVENT_PLAY_FINISH:String = "StageVideoSprite.playFinish";
 		public static const EVENT_PLAY_LOOP:String = "StageVideoSprite.playLoop";
 
+		public static const LOG_ENABLED:Boolean = false;
+
 		// Properties
 		private var _hasVideo:Boolean;
 		private var _url:String;
@@ -39,12 +43,19 @@ package com.zehfernando.display.containers {
 		private var _bufferTime:Number;
 		private var _autoPlay:Boolean;
 		private var _isOnStage:Boolean;
+		private var _canUseStageVideo:Boolean;
+		private var _stageVideoIndex:int;
+		private var _playbackStartTime:Number;						// In seconds
+		private var _playbackPauseTime:Number;						// In seconds
 
 		// Instances
 		private var _netConnection:NetConnection;
 		private var _netStream:NetStream;
 		private var _stageVideo:StageVideo;
 		private var _video:Video;
+
+		private static var usedStageVideos:Vector.<int> = new Vector.<int>();
+
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -58,8 +69,32 @@ package com.zehfernando.display.containers {
 			_isPlaying = false;
 			_bufferTime = 0.1; // Netstream default is 0.1
 			_isOnStage = false;
+			_canUseStageVideo = true;
+			_stageVideoIndex = -1;
+			_playbackStartTime = 0;
+			_playbackPauseTime = 0;
 
 			_loop = false;
+		}
+
+
+		// ================================================================================================================
+		// STATIC INTERFACE -----------------------------------------------------------------------------------------------
+
+		private function getNextAvailableStageVideoIndex(__markAsUsed:Boolean = false):int {
+			// Return the index (for stage.stageVideos[]) of the next available stage video
+			for (var i:int = 0; i < AppUtils.getStage().stageVideos.length; i++) {
+				if (usedStageVideos.indexOf(i) == -1) {
+					if (__markAsUsed) usedStageVideos.push(i);
+					return i;
+				}
+			}
+			return -1;
+		}
+
+		private function putAvailableStageVideoIndexBack(__stageVideoIndex:int):void {
+			var pos:int = usedStageVideos.indexOf(__stageVideoIndex);
+			if (pos > -1) usedStageVideos.splice(pos, 1);
 		}
 
 
@@ -109,11 +144,12 @@ package com.zehfernando.display.containers {
 //			});
 		}
 
-		private function attachToStageVideo():void {
+		private function attachToStageVideo(__stageVideoIndex:int):void {
 			// Attach existing netstream to existing StageVideo
-			log("Attaching to StageVideo");
+			if (LOG_ENABLED) log("Attaching to StageVideo @ " + __stageVideoIndex + " [" + _height + "]");
 
-			_stageVideo = AppUtils.getStage().stageVideos[0];
+			_stageVideoIndex = __stageVideoIndex;
+			_stageVideo = AppUtils.getStage().stageVideos[_stageVideoIndex];
 			_stageVideo.addEventListener(StageVideoEvent.RENDER_STATE, onStageVideoRenderStateChange);
 			_stageVideo.attachNetStream(_netStream);
 
@@ -129,9 +165,16 @@ package com.zehfernando.display.containers {
 //			sv2.depth = 1;
 		}
 
+		private function detachFromEitherVideo():void {
+			detachFromStageVideo();
+			detachFromVideo();
+		}
+
 		private function detachFromStageVideo():void {
 			if (_stageVideo != null) {
-				log("Detaching from StageVideo");
+				if (LOG_ENABLED) log("Detaching from StageVideo");
+				putAvailableStageVideoIndexBack(_stageVideoIndex);
+				_stageVideoIndex = -1;
 				_stageVideo.removeEventListener(StageVideoEvent.RENDER_STATE, onStageVideoRenderStateChange);
 				_stageVideo.attachNetStream(null);
 				_stageVideo = null;
@@ -140,7 +183,7 @@ package com.zehfernando.display.containers {
 
 		private function attachToVideo():void {
 			// Attach existing netstream to fallback Video
-			log("Attaching to fallback Video");
+			if (LOG_ENABLED) log("Attaching to fallback Video");
 
 			// Create a fallback video
 			_video = new Video();
@@ -152,7 +195,7 @@ package com.zehfernando.display.containers {
 
 		private function detachFromVideo():void {
 			if (_video != null) {
-				log("Detaching from fallback Video");
+				if (LOG_ENABLED) log("Detaching from fallback Video");
 				AppUtils.getStage().removeChild(_video);
 				_video.removeEventListener(VideoEvent.RENDER_STATE, onVideoRenderStateChange);
 				_video.attachNetStream(null);
@@ -196,7 +239,9 @@ package com.zehfernando.display.containers {
 		private function resizeVideo():void {
 			// Resize video to fit the screen
 			if (_video != null) {
-				if (_video.width != _video.videoWidth || _video.height != _video.videoHeight) log("Resizing Video to " + _video.videoWidth + "x" + _video.videoHeight);
+				if (_video.width != _video.videoWidth || _video.height != _video.videoHeight) {
+					if (LOG_ENABLED) log("Resizing Video to " + _video.videoWidth + "x" + _video.videoHeight);
+				}
 				var rect:Rectangle = getVideoRect(_video.videoWidth, _video.videoHeight, true);
 				_video.x = rect.x;
 				_video.y = rect.y;
@@ -208,11 +253,13 @@ package com.zehfernando.display.containers {
 
 			if (_stageVideo != null) {
 				var targetRect:Rectangle = getVideoRect(_stageVideo.videoWidth, _stageVideo.videoHeight, true);
-				if (_stageVideo.viewPort.width != _stageVideo.videoWidth || _stageVideo.viewPort.height != _stageVideo.videoHeight) log("Resizing StageVideo to " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight);
+				if (_stageVideo.viewPort.width != _stageVideo.videoWidth || _stageVideo.viewPort.height != _stageVideo.videoHeight) {
+					if (LOG_ENABLED) log("Resizing StageVideo to " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight);
+				}
 				try {
 					_stageVideo.viewPort = visible && _isOnStage ? targetRect : new Rectangle(0, 0, 1, 1);
 				} catch (__e:Error) {
-					log("Error resizing StageVideo to resolution " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight +": " + __e);
+					if (LOG_ENABLED) warn("Error resizing StageVideo to resolution " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight +": " + __e);
 				}
 			}
 		}
@@ -222,18 +269,23 @@ package com.zehfernando.display.containers {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		private function onStageVideoAvailability(__e:StageVideoAvailabilityEvent):void {
-			//log("StageVideo availability state is " + __e.availability);
+			if (LOG_ENABLED) log("StageVideo availability state is " + __e.availability + " [" + _height + "]");
 
-			if (__e.availability == StageVideoAvailability.AVAILABLE) {
+			if (canUseStageVideo && __e.availability == StageVideoAvailability.AVAILABLE) {
 				// StageVideo is available
 				if (_stageVideo == null) {
-					detachFromVideo();
-					attachToStageVideo();
+					detachFromEitherVideo();
+					var stageVideoIndex:int = getNextAvailableStageVideoIndex(true);
+					if (stageVideoIndex > -1) {
+						attachToStageVideo(stageVideoIndex);
+					} else {
+						attachToVideo();
+					}
 				}
 			} else {
 				// StageVideo is not available
 				if (_video == null) {
-					detachFromStageVideo();
+					detachFromEitherVideo();
 					attachToVideo();
 				}
 			}
@@ -250,12 +302,12 @@ package com.zehfernando.display.containers {
 		}
 
 		private function onVideoRenderStateChange(__e:VideoEvent):void {
-			info("Video state has changed to " + __e.status + ", codec info " + __e.codecInfo);
+			if (LOG_ENABLED) log("Video state has changed to " + __e.status + ", codec info " + __e.codecInfo);
 			resizeVideo();
 		}
 
 		private function onStageVideoRenderStateChange(__e:StageVideoEvent):void {
-			info("StageVideo state has changed to " + __e.status + ", color space " + __e.colorSpace +", codec info " + __e.codecInfo);
+			if (LOG_ENABLED) log("StageVideo state has changed to " + __e.status + ", color space " + __e.colorSpace +", codec info " + __e.codecInfo + " [" + _height + "]");
 			resizeVideo();
 			// Use StageVideoEvent.RENDER_STATE to know how the video frames are being rendered:
 			// VideoStatus.ACCELERATED: The video is being decoded and composited through the GPU
@@ -271,19 +323,19 @@ package com.zehfernando.display.containers {
 //		}
 
 		private function onNetConnectionStatus(__e:NetStatusEvent):void {
-			log("##### NET CONNECTION STATUS CODE: " + __e.info["code"]);
+			if (LOG_ENABLED) log("##### NET CONNECTION STATUS CODE: " + __e.info["code"]);
 			resizeVideo();
 		}
 
 		protected function onNetConnectionError(__e:SecurityErrorEvent):void {
-			log("##### NET CONNECTION ERROR: " + __e);
+			warn("##### NET CONNECTION ERROR: " + __e);
 		}
 
 		private function onNetStatus(__e:NetStatusEvent):void {
 			//log("##### NET STREAM STATUS CODE: " + __e.info["code"]);
 			switch (__e.info["code"]) {
 				case "NetStream.Play.StreamNotFound":
-					trace("Stream [" + _url + "] not found!");
+					error("Stream [" + _url + "] not found!");
 					break;
 			}
 			resizeVideo();
@@ -376,8 +428,7 @@ package com.zehfernando.display.containers {
 
 				AppUtils.getStage().removeEventListener(StageVideoAvailabilityEvent.STAGE_VIDEO_AVAILABILITY, onStageVideoAvailability);
 
-				detachFromStageVideo();
-				detachFromVideo();
+				detachFromEitherVideo();
 
 				_netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 				_netStream.pause();
@@ -395,6 +446,15 @@ package com.zehfernando.display.containers {
 
 		public function playVideo():void {
 			if (_hasVideo) {
+				if (!_isPlaying) {
+					if (_playbackPauseTime > 0) {
+						// Resume
+						_playbackStartTime += (getTimer() - _playbackPauseTime);
+					} else {
+						// First start
+						_playbackStartTime = getTimer();
+					}
+				}
 				_netStream.resume();
 				_isPlaying = true;
 			}
@@ -402,14 +462,17 @@ package com.zehfernando.display.containers {
 
 		public function pauseVideo():void {
 			if (_hasVideo) {
-				_isPlaying = false;
+				if (_isPlaying) _playbackPauseTime = getTimer();
 				_netStream.pause();
+				_isPlaying = false;
 			}
 		}
 
 		public function stopVideo():void {
 			if (_hasVideo) {
 				pauseVideo();
+				_playbackStartTime = 0;
+				_playbackPauseTime = 0;
 				_netStream.seek(0);
 			}
 		}
@@ -449,6 +512,29 @@ package com.zehfernando.display.containers {
 			if (super.visible != __value) {
 				super.visible = __value;
 				resizeVideo();
+			}
+		}
+
+		public function get canUseStageVideo():Boolean {
+			return _canUseStageVideo;
+		}
+		public function set canUseStageVideo(__value:Boolean):void {
+			if (_canUseStageVideo != __value) {
+				_canUseStageVideo = __value;
+			}
+		}
+
+		public function get time():Number {
+			// Time, in seconds
+			if (_isPlaying) {
+				// Playing
+				return (getTimer() - _playbackStartTime) / 1000;
+			} else if (_playbackPauseTime > 0) {
+				// Paused
+				return ((getTimer() - _playbackStartTime) - (getTimer() - _playbackPauseTime)) / 1000;
+			} else {
+				// Stopped?
+				return 0;
 			}
 		}
 	}
