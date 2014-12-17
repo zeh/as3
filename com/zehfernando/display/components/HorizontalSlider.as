@@ -1,6 +1,6 @@
 package com.zehfernando.display.components {
-
 	import com.zehfernando.display.abstracts.ResizableSprite;
+
 	import flash.display.DisplayObject;
 	import flash.events.Event;
 
@@ -12,6 +12,7 @@ package com.zehfernando.display.components {
 		// Instances
 		protected var slider:Slider;
 
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -20,8 +21,10 @@ package com.zehfernando.display.components {
 
 			slider = new Slider(__wheelTarget);
 			slider.addEventListener(Slider.EVENT_POSITION_CHANGED_BY_USER, onPositionChangedByUser, false, 0, true);
+			slider.addEventListener(Slider.EVENT_POSITION_CHANGED, onPositionChanged, false, 0, true);
 			addChild(slider);
 		}
+
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
@@ -34,12 +37,18 @@ package com.zehfernando.display.components {
 			slider.height = _height;
 		}
 
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		protected function onPositionChangedByUser(e:Event):void {
 			dispatchEvent(new Event(Slider.EVENT_POSITION_CHANGED_BY_USER));
 		}
+
+		protected function onPositionChanged(e:Event):void {
+			dispatchEvent(new Event(Slider.EVENT_POSITION_CHANGED));
+		}
+
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
@@ -114,6 +123,13 @@ package com.zehfernando.display.components {
 		}
 		public function set maxValue(__value:Number):void {
 			slider.maxValue = __value;
+		}
+
+		public function get extra():* {
+			return slider.extra;
+		}
+		public function set extra(__value:*):void {
+			slider.extra = __value;
 		}
 	}
 }

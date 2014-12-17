@@ -1,5 +1,4 @@
 package com.zehfernando.display.components {
-
 	import com.zehfernando.display.abstracts.ResizableSprite;
 
 	import flash.display.DisplayObject;
@@ -13,6 +12,7 @@ package com.zehfernando.display.components {
 		// Instances
 		protected var slider:Slider;
 
+
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
@@ -21,9 +21,11 @@ package com.zehfernando.display.components {
 
 			slider = new Slider(__wheelTarget);
 			slider.addEventListener(Slider.EVENT_POSITION_CHANGED_BY_USER, onPositionChangedByUser, false, 0, true);
+			slider.addEventListener(Slider.EVENT_POSITION_CHANGED, onPositionChanged, false, 0, true);
 			slider.rotation = 90;
 			addChild(slider);
 		}
+
 
 		// ================================================================================================================
 		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
@@ -37,12 +39,18 @@ package com.zehfernando.display.components {
 			slider.width = _height;
 		}
 
+
 		// ================================================================================================================
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		protected function onPositionChangedByUser(e:Event):void {
 			dispatchEvent(new Event(Slider.EVENT_POSITION_CHANGED_BY_USER));
 		}
+
+		protected function onPositionChanged(e:Event):void {
+			dispatchEvent(new Event(Slider.EVENT_POSITION_CHANGED));
+		}
+
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
@@ -125,6 +133,13 @@ package com.zehfernando.display.components {
 
 		public function set position(__value:Number):void {
 			slider.position = __value;
+		}
+
+		public function get extra():* {
+			return slider.extra;
+		}
+		public function set extra(__value:*):void {
+			slider.extra = __value;
 		}
 	}
 }

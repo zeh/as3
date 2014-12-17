@@ -3,7 +3,6 @@ package com.zehfernando.display.components {
 	import com.zehfernando.display.shapes.Box;
 	import com.zehfernando.utils.AppUtils;
 	import com.zehfernando.utils.MathUtils;
-
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -16,6 +15,7 @@ package com.zehfernando.display.components {
 
 		// Events
 		public static const EVENT_POSITION_CHANGED_BY_USER:String = "onPositionChangedByUser";
+		public static const EVENT_POSITION_CHANGED:String = "onPositionChangedValue";
 
 		// Properties
 		protected var _backgroundColor:int;
@@ -38,6 +38,8 @@ package com.zehfernando.display.components {
 		protected var _enabled:Boolean;
 		protected var draggingOffset:Number;
 		protected var _wheelDeltaScale:Number;
+
+		protected var _extra:*;
 
 		// Instances
 		protected var background:Box;
@@ -207,6 +209,7 @@ package com.zehfernando.display.components {
 			if (_position != __value) {
 				_position = MathUtils.clamp(__value);
 				redrawPosition();
+				dispatchEvent(new Event(EVENT_POSITION_CHANGED));
 			}
 		}
 
@@ -319,6 +322,13 @@ package com.zehfernando.display.components {
 		}
 		public function set value(__value:Number):void {
 			position = MathUtils.map(__value, _minValue, _maxValue, 0, 1, true);
+		}
+
+		public function get extra():* {
+			return _extra;
+		}
+		public function set extra(__value:*):void {
+			_extra = __value;
 		}
 	}
 }
