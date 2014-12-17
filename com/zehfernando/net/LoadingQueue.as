@@ -1,5 +1,4 @@
 package com.zehfernando.net {
-
 	import com.zehfernando.net.loaders.ImageLoader;
 	import com.zehfernando.net.loaders.VideoLoader;
 	import com.zehfernando.net.loaders.VideoLoaderEvent;
@@ -29,7 +28,6 @@ package com.zehfernando.net {
 
 		protected var _cumulativeBytesLoaded:uint;
 		protected var _cumulativeSimulatedBytesLoaded:uint;
-		//protected var _cumulativeTimeSpent:uint;							// TOTAL time spent loading
 
 		protected var queue:Vector.<LoadingQueueItemInfo>;					// Items currently waiting in line
 		protected var currentLoaders:Vector.<LoadingQueueItemInfo>;			// Items currently loading
@@ -39,8 +37,8 @@ package com.zehfernando.net {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function LoadingQueue(target : IEventDispatcher = null) {
-			super(target);
+		public function LoadingQueue(__target:IEventDispatcher = null) {
+			super(__target);
 
 			setDefaultProperties();
 
@@ -82,12 +80,29 @@ package com.zehfernando.net {
 			}
 		}
 
+		private function selectNextItemToLoad():LoadingQueueItemInfo {
+			// Find the next item that should be loaded
+			var i:int;
+			var nextItemIndex:int = -1;
+			var nextItemPriority:Number = 1;
+			for (i = 0; i < queue.length; i++) {
+				if (nextItemIndex < 0 || nextItemPriority < queue[i].priority) {
+					// This is the first item in the list, or an item has higher priority than the previous one
+					nextItemIndex = i;
+					nextItemPriority = queue[i].priority;
+				}
+			}
+
+			return queue[nextItemIndex];
+		}
+
 		protected function loadNextItem():void {
 			// Remove one item from the loading queue, and start loading it
 
 			//trace("LoadingQueue.loadNextItem()");
 
-			var q:LoadingQueueItemInfo = queue.shift();
+			var q:LoadingQueueItemInfo = selectNextItemToLoad();
+			queue.splice(queue.indexOf(q), 1);
 			currentLoaders.push(q);
 
 			//Log.echo("ADDING: " +q.request.url);
@@ -417,40 +432,40 @@ package com.zehfernando.net {
 		// ================================================================================================================
 		// PUBLIC functions -----------------------------------------------------------------------------------------------
 
-		public function addURLLoader(__targetObject:URLLoader, __request:URLRequest, __simulatedBytesTotal:Number = 10000):void {
+		public function addURLLoader(__targetObject:URLLoader, __request:URLRequest, __simulatedBytesTotal:Number = 10000, __priority:Number = 1):void {
 			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
+			q.priority = __priority;
 			q.simulatedBytesTotal = __simulatedBytesTotal;
 			queue.push(q);
 			checkUnusedSlots();
-			// TODO: add priority!
 		}
 
-		public function addLoader(__targetObject:Loader, __request:URLRequest, __simulatedBytesTotal:Number = 100000):void {
+		public function addLoader(__targetObject:Loader, __request:URLRequest, __simulatedBytesTotal:Number = 100000, __priority:Number = 1):void {
 			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
+			q.priority = __priority;
 			q.simulatedBytesTotal = __simulatedBytesTotal;
 			queue.push(q);
 			checkUnusedSlots();
-			// TODO: add priority!
 		}
 
-		public function addImageLoader(__targetObject:ImageLoader, __request:URLRequest, __simulatedBytesTotal:Number = 100000):void {
+		public function addImageLoader(__targetObject:ImageLoader, __request:URLRequest, __simulatedBytesTotal:Number = 100000, __priority:Number = 1):void {
 			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
+			q.priority = __priority;
 			q.simulatedBytesTotal = __simulatedBytesTotal;
 			queue.push(q);
 			checkUnusedSlots();
-			// TODO: add priority!
 		}
 
-		public function addVideoLoader(__targetObject:VideoLoader, __request:URLRequest, __simulatedBytesTotal:Number = 1000000):void {
+		public function addVideoLoader(__targetObject:VideoLoader, __request:URLRequest, __simulatedBytesTotal:Number = 1000000, __priority:Number = 1):void {
 			//trace("LoadingQueue.addURLLoader("+__targetObject+", "+__request+", "+__simulatedBytesTotal+")");
 			var q:LoadingQueueItemInfo = new LoadingQueueItemInfo(__targetObject, __request);
+			q.priority = __priority;
 			q.simulatedBytesTotal = __simulatedBytesTotal;
 			queue.push(q);
 			checkUnusedSlots();
-			// TODO: add priority!
 		}
 
 
@@ -472,16 +487,16 @@ package com.zehfernando.net {
 		}
 
 		public function pause():void {
-			 if (!_paused) {
-			 	_paused = true;
-			 }
+			if (!_paused) {
+				_paused = true;
+			}
 		}
 
 		public function resume():void {
-			 if (_paused) {
-			 	_paused = false;
-			 	checkUnusedSlots();
-			 }
+			if (_paused) {
+				_paused = false;
+				checkUnusedSlots();
+			}
 		}
 
 		public function dispose():void {
@@ -491,7 +506,6 @@ package com.zehfernando.net {
 		}
 	}
 }
-
 import flash.net.URLRequest;
 
 class LoadingQueueItemInfo {
@@ -500,9 +514,10 @@ class LoadingQueueItemInfo {
 	public var targetObject:*;
 	public var request:URLRequest;
 	public var retries:uint;								// Number of times this loading has been retried
-	public var simulatedBytesTotal:Number;				// Number of simulated bytes total
-	public var bytesLoaded:Number;						// Number of simulated bytes total
-	public var bytesTotal:Number;							// Number of simulated bytes total
+	public var simulatedBytesTotal:Number;					// Number of simulated bytes total
+	public var bytesLoaded:Number;							// Number of bytes actually loaded
+	public var bytesTotal:Number;							// Number of total bytes
+	public var priority:Number;								// Priority (higher = higher priority)
 
 	// ================================================================================================================
 	// PUBLIC functions -----------------------------------------------------------------------------------------------
@@ -514,6 +529,7 @@ class LoadingQueueItemInfo {
 		bytesLoaded = 0;
 		bytesTotal = 0;
 		simulatedBytesTotal = 10000;
+		priority = 1;
 	}
 
 	// ================================================================================================================
