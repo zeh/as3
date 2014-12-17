@@ -1,5 +1,6 @@
 package com.zehfernando.net.loaders {
 
+	import flash.system.ImageDecodingPolicy;
 	import com.zehfernando.utils.console.error;
 
 	import flash.display.Loader;
@@ -87,6 +88,7 @@ package com.zehfernando.net.loaders {
 			if (!Boolean(__context)) {
 				__context = new LoaderContext();
 				__context.checkPolicyFile = true;
+				__context.imageDecodingPolicy = ImageDecodingPolicy.ON_LOAD;
 			}
 
 			loader.load(__request, __context);
