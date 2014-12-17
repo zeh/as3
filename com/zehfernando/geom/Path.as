@@ -8,10 +8,6 @@ package com.zehfernando.geom {
 	 */
 	public class Path {
 
-		// Constants
-		public static var WINDING_CLOCKWISE:String = "clockwise";
-		public static var WINDING_COUNTERCLOCKWISE:String = "counterclockwise";
-
 		// Properties
 		public var points:Vector.<Point>;
 
@@ -135,6 +131,22 @@ package com.zehfernando.geom {
 			}
 		}
 
+		public function getPositionSideRight(__point:Point):Boolean {
+			// Return true if the position is believed to be on the 'right' side of the path (right side of a segment of the path)
+			var i:int;
+			var minDistance:Number = NaN;
+			var distance:Number;
+			var segmentPoint1:int;
+			for (i = 0; i < points.length - 1; i++) {
+				distance = GeomUtils.getLineSegmentDistanceToPoint(__point, points[i], points[i+1]);
+				if (isNaN(minDistance) || distance < minDistance) {
+					segmentPoint1 = i;
+					minDistance = distance;
+				}
+			}
+			return GeomUtils.getPointIsToRightSideOfLine(__point, points[segmentPoint1], points[segmentPoint1+1]);
+		}
+
 		public function getDistance(__point:Point):Number {
 			// Get the closest distance to a point
 			var i:int;
@@ -145,6 +157,32 @@ package com.zehfernando.geom {
 				if (isNaN(minDistance) || distance < minDistance) minDistance = distance;
 			}
 			return minDistance;
+		}
+
+		public function getClosestPositionNormalized(__point:Point):Number {
+			// Get the point in the path (0-1) that is closest to another point
+			return getClosestPosition(__point) / length;
+		}
+
+		public function getClosestPosition(__point:Point):Number {
+			// Get the point in the path (0-length) that is closest to another point
+			var i:int;
+			var minDistance:Number = NaN;
+			var distance:Number;
+			var segmentPoint1:int;
+			var segmentPointLength:Number;
+			var totalLength:Number = 0;
+			for (i = 0; i < points.length - 1; i++) {
+				distance = GeomUtils.getLineSegmentDistanceToPoint(__point, points[i], points[i+1]);
+				if (isNaN(minDistance) || distance < minDistance) {
+					segmentPoint1 = i;
+					segmentPointLength = totalLength;
+					minDistance = distance;
+				}
+				totalLength += Point.distance(points[i], points[i+1]);
+			}
+
+			return segmentPointLength + GeomUtils.getLineSegmentClosestPhaseToPoint(__point, points[segmentPoint1], points[segmentPoint1+1]) * Point.distance(points[segmentPoint1], points[segmentPoint1+1]);
 		}
 
 		public function translate(__x:Number, __y:Number):void {
@@ -164,14 +202,23 @@ package com.zehfernando.geom {
 			}
 		}
 
-		public function inflate(__amount:Number, __loop:Boolean = false):void {
+		public function inflate(__amount:Number):Vector.<Path> {
+			var paths:Vector.<Path> = Vector.<Path>();
+			var pointses:Vector.<Vector.<Point>> = GeomUtils.inflatePolygon(points, __amount);
+			for (var i:int = 0; i < points.length; i++) {
+				paths.push(Path.fromPoints(pointses[i]));
+			}
+			return paths;
+		}
+
+		public function inflateOld(__amount:Number, __loop:Boolean = false):void {
 			// Inflates the path by a given amount
 			// If "loop", assumes it's a closed loop
 			// TODO: milter limit
 
 			const HALF_PI:Number = Math.PI * 0.5;
 			var winding:String = getWinding();
-			if (winding == Path.WINDING_CLOCKWISE) __amount *= -1; //? This should be the opposite
+			if (winding == GeomUtils.WINDING_CLOCKWISE) __amount *= -1; //? This should be the opposite
 			var p:Point, prevP:Point, nextP:Point;
 			var nextAngle:Number, prevAngle:Number;
 			var newPoints:Vector.<Point> = new Vector.<Point>(points.length, false);
@@ -280,19 +327,11 @@ package com.zehfernando.geom {
 		}
 
 		public function getWinding():String {
-			var area:Number = getArea();
-			return area > 0 ? Path.WINDING_COUNTERCLOCKWISE : Path.WINDING_CLOCKWISE;
+			return GeomUtils.getPolygonWinding(points);
 		}
 
 		public function getArea():Number {
-			// Calculate area of non-self-intersecting polygon, assumes it's closed
-			var area:Number = 0;
-			var j:Number;
-			for (var i:int = 0; i < points.length; i++) {
-				j = (i + 1) % points.length;
-				area += points[j].x * points[i].y - points[i].x * points[j].y;
-			}
-			return area / 2;
+			return GeomUtils.getPolygonArea(points);
 		}
 
 		public function getBounds():Rectangle {

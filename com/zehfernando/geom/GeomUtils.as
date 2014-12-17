@@ -62,8 +62,32 @@ package com.zehfernando.geom {
 			return baseScale;
 		}
 
+		public static function getLineSegmentClosestPhaseToPoint(__point:Point, __p1:Point, __p2:Point):Number {
+			// Find the position (0-1) where the closest point in the segment is in relation to __point
+			var l2:Number = distanceSquared(__p1, __p2);
+			if (l2 == 0) return 0;
+			return ((__point.x - __p1.x) * (__p2.x - __p1.x) + (__point.y - __p1.y) * (__p2.y - __p1.y)) / l2;
+		}
+
+		public static function getPointIsToRightSideOfLine(__point:Point, __p1:Point, __p2:Point):Boolean {
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(100, 0), new Point(0, 0), new Point(100, 100))); // Should be: false
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(0, 100), new Point(0, 0), new Point(100, 100))); // Should be: true
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(100, 100), new Point(100, 0), new Point(0, 100))); // Should be: false
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(0, 0), new Point(100, 0), new Point(0, 100))); // Should be: true
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(0, 0), new Point(0, 100), new Point(100, 0))); // Should be: false
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(100, 100), new Point(0, 100), new Point(100, 0))); // Should be: true
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(0, 100), new Point(100, 100), new Point(0, 0))); // Should be: false
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(100, 0), new Point(100, 100), new Point(0, 0))); // Should be: true
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(-50, 0), new Point(0, 100), new Point(100, 100))); // Should be: false
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(200, 0), new Point(0, 100), new Point(100, 100))); // Should be: false
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(-50, 200), new Point(0, 100), new Point(100, 100))); // Should be: true
+//			log("=> " + GeomUtils.getPointIsToRightSideOfLine(new Point(200, 200), new Point(0, 100), new Point(100, 100))); // Should be: true
+
+			return ((__p2.x - __p1.x)*(__point.y - __p1.y) - (__p2.y - __p1.y)*(__point.x - __p1.x)) > 0;
+		}
+
 		public static function getLineSegmentDistanceToPoint(__point:Point, __p1:Point, __p2:Point):Number {
-			// Find the minimum distance between this line and a point
+			// Find the minimum distance between this line segment and a point
 			// http://stackoverflow.com/questions/849211/shortest-distance-between-a-point-and-a-line-segment
 
 			var l2:Number = distanceSquared(__p1, __p2);
@@ -187,10 +211,9 @@ package com.zehfernando.geom {
 						p1 = getCachedIntersection(__points[l1p1], __points[l1p2], __points[l2p1], __points[l2p2], intersectionCache, true);
 						if (p1 != null) {
 							p2 = __points[l1p1] == currentSegmentPoint ? p1 : getCachedIntersection(currentSegmentPoint, __points[l1p2], __points[l2p1], __points[l2p2], intersectionCache, true);
+							if (p2 == null) p1 = null;
 						}
-						if (p2 == null) p1 = null;
-						//p = getCachedIntersection(currentSegmentPoint, __points[l1p2], __points[l2p1], __points[l2p2], intersectionCache);
-						if (p1 != null && !p1.equals(currentSegmentPoint)) {
+						if (p1 != null && !p1.equals(currentSegmentPoint) && !p1.equals(__points[l1p1]) && !p1.equals(__points[l2p1]) && !p1.equals(__points[l2p2]) && countPoints(polygonsPoints[polygonIndex], p1) < 4) {
 							// There is an intersection
 							currentIntersectionLength = GeomUtils.getPointDistance(currentSegmentPoint.x, currentSegmentPoint.y, p1.x, p1.y);
 //							log(spaces(polygonIndex) + "        => intersects at " + p1 + ", length = " + currentIntersectionLength);
@@ -316,6 +339,84 @@ package com.zehfernando.geom {
 			}
 
 			return newPoints;
+		}
+
+		public static function inflatePolygon(__points:Vector.<Point>, __amount:Number):Vector.<Vector.<Point>> {
+			// Inflates a closed polygon, as defined by a of points
+			// The return value needs to be a list of a list because the polygon may be decomposed into two different polygons
+
+			// TODO: milter limit
+			// TODO: allow non-loop polygon
+			// TODO: allow self-intersecting polygon
+
+			var originalWinding:String = getPolygonWinding(__points);
+			if (originalWinding == WINDING_CLOCKWISE) __amount *= -1; //? This should be the opposite
+			var p:Point, nextP:Point;
+			var nextAngle:Number;
+
+			var nextPA:Point, nextPB:Point;
+
+			var i:int, j:int;
+
+			// Creates a vector of all expanded/contracted lines
+			var lines:Vector.<Line> = new Vector.<Line>;
+			for (i = 0; i < __points.length; i++) {
+				p = __points[i];
+				nextP = __points[(i+1) % __points.length];
+				nextAngle = Math.atan2(nextP.y - p.y, nextP.x - p.x);
+				nextPA = Point.polar(__amount, nextAngle + HALF_PI).add(p);
+				nextPB = Point.polar(__amount, nextAngle + HALF_PI).add(nextP);
+				lines.push(new Line(nextPA, nextPB, true));
+			}
+
+			// Now, check for intersections of subsequent lines
+			var otherLine:Line;
+			var normalizedJ:int;
+			var intersectPoint:Point;
+			var itemsToRemove:int;
+			var itemsToRemoveStart:int;
+			var itemsToRemoveEnd:int;
+			for (i = 0; i < lines.length; i++) {
+				for (j = i + 1; j < i + lines.length; j++) {
+					normalizedJ = j % lines.length;
+					otherLine = lines[normalizedJ];
+					if (otherLine.intersectsLine(lines[i])) {
+						// The two lines intersect!
+						// Use the new point as the point for those lines
+						intersectPoint = otherLine.intersection(lines[i]);
+						lines[i].p2 = intersectPoint;
+						otherLine.p1 = intersectPoint;
+						// Remove lines in between
+						itemsToRemove = j - i - 1;
+						if (normalizedJ > i) {
+							// Normal sequence
+							lines.splice(i+1, itemsToRemove);
+							j -= itemsToRemove;
+						} else {
+							// Sequence loops
+							// Removes from here to the end
+							itemsToRemoveEnd = lines.length - i - 1;
+							itemsToRemoveStart = itemsToRemove - itemsToRemoveEnd;
+							lines.splice(i+1, itemsToRemoveEnd);
+							// Removes from the start
+							lines.splice(0, itemsToRemoveStart);
+							i -= itemsToRemoveStart;
+							j -= itemsToRemove;
+						}
+					}
+				}
+			}
+
+			// Finally, creates new points
+			var newPoints:Vector.<Point> = new Vector.<Point>();
+			for (i = 0; i < lines.length; i++) {
+				newPoints.push(lines[i].p1.clone());
+				newPoints.push(lines[i].p2.clone());
+			}
+
+			var pp:Vector.<Vector.<Point>> = new Vector.<Vector.<Point>>();
+			pp.push(newPoints);
+			return pp;
 		}
 
 		[Inline]
