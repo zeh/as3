@@ -3,6 +3,7 @@ package com.zehfernando.net.assets {
 	import com.zehfernando.net.loaders.VideoLoader;
 	import com.zehfernando.utils.console.info;
 
+	import flash.display.BitmapData;
 	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
@@ -10,8 +11,10 @@ package com.zehfernando.net.assets {
 	import flash.events.EventDispatcher;
 	import flash.events.ProgressEvent;
 	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
 	import flash.text.StyleSheet;
+	import flash.utils.ByteArray;
 
 	/**
 	 * @author Zeh
@@ -260,6 +263,16 @@ package com.zehfernando.net.assets {
 							urlSuffix = assets[i].avoidCache ? getRandomURLSuffix(url.indexOf("?") == -1) : "";
 							queue.addLoader(assets[i].loadingObject, new URLRequest(url + urlSuffix));
 							break;
+						case AssetType.BINARY:
+							// Binary, use an URLLoader
+							assets[i].loadingObject = new URLLoader();
+							(assets[i].loadingObject as URLLoader).dataFormat = URLLoaderDataFormat.BINARY;
+							(assets[i].loadingObject as URLLoader).addEventListener(ProgressEvent.PROGRESS, onURLLoaderProgress, false, 0, true);
+							(assets[i].loadingObject as URLLoader).addEventListener(Event.COMPLETE, onURLLoaderComplete, false, 0, true);
+							url = assets[i].url;
+							urlSuffix = assets[i].avoidCache ? getRandomURLSuffix(url.indexOf("?") == -1) : "";
+							queue.addURLLoader(assets[i].loadingObject, new URLRequest(url + urlSuffix));
+							break;
 						case AssetType.VIDEO:
 							assets[i].loadingObject = new VideoLoader();
 							(assets[i].loadingObject as VideoLoader).addEventListener(ProgressEvent.PROGRESS, onVideoLoaderProgress, false, 0, true);
@@ -278,6 +291,14 @@ package com.zehfernando.net.assets {
 			}
 
 			if (queue.paused) queue.resume();
+		}
+
+		public function getLoadedPhase():Number {
+			var total:Number = 0;
+			for (var i:int = 0; i < assets.length; i++) {
+				total += assets[i].isLoaded ? 1 : assets[i].loadingPhase * 0.99;
+			}
+			return total / assets.length;
 		}
 
 		public function getAssetLoadedPhase(__name:String):Number {
@@ -337,6 +358,18 @@ package com.zehfernando.net.assets {
 			return null;
 		}
 
+		public function getByteArray(__name:String):ByteArray {
+			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
+			if (Boolean(ai)) return ai.getAsByteArray();
+			return null;
+		}
+
+		public function getBitmapData(__name:String):BitmapData {
+			var ai:AssetItemInfo = getAssetItemInfoByName(__name);
+			if (Boolean(ai)) return ai.getAsBitmapData();
+			return null;
+		}
+
 		public function dispose():void {
 			removeLibrary(this);
 
@@ -347,6 +380,7 @@ package com.zehfernando.net.assets {
 			queue.dispose();
 			queue = null;
 		}
+
 
 		// ================================================================================================================
 		// ACCESSOR functions ---------------------------------------------------------------------------------------------
@@ -373,10 +407,13 @@ package com.zehfernando.net.assets {
 import com.zehfernando.net.assets.AssetType;
 import com.zehfernando.net.loaders.VideoLoader;
 
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
 import flash.display.Loader;
 import flash.net.URLLoader;
 import flash.text.StyleSheet;
+import flash.utils.ByteArray;
 
 // TODO: add AssetData class
 // TODO: add DynamicAssetData class
@@ -429,6 +466,8 @@ class AssetItemInfo {
 				return getAsDisplayObject();
 			case AssetType.VIDEO:
 				return getAsVideoLoader();
+			case AssetType.BINARY:
+				return getAsByteArray();
 		}
 		return null;
 	}
@@ -457,6 +496,16 @@ class AssetItemInfo {
 		return null;
 	}
 
+	public function getAsByteArray():ByteArray {
+		if (isLoaded) return (loadingObject as URLLoader).data;
+		return null;
+	}
+
+	public function getAsBitmapData():BitmapData {
+		if (isLoaded) return ((loadingObject as Loader).content as Bitmap).bitmapData;
+		return null;
+	}
+
 	public function getAsVideoLoader():VideoLoader {
 		return loadingObject as VideoLoader;
 		// TODO: allow download to check whether the request needs a fully loaded file or not?
@@ -469,6 +518,7 @@ class AssetItemInfo {
 			case AssetType.XML:
 			case AssetType.JSON:
 			case AssetType.CSS:
+			case AssetType.BINARY:
 				break;
 			case AssetType.SWF:
 			case AssetType.IMAGE:

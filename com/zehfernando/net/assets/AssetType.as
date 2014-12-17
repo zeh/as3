@@ -10,6 +10,7 @@ package com.zehfernando.net.assets {
 		public static const XML:String = "xml";
 		public static const JSON:String = "json";
 		public static const IMAGE:String = "image";
+		public static const BINARY:String = "binary";
 		public static const SWF:String = "swf";
 		public static const VIDEO:String = "video";
 
@@ -22,6 +23,7 @@ package com.zehfernando.net.assets {
 			types.push(AssetType.XML);
 			types.push(AssetType.JSON);
 			types.push(AssetType.IMAGE);
+			types.push(AssetType.BINARY);
 			types.push(AssetType.SWF);
 			types.push(AssetType.VIDEO);
 
@@ -49,6 +51,9 @@ package com.zehfernando.net.assets {
 					vv.push("jpeg");
 					vv.push("gif");
 					vv.push("png");
+					break;
+				case AssetType.BINARY:
+					vv.push("atf");
 					break;
 				case AssetType.SWF:
 					vv.push("swf");
