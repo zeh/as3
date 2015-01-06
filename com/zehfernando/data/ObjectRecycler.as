@@ -75,6 +75,17 @@ package com.zehfernando.data {
 			}
 		}
 
+		public function remove(__object:*):void {
+			// Delete an object
+			var idx:int;
+			idx = objects.indexOf(__object);
+			if (idx > -1) {
+				objects.splice(idx, 1);
+				objectUsed.splice(idx, 1);
+				objectKeys.splice(idx, 1);
+			}
+		}
+
 		public function clear():void {
 			objects.length = 0;
 			objectUsed.length = 0;
@@ -91,6 +102,33 @@ package com.zehfernando.data {
 
 		public function getNumObjects():int {
 			return objects.length;
+		}
+
+		public function getObjectIds():Vector.<String> {
+			// Debug function
+			var obj:Object = {};
+			var objUsed:Object = {};
+			var key:String;
+			var i:int;
+			for (i = 0; i < objects.length; i++) {
+				key = objectKeys[i];
+				if (!obj.hasOwnProperty(key)) obj[key] = 0;
+				if (!objUsed.hasOwnProperty(key)) objUsed[key] = 0;
+
+				obj[key]++;
+				if (objectUsed[i]) objUsed[key]++;
+			}
+
+			var strings:Vector.<String> = new Vector.<String>();
+			for (var iis:String in obj) {
+				strings.push(iis.split("\n").join("\\n").split("\r").join("\\r") + " (" + objUsed[iis] + " used / " + obj[iis] + " total)");
+			}
+			strings.sort(Array.CASEINSENSITIVE);
+			return strings;
+		}
+
+		public function getOjectAt(__index:int):* {
+			return objects[__index];
 		}
 	}
 }
