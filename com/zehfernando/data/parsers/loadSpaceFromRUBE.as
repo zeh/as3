@@ -18,6 +18,7 @@ package com.zehfernando.data.parsers {
 		// nape_staticFriction (Float) (in fixtures/shapes: set the static friction of the shape material
 		// nape_dynamicFriction (Float) (in fixtures/shapes: set the dynamic friction of the shape material
 		// nape_rollingFriction (Float) (in fixtures/shapes: set the rolling friction of the shape material
+		// nape_surfaceVel (Vec2) (in body): applies a surface velocity to the body's shapes (in meters) to create a conveyor belt effect
 
 		var i:int, j:int, k:int;
 

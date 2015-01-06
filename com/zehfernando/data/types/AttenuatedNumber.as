@@ -5,7 +5,7 @@ package com.zehfernando.data.types {
 	public class AttenuatedNumber {
 
 		// Takes number inputs and returns an attenuated value
-		// Like AttenuatedNumber, but without enter_frame control
+		// Like AutoAttenuatedNumber, but without enter_frame control
 
 		// Properties
 		private var _divisor:Number;

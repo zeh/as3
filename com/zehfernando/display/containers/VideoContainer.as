@@ -322,7 +322,7 @@ package com.zehfernando.display.containers {
 
 		// Instance
 
-		public function getFrame(): BitmapData {
+		public function getFrame():BitmapData {
 			// Captures the current frame as a BitmapData
 			var bmp:BitmapData = new BitmapData(_contentWidth, _contentHeight, false, 0x000000);
 
