@@ -47,6 +47,7 @@ package com.zehfernando.display.containers {
 		private var _stageVideoIndex:int;
 		private var _playbackStartTime:uint;						// In ms
 		private var _playbackPauseTime:uint;						// In ms
+		private var _stageVideoAvailable:String;
 
 		// Instances
 		private var _netConnection:NetConnection;
@@ -73,6 +74,7 @@ package com.zehfernando.display.containers {
 			_stageVideoIndex = -1;
 			_playbackStartTime = 0;
 			_playbackPauseTime = 0;
+			_stageVideoAvailable = StageVideoAvailability.UNAVAILABLE;
 
 			_loop = false;
 		}
@@ -257,6 +259,10 @@ package com.zehfernando.display.containers {
 					if (LOG_ENABLED) log("Resizing StageVideo to " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight);
 				}
 				try {
+					targetRect.left = Math.round(targetRect.left * actualScale.x);
+					targetRect.top = Math.round(targetRect.top * actualScale.y);
+					targetRect.right = Math.round(targetRect.right * actualScale.x);
+					targetRect.bottom = Math.round(targetRect.bottom * actualScale.y);
 					_stageVideo.viewPort = visible && _isOnStage ? targetRect : new Rectangle(0, 0, 1, 1);
 				} catch (__e:Error) {
 					if (LOG_ENABLED) warn("Error resizing StageVideo to resolution " + _stageVideo.videoWidth + "x" + _stageVideo.videoHeight +": " + __e);
@@ -264,14 +270,8 @@ package com.zehfernando.display.containers {
 			}
 		}
 
-
-		// ================================================================================================================
-		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
-
-		private function onStageVideoAvailability(__e:StageVideoAvailabilityEvent):void {
-			if (LOG_ENABLED) log("StageVideo availability state is " + __e.availability + " [" + _height + "]");
-
-			if (canUseStageVideo && __e.availability == StageVideoAvailability.AVAILABLE) {
+		private function createBestVideoContainer():void {
+			if (_canUseStageVideo && _stageVideoAvailable == StageVideoAvailability.AVAILABLE) {
 				// StageVideo is available
 				if (_stageVideo == null) {
 					detachFromEitherVideo();
@@ -299,6 +299,17 @@ package com.zehfernando.display.containers {
 			}
 
 			resizeVideo();
+		}
+
+
+		// ================================================================================================================
+		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
+
+		private function onStageVideoAvailability(__e:StageVideoAvailabilityEvent):void {
+			if (LOG_ENABLED) log("StageVideo availability state is " + __e.availability + " [" + _height + "]");
+
+			_stageVideoAvailable = __e.availability;
+			createBestVideoContainer();
 		}
 
 		private function onVideoRenderStateChange(__e:VideoEvent):void {
@@ -523,6 +534,8 @@ package com.zehfernando.display.containers {
 		public function set canUseStageVideo(__value:Boolean):void {
 			if (_canUseStageVideo != __value) {
 				_canUseStageVideo = __value;
+				_needToPlay = _isPlaying;
+				createBestVideoContainer();
 			}
 		}
 
