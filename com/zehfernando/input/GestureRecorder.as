@@ -1,5 +1,6 @@
 package com.zehfernando.input {
 	import com.zehfernando.geom.Path;
+	import com.zehfernando.utils.getTimerUInt;
 
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -7,7 +8,6 @@ package com.zehfernando.input {
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-	import flash.utils.getTimer;
 
 	/**
 	 * @author zeh fernando
@@ -154,7 +154,7 @@ package com.zehfernando.input {
 
 		private function findClosestGestureId():String {
 			// Find the pre-recorded gesture that's closest to the one just drawn
-			var ti:int = getTimer();
+			var ti:uint = getTimerUInt();
 
 			var maximumError:Number = 0.25;
 			var pathRect:Rectangle;

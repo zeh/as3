@@ -1,10 +1,10 @@
 package com.zehfernando.display.templates.application {
-
 	import com.zehfernando.display.templates.application.events.ApplicationFrame2Event;
 	import com.zehfernando.net.assets.AssetLibrary;
 	import com.zehfernando.utils.AppUtils;
 	import com.zehfernando.utils.console.Console;
 	import com.zehfernando.utils.console.info;
+	import com.zehfernando.utils.getTimerUInt;
 
 	import flash.display.MovieClip;
 	import flash.display.StageAlign;
@@ -12,7 +12,6 @@ package com.zehfernando.display.templates.application {
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import flash.utils.getDefinitionByName;
-	import flash.utils.getTimer;
 
 	/**
 	 * @author Zeh
@@ -40,7 +39,7 @@ package com.zehfernando.display.templates.application {
 		protected var frame2DataLoadingWeight:Number;						// Loading "weight" for total percentage counting
 		protected var isFrame2Inited:Boolean;
 		protected var framesAfterLoaded:int;								// Number of frames passed after the onEnterFrame event has indicated a full load
-		protected var timeStartedLoading:int;
+		protected var timeStartedLoading:uint;
 		protected var sizeAfterPreloader:int;
 		protected var frame2ClassName:String;
 
@@ -86,7 +85,7 @@ package com.zehfernando.display.templates.application {
 			frame2DataLoadingPhase = 0;
 			frame2DataLoadingWeight = 10;
 
-			timeStartedLoading = getTimer();
+			timeStartedLoading = getTimerUInt();
 			sizeAfterPreloader = loaderInfo.bytesLoaded;
 			isFrame2Inited = false;
 		}
@@ -174,7 +173,7 @@ package com.zehfernando.display.templates.application {
 //			log("LOAD / FRAME 2 INIT / INIT");
 			isFrame2Inited = true;
 
-			userLoadingTime = (getTimer() - timeStartedLoading) / 1000;
+			userLoadingTime = (getTimerUInt() - timeStartedLoading) / 1000;
 
 			var mainClass:Class = Class(getDefinitionByName(frame2ClassName));
 			frame2 = new mainClass();
@@ -299,9 +298,9 @@ package com.zehfernando.display.templates.application {
 			swfLoadingPhase = 1;
 			swfLoaded = true;
 
-			//var timeSpentLoading:Number = getTimer() - timeStartedLoading;
+			//var timeSpentLoading:Number = getTimerUInt() - timeStartedLoading;
 
-			var timeSpentLoading:Number = getTimer() - timeStartedLoading;
+			var timeSpentLoading:uint = getTimerUInt() - timeStartedLoading;
 			var sizeSpentLoading:Number = root.loaderInfo.bytesLoaded - sizeAfterPreloader;
 			userSpeedBytesPerSecond = sizeSpentLoading / (timeSpentLoading / 1000);
 			userSpeedBitsPerSecond = userSpeedBytesPerSecond * 8;

@@ -1,7 +1,6 @@
 package com.zehfernando.utils {
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
-	import flash.utils.getTimer;
 	/**
 	 * @author zeh
 	 */
@@ -40,7 +39,7 @@ package com.zehfernando.utils {
 			scope = __scope;
 			reference = __reference;
 			isPaused = false;
-			timeStarted = getTimer();
+			timeStarted = getTimerUInt();
 
 			if (__timeMS == 0) {
 				execute();
@@ -106,7 +105,7 @@ package com.zehfernando.utils {
 			if (!isPaused && timer != null) {
 				isPaused = true;
 				timer.stop();
-				timer.delay = getTimer() - timeStarted;
+				timer.delay = getTimerUInt() - timeStarted;
 				timer.reset();
 			}
 		}
@@ -114,7 +113,7 @@ package com.zehfernando.utils {
 		public function resume():void {
 			if (isPaused && timer != null) {
 				isPaused = false;
-				timeStarted = getTimer();
+				timeStarted = getTimerUInt();
 				timer.start();
 			}
 		}

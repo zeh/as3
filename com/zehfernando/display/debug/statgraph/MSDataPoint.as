@@ -1,5 +1,5 @@
 package com.zehfernando.display.debug.statgraph {
-	import flash.utils.getTimer;
+	import com.zehfernando.utils.getTimerUInt;
 	/**
 	 * @author zeh fernando
 	 */
@@ -10,7 +10,7 @@ package com.zehfernando.display.debug.statgraph {
 		 */
 
 		// Properties
-		private var timeFrameEntered:Number;
+		private var timeFrameEntered:uint;
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ package com.zehfernando.display.debug.statgraph {
 		}
 
 		override protected function getDataPointValue():Number {
-			return getTimer() - timeFrameEntered;
+			return getTimerUInt() - timeFrameEntered;
 		}
 
 		override protected function getDataPointLabel():String {
@@ -43,7 +43,7 @@ package com.zehfernando.display.debug.statgraph {
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
 		override public function updateValuesEnterFrame():void {
-			timeFrameEntered = getTimer();
+			timeFrameEntered = getTimerUInt();
 		}
 
 		override public function updateValuesExitFrame():void {

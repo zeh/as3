@@ -80,12 +80,12 @@ package com.zehfernando.models {
 		private var _minFPS:Number;
 		private var _maxFPS:Number;
 
-		private var lastTimeUpdated:int;
+		private var lastTimeUpdated:uint;
 		private var minInterval:Number;				// Min time to wait (in ms) between updates; causes skips (NaN = never enforces)
 		private var maxInterval:Number;				// Max time to wait (in ms) between updates; causes repetitions (NaN = never enforces)
 
 		// Temp stuff to reduce garbage collection
-		private var now:int;
+		private var now:uint;
 		private var frameDeltaTime:int;
 		private var interval:int;
 
@@ -139,7 +139,7 @@ package com.zehfernando.models {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		private function onSpriteEnterFrame(__e:Event):void {
-			now = getTimer();
+			now = getTimerUInt();
 			frameDeltaTime = now - lastTimeUpdated;
 
 			if (isNaN(minInterval) || frameDeltaTime >= minInterval) {
@@ -158,6 +158,10 @@ package com.zehfernando.models {
 			}
 		}
 
+
+		// ================================================================================================================
+		// INTERNAL INTERFACE ---------------------------------------------------------------------------------------------
+
 		private function update(__timePassedMS:int, __newVisualFrame:Boolean = true):void {
 			_currentTick++;
 			_currentTime += __timePassedMS;
@@ -165,6 +169,12 @@ package com.zehfernando.models {
 			_onTicked.dispatch(currentTimeSeconds, tickDeltaTimeSeconds, currentTick);
 
 			if (__newVisualFrame) _onTickedOncePerVisualFrame.dispatch(currentTimeSeconds, tickDeltaTimeSeconds, currentTick);
+		}
+
+		private function getTimerUInt():uint {
+			// A safe getTimer() - runs for ~1192 hours instead of ~596
+			var v:int = getTimer();
+			return v < 0 ? int.MAX_VALUE + 1 + v - int.MIN_VALUE : v;
 		}
 
 
@@ -186,7 +196,7 @@ package com.zehfernando.models {
 			if (!_isRunning) {
 				_isRunning = true;
 
-				lastTimeUpdated = getTimer();
+				lastTimeUpdated = getTimerUInt();
 
 				_onResumed.dispatch();
 

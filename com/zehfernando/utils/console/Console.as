@@ -2,6 +2,7 @@ package com.zehfernando.utils.console {
 	import com.zehfernando.utils.AppUtils;
 	import com.zehfernando.utils.DebugUtils;
 	import com.zehfernando.utils.StringUtils;
+	import com.zehfernando.utils.getTimerUInt;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -9,7 +10,6 @@ package com.zehfernando.utils.console {
 	import flash.external.ExternalInterface;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	import flash.utils.getTimer;
 	/**
 	 * @author zeh
 	 */
@@ -153,11 +153,11 @@ package com.zehfernando.utils.console {
 		}
 
 		protected static function getFormattedTime():String {
-			var ms:int = getTimer();
+			var ms:uint = getTimerUInt();
 
-			var secs:int = Math.floor(ms / 1000);
-			var mins:int = Math.floor(secs / 60);
-			var hours:int = Math.floor(mins / 60);
+			var secs:uint = Math.floor(ms / 1000);
+			var mins:uint = Math.floor(secs / 60);
+			var hours:uint = Math.floor(mins / 60);
 
 			ms -= secs * 1000;
 			secs -= mins * 60;
@@ -318,7 +318,7 @@ package com.zehfernando.utils.console {
 
 		public static function timeStart(__name:String = null):void {
 			if (__name == null) __name = "Timer " + (timerIndex++);
-			timeTable[__name] = getTimer();
+			timeTable[__name] = getTimerUInt();
 			while (timeList.indexOf(__name) > -1) timeList.splice(timeList.indexOf(__name), 1);
 			timeList.push(__name);
 		}
@@ -326,7 +326,7 @@ package com.zehfernando.utils.console {
 		public static function timeEnd(__message:String = "", __name:String = null):void {
 			if (__name == null && timeList.length > 0) __name = timeList[timeList.length - 1];
 			if (timeTable.hasOwnProperty(__name)) {
-				var timePassed:int = getTimer() - timeTable[__name];
+				var timePassed:uint = getTimerUInt() - timeTable[__name];
 				var output:String = timeFormat;
 				output = output.split(PARAM_TIME_NAME).join(Boolean(__message) ? __message : __name);
 				output = output.split(PARAM_TIME_VALUE).join(timePassed);

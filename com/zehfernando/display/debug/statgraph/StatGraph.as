@@ -1,4 +1,6 @@
 package com.zehfernando.display.debug.statgraph {
+	import com.zehfernando.utils.getTimerUInt;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -8,7 +10,6 @@ package com.zehfernando.display.debug.statgraph {
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
-	import flash.utils.getTimer;
 
 	/**
 	 * @author Zeh
@@ -29,7 +30,7 @@ package com.zehfernando.display.debug.statgraph {
 		protected var _blockHeight:Number;
 		protected var _timeInterval:Number;
 
-		protected var lastUpdateTime:int;
+		protected var lastUpdateTime:uint;
 
 		protected var infoStage:int;
 
@@ -107,7 +108,7 @@ package com.zehfernando.display.debug.statgraph {
 				infoField.visible = false;
 				setInfoFieldText();
 
-				lastUpdateTime = getTimer();
+				lastUpdateTime = getTimerUInt();
 				updateBeforeFrame();
 				updateAfterFrame();
 
@@ -181,7 +182,7 @@ package com.zehfernando.display.debug.statgraph {
 			}
 		}
 
-		protected function updateChart(__timeSpentMS:Number):void {
+		protected function updateChart(__timeSpentMS:uint):void {
 			var i:int;
 			for (i = 0; i < dataPoints.length; i++) {
 				dataBlocks[i].update(__timeSpentMS);
@@ -224,8 +225,8 @@ package com.zehfernando.display.debug.statgraph {
 		}
 
 		protected function onEnterFrame(e:Event):void {
-			var now:Number = getTimer();
-			var timeSpentMS:Number = now - lastUpdateTime;
+			var now:uint = getTimerUInt();
+			var timeSpentMS:uint = now - lastUpdateTime;
 			if (timeSpentMS >= _timeInterval) {
 				updateChart(timeSpentMS);
 

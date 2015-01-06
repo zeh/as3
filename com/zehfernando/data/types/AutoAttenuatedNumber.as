@@ -1,9 +1,9 @@
 package com.zehfernando.data.types {
+	import com.zehfernando.utils.getTimerUInt;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.utils.getTimer;
 
 	/**
 	 * @author zeh
@@ -27,7 +27,7 @@ package com.zehfernando.data.types {
 
 		protected var _prevValue:Number;
 
-		protected var lastTickTime:int;						// Time last tick occured
+		protected var lastTickTime:uint;					// Time last tick occured
 
 		// Instances
 		protected var container:Sprite;
@@ -69,7 +69,7 @@ package com.zehfernando.data.types {
 				tick();
 			} else {
 				// Update if needed, as many times as needed
-				var now:int = getTimer();
+				var now:uint = getTimerUInt();
 				var tickFrameTime:Number = 1000/_tickRate;
 
 				while (now > lastTickTime + tickFrameTime) {
@@ -87,7 +87,7 @@ package com.zehfernando.data.types {
 				container = new Sprite();
 				container.addEventListener(Event.ENTER_FRAME, onEnterFrameTick, false, 0, true);
 				_isRunning = true;
-				lastTickTime = getTimer();
+				lastTickTime = getTimerUInt();
 			}
 		}
 

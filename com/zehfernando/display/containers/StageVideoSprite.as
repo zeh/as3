@@ -5,6 +5,7 @@ package com.zehfernando.display.containers {
 	import com.zehfernando.utils.console.error;
 	import com.zehfernando.utils.console.log;
 	import com.zehfernando.utils.console.warn;
+	import com.zehfernando.utils.getTimerUInt;
 
 	import flash.events.Event;
 	import flash.events.NetStatusEvent;
@@ -18,7 +19,6 @@ package com.zehfernando.display.containers {
 	import flash.media.Video;
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
-	import flash.utils.getTimer;
 	/**
 	 * @author zeh fernando
 	 */
@@ -45,8 +45,8 @@ package com.zehfernando.display.containers {
 		private var _isOnStage:Boolean;
 		private var _canUseStageVideo:Boolean;
 		private var _stageVideoIndex:int;
-		private var _playbackStartTime:Number;						// In seconds
-		private var _playbackPauseTime:Number;						// In seconds
+		private var _playbackStartTime:uint;						// In ms
+		private var _playbackPauseTime:uint;						// In ms
 
 		// Instances
 		private var _netConnection:NetConnection;
@@ -449,10 +449,10 @@ package com.zehfernando.display.containers {
 				if (!_isPlaying) {
 					if (_playbackPauseTime > 0) {
 						// Resume
-						_playbackStartTime += (getTimer() - _playbackPauseTime);
+						_playbackStartTime += (getTimerUInt() - _playbackPauseTime);
 					} else {
 						// First start
-						_playbackStartTime = getTimer();
+						_playbackStartTime = getTimerUInt();
 					}
 				}
 				_netStream.resume();
@@ -462,7 +462,7 @@ package com.zehfernando.display.containers {
 
 		public function pauseVideo():void {
 			if (_hasVideo) {
-				if (_isPlaying) _playbackPauseTime = getTimer();
+				if (_isPlaying) _playbackPauseTime = getTimerUInt();
 				_netStream.pause();
 				_isPlaying = false;
 			}
@@ -528,10 +528,10 @@ package com.zehfernando.display.containers {
 			// Time, in seconds
 			if (_isPlaying) {
 				// Playing
-				return (getTimer() - _playbackStartTime) / 1000;
+				return (getTimerUInt() - _playbackStartTime) / 1000;
 			} else if (_playbackPauseTime > 0) {
 				// Paused
-				return ((getTimer() - _playbackStartTime) - (getTimer() - _playbackPauseTime)) / 1000;
+				return ((getTimerUInt() - _playbackStartTime) - (getTimerUInt() - _playbackPauseTime)) / 1000;
 			} else {
 				// Stopped?
 				return 0;

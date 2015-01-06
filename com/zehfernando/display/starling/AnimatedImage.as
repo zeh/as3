@@ -5,8 +5,7 @@ package com.zehfernando.display.starling {
 
 	import com.zehfernando.signals.SimpleSignal;
 	import com.zehfernando.utils.console.warn;
-
-	import flash.utils.getTimer;
+	import com.zehfernando.utils.getTimerUInt;
 	/**
 	 * @author zeh fernando
 	 */
@@ -29,7 +28,7 @@ package com.zehfernando.display.starling {
 		private var _isPlaying:Boolean;
 		private var _loop:Boolean;
 
-		private var timeStartedPlaying:int;
+		private var timeStartedPlaying:uint;
 		private var frameStartedPlaying:int;
 		private var _internalScale:Number;
 
@@ -116,7 +115,7 @@ package com.zehfernando.display.starling {
 		// EVENT INTERFACE ------------------------------------------------------------------------------------------------
 
 		private function onEnterFramePlay(__e:Event):void {
-			setFrame(frameStartedPlaying + Math.floor(((getTimer() - timeStartedPlaying) / 1000) * _fps), true);
+			setFrame(frameStartedPlaying + Math.floor(((getTimerUInt() - timeStartedPlaying) / 1000) * _fps), true);
 		}
 
 
@@ -127,7 +126,7 @@ package com.zehfernando.display.starling {
 			if (!_isPlaying) {
 				_isPlaying = true;
 				frameStartedPlaying = _frame;
-				timeStartedPlaying = getTimer();
+				timeStartedPlaying = getTimerUInt();
 				addEventListener(Event.ENTER_FRAME, onEnterFramePlay);
 			}
 		}

@@ -1,6 +1,7 @@
 package com.zehfernando.display.containers {
+	import com.zehfernando.utils.getTimerUInt;
+
 	import flash.display.Bitmap;
-	import flash.utils.getTimer;
 
 	/**
 	 * @author zeh
@@ -15,8 +16,8 @@ package com.zehfernando.display.containers {
 
 		protected var _smoothing:Boolean;
 
-		protected var _timeStartedLoading:Number;
-		protected var _timeCompletedLoading:Number;
+		protected var _timeStartedLoading:uint;
+		protected var _timeCompletedLoading:uint;
 		protected var _bytesLoaded:Number;
 		protected var _bytesTotal:Number;
 
@@ -44,11 +45,11 @@ package com.zehfernando.display.containers {
 		}
 
 		protected function updateStartedLoadingStats():void {
-			_timeStartedLoading = getTimer();
+			_timeStartedLoading = getTimerUInt();
 		}
 
 		protected function updateCompletedLoadingStats():void {
-			_timeCompletedLoading = getTimer();
+			_timeCompletedLoading = getTimerUInt();
 		}
 
 		protected function applySmoothing():void {
@@ -84,7 +85,7 @@ package com.zehfernando.display.containers {
 		public function getLoadingSpeed():Number {
 			// Returns the loading speed, in bytes per second
 			if (isLoading) {
-				return _bytesLoaded / ((getTimer() - _timeStartedLoading) / 1000);
+				return _bytesLoaded / ((getTimerUInt() - _timeStartedLoading) / 1000);
 			} else if (isLoaded) {
 				return _bytesLoaded / ((_timeCompletedLoading - _timeStartedLoading) / 1000);
 			}

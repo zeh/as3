@@ -74,7 +74,7 @@ package com.zehfernando.display.debug.statgraph {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function update(__timeSpentMS:Number):void {
+		public function update(__timeSpentMS:uint):void {
 			graphBitmapData.lock();
 
 			// Scroll bitmap to the side

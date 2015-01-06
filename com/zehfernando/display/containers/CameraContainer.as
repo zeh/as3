@@ -1,5 +1,6 @@
 package com.zehfernando.display.containers {
 	import com.zehfernando.utils.console.log;
+	import com.zehfernando.utils.getTimerUInt;
 
 	import flash.display.BitmapData;
 	import flash.events.ActivityEvent;
@@ -8,7 +9,6 @@ package com.zehfernando.display.containers {
 	import flash.geom.Matrix;
 	import flash.media.Camera;
 	import flash.media.Video;
-	import flash.utils.getTimer;
 
 
 	/**
@@ -35,8 +35,8 @@ package com.zehfernando.display.containers {
 		protected var isFindingActiveCameras:Boolean;
 		protected var autoSelectFirstActiveCamera:Boolean;
 		protected var lastCameraTried:int;
-		protected var timeStartedCheckingCamera:int;
-		protected var timeStartedCheckingCameraHadActivity:int;
+		protected var timeStartedCheckingCamera:uint;
+		protected var timeStartedCheckingCameraHadActivity:uint;
 
 		protected var _streamName:String;
 
@@ -191,20 +191,20 @@ package com.zehfernando.display.containers {
 				onCurrentAutoCameraActivity();
 			} else {
 				if (timeStartedCheckingCamera == -1) {
-					timeStartedCheckingCamera = getTimer();
+					timeStartedCheckingCamera = getTimerUInt();
 				}
 
 				if (_camera.activityLevel > -1) {
 					// Camera is somehow active, continue waiting
 					if (timeStartedCheckingCameraHadActivity == -1) {
 						// First time active, set the time it started
-						timeStartedCheckingCameraHadActivity = getTimer();
-					} else if (timeStartedCheckingCameraHadActivity + TIME_TO_WAIT_FOR_VALID_ACTIVITY < getTimer()) {
+						timeStartedCheckingCameraHadActivity = getTimerUInt();
+					} else if (timeStartedCheckingCameraHadActivity + TIME_TO_WAIT_FOR_VALID_ACTIVITY < getTimerUInt()) {
 						// Waited for too long
 						onCurrentAutoCameraNoActivity();
 					}
 				} else {
-					if (timeStartedCheckingCamera + TIME_TO_WAIT_FOR_ANY_ACTIVITY < getTimer()) {
+					if (timeStartedCheckingCamera + TIME_TO_WAIT_FOR_ANY_ACTIVITY < getTimerUInt()) {
 						// Too long without any activity
 						onCurrentAutoCameraNoActivity();
 					}

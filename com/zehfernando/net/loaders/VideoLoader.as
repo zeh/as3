@@ -2,6 +2,7 @@ package com.zehfernando.net.loaders {
 	import com.zehfernando.utils.MathUtils;
 	import com.zehfernando.utils.console.debug;
 	import com.zehfernando.utils.console.log;
+	import com.zehfernando.utils.getTimerUInt;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -13,7 +14,6 @@ package com.zehfernando.net.loaders {
 	import flash.net.NetConnection;
 	import flash.net.NetStream;
 	import flash.net.URLRequest;
-	import flash.utils.getTimer;
 
 	/**
 	 * @author zeh
@@ -50,8 +50,8 @@ package com.zehfernando.net.loaders {
 		protected var _isLoading:Boolean;
 		protected var _isLoaded:Boolean;
 
-		protected var _timeStartedLoading:int;
-		protected var _timeCompletedLoading:int;
+		protected var _timeStartedLoading:uint;
+		protected var _timeCompletedLoading:uint;
 
 		protected var _hasVideo:Boolean;
 
@@ -62,15 +62,18 @@ package com.zehfernando.net.loaders {
 		protected var pauseAfterMetaDataLoad:Boolean;
 		protected var isPlayingToForceMetaDataLoad:Boolean;
 		protected var previousSoundTransform:SoundTransform;
-		protected var timeStartedWaitingForMetaData:int;
+		protected var timeStartedWaitingForMetaData:uint;
 
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function VideoLoader() {
+		public function VideoLoader(__netStreamToRecycle:NetStream = null, __netConnectionToRecycle:NetConnection = null) {
 			isMonitoringLoading = false;
 			isMonitoringTime = false;
+
+			netStreamToRecycle = __netStreamToRecycle;
+			netConnectionToRecycle = __netConnectionToRecycle;
 
 			_metaData = {};
 
@@ -444,7 +447,7 @@ package com.zehfernando.net.loaders {
 		// Other events
 		protected function onLoadStart():void {
 			// Pseudo-event
-			_timeStartedLoading = getTimer();
+			_timeStartedLoading = getTimerUInt();
 			_hasStartedLoading = true;
 			//log(url);
 			dispatchEvent(new Event(Event.OPEN));
@@ -461,7 +464,7 @@ package com.zehfernando.net.loaders {
 			//log(url);
 
 			_isLoaded = true;
-			_timeCompletedLoading = getTimer();
+			_timeCompletedLoading = getTimerUInt();
 			stopMonitoringLoading();
 
 			dispatchEvent(new Event(Event.COMPLETE));
@@ -495,9 +498,9 @@ package com.zehfernando.net.loaders {
 						if (!isPlayingToForceMetaDataLoad) {
 							if (timeStartedWaitingForMetaData == 0) {
 								//debug("Completed loading but doesn't have metadata yet! Waiting some more");
-								timeStartedWaitingForMetaData = getTimer();
+								timeStartedWaitingForMetaData = getTimerUInt();
 							} else {
-								if (getTimer() > timeStartedWaitingForMetaData + 750) {
+								if (getTimerUInt() > timeStartedWaitingForMetaData + 750) {
 									//warn("Too much time passed, forcing video playback");
 									startPlayingToForceMetaDataLoad();
 								}
@@ -767,7 +770,7 @@ package com.zehfernando.net.loaders {
 		public function getLoadingSpeed():Number {
 			// Returns the loading speed, in bytes per second
 			if (_isLoading) {
-				return bytesLoaded / ((getTimer() - _timeStartedLoading) / 1000);
+				return bytesLoaded / ((getTimerUInt() - _timeStartedLoading) / 1000);
 			} else if (_isLoaded) {
 				return bytesLoaded / ((_timeCompletedLoading - _timeStartedLoading) / 1000);
 			}

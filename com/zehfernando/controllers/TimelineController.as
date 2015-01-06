@@ -1,9 +1,9 @@
 package com.zehfernando.controllers {
+	import com.zehfernando.utils.getTimerUInt;
 
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.utils.getTimer;
 
 	/**
 	 * @author zeh
@@ -19,7 +19,7 @@ package com.zehfernando.controllers {
 		protected var _loop:Boolean;
 		protected var _fps:Number;
 
-		protected var lastFrameUpdateTime:Number;
+		protected var lastFrameUpdateTime:uint;
 
 		protected var _movieClip:MovieClip;
 		protected var _actualFrame:Number;
@@ -43,7 +43,7 @@ package com.zehfernando.controllers {
 		protected function onEnterFrame(e:Event):void {
 			// Move playhead
 
-			var now:Number = getTimer();
+			var now:uint = getTimerUInt();
 			var newFrame:Number = _actualFrame + ((now - lastFrameUpdateTime) / 1000) * _fps;
 
 			if (Math.round(newFrame) > _movieClip.totalFrames) {
@@ -70,7 +70,7 @@ package com.zehfernando.controllers {
 		public function play(__loop:Boolean = true):void {
 			if (!_isPlaying) {
 				// Start playing
-				lastFrameUpdateTime = getTimer();
+				lastFrameUpdateTime = getTimerUInt();
 				if (Boolean(_movieClip)) {
 					_movieClip.addEventListener(Event.ENTER_FRAME, onEnterFrame, false, 0, true);
 				}
