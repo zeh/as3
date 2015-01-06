@@ -146,20 +146,13 @@ package com.zehfernando.controllers.focus {
 				}
 			}
 
-			// Animate
-			if (_currentElement != nextElement && nextElement != null) {
-				if (_currentElement != null) _currentElement.setFocused(false);
-				if (nextElement != null) nextElement.setFocused(true);
-				_currentElement = nextElement;
-			}
-
 			if (!_isActivated) {
 				_isActivated = true;
 				_onActivationChanged.dispatch();
 			}
 
-			// End
-			_onMovedFocus.dispatch();
+			// Animate
+			setCurrentElement(nextElement);
 		}
 
 		private function findElementFromVisualDirection(__element:IFocusable, __direction:String):IFocusable {
@@ -244,13 +237,9 @@ package com.zehfernando.controllers.focus {
 		public function addElement(__element:IFocusable, __isDefault:Boolean = false):void {
 			if (elements.indexOf(__element) < 0) elements.push(__element);
 			if (__isDefault) defaultElements.push(__element);
-			var changedFocus:Boolean = false;
 			if (_isActivated && _currentElement == null) {
-				_currentElement = __element;
-				_currentElement.setFocused(true, true);
-				changedFocus = true;
+				setCurrentElement(__element, true);
 			}
-			if (changedFocus) _onMovedFocus.dispatch();
 		}
 
 		public function removeElement(__element:IFocusable):void {
@@ -269,6 +258,15 @@ package com.zehfernando.controllers.focus {
 			}
 		}
 
+		public function setCurrentElement(__element:IFocusable, __immediate:Boolean = false):void {
+			if (_currentElement != __element && __element != null) {
+				if (_currentElement != null) _currentElement.setFocused(false, __immediate);
+				__element.setFocused(true, __immediate);
+				_currentElement = __element;
+				_onMovedFocus.dispatch();
+			}
+		}
+
 		public function unsetCurrentElement(__immediate:Boolean = false):void {
 			// Resets the currently selected element (next time it is activated, it will use the default)
 			if (_currentElement != null) {
@@ -280,14 +278,9 @@ package com.zehfernando.controllers.focus {
 
 		public function resetCurrentElement(__immediate:Boolean = false):void {
 			// Switches to what should be the current element
-			var newElement:IFocusable = getDefaultElement();
-			if (_currentElement != newElement) {
-				if (_currentElement != null) _currentElement.setFocused(false, __immediate);
-				_currentElement = newElement;
-				if (newElement != null) _currentElement.setFocused(true, __immediate);
-				_onMovedFocus.dispatch();
-			}
+			setCurrentElement(getDefaultElement(), __immediate);
 		}
+
 
 		public function hasElement(__element:IFocusable):Boolean {
 			return elements.indexOf(__element) > -1;
@@ -297,7 +290,7 @@ package com.zehfernando.controllers.focus {
 			//log("command ==> " + __command);
 			if (__command == COMMAND_ACTIVATE)					showCurrentFocus();
 			if (__command == COMMAND_DEACTIVATE)				hideCurrentFocus();
-			if (__command == COMMAND_DEACTIVATE_SILENT)				hideCurrentFocus(true);
+			if (__command == COMMAND_DEACTIVATE_SILENT)			hideCurrentFocus(true);
 			if (__command == COMMAND_ACTIVATION_TOGGLE)			_isActivated ? hideCurrentFocus() : showCurrentFocus();
 			if (__command == COMMAND_MOVE_LEFT)					moveFocus(DIRECTION_LEFT);
 			if (__command == COMMAND_MOVE_RIGHT)				moveFocus(DIRECTION_RIGHT);
@@ -323,6 +316,15 @@ package com.zehfernando.controllers.focus {
 				_onMovedFocus.dispatch();
 			}
 		}
+
+//		private function getId(__element:IFocusable):String {
+//			if (__element == null) return null;
+//			var name:String = "";
+//			name = String(__element);
+//			if (__element is BlobSpritesInfo) name = "BlobSpritesInfo: focus = " + (__element as BlobSpritesInfo).keyboardFocused + ", " + (__element as BlobSpritesInfo).beverage.id;
+//			if (__element is BlobButton) name = "BlobButton: ?, focus = " + (__element as BlobButton).keyboardFocused;
+//			return "[" + name + ", canReceiveFocus = " + __element.canReceiveFocus() + "]";
+//		}
 
 
 		// ================================================================================================================
