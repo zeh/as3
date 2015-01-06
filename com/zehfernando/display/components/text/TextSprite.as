@@ -62,7 +62,7 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function TextSprite(__font:String = "_sans", __size:Number = 12, __color:Number = 0x000000, __alpha:Number = 1) {
+		public function TextSprite(__font:String = "_sans", __size:Number = 12, __color:Number = 0x000000, __alpha:Number = 1, __trackingAsPhotoshop:Number = 0) {
 			// TODO: add bold, italic (fontPosture)
 
 			// Set default values
@@ -105,6 +105,7 @@ package com.zehfernando.display.components.text {
 			elementFormat.fontSize = __size;
 			elementFormat.color = __color;
 			elementFormat.alpha = __alpha;
+			_tracking = __trackingAsPhotoshop / 1000 * __size;
 
 			applyElementFormatTracking();
 
@@ -765,12 +766,12 @@ package com.zehfernando.display.components.text {
 			}
 		}
 
-		public function get trackingAsPhotoshop():Number {
+		private function get trackingAsPhotoshop():Number {
 			// -100 ps = -4 f (font size 40)
 			// -100 ps = -2 f (font size 20)
 			return tracking / elementFormat.fontSize * 1000;
 		}
-		public function set trackingAsPhotoshop(__value:Number):void {
+		private function set trackingAsPhotoshop(__value:Number):void {
 			// TODO: make it re-apply when font size is changed! otherwise the value is wrong
 			tracking = __value / 1000 * elementFormat.fontSize;
 		}

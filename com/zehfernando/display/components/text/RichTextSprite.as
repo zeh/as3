@@ -23,10 +23,10 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function RichTextSprite(__font:String = "_sans", __size:Number = 12, __color:Number = 0x000000, __alpha:Number = 1) {
+		public function RichTextSprite(__font:String = "_sans", __size:Number = 12, __color:Number = 0x000000, __alpha:Number = 1, __trackingAsPhotoshop = 0) {
 			styles = new Vector.<TextStyle>();
 
-			super(__font, __size, __color, __alpha);
+			super(__font, __size, __color, __alpha, __trackingAsPhotoshop);
 
 			addEventListener(MouseEvent.ROLL_OVER, onMouseOver, false, 0, true);
 			addEventListener(MouseEvent.ROLL_OUT, onMouseOut, false, 0, true);
@@ -311,7 +311,7 @@ package com.zehfernando.display.components.text {
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
 
-		public function setStyle(__name:String, __fontName:String = "", __fontSize:Number = NaN, __color:Number = NaN, __alpha:Number = NaN):void {
+		public function setStyle(__name:String, __fontName:String = "", __fontSize:Number = NaN, __color:Number = NaN, __alpha:Number = NaN, __trackingAsPhotoshop:Number = NaN):void {
 			removeStyle(__name);
 
 			var style:TextStyle = new TextStyle();
@@ -321,6 +321,7 @@ package com.zehfernando.display.components.text {
 			style.fontSize = __fontSize;
 			style.color = __color;
 			style.alpha = __alpha;
+			style.trackingAsPhotoshop = __trackingAsPhotoshop;
 
 			styles.push(style);
 
@@ -359,6 +360,7 @@ class TextStyle {
 	public var color:Number;
 	public var fontSize:Number;
 	public var alpha:Number;
+	public var trackingAsPhotoshop:Number;
 
 	// Element format
 	//public var tracking:Number;
@@ -377,6 +379,7 @@ class TextStyle {
 		if (!isNaN(color)) ef.color = color;
 		if (!isNaN(fontSize)) ef.fontSize = fontSize;
 		if (!isNaN(alpha)) ef.alpha = alpha;
+		if (!isNaN(trackingAsPhotoshop)) ef.trackingLeft = ef.trackingRight = trackingAsPhotoshop / 1000 * ef.fontSize;
 
 		return ef;
 	}
