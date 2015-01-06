@@ -54,5 +54,14 @@ package com.zehfernando.utils {
 		public static function getBoolean():Boolean {
 			return Math.random() > 0.5;
 		}
+
+		public static function getFromSeed(__seed:int = -1):Number {
+			// Return a predictable pseudo-random number (0..0.999)
+			if (__seed < 0) {
+				return Math.random();
+			} else {
+				return ((__seed * 1.12836) + 0.7) % 1;
+			}
+		}
 	}
 }
