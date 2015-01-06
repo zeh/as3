@@ -1,4 +1,5 @@
 package com.zehfernando.data.types {
+	import com.zehfernando.utils.RandomGenerator;
 	/**
 	 * @author zeh fernando
 	 */
@@ -22,10 +23,11 @@ package com.zehfernando.data.types {
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function NoiseSequence(__octaves:int = 5) {
+		public function NoiseSequence(__octaves:int = 5, __randomSeed:int = -1) {
 			octaves = __octaves;
 			randoms = new Vector.<Number>();
-			while (randoms.length < octaves) randoms.push(Math.random() * TWO_PI);
+			var pos:int = 0;
+			while (randoms.length < octaves) randoms.push(RandomGenerator.getFromSeed(__randomSeed < 0 ? -1 : __randomSeed + (pos++)) * TWO_PI);
 			powers = new Vector.<int>();
 			while (powers.length < octaves) powers.push(Math.pow(2, powers.length));
 		}
