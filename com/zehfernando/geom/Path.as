@@ -165,7 +165,7 @@ package com.zehfernando.geom {
 		}
 
 		public function getClosestPosition(__point:Point):Number {
-			// Get the point in the path (0-length) that is closest to another point
+			// Get the position in the path (0-length) that is closest to another point
 			var i:int;
 			var minDistance:Number = NaN;
 			var distance:Number;
@@ -183,6 +183,31 @@ package com.zehfernando.geom {
 			}
 
 			return segmentPointLength + GeomUtils.getLineSegmentClosestPhaseToPoint(__point, points[segmentPoint1], points[segmentPoint1+1]) * Point.distance(points[segmentPoint1], points[segmentPoint1+1]);
+		}
+
+		public function getClosestPoint(__point:Point):Point {
+			// Get the point in the path that is closest to another point
+			var i:int;
+			var minDistance:Number = NaN;
+			var distance:Number;
+			var segmentPoint1:int;
+			var segmentPointLength:Number;
+			var totalLength:Number = 0;
+			var closestPoint:Point = null;
+			var p:Point;
+			for (i = 0; i < points.length - 1; i++) {
+				p = GeomUtils.getLineSegmentPointClosestToPoint(__point, points[i], points[i+1]);
+				distance = GeomUtils.getLineSegmentDistanceToPoint(__point, points[i], points[i+1]);
+				if (isNaN(minDistance) || distance < minDistance) {
+					segmentPoint1 = i;
+					segmentPointLength = totalLength;
+					minDistance = distance;
+					closestPoint = p;
+				}
+				totalLength += Point.distance(points[i], points[i+1]);
+			}
+
+			return closestPoint;
 		}
 
 		public function translate(__x:Number, __y:Number):void {
