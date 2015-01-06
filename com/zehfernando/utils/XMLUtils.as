@@ -44,7 +44,7 @@ package com.zehfernando.utils {
 
 		public static function getFilteredNodeAsFloat(__xml:XML, __nodeName:String, __attributeNames:Array, __attributeFilters:Array, __includeEmptyAttribute:Boolean = true, __allowAnyPartOfString:Boolean = true, __default:Number = 0):Number {
 			var str:String = getFilteredNodeAsString(__xml, __nodeName, __attributeNames, __attributeFilters, __includeEmptyAttribute = true, __allowAnyPartOfString = true, null);
-			return str == null ? __default : parseFloat(str);
+			return (str == null || str.length == 0) ? __default : parseFloat(str);
 		}
 
 		public static function getFilteredNodeAsInt(__xml:XML, __nodeName:String, __attributeNames:Array, __attributeFilters:Array, __includeEmptyAttribute:Boolean = true, __allowAnyPartOfString:Boolean = true, __default:int = 0):int {
@@ -179,7 +179,8 @@ package com.zehfernando.utils {
 			return list.length > 0 ? list[0] : null;
 		}
 
-		public static function getFilteredNodeList(__xmlList:XMLList, __attributeNames:Array, __attributeFilters:Array, __includeEmptyAttribute:Boolean = true, __allowAnyPartOfString:Boolean = true):Vector.<XML> {
+		public static function getFilteredNodeList(__xmlList:XMLList, __attributeNames:Array, __attributeFilters:Array, __includeEmptyAttribute:Boolean = true, __allowAnyPartOfString:Boolean = true, __followOriginalOrder:Boolean = false):Vector.<XML> {
+			// __attributeFilters is an array containing either strings or string lists
 			var list:Vector.<XML> = new Vector.<XML>();
 			if (__xmlList != null && __xmlList.length() >= 0) {
 				var i:int;
@@ -196,7 +197,7 @@ package com.zehfernando.utils {
 
 				// Apply all filters
 				for (i = 0; i < __attributeNames.length; i++) {
-					list = getSingleFilteredNodeList(list, __attributeNames[i], __attributeFilters[i], __includeEmptyAttribute, __allowAnyPartOfString);
+					list = getSingleFilteredNodeList(list, __attributeNames[i], convertStringToStringVectorIfNeeded(__attributeFilters[i]), __includeEmptyAttribute, __allowAnyPartOfString);
 //					if (list.length > 0 && list[0].name() == "scaleLogoBrand") {
 //						log("  Filtering [" + __attributeNames[i] + "] = [" + __attributeFilters[i] + "]");
 //						for (j = 0; j < list.length; j++) {
@@ -206,11 +207,17 @@ package com.zehfernando.utils {
 				}
 
 				// Sort the list by more important items first (by number of items that match, then order of attribute name preference)
-				filterListSortAttributeNames = __attributeNames;
-				list = list.sort(sortFilterList);
+				if (!__followOriginalOrder) {
+					filterListSortAttributeNames = __attributeNames;
+					list = list.sort(sortFilterList);
+				}
 			}
 
 			return list;
+		}
+
+		private static function convertStringToStringVectorIfNeeded(__field:*):Vector.<String> {
+			return __field is String ? Vector.<String>([__field]) : __field;
 		}
 
 		private static function sortFilterList(__xml1:XML, __xml2:XML):int {
@@ -237,7 +244,8 @@ package com.zehfernando.utils {
 			return 0;
 		}
 
-		public static function getSingleFilteredNodeList(__xmls:Vector.<XML>, __attributeName:String, __attributeFilter:String, __includeEmptyAttribute:Boolean = true, __allowAnyPartOfString:Boolean = true):Vector.<XML> {
+		public static function getSingleFilteredNodeList(__xmls:Vector.<XML>, __attributeName:String, __attributeFilter:Vector.<String>, __includeEmptyAttribute:Boolean = true, __allowAnyPartOfString:Boolean = true):Vector.<XML> {
+			// Attribute filter is either a string or a vector of strings
 			var list:Vector.<XML> = new Vector.<XML>();
 
 			if (__xmls.length >= 0) {
@@ -250,8 +258,11 @@ package com.zehfernando.utils {
 						list.push(__xmls[i]);
 					} else {
 						// Has attribute
-						if ((currentAttribute == __attributeFilter || (__allowAnyPartOfString && currentAttribute.indexOf(__attributeFilter) > -1))) {
-							list.push(__xmls[i]);
+						for (var j:int = 0; j < __attributeFilter.length; j++) {
+							if ((currentAttribute == __attributeFilter[j] || (__allowAnyPartOfString && currentAttribute.indexOf(__attributeFilter[j]) > -1))) {
+								list.push(__xmls[i]);
+								break;
+							}
 						}
 					}
 				}
