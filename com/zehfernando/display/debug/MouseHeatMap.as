@@ -179,5 +179,13 @@ package com.zehfernando.display.debug {
 			onMouseMove(__e);
 		}
 
+
+		// ================================================================================================================
+		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
+
+		public function clear():void {
+			bitmapData.fillRect(bitmapData.rect, 0x00000000);
+		}
+
 	}
 }
