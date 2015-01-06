@@ -8,6 +8,10 @@ package com.zehfernando.data.types {
 	 */
 	public class Color {
 
+		// Constants
+		private static const BUILT_IN_COLOR_NAMES:Vector.<String>  = new <String>["aqua",    "black",   "blue",    "fuchsia", "gray",    "green",   "lime",    "maroon", "navy",     "olive",	"purple",  "red",     "silver",  "teal",    "white",   "yellow"];
+		private static const BUILT_IN_COLOR_VALUES:Vector.<String> = new <String>["#0000ff", "#ffffff", "#0000ff", "#ff00ff", "#808080", "#008000", "#00ff00", "#800000", "#000080", "#808000",	"#800080", "#ff0000", "#c0c0c0", "#008080", "#ffffff", "#ffff00"];
+
 		// Properties
 		protected var _r:Number;
 		protected var _g:Number;
@@ -32,7 +36,7 @@ package com.zehfernando.data.types {
 		/**
 		 * Converts this color to an integer number in the AARRGGBB format (for example: 0xff000000 for opaque black).
 		 */
-		public function toAARRGGBB():Number {
+		public function toAARRGGBB():uint {
 			// Returns this color as a number in the 0xAARRGGBB format
 			return Math.round(_a * 255) << 24 | toRRGGBB();
 		}
@@ -188,74 +192,72 @@ package com.zehfernando.data.types {
 			return newColor;
 		}
 
-		public static function fromString(p_value:String):Color {
+		public static function fromString(__value:String):Color {
 			// Based on any HTML/CSS compatible string value, returns the corresponding color
 
 			var newColor:Color = new Color();
 
-			p_value = String(p_value).toLowerCase().split(" ").join(""); // trimStringSpaces(p_value);
+			__value = String(__value).toLowerCase().split(" ").join(""); // trimStringSpaces(p_value);
 
-			if (p_value.substr(0, 1) == "#") {
+			if (__value.substr(0, 1) == "#") {
 				// Hexadecimal color
-				var $colorValue:String = p_value.substr(1);
-				if ($colorValue.length == 6) {
+				var colorValue:String = __value.substr(1);
+				if (colorValue.length == 6) {
 					// Usual #RRGGBB
-					newColor.r = parseInt($colorValue.substr(0, 2), 16) / 255;
-					newColor.g = parseInt($colorValue.substr(2, 2), 16) / 255;
-					newColor.b = parseInt($colorValue.substr(4, 2), 16) / 255;
+					newColor.r = parseInt(colorValue.substr(0, 2), 16) / 255;
+					newColor.g = parseInt(colorValue.substr(2, 2), 16) / 255;
+					newColor.b = parseInt(colorValue.substr(4, 2), 16) / 255;
 					newColor.a = 1;
-				} else if ($colorValue.length == 8) {
+				} else if (colorValue.length == 8) {
 					// #AARRGGBB
-					newColor.r = parseInt($colorValue.substr(2, 2), 16) / 255;
-					newColor.g = parseInt($colorValue.substr(4, 2), 16) / 255;
-					newColor.b = parseInt($colorValue.substr(6, 2), 16) / 255;
-					newColor.a = parseInt($colorValue.substr(0, 2), 16) / 255;
-				} else if ($colorValue.length == 3) {
+					newColor.r = parseInt(colorValue.substr(2, 2), 16) / 255;
+					newColor.g = parseInt(colorValue.substr(4, 2), 16) / 255;
+					newColor.b = parseInt(colorValue.substr(6, 2), 16) / 255;
+					newColor.a = parseInt(colorValue.substr(0, 2), 16) / 255;
+				} else if (colorValue.length == 3) {
 					// #RGB that turns into #RRGGBB
-					newColor.r = parseInt($colorValue.substr(0, 1) + $colorValue.substr(0, 1), 16) / 255;
-					newColor.g = parseInt($colorValue.substr(1, 1) + $colorValue.substr(1, 1), 16) / 255;
-					newColor.b = parseInt($colorValue.substr(2, 1) + $colorValue.substr(2, 1), 16) / 255;
+					newColor.r = parseInt(colorValue.substr(0, 1) + colorValue.substr(0, 1), 16) / 255;
+					newColor.g = parseInt(colorValue.substr(1, 1) + colorValue.substr(1, 1), 16) / 255;
+					newColor.b = parseInt(colorValue.substr(2, 1) + colorValue.substr(2, 1), 16) / 255;
 					newColor.a = 1;
-				} else if ($colorValue.length == 4) {
+				} else if (colorValue.length == 4) {
 					// #ARGB that turns into #AARRGGBB
-					newColor.r = parseInt($colorValue.substr(1, 1) + $colorValue.substr(1, 1), 16) / 255;
-					newColor.g = parseInt($colorValue.substr(2, 1) + $colorValue.substr(2, 1), 16) / 255;
-					newColor.b = parseInt($colorValue.substr(3, 1) + $colorValue.substr(3, 1), 16) / 255;
-					newColor.a = parseInt($colorValue.substr(0, 1) + $colorValue.substr(0, 1), 16) / 255;
+					newColor.r = parseInt(colorValue.substr(1, 1) + colorValue.substr(1, 1), 16) / 255;
+					newColor.g = parseInt(colorValue.substr(2, 1) + colorValue.substr(2, 1), 16) / 255;
+					newColor.b = parseInt(colorValue.substr(3, 1) + colorValue.substr(3, 1), 16) / 255;
+					newColor.a = parseInt(colorValue.substr(0, 1) + colorValue.substr(0, 1), 16) / 255;
 				} else {
 					// Wrong type!
-					trace ("ERROR! Wrong number of atributes in color number");
+					trace ("ERROR! Wrong number of atributes in color number: " + __value + " (" + __value.length + ")");
 				}
-			} else if (p_value.substr(0, 4) == "rgb(" && p_value.substr(-1, 1) == ")") {
+			} else if (__value.substr(0, 4) == "rgb(" && __value.substr(-1, 1) == ")") {
 				// rgb() function
-				var $colorValues:Array = p_value.substr(4, p_value.length - 5).split(",");
-				if ($colorValues.length == 3) {
+				var colorValues:Array = __value.substr(4, __value.length - 5).split(",");
+				if (colorValues.length == 3) {
 					// R,G,B
-					newColor.r = getColorFunctionNumber($colorValues[0], 1);
-					newColor.g = getColorFunctionNumber($colorValues[1], 1);
-					newColor.b = getColorFunctionNumber($colorValues[2], 1);
+					newColor.r = getColorFunctionNumber(colorValues[0], 1);
+					newColor.g = getColorFunctionNumber(colorValues[1], 1);
+					newColor.b = getColorFunctionNumber(colorValues[2], 1);
 					newColor.a = 1;
-				} else if ($colorValues.length == 4) {
+				} else if (colorValues.length == 4) {
 					// R,G,B,A
-					newColor.r = getColorFunctionNumber($colorValues[0], 1);
-					newColor.g = getColorFunctionNumber($colorValues[1], 1);
-					newColor.b = getColorFunctionNumber($colorValues[2], 1);
-					newColor.a = getColorFunctionNumber($colorValues[3], 1);
+					newColor.r = getColorFunctionNumber(colorValues[0], 1);
+					newColor.g = getColorFunctionNumber(colorValues[1], 1);
+					newColor.b = getColorFunctionNumber(colorValues[2], 1);
+					newColor.a = getColorFunctionNumber(colorValues[3], 1);
 				} else {
 					trace ("ERROR! Wrong number of parameter in color function");
 				}
 			} else {
 				// Must be a named color
-				var $builtInColorNames:Array = 	["aqua",	"black",	"blue",		"fuchsia",	"gray",		"green",	"lime",		"maroon",	"navy",		"olive",	"purple",	"red",		"silver",	"teal",		"white",	"yellow"];
-				var $builtInColorValues:Array = ["#0000ff",	"#ffffff",	"#0000ff",	"#ff00ff",	"#808080",	"#008000",	"#00ff00",	"#800000",	"#000080",	"#808000",	"#800080",	"#ff0000",	"#c0c0c0",	"#008080",	"#ffffff",	"#ffff00"];
-				var $i:Number = 0;
-				for ($i = 0; $i < $builtInColorNames.length; $i++) {
-					if (p_value == $builtInColorNames[$i]) {
+				var i:int = 0;
+				for (i = 0; i < BUILT_IN_COLOR_NAMES.length; i++) {
+					if (__value == BUILT_IN_COLOR_NAMES[i]) {
 						// Found the color
-						return Color.fromString($builtInColorValues[$i]);
+						return Color.fromString(BUILT_IN_COLOR_VALUES[i]);
 					}
 				}
-				trace ("ERROR! Impossible to parse color name [" + p_value + "]");
+				trace("ERROR! Impossible to parse color name [" + __value + "]");
 			}
 
 			return newColor;
@@ -272,8 +274,19 @@ package com.zehfernando.data.types {
 			return newColor;
 		}
 
+		public static function interpolateAARRGGBB(__c1:int, __c2:int, f:Number):uint {
+			var nf:Number = 1-f;
+			return (((__c1 & 0xff000000) * f + (__c2 & 0xff000000) * nf) & 0xff000000) |
+				(((__c1 & 0xff0000) * f + (__c2 & 0xff0000) * nf) & 0xff0000) |
+				(((__c1 & 0xff00) * f + (__c2 & 0xff00) * nf) & 0xff00) |
+				(((__c1 & 0xff) * f + (__c2 & 0xff) * nf) & 0xff);
+		}
+
 		public static function interpolateRRGGBB(__c1:int, __c2:int, f:Number):int {
-			return Color.interpolate(Color.fromRRGGBB(__c1), Color.fromRRGGBB(__c2), f).toRRGGBB();
+			var nf:Number = 1-f;
+			return (((__c1 & 0xff0000) * f + (__c2 & 0xff0000) * nf) & 0xff0000) |
+				(((__c1 & 0xff00) * f + (__c2 & 0xff00) * nf) & 0xff00) |
+				(((__c1 & 0xff) * f + (__c2 & 0xff) * nf) & 0xff);
 		}
 
 		/*
@@ -442,11 +455,23 @@ package com.zehfernando.data.types {
 			if (max == min) {
 				return _h;
 			} else if (_r == max) {
-				return (60 * ((_g - _b) / (max - min))) % 360;
+				if (_g > _b) {
+					return 60 * (_g - _b) / (_r - _b);
+				} else {
+					return (60 * (6 - (_b - _g) / (_r - _g))) % 360;
+				}
 			} else if (_g == max) {
-				return 60 * ((_b - _r) / (max - min)) + 120;
+				if (_r > _b) {
+					return 60 * (2 - (_r - _b) / (_g - _b));
+				} else {
+					return 60 * (2 + (_b - _r) / (_g - _r));
+				}
 			} else {
-				return 60 * ((_r - _g) / (max - min)) + 240;
+				if (_g > _r) {
+					return 60 * (4 - (_g - _r) / (_b - _r));
+				} else {
+					return 60 * (4 + (_r - _g) / (_b - _g));
+				}
 			}
 		}
 		public function set h(__value:Number):void {
