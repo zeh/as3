@@ -12,7 +12,7 @@ package com.zehfernando.data {
 		// STATIC CONSTRUCTOR ---------------------------------------------------------------------------------------------
 
 		{
-			lists = new Dictionary(false);
+			reset();
 		}
 
 		public static function reset():void {
