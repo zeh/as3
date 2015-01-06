@@ -1,5 +1,6 @@
 package com.zehfernando.utils {
 	import flash.sampler.getMasterString;
+	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
 	/**
 	 * @author Zeh Fernando - z at zeh.com.br
@@ -389,16 +390,21 @@ package com.zehfernando.utils {
 		public static function getCleanString(__string:String):String {
 			// "Cleans" a string, by separating it from its "master" string
 			// http://jacksondunstan.com/articles/2260
+			// http://jacksondunstan.com/articles/2551
 			if (__string == null) return null;
 			if (reportCleanedStrings) {
 				var str:String = getMasterString(__string);
 				if (str != null) {
-					savedBytes += str.length - (__string.length + 1);
+					savedBytes += str.length;
 					savedByteTimes++;
 					if (savedByteTimes % 1000 == 0) trace("Saved " + (savedBytes/1024/1024).toFixed(2) + " string MB so far (" + (savedBytes / (getTimer() / 1000)).toFixed(2) + " bytes/s)");
 				}
 			}
-			return ("_"+__string).substr(1);
+
+			var bytes:ByteArray = new ByteArray();
+			bytes.writeUTFBytes(__string);
+			bytes.position = 0;
+			return bytes.readUTFBytes(bytes.length);
 		}
 	}
 }
