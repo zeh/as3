@@ -433,6 +433,8 @@ package com.zehfernando.display.containers {
 				_netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 				_netStream.pause();
 				_netStream.close();
+				_netStream.dispose();
+				_netStream.client = {};
 				_netStream = null;
 
 				_netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetConnectionStatus);
