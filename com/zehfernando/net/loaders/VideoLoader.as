@@ -37,6 +37,8 @@ package com.zehfernando.net.loaders {
 		// Properties
 		protected var _netConnection:NetConnection;
 		protected var _netStream:NetStream;
+		protected var netConnectionToRecycle:NetConnection;
+		protected var netStreamToRecycle:NetStream;
 		protected var _video:Video;
 
 		protected var isMonitoringLoading:Boolean;
@@ -83,12 +85,19 @@ package com.zehfernando.net.loaders {
 
 			timeStartedWaitingForMetaData = 0;
 
-			_netConnection = new NetConnection();
+			_netConnection = netConnectionToRecycle == null ? new NetConnection() : netConnectionToRecycle;
 			_netConnection.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			_netConnection.addEventListener(SecurityErrorEvent.SECURITY_ERROR, onNetError);
-			_netConnection.connect(null);
+			if (netConnectionToRecycle == null) _netConnection.connect(null);
 
-			_netStream = new NetStream(_netConnection);
+			if (netStreamToRecycle == null) {
+				// New netstream
+				_netStream = new NetStream(_netConnection);
+			} else {
+				// Recycled netstream
+				_netStream = netStreamToRecycle;
+				_netStream.dispose();
+			}
 			_netStream.checkPolicyFile = true;
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 			_netStream.client = {};
@@ -530,7 +539,7 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		public function onNetStatus(event:NetStatusEvent):void {
+		public function onNetStatus(__e:NetStatusEvent):void {
 			//log ("##### NET STATUS CODE : " + event.info["code"]);
 
 			/*
@@ -569,7 +578,7 @@ package com.zehfernando.net.loaders {
 			*/
 
 			//trace ("videocontainer onNetStatus :: " + event.info.code);
-			switch (event.info["code"]) {
+			switch (__e.info["code"]) {
 				case "NetStream.Play.StreamNotFound":
 					log("Stream location [" + _request.url + "] not found!");
 					dispatchEvent(new VideoLoaderEvent(VideoLoaderEvent.STREAM_NOT_FOUND));
@@ -600,18 +609,18 @@ package com.zehfernando.net.loaders {
 			}
 		}
 
-		protected function onNetError(e:SecurityErrorEvent):void {
-			log("securityErrorHandler: " + e);
-			dispatchEvent(e);
+		protected function onNetError(__e:SecurityErrorEvent):void {
+			log("securityErrorHandler: " + __e);
+			dispatchEvent(__e);
 
 			stopMonitoringLoading();
 		}
+
 
 		// ================================================================================================================
 		// PUBLIC API functions -------------------------------------------------------------------------------------------
 
 		public function load(__request:URLRequest):void {
-
 			_request = __request;
 			_isLoaded = false;
 			_isLoading = true;
@@ -623,24 +632,34 @@ package com.zehfernando.net.loaders {
 			startMonitoringLoading();
 		}
 
-		public function dispose(__skipNetstreamDispose:Boolean = false):void {
+		public function dispose(__skipNetStreamAndNetConnectionDisposal:Boolean = false):void {
 			stopMonitoringLoading();
 			stopMonitoringTime();
 
 			_isLoaded = false;
 			_isLoading = false;
 			_hasMetaData = false;
+			_request = null;
+			previousSoundTransform = null;
+
+			netConnectionToRecycle = null;
+			netStreamToRecycle = null;
 
 			_metaData = {};
 
 			if (_hasVideo) {
+				_video.attachNetStream(null);
 				removeChild(_video);
 				_video = null;
 
+				_netStream.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
 				_netStream.pause();
-				if (!__skipNetstreamDispose) _netStream.dispose(); // .close()
+				_netStream.client = {};
+				if (!__skipNetStreamAndNetConnectionDisposal) _netStream.dispose(); // .close()
 				_netStream = null;
 
+				_netConnection.removeEventListener(NetStatusEvent.NET_STATUS, onNetStatus);
+				_netConnection.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, onNetError);
 				_netConnection.close();
 				_netConnection = null;
 
@@ -794,11 +813,11 @@ package com.zehfernando.net.loaders {
 			return _video;
 		}
 
-		public function get netStream(): NetStream {
+		public function get netStream():NetStream {
 			return _netStream;
 		}
 
-		public function get netConnection(): NetConnection {
+		public function get netConnection():NetConnection {
 			return _netConnection;
 		}
 	}

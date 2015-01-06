@@ -3,7 +3,6 @@ package com.zehfernando.display.starling {
 	import starling.events.Event;
 	import starling.textures.Texture;
 
-	import com.firstborn.pepsi.application.FountainFamily;
 	import com.zehfernando.data.BitmapDataPool;
 	import com.zehfernando.net.loaders.VideoLoader;
 	import com.zehfernando.net.loaders.VideoLoaderEvent;
@@ -15,6 +14,8 @@ package com.zehfernando.display.starling {
 	import flash.display.StageQuality;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
+	import flash.net.NetConnection;
+	import flash.net.NetStream;
 	import flash.net.URLRequest;
 
 	/**
@@ -28,6 +29,7 @@ package com.zehfernando.display.starling {
 		private var url:String;
 		private var transparent:Boolean;
 		private var _isLoaded:Boolean;
+		private var _doNotDisposeOfNetStream:Boolean;
 
 		// Instances
 		private var bitmapData:BitmapData;
@@ -40,6 +42,8 @@ package com.zehfernando.display.starling {
 		private var _onLoaded:SimpleSignal;
 
 		private var clipRect:Rectangle;
+		private var netStreamToRecycle:NetStream;
+		private var netConnectionToRecycle:NetConnection;
 
 		// TODO Lee: getting namespace conflict when named as "bounds" - TBD
 		private var boundss:Rectangle;
@@ -47,13 +51,13 @@ package com.zehfernando.display.starling {
 		// Temp properties
 		private var wasVisible:Boolean;
 
-		private static var bitmapDataPool:BitmapDataPool = new BitmapDataPool("videoImage");
+		private static var bitmapDataPool:BitmapDataPool = BitmapDataPool.getPool("videoImage");
 
 
 		// ================================================================================================================
 		// CONSTRUCTOR ----------------------------------------------------------------------------------------------------
 
-		public function VideoImage(__videoURL:String, __loop:Boolean, __transparent:Boolean) {
+		public function VideoImage(__videoURL:String, __loop:Boolean, __transparent:Boolean, __recycledNetStream:NetStream = null, __recycledNetConnection:NetConnection = null) {
 			super(Texture.empty(10, 10));
 
 			url = __videoURL;
@@ -61,6 +65,8 @@ package com.zehfernando.display.starling {
 			transparent = __transparent;
 			_visibility = 1;
 			_isLoaded = false;
+			netStreamToRecycle = __recycledNetStream;
+			netConnectionToRecycle = __recycledNetConnection;
 
 			clipRect = null;
 			boundss = new Rectangle(super.x, super.y, super.width, super.height);
@@ -127,7 +133,7 @@ package com.zehfernando.display.starling {
 		}
 
 		private function updateFrame():void {
-			if (visible && stage != null && videoLoader != null) {
+			if (visible && stage != null && videoLoader != null && bitmapData != null) {
 				if (transparent) bitmapData.fillRect(bitmapData.rect, 0x000000);
 				bitmapData.drawWithQuality(videoLoader.video, videoMatrix, null, null, null, false, StageQuality.LOW);
 				try {
@@ -158,7 +164,6 @@ package com.zehfernando.display.starling {
 				setTexCoordsTo(3, 1, 1);
 			} else {
 				// Clips
-
 				super.x = Math.max(boundss.left, clipRect.left);
 				super.y = clipRect.top;
 				//super.y = Math.max(bounds.top, clipRect.top);
@@ -229,7 +234,7 @@ package com.zehfernando.display.starling {
 
 		public function load():void {
 			if (videoLoader == null) {
-				videoLoader = new VideoLoader();
+				videoLoader = new VideoLoader(netStreamToRecycle, netConnectionToRecycle);
 				videoLoader.netStream.receiveAudio(false);
 				videoLoader.addEventListener(VideoLoaderEvent.RECEIVED_METADATA, onVideoLoaderReceivedMetadata);
 				videoLoader.addEventListener(VideoLoaderEvent.PLAY_FINISH, onVideoLoaderFinishedPLaying);
@@ -275,8 +280,11 @@ package com.zehfernando.display.starling {
 			removeEventListener(Event.ENTER_FRAME, onEnterFrame);
 
 			_onFinishedPlaying.removeAll();
+			_onFinishedPlaying = null;
 			_onSeekComplete.removeAll();
+			_onSeekComplete = null;
 			_onLoaded.removeAll();
+			_onLoaded = null;
 
 			if (bitmapData != null) {
 				bitmapDataPool.put(bitmapData);
@@ -289,13 +297,14 @@ package com.zehfernando.display.starling {
 			}
 
 			if (videoLoader != null) {
-				FountainFamily.garbageCan.put(videoLoader.netStream);
 				videoLoader.removeEventListener(VideoLoaderEvent.RECEIVED_METADATA, onVideoLoaderReceivedMetadata);
 				videoLoader.removeEventListener(VideoLoaderEvent.PLAY_FINISH, onVideoLoaderFinishedPLaying);
 				videoLoader.removeEventListener(VideoLoaderEvent.SEEK_NOTIFY, onVideoLoaderNotifiedSeek);
 				videoLoader.removeEventListener(Event.COMPLETE, onVideoLoaderComplete);
-				videoLoader.dispose(true);
+				videoLoader.dispose(netStreamToRecycle != null || _doNotDisposeOfNetStream);
 				videoLoader = null;
+				netStreamToRecycle = null;
+				netConnectionToRecycle = null;
 			}
 
 			super.dispose();
@@ -365,6 +374,22 @@ package com.zehfernando.display.starling {
 
 		public function get isLoaded():Boolean {
 			return _isLoaded;
+		}
+
+		public function get netStream():NetStream {
+			return videoLoader == null ? null : videoLoader.netStream;
+		}
+
+		public function get netConnection():NetConnection {
+			return videoLoader == null ? null : videoLoader.netConnection;
+		}
+
+		public function get doNotDisposeOfNetStream():Boolean {
+			return _doNotDisposeOfNetStream;
+		}
+
+		public function set doNotDisposeOfNetStream(__value:Boolean):void {
+			_doNotDisposeOfNetStream = __value;
 		}
 	}
 }
