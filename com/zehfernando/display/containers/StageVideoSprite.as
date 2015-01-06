@@ -7,12 +7,15 @@ package com.zehfernando.display.containers {
 	import com.zehfernando.utils.console.warn;
 	import com.zehfernando.utils.getTimerUInt;
 
+	import flash.display.BitmapData;
 	import flash.events.Event;
 	import flash.events.NetStatusEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.StageVideoAvailabilityEvent;
 	import flash.events.StageVideoEvent;
 	import flash.events.VideoEvent;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.media.StageVideo;
 	import flash.media.StageVideoAvailability;
@@ -240,6 +243,7 @@ package com.zehfernando.display.containers {
 
 		private function resizeVideo():void {
 			// Resize video to fit the screen
+			var actualScale:Point = localToGlobal(new Point(1, 1));
 			if (_video != null) {
 				if (_video.width != _video.videoWidth || _video.height != _video.videoHeight) {
 					if (LOG_ENABLED) log("Resizing Video to " + _video.videoWidth + "x" + _video.videoHeight);
@@ -490,9 +494,31 @@ package com.zehfernando.display.containers {
 			}
 		}
 
+		public function getFrame():BitmapData {
+			// Captures the current frame as a BitmapData
+
+			if (_hasVideo) {
+				if (_video != null) {
+					// Normal video
+					var bmp:BitmapData = new BitmapData(_width, _height, false, 0xff000000);
+					var mtx:Matrix = new Matrix();
+					// Not sure why the hell it's using this image when drawing
+					mtx.scale(_video.videoWidth/320, _video.videoHeight/240);
+					bmp.draw(_video, mtx);
+					return bmp;
+				} else if (_stageVideo != null) {
+					// Stage video
+					return null;
+				}
+			}
+
+			return null;
+		}
+
 		public function dispose():void {
 			if (_hasVideo) unload();
 		}
+
 
 		// ================================================================================================================
 		// ACCESSOR INTERFACE ---------------------------------------------------------------------------------------------
