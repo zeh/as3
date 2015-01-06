@@ -105,18 +105,8 @@ package com.zehfernando.geom {
 			return Path.fromPoints(points, true);
 		}
 
-		public function simplify():void {
-			// Simplify the path by removing middle points in lines that have the same angle
-//			var pl:int = points.length;
-			// TODO: better understood closed loops
-			for (var i:int = 1; i < points.length-1; i++) {
-				if (points[i].equals(points[i-1]) || Math.atan2(points[i].y-points[i-1].y, points[i].x-points[i-1].x) == Math.atan2(points[i+1].y-points[i].y, points[i+1].x-points[i].x)) {
-					// Same point or same angle
-					points.splice(i, 1);
-					i--;
-				}
-			}
-//			log("Path optimized; points before = " + pl + ", points after = " + points.length);
+		public function simplify(__isClosed:Boolean = false):void {
+			points = GeomUtils.simplifyPolygon(points, __isClosed);
 		}
 
 		public function normalize():void {
@@ -228,12 +218,24 @@ package com.zehfernando.geom {
 		}
 
 		public function inflate(__amount:Number):Vector.<Path> {
-			var paths:Vector.<Path> = Vector.<Path>();
-			var pointses:Vector.<Vector.<Point>> = GeomUtils.inflatePolygon(points, __amount);
-			for (var i:int = 0; i < points.length; i++) {
+			// Inflates the shape of the polygon, expanding as needed (modifies the points!)
+			// If __amount is negative, it deflates
+			if (getWinding() == GeomUtils.WINDING_CLOCKWISE) __amount *= -1;
+			var paths:Vector.<Path> = new Vector.<Path>();
+			var pointses:Vector.<Vector.<Point>> = GeomUtils.inflatePolygon(points, __amount, true);
+			for (var i:int = 0; i < pointses.length; i++) {
 				paths.push(Path.fromPoints(pointses[i]));
 			}
 			return paths;
+		}
+
+		public function reverseWinding():void {
+			var i:int;
+			var newPoints:Vector.<Point> = new Vector.<Point>(points.length);
+			for (i = 0; i < points.length; i++) {
+				newPoints[i] = points[points.length-1-i];
+			}
+			points = newPoints;
 		}
 
 		public function inflateOld(__amount:Number, __loop:Boolean = false):void {
