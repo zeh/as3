@@ -9,9 +9,7 @@ package com.zehfernando.signals {
 
 		// Properties
 		private var functions:Vector.<Function>;
-		private var functionsDuplicate:Vector.<Function>;			// For dispatching
 
-		private var ifd:int;										// i for dispatching (to limit garbage collection)
 		private var ifr:int;										// i for removal (to limit garbage collection)
 
 		// ================================================================================================================
@@ -20,7 +18,6 @@ package com.zehfernando.signals {
 		public function SimpleSignal() {
 			functions = new Vector.<Function>();
 		}
-
 
 		// ================================================================================================================
 		// PUBLIC INTERFACE -----------------------------------------------------------------------------------------------
@@ -51,12 +48,11 @@ package com.zehfernando.signals {
 		}
 
 		public function dispatch(...__args:Array):void {
-			functionsDuplicate = functions.concat();
+			var functionsDuplicate:Vector.<Function> = functions.concat();
 			functionsDuplicate.fixed = true;
-			for (ifd = 0; ifd < functionsDuplicate.length; ifd++) {
-				functionsDuplicate[ifd].apply(undefined, __args);
+			for (var i:int = 0; i < functionsDuplicate.length; i++) {
+				functionsDuplicate[i].apply(undefined, __args);
 			}
-			functionsDuplicate = null;
 		}
 
 
